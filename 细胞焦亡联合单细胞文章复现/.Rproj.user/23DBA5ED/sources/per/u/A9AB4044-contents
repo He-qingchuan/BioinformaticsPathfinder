@@ -1,8 +1,0 @@
-rmds = dir(pattern = ".Rmd$",recursive = T)
-rmds
-for(i in 1:14){
-  #i = 20
-  rmds = dir(pattern = ".Rmd$",recursive = T)
-  rmarkdown::render(rmds[[i]])
-  rmds = dir(pattern = ".Rmd$",recursive = T)
-}
