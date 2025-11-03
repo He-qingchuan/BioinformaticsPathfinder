@@ -1,13 +1,9 @@
 ---
 title: "LINUX+R"
 
-date: "2024-10-12"
+date: "2025-08-12"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Linux入门
 
@@ -16,17 +12,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ### 登录服务器
 
 ```{bash}
-用户名、密码和ip地址，登录方式为：`ssh   用户名@ip地址`，如：
-ssh  vip28@94.191.82.93
+用户名、密码和ip地址，登录方式为：`ssh   用户名@ip地址`，如
+ssh  qingchuan28@94.191.82.93
 #回车，然后输入密码
+ssh -p 21041 t150618@biotree.top
 ```
 
 ### 查看帮助文档
 
 ```{bash}
 #man 命令，help 命令，或者某个命令的  --help  参数
-man  ls		## 用 man 命令查看 ls 命令的帮助文档
-help  ls	## 用 help 命令查看 ls 命令的帮助文档	
+man  ls		## 用 man 命令查看 ls 命令的帮助文档	
 ls  --help	## 用 --help 参数查看 ls 命令的帮助文档
 ```
 
@@ -94,6 +90,8 @@ mkdir  ~/bin
 echo  'export "PATH=~/bin:$PATH" ' >> ~/.bashrc 
 source  ~/.bashrc
 ```
+
+
 
 ### Linux常用命令
 
@@ -569,17 +567,6 @@ source ~/.bashrc
 ### 2配置镜像源
 
 ```{bash}
-vim ~/.condarc
-channels:
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/
-show_channel_urls: true
- 
-ssl_verify: true
-allow_conda_downgrades: true
-
 
 ####
 ## 配置镜像
@@ -666,7 +653,7 @@ conda install -y -c hcc aspera-cli
 ascp --help
 
 # 可以一次安装多个软件
-conda install -y python=3.7 libstdcxx-ng=9.1.0 trim-galore  hisat2  subread  multiqc  samtools=1.14  salmon=1.4.0 fastp fastqc
+conda install -y  trim-galore  hisat2   multiqc  samtools=1.14  salmon=1.4.0 fastp fastqc
 # mamba install -y python=3.7 libstdcxx-ng=9.1.0 trim-galore  hisat2  subread  multiqc  samtools=1.14  salmon=1.4.0 fastp fastqc
 
 ## 不是通过软件名来调用帮助文档，而是软件的命令
@@ -735,14 +722,7 @@ library(org.Hs.eg.db)
 <!-- A: [Bioconductor - Home](https://bioconductor.org/) 在Bioconductor的官网搜索即可。 -->
 ```
 
-### 在小环境中安装生信软件——直接导入yaml配置文件以安装软件
-
-```{bash}
-conda env create -n rna -f rna.yaml
-# 如果有mamba的话可以用mamba安装
-# mamba env create -n rna -f rna.yaml
-conda env create -n R4 -f R4.yaml
-```
+### 
 
 ### conda其他用法更新软件：conda update 软件名，卸载软件，删除环境，克隆环境，查找软件
 
