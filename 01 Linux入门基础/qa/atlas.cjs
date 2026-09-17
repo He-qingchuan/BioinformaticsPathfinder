@@ -57,6 +57,9 @@ async function geometry(page, width) {
   const transform = () => bird.evaluate(el => getComputedStyle(el).transform);
   const first = await transform(); await delay(300); assert.notEqual(await transform(), first);
   await page.locator('#atlas-motion').click();
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('.atlas-landscape .bird-flight')).animationPlayState === 'paused');
+  // CSS pause reaches the compositor at a frame boundary; sample after it settles.
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const stopped = await transform(); await delay(300); assert.equal(await transform(), stopped);
   await page.reload(); assert.equal(await page.locator('#atlas-motion').textContent(), '开启动态');
   await page.locator('#atlas-motion').click();
