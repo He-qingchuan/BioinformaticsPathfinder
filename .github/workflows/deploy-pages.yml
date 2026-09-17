@@ -1,4 +1,4 @@
-name: Deploy RNA-seq island course to GitHub Pages
+name: Deploy independent textbooks to GitHub Pages
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "04 Bulk RNA-seq/**"
+      - "01 Linux入门基础/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -35,6 +36,12 @@ jobs:
           mkdir -p _site
           cp -a "04 Bulk RNA-seq/." _site/
           cp "_site/01_海岛探险教案.html" "_site/index.html"
+          python - <<'PY'
+          from pathlib import Path
+          from shutil import copytree, ignore_patterns
+          copytree(Path('01 Linux入门基础'), Path('_site/linux'),
+                   ignore=ignore_patterns('node_modules', '__pycache__', 'artifacts', 'dist'))
+          PY
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

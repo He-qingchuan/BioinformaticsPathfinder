@@ -4,7 +4,11 @@
 
 ## 01 Linux入门基础
 
-[查看现有学习资料](01%20Linux入门基础/Linux入门基础.md)。课程正在整理，后续补充完善。
+[Linux 入门 · 观察站的工作台](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)：独立的 18 节入门教材，从目录与文件、文本处理走到简单脚本，配套图解、术语与可运行练习。
+
+- [连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/reading.html)
+- [代码、练习数据与资料](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/library.html)
+- [源码与离线使用说明](01%20Linux入门基础/README.md)
 
 ## 02 R语言入门基础
 
