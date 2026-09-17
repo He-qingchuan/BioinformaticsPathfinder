@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>连续阅读与打印 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="assets/style.css"></head>
+<body class="full-reading"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="index.html#course">课程目录</a><a href="library.html">代码与资料</a><a href="reading.html">全文阅读</a><a class="open-glossary" href="reading.html#glossary">术语手册</a></nav></header><main id="main" class="reading-page prose"><p class="eyebrow">Linux 入门 · 连续阅读</p><h1>从第一条命令，到一份观察简报。</h1><p>本页展开所有章节。打印时自动显示练习解析；交互演示附有文字说明。术语可点击查询，禁用脚本时跳到页末附录。</p><button type="button" class="print-button">打印这份教材</button><nav class="reading-directory"><a href="#lesson-01">01 · 认识 Linux</a><a href="#lesson-02">02 · 准备你的工作台</a><a href="#lesson-03">03 · 第一条命令</a><a href="#lesson-04">04 · 在目录里找路</a><a href="#lesson-05">05 · 整理你的文件</a><a href="#lesson-06">06 · 打开一份记录</a><a href="#lesson-07">07 · 写下与保存</a><a href="#lesson-08">08 · 文件名的线索</a><a href="#lesson-09">09 · 在文本里搜索</a><a href="#lesson-10">10 · 让工具接力</a><a href="#lesson-11">11 · 整理一张小表</a><a href="#lesson-12">12 · 把资料打包</a><a href="#lesson-13">13 · 谁能做什么</a><a href="#lesson-14">14 · 命令从哪里来</a><a href="#lesson-15">15 · 观察运行中的任务</a><a href="#lesson-16">16 · 把步骤写成脚本</a><a href="#lesson-17">17 · 判断与重复</a><a href="#lesson-18">18 · 完成一份观察简报</a></nav><section id="lesson-01" class="print-lesson"><p class="eyebrow">第 01 节 · 从一个问题出发</p><h1>认识 Linux</h1><p class="lesson-question">为什么整理文件也值得学一种新方法？</p><div class="objectives"><strong>这一节，带走什么</strong><p>分清 Linux、发行版和 Shell；知道这门课能解决什么。</p></div><h2 id="01-part-1">一周的记录，为什么越整理越乱</h2>
+<p>假设你在一个小小的自然观察站记录鸟类。第一天只有一份笔记，鼠标点开就能看。过了一周，笔记、照片文件名、设备日志和表格放在一起。你想找到所有报警记录、数一数每种鸟出现了几条记录，再把结果交给同行的人。</p>
+<p>这些事都可以从很小的操作开始。本课会陪你把它们逐步连起来：<strong>找到文件 → 看懂内容 → 提取线索 → 保存结果 → 重复执行。</strong> 观察站的数据是人为编写的练习材料，不是真实观测或科研结论。</p>
+<figure class="concept"><p class="eyebrow">图解 · 从窗口到系统</p><a class="zoom-image" href="assets/illustrations/system.svg" data-description="终端展示文字，Shell 解释命令，工具通过系统使用资源。箭头表示这次操作的层次，不是完整操作系统结构。"><img src="assets/illustrations/system.svg" alt="从窗口到系统" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>终端展示文字，Shell 解释命令，工具通过系统使用资源。箭头表示这次操作的层次，不是完整操作系统结构。</p><a class="zoom-image" href="assets/illustrations/system.svg" data-description="终端展示文字，Shell 解释命令，工具通过系统使用资源。箭头表示这次操作的层次，不是完整操作系统结构。">放大查看 ↗</a> <a href="assets/illustrations/system.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="01-part-2">先把四个名字放对位置</h2>
+<p><a class="term" data-term="linux" href="reading.html#term-linux">Linux</a> 严格说是<a class="term" data-term="kernel" href="reading.html#term-kernel">内核</a>：它帮助程序使用处理器、内存、磁盘等资源。我们日常说“用 Linux”，通常是在说一套使用 Linux 内核的操作系统。</p>
+<p><a class="term" data-term="distribution" href="reading.html#term-distribution">发行版</a>把内核和常用软件组织成可安装、可维护的系统。Ubuntu 就是一种发行版。你不需要先学会编译内核，也不需要同时研究各种发行版。</p>
+<p><a class="term" data-term="terminal" href="reading.html#term-terminal">终端</a>是我们输入文字、查看结果的窗口。<a class="term" data-term="shell" href="reading.html#term-shell">Shell</a> 是接收并解释命令的程序。本课使用的 Shell 叫 <a class="term" data-term="bash" href="reading.html#term-bash">Bash</a>。窗口、解释命令的程序和操作系统不是同一件东西。</p>
+<p>把这一层关系想成“窗口 → 调度员 → 工具与系统”有助于入门。但 Shell 并不只是传话：它还负责解释引号、展开变量、连接输入输出。后面会慢慢认识这些动作。</p>
+<h2 id="01-part-3">它从哪里来，为什么今天还在用</h2>
+<p>Unix 的早期设计让多人可以通过终端使用一台计算机。文字命令和处理文本的小工具在这样的环境中发展起来。GNU 项目后来提供了很多自由软件工具；Linux 内核从 1991 年起发展。今天常见的 Linux 发行版把内核、GNU 工具和许多其他项目的软件组合起来。</p>
+<p>这段历史留下了一种实用习惯：一个工具先做好一件事，再把工具连起来。面对很多文件时，明确写下操作也方便再次执行与核对。图形界面和命令行各有用途，你可以同时使用它们。</p>
+<h2 id="01-part-4">这门课走到哪里</h2>
+<p>起点只要求会打开文件夹、输入文字。终点是一份自己能够解释的小简报：哪些文件参与了统计，哪里出现过报警，各类记录有多少条。</p>
+<p>Linux 是操作系统相关的学习主题；后半程出现的脚本使用 Bash 语法。课程不要求你先掌握其他编程语言，也不需要另一门课程的知识。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>把四个名字摆对位置</h3><p>你想打开一个窗口，输入命令，让电脑列出文件。这个过程中，终端、Shell、内核各负责哪一层？</p>
+<details><summary>给我一点提示</summary><p>从“你看见的界面”和“解释命令的程序”开始区分。</p>
+</details><details><summary>查看参考解法与解释</summary><p>终端呈现文字输入输出，Shell 解释命令并调用工具；工具通过操作系统提供的能力完成文件操作。内核不是终端里的一条命令。</p>
+</details></section>
+<h2 id="01-part-5">带着一个问题往前走</h2>
+<p>下一节先准备一个可以练习的地方。暂时不用背名字；当你真正打开终端时，再回来看这张关系图。</p>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>Linux 是什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-01" value="0"> <span>只是一种编程语言</span></label><label><input type="radio" name="quiz-01" value="1"> <span>内核的名称，也常用来指使用它的操作系统</span></label><label><input type="radio" name="quiz-01" value="2"> <span>一种只能用于生信的软件</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>Linux 严格说指内核；日常所说的 Linux 系统通常还包含工具、Shell 和其他软件。</p></details></section></section><section id="lesson-02" class="print-lesson"><p class="eyebrow">第 02 节 · 从一个问题出发</p><h1>准备你的工作台</h1><p class="lesson-question">怎样得到一个可以放心练习的环境？</p><div class="objectives"><strong>这一节，带走什么</strong><p>准备 Ubuntu 或 WSL；复制练习材料；分清 Windows 与 Linux 的终端。</p></div><h2 id="02-part-1">先选一条适合自己的入口</h2>
+<p>本课的命令使用 <strong>Ubuntu 24.04 LTS、Bash 和 GNU 常用工具</strong>作为基准。已经有 Ubuntu 的，可以直接练习；Windows 可以用 <a class="term" data-term="wsl" href="reading.html#term-wsl">WSL</a>；已有 Linux 服务器的，可以通过 <a class="term" data-term="ssh" href="reading.html#term-ssh">SSH</a> 登录。网页和术语阅读本身不要求安装这些软件。</p>
+<table>
+<thead>
+<tr>
+<th>现在的情况</th>
+<th>从哪里开始</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>已经在 Ubuntu 中</td>
+<td>打开“终端”应用</td>
+</tr>
+<tr>
+<td>Windows，尚无 Linux 环境</td>
+<td>按下面的 WSL 路线准备</td>
+</tr>
+<tr>
+<td>已有服务器账号</td>
+<td>看资料页的“SSH 与文件传输”，登录后使用自己的家目录</td>
+</tr>
+<tr>
+<td>macOS，或暂时不能安装</td>
+<td>先阅读和操作网页图解；实操使用 Ubuntu 虚拟机或已有服务器</td>
+</tr>
+</tbody>
+</table>
+<p>macOS 的终端并不等于 Ubuntu，其默认 Shell 和部分命令选项也不同。本课暂不把 macOS 原生命令环境当作验证基准。</p>
+<h2 id="02-part-2">Windows：把安装命令和课程命令分开</h2>
+<p>以下这一条是 <strong>Windows 终端／PowerShell 的安装命令</strong>，需要按系统提示使用管理员权限，并可能需要重新启动。先保存手头的工作。</p>
+<div class="code-box"><div class="code-label"><span>PowerShell · 环境准备</span><button type="button" class="copy-code">复制</button></div><pre><code>wsl --install -d Ubuntu-24.04</code></pre></div>
+<p>如果这台电脑已经安装过 WSL，先用 <code>wsl --list --verbose</code> 查看已有发行版；有可用 Ubuntu 就不必重复安装。安装遇到系统版本或虚拟化提示时，按<a href="https://learn.microsoft.com/en-us/windows/wsl/install">微软 WSL 官方说明</a>处理。</p>
+<p>打开 Ubuntu 后，按提示创建你自己的 Linux 用户名和密码。输入密码时屏幕可能不显示字符，这不代表键盘失灵。后续课程中的 Bash 命令都在 <strong>Ubuntu 终端</strong>运行。</p>
+<h2 id="02-part-3">把材料放到自己的工作台</h2>
+<p>下载资料页中的 <strong>练习材料 ZIP</strong>，解压后得到 <code>linux-lab</code> 文件夹。请保留原始下载作为备用，并将一个练习副本放进 Linux 的<a class="term" data-term="home" href="reading.html#term-home">家目录</a>。</p>
+<ul>
+<li>Ubuntu 桌面：用文件管理器把文件夹复制到“个人文件夹”。</li>
+<li>WSL：在 Windows 文件资源管理器地址栏进入 <code>\\wsl.localhost\Ubuntu-24.04\home</code>，打开自己的 Linux 用户目录，再复制文件夹。发行版名应与实际安装名称相同。</li>
+<li>远程服务器：使用服务器提供的文件传输方式，把整个目录放进自己的家目录；没有服务器也完全可以完成主线。</li>
+</ul>
+<figure class="concept"><p class="eyebrow">图解 · 一棵目录树，一枚位置图钉</p><a class="zoom-image" href="assets/illustrations/tree.svg" data-description="linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。"><img src="assets/illustrations/tree.svg" alt="一棵目录树，一枚位置图钉" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。</p><a class="zoom-image" href="assets/illustrations/tree.svg" data-description="linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。">放大查看 ↗</a> <a href="assets/illustrations/tree.svg" download>保存 SVG ↓</a></figcaption></figure>
+<p><code>notes</code> 放文字笔记，<code>logs</code> 放日志，<code>tables</code> 放表格，<code>tools</code> 放一个小示例程序，<code>results</code> 用来接住后面产生的结果。这些只是便于理解的目录名称，Linux 并不强制你这样命名。</p>
+<h2 id="02-part-4">怎样重新开始</h2>
+<p>如果想重做练习，先通过文件管理器把当前工作目录改名保留，再从 ZIP 解出一个新副本。这样既能回看自己做过什么，也不用用一条大范围删除命令清空文件。</p>
+<p>每节的示例都说明起始位置；随包材料足够支撑任意一节独立重做。网页里的“参考输出”只用于对照，自己的家目录名称、时间和部分排列顺序可能不同。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>确认自己站在哪里</h3><p>在文件管理器中找到 <code>linux-lab</code>，打开 <code>notes/morning.txt</code>，确认能看到三行文字。现在你是否能说清：这个文件属于本机 Windows、WSL 内的 Ubuntu，还是远程服务器？</p>
+<details><summary>给我一点提示</summary><p>看文件管理器地址和当前连接的机器。</p>
+</details><details><summary>查看参考解法与解释</summary><p>答案取决于选择的路线。关键是明确后续命令在哪台机器、哪个操作系统中运行，不能把 Windows 文件地址直接当成 Linux 路径。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>在 Windows 的 PowerShell 里打开 WSL 后，课程命令在哪里运行？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-02" value="0"> <span>继续输入到任意聊天框</span></label><label><input type="radio" name="quiz-02" value="1"> <span>输入到已经进入 Ubuntu 的终端</span></label><label><input type="radio" name="quiz-02" value="2"> <span>输入到网页地址栏</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>WSL 提供 Linux 环境。安装 WSL 的命令在 Windows 终端运行；课程的 Bash 命令在 Ubuntu 终端运行。</p></details></section></section><section id="lesson-03" class="print-lesson"><p class="eyebrow">第 03 节 · 从一个问题出发</p><h1>第一条命令</h1><p class="lesson-question">屏幕上的哪些字需要输入，哪些不用？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解提示符、命令、参数和输出；使用帮助、补全和中断。</p></div><h2 id="03-part-1">提示符是在说：现在轮到你了</h2>
+<p>打开终端后，常见的一行文字像这样：</p>
+<div class="code-box"><div class="code-label"><span>示意内容，不作为命令执行</span><button type="button" class="copy-code">复制</button></div><pre><code>river@station:~$</code></pre></div>
+<p>这是<a class="term" data-term="prompt" href="reading.html#term-prompt">提示符</a>的一种样式。<code>river</code> 可能是用户名，<code>station</code> 可能是机器名，<code>~</code> 通常表示家目录，<code>$</code> 常见于普通用户的提示符。样式可以自定义，因此不要仅凭颜色或一个符号判断权限。</p>
+<p><strong>输入命令时，不要把教程里的提示符一起输入。</strong> 本教材可复制的命令块都不包含提示符。</p>
+<figure class="concept"><p class="eyebrow">图解 · 把一条命令拆开看</p><a class="zoom-image" href="assets/illustrations/command.svg" data-description="命令名告诉 Shell 做什么；选项改变行为；路径等参数指定操作对象。空格分隔各项，引号可以保护一项内部的空格。"><img src="assets/illustrations/command.svg" alt="把一条命令拆开看" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>命令名告诉 Shell 做什么；选项改变行为；路径等参数指定操作对象。空格分隔各项，引号可以保护一项内部的空格。</p><a class="zoom-image" href="assets/illustrations/command.svg" data-description="命令名告诉 Shell 做什么；选项改变行为；路径等参数指定操作对象。空格分隔各项，引号可以保护一项内部的空格。">放大查看 ↗</a> <a href="assets/illustrations/command.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="03-part-2">先让终端回应一次</h2>
+<p>这组命令可以在任意目录运行。第一条 <code>echo</code> 把文字显示出来；第二条 <code>printf</code> 按给出的格式输出，其中 <code>\n</code> 表示换行。单引号把整段文字交给命令，我们会在第 8 节细讲引号。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>echo &#x27;你好，Linux！&#x27;
+printf &#x27;一条命令，一次观察。\n&#x27;</code></pre></div><div class="output-box"><span>参考输出</span><pre>你好，Linux！
+一条命令，一次观察。</pre></div><p class="source-link"><a href="practice/snippets/03-hello.sh" download>下载这段命令 ↓</a></p>
+<p>按一次回车执行一行。命令结束后，Shell 再显示提示符。输出不是接下来需要再输入的命令；复制按钮只复制输入部分。</p>
+<h2 id="03-part-3">看看身边有什么</h2>
+<p>输入 <code>pwd</code>，它会显示<a class="term" data-term="cwd" href="reading.html#term-cwd">当前工作目录</a>。再输入 <code>ls</code>，它列出当前位置下的名字。现在先把它们理解为“我在哪儿”和“这里有什么”，下一节再走进目录。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>pwd
+ls</code></pre></div>
+<p>命令一般由名称、<a class="term" data-term="option" href="reading.html#term-option">选项</a>和<a class="term" data-term="argument" href="reading.html#term-argument">参数</a>组成。例如 <code>ls -l notes</code> 中，<code>ls</code> 是命令名，<code>-l</code> 选择详细列表，<code>notes</code> 指定要查看的目录。选项也是一种参数，只是有特定用途；不是每个命令的参数规则都一样。</p>
+<h2 id="03-part-4">不记得时，先问工具自己</h2>
+<p>对 <code>ls</code> 可以试 <code>ls --help</code>。这不是所有程序统一支持的规则，但很多 GNU 工具支持它。也可以用 <code>man ls</code> 看<a class="term" data-term="manual" href="reading.html#term-manual">手册</a>；进入后按 <code>q</code> 退出。最小化系统可能没有安装手册，遇到 <code>man: command not found</code> 时先用 <code>--help</code>。</p>
+<p><code>cd</code> 是 Shell 的<a class="term" data-term="builtin" href="reading.html#term-builtin">内建命令</a>，它的帮助可以用 <code>help cd</code> 查看。不要以为所有命令都一定对应磁盘上的独立程序。</p>
+<h2 id="03-part-5">三个能立刻用上的小动作</h2>
+<ul>
+<li>输入一部分文件名后按 <strong>Tab</strong>：尝试补全；候选不止一个时继续输入或再次按 Tab。</li>
+<li>按 <strong>上方向键</strong>：找回最近输入过的命令，检查后再执行。</li>
+<li>按 <strong>Ctrl+C</strong>：通常请求中断当前前台任务。它不是“撤销”，不会自动恢复已经写入的文件。</li>
+</ul>
+<p>文字终端来自很早的计算机交互方式。今天的终端窗口保留了这种逐行输入和响应的形式，但背后已经可以运行非常丰富的程序。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>改一句话，再解释它</h3><p>把第一条命令的内容改成“今天开始整理观察记录”，再查看 <code>ls</code> 的帮助。你输入的部分、终端显示的结果、最后出现的提示符，分别是什么？</p>
+<details><summary>给我一点提示</summary><p>不要把输出再当成命令执行。</p>
+</details><details><summary>查看参考解法与解释</summary><p>echo 及其参数是输入；显示的那句话是标准输出；末尾的提示符表示 Shell 已准备接收下一条命令。</p>
+</details></section>
+<section class="quiz" data-answer="2"><p class="eyebrow">检查一下理解</p><h3>教程显示 $ echo hello，通常需要输入什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-03" value="0"> <span>$ echo hello</span></label><label><input type="radio" name="quiz-03" value="1"> <span>hello</span></label><label><input type="radio" name="quiz-03" value="2"> <span>echo hello</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>$ 通常代表提示符，不是命令的一部分。本教材的复制按钮只复制命令。</p></details></section></section><section id="lesson-04" class="print-lesson"><p class="eyebrow">第 04 节 · 把文件安顿好</p><h1>在目录里找路</h1><p class="lesson-question">同一个文件，为什么有时找得到，有时找不到？</p><div class="objectives"><strong>这一节，带走什么</strong><p>区分当前位置、绝对路径和相对路径；使用 cd、pwd、ls。</p></div><h2 id="04-part-1">文件夹是一棵树，当前位置是一枚图钉</h2>
+<p>打开终端后，先输入 <code>cd ~/linux-lab</code>。<code>cd</code> 改变<a class="term" data-term="cwd" href="reading.html#term-cwd">当前工作目录</a>，<code>~</code> 在这里展开为当前用户的家目录。这里应是上一节准备好的练习副本。</p>
+<p>如果提示没有这个目录，先用文件管理器确认材料放在哪里。不要为了让命令“成功”而随意改动陌生的系统目录。</p>
+<figure class="concept"><p class="eyebrow">图解 · 一棵目录树，一枚位置图钉</p><a class="zoom-image" href="assets/illustrations/tree.svg" data-description="linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。"><img src="assets/illustrations/tree.svg" alt="一棵目录树，一枚位置图钉" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。</p><a class="zoom-image" href="assets/illustrations/tree.svg" data-description="linux-lab 是练习根目录。notes、logs、tables、tools 和 results 都在它下面；箭头标出从 notes 经父目录进入 tables 的路线。">放大查看 ↗</a> <a href="assets/illustrations/tree.svg" download>保存 SVG ↓</a></figcaption></figure>
+<p><a class="term" data-term="path" href="reading.html#term-path">路径</a>是指出文件或目录位置的写法。以 <code>/</code> 开头的<a class="term" data-term="absolute" href="reading.html#term-absolute">绝对路径</a>从<a class="term" data-term="rootdir" href="reading.html#term-rootdir">根目录</a>出发；<a class="term" data-term="relative" href="reading.html#term-relative">相对路径</a>从当前工作目录出发。家目录是某个用户自己的地方，根目录是整棵目录树的起点，它们不是同一层。</p>
+<h2 id="04-part-2">顺着路线走一遍</h2>
+<p>下面整组命令从 <code>linux-lab</code> 开始。每个 <code>pwd</code> 都像重新看一眼图钉。参考输出中的 <code>&lt;练习目录&gt;</code> 代表你自己的实际路径。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>pwd
+ls
+cd notes
+pwd
+ls
+cd ../tables
+pwd
+cd ..</code></pre></div><div class="output-box"><span>参考输出</span><pre>&lt;练习目录&gt;
+logs
+notes
+results
+tables
+tools
+welcome.txt
+&lt;练习目录&gt;/notes
+evening.txt
+morning.txt
+雨后 记录.txt
+&lt;练习目录&gt;/tables</pre></div><p class="source-link"><a href="practice/snippets/04-path.sh" download>下载这段命令 ↓</a></p>
+<p><code>cd notes</code> 是进入当前目录下的 notes。<code>..</code> 代表父目录，所以从 notes 中执行 <code>cd ../tables</code>，先回到 linux-lab，再进入 tables。<code>.</code> 代表当前目录。</p>
+<section class="lab" data-lab="paths"><p class="eyebrow">动手看 · 路径会跟着出发点变化</p><h3>图钉现在在哪里？</h3><label>当前目录 <select id="path-start"><option value=".">linux-lab</option><option value="notes">linux-lab/notes</option><option value="logs">linux-lab/logs</option></select></label><label>输入相对路径 <input id="path-input" value="../tables" spellcheck="false"></label><div class="path-tree" aria-hidden="true"><span data-node=".">linux-lab</span><div><span data-node="notes">notes</span><span data-node="logs">logs</span><span data-node="tables">tables</span></div></div><p class="lab-result" id="path-result" aria-live="polite"></p><p>只演示目录路径解析，不运行命令。先选 notes，再观察 ../tables；回到 linux-lab 后，同一写法会走出练习目录。</p></section>
+<h2 id="04-part-3">三条容易混淆的路</h2>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notes/morning.txt</code></td>
+<td>从当前位置寻找 notes 下的文件</td>
+</tr>
+<tr>
+<td><code>../notes/morning.txt</code></td>
+<td>先到父目录，再寻找 notes 下的文件</td>
+</tr>
+<tr>
+<td><code>~/linux-lab/notes/morning.txt</code></td>
+<td>从自己的家目录沿指定路径寻找文件</td>
+</tr>
+</tbody>
+</table>
+<p>单独输入 <code>cd</code> 会回家目录；<code>cd -</code> 返回上一次工作目录。文件的扩展名 <code>.txt</code> 提供了阅读线索，但 Linux 不会只凭扩展名保证里面一定是普通文本。</p>
+<h2 id="04-part-4">为什么命令突然找不到文件</h2>
+<p>在 linux-lab 中，<code>cat notes/morning.txt</code> 能找到文件；进入 notes 后，再用同一相对路径，会变成查找 notes 里面的另一个 notes。命令报错并不意味着文件消失了。</p>
+<p>这里 <code>cat</code> 的作用是把文件内容显示到终端。遇到 <code>No such file or directory</code>，先检查 <code>pwd</code>、名字的大小写和路径拼写。Linux 常见文件系统会区分大小写，<code>Notes</code> 不等于 <code>notes</code>。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>从日志柜走到笔记柜</h3><p>从 <code>linux-lab/logs</code> 出发，用一条 <code>cd</code> 命令进入 notes。再用 <code>pwd</code> 确认位置。最后回到 linux-lab，为下一节做准备。</p>
+<details><summary>给我一点提示</summary><p>logs 和 notes 是同一父目录下的两个目录。</p>
+</details><details><summary>查看参考解法与解释</summary><p>依次执行 cd ../notes、pwd、cd ..。从 logs 出发的 ../notes 先回到父目录，再进入 notes。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>在 linux-lab/notes 中，../tables 指向哪里？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-04" value="0"> <span>linux-lab/tables</span></label><label><input type="radio" name="quiz-04" value="1"> <span>linux-lab/notes/tables</span></label><label><input type="radio" name="quiz-04" value="2"> <span>根目录下的 tables</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>.. 先回到 linux-lab，再进入它下面的 tables。相对路径取决于出发点。</p></details></section></section><section id="lesson-05" class="print-lesson"><p class="eyebrow">第 05 节 · 把文件安顿好</p><h1>整理你的文件</h1><p class="lesson-question">复制、移动和删除，对原文件分别做了什么？</p><div class="objectives"><strong>这一节，带走什么</strong><p>用 mkdir、cp、mv、rm 整理练习副本；理解覆盖和删除。</p></div><h2 id="05-part-1">先在副本上整理</h2>
+<p>起始位置是 <code>~/linux-lab</code>。原始 notes、logs、tables 保留供各节复用；本节把整理结果放到 results。</p>
+<p><code>mkdir</code> 创建目录，<code>cp</code> 复制，<code>mv</code> 移动或改名。它们都需要明确知道“从哪里来、到哪里去”。Linux 不会根据你的意图猜测缺失的目标位置。</p>
+<figure class="concept"><p class="eyebrow">图解 · 复制与移动，留下的东西不同</p><a class="zoom-image" href="assets/illustrations/files.svg" data-description="复制在目标处产生副本，原文件仍在；移动或改名改变原来的位置或名称。操作前看清已有目标是否会被覆盖。"><img src="assets/illustrations/files.svg" alt="复制与移动，留下的东西不同" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>复制在目标处产生副本，原文件仍在；移动或改名改变原来的位置或名称。操作前看清已有目标是否会被覆盖。</p><a class="zoom-image" href="assets/illustrations/files.svg" data-description="复制在目标处产生副本，原文件仍在；移动或改名改变原来的位置或名称。操作前看清已有目标是否会被覆盖。">放大查看 ↗</a> <a href="assets/illustrations/files.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="05-part-2">创建、复制、换个名字</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>mkdir -p results/day-01
+cp notes/morning.txt results/day-01/copy.txt
+mv results/day-01/copy.txt results/day-01/morning-copy.txt
+ls results/day-01</code></pre></div><div class="output-box"><span>参考输出</span><pre>morning-copy.txt</pre></div><p class="source-link"><a href="practice/snippets/05-files.sh" download>下载这段命令 ↓</a></p>
+<p><code>mkdir -p</code> 可以创建缺失的父目录；目录已经存在时也不会因为这个原因失败。复制后，原始 morning.txt 留在 notes，副本出现在 results/day-01。</p>
+<p>接着 <code>mv</code> 在同一个目录内换了文件名。如果目标是另一个目录，<code>mv</code> 就会把文件放过去。<strong>同一个命令可以完成改名和移动，区别来自源与目标路径。</strong></p>
+<h2 id="05-part-3">目标已经存在会怎样</h2>
+<p><code>cp</code> 和 <code>mv</code> 在常见用法下可能覆盖已有目标。初次练习时可以使用 <code>cp -i</code> 或 <code>mv -i</code>，让覆盖前出现询问；仔细看清询问的目标，再决定是否继续。</p>
+<p>选项里的 <code>-i</code> 在这两个命令中表示交互询问，但不要把某个字母在一个命令中的意义直接套到所有工具上。</p>
+<h2 id="05-part-4">删除不会自动进入回收站</h2>
+<p>对刚刚创建的副本，可以运行：</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>rm -i results/day-01/morning-copy.txt</code></pre></div>
+<p>这是本节可选的真实删除操作。<code>rm -i</code> 会询问，回答 <code>y</code> 才删除这个副本；回答 <code>n</code> 可以保留。命令行删除通常不进入桌面回收站。</p>
+<p>删除空目录可使用 <code>rmdir results/day-01</code>。如果里面仍有文件，它会拒绝删除，借此提醒你再检查。当前阶段不需要使用强制递归删除。</p>
+<h2 id="05-part-5">空文件也有用途</h2>
+<p><code>touch results/check.txt</code> 在文件不存在时创建空文件；如果已经存在，它通常更新文件时间，并不会清空内容。<code>touch</code> 与后面要讲的 <code>&gt;</code> 并不是同一种“创建文件”。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>保留原件，整理两份副本</h3><p>创建 results/backup，把 morning.txt 和 evening.txt 分别复制进去，再把 evening.txt 副本改名为 sunset.txt。最后确认 notes 中两份原件仍在。</p>
+<details><summary>给我一点提示</summary><p>先创建目标目录；每条 cp 和 mv 都写出源、目标。</p>
+</details><details><summary>查看参考解法与解释</summary><p>mkdir -p results/backup；cp notes/morning.txt results/backup/；cp notes/evening.txt results/backup/；mv results/backup/evening.txt results/backup/sunset.txt。最后分别用 ls notes 和 ls results/backup 核对。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>cp notes/morning.txt results/copy.txt 完成后，原文件在哪里？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-05" value="0"> <span>原文件被删除</span></label><label><input type="radio" name="quiz-05" value="1"> <span>仍在 notes/morning.txt</span></label><label><input type="radio" name="quiz-05" value="2"> <span>被移动到 results</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>cp 复制内容，保留原文件。mv 才会改变原来的名称或位置。</p></details></section></section><section id="lesson-06" class="print-lesson"><p class="eyebrow">第 06 节 · 把文件安顿好</p><h1>打开一份记录</h1><p class="lesson-question">一份长文件，怎样先看清它的大概？</p><div class="objectives"><strong>这一节，带走什么</strong><p>选择 cat、head、tail、less；理解 wc 的计数单位。</p></div><h2 id="06-part-1">看文件之前，先想知道什么</h2>
+<p>起始位置是 <code>~/linux-lab</code>。读三行笔记和读十万行日志，需要的视角不同。<code>cat</code> 适合短文件；<code>head</code> 看开头；<code>tail</code> 看末尾；<code>less</code> 让你在长文本中翻页。</p>
+<p>日志像按时间记下的工作记录。本材料中的每一行依次写时间、级别和简短事件；这些字段约定来自我们的练习文件，并不是所有日志统一的格式。</p>
+<figure class="concept"><p class="eyebrow">图解 · 从不同的窗口看同一份文本</p><a class="zoom-image" href="assets/illustrations/text.svg" data-description="head 看开头，tail 看末尾，less 用于翻阅。wc -l 统计换行符；本例每行都有换行，得到 4。"><img src="assets/illustrations/text.svg" alt="从不同的窗口看同一份文本" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>head 看开头，tail 看末尾，less 用于翻阅。wc -l 统计换行符；本例每行都有换行，得到 4。</p><a class="zoom-image" href="assets/illustrations/text.svg" data-description="head 看开头，tail 看末尾，less 用于翻阅。wc -l 统计换行符；本例每行都有换行，得到 4。">放大查看 ↗</a> <a href="assets/illustrations/text.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="06-part-2">先看头尾，再数一数</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>head -n 2 logs/day-01.log
+tail -n 1 logs/day-01.log
+wc -l logs/day-01.log</code></pre></div><div class="output-box"><span>参考输出</span><pre>08:00 INFO start
+08:05 INFO lake ready
+08:20 INFO saved
+4 logs/day-01.log</pre></div><p class="source-link"><a href="practice/snippets/06-read.sh" download>下载这段命令 ↓</a></p>
+<p><code>-n 2</code> 在这里指定两行。<code>wc -l</code> 输出的数字旁边还有文件名。练习日志每行都以<a class="term" data-term="newline" href="reading.html#term-newline">换行符</a>结束，所以得到 4。</p>
+<p>严格说，<code>wc -l</code> 数的是换行符。假如文件最后一行没有换行符，视觉上的最后一行可能不会被计入。遇到计数不一致时，这个区别很有用。</p>
+<h2 id="06-part-3">用 less 看得从容一点</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>less logs/day-01.log</code></pre></div>
+<p>进入后，可以用方向键滚动，用空格向下翻页；输入 <code>/WARN</code> 再按回车查找 WARN，按 <code>n</code> 找下一个，按 <code>q</code> 退出。这个 q 是 less 内部的操作，不是在普通 Shell 提示符后单独执行的命令。</p>
+<p>如果终端似乎“停在一个界面”，先观察自己是不是还在 less 里。不同程序有各自的操作方式。</p>
+<h2 id="06-part-4">行、词、字节，不是同一件事</h2>
+<p>单独的 <code>wc 文件</code> 通常依次显示行数、词数、<a class="term" data-term="byte" href="reading.html#term-byte">字节</a>数。<code>wc -c</code> 看字节数；在合适的字符编码环境下，<code>wc -m</code> 看字符数。中文字符在 UTF-8 中通常占多个字节，因此字节数不能直接叫“字数”。</p>
+<p>另外，<code>ls -l</code> 显示的文件大小通常按字节计；它也不是文本的行数。我们后面会根据问题选择合适的计数方法。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>只读你需要的部分</h3><p>用 head 查看 notes/morning.txt 第一行，用 tail 查看最后一行，再用 wc -l 检查这份笔记的行数。</p>
+<details><summary>给我一点提示</summary><p>head 和 tail 都可以使用 -n 1。</p>
+</details><details><summary>查看参考解法与解释</summary><p>head -n 1 notes/morning.txt 得到 Morning observation；tail -n 1 notes/morning.txt 得到 Birds: 12；wc -l notes/morning.txt 得到 3 行。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>wc -l 的直接含义是什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-06" value="0"> <span>统计所有字符</span></label><label><input type="radio" name="quiz-06" value="1"> <span>统计换行符数量</span></label><label><input type="radio" name="quiz-06" value="2"> <span>统计基因个数</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>wc -l 统计换行符。文本通常每行以换行结尾，此时它也就是行数。</p></details></section></section><section id="lesson-07" class="print-lesson"><p class="eyebrow">第 07 节 · 从文件找到线索</p><h1>写下与保存</h1><p class="lesson-question">屏幕上看见的结果，怎样变成一个文件？</p><div class="objectives"><strong>这一节，带走什么</strong><p>用 nano 编辑文本；区分标准输出、&gt; 和 &gt;&gt;。</p></div><h2 id="07-part-1">把屏幕上的结果放进抽屉</h2>
+<p>起始位置是 <code>~/linux-lab</code>。上一节看过文本，这次轮到自己写。很多命令默认把结果送到<a class="term" data-term="stdout" href="reading.html#term-stdout">标准输出</a>，通常就是终端。Shell 可以把这条输出流改送到文件，这叫<a class="term" data-term="redirect" href="reading.html#term-redirect">重定向</a>。</p>
+<figure class="concept"><p class="eyebrow">图解 · 结果和诊断走不同通道</p><a class="zoom-image" href="assets/illustrations/streams.svg" data-description="标准输出编号为 1，标准错误为 2。重定向可以分别保存；普通管道默认接走标准输出。箭头表示数据流向。"><img src="assets/illustrations/streams.svg" alt="结果和诊断走不同通道" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>标准输出编号为 1，标准错误为 2。重定向可以分别保存；普通管道默认接走标准输出。箭头表示数据流向。</p><a class="zoom-image" href="assets/illustrations/streams.svg" data-description="标准输出编号为 1，标准错误为 2。重定向可以分别保存；普通管道默认接走标准输出。箭头表示数据流向。">放大查看 ↗</a> <a href="assets/illustrations/streams.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="07-part-2">先保存，再追加</h2>
+<p><code>printf</code> 按给出的文字输出，<code>\n</code> 表示换行。下面先写两行，再添加一行。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>printf &#x27;morning\nevening\n&#x27; &gt; results/visits.txt
+printf &#x27;after rain\n&#x27; &gt;&gt; results/visits.txt
+cat results/visits.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>morning
+evening
+after rain</pre></div><p class="source-link"><a href="practice/snippets/07-write.sh" download>下载这段命令 ↓</a></p>
+<p><code>&gt;</code> 会创建文件；如果文件已经存在，就先截断原内容再写入。<code>&gt;&gt;</code> 会在末尾追加。连续两次运行这组示例，第一次的 <code>&gt;</code> 会重新建立两行内容，所以最后仍是三行；单独重复追加那一行则会越写越长。</p>
+<p>不要把同一个文件同时作为正在读取的输入和 <code>&gt;</code> 的目标，例如 <code>cat notes/morning.txt &gt; notes/morning.txt</code>。Shell 可能在 cat 读取前就清空它。需要转换文件时，先写到一个新文件，核对后再决定如何替换。</p>
+<h2 id="07-part-3">想手动改文字，打开编辑器</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>nano results/visits.txt</code></pre></div>
+<p><a class="term" data-term="editor" href="reading.html#term-editor">编辑器</a>负责修改文本。nano 打开后可以直接输入，按 Ctrl+O 保存、回车确认文件名，按 Ctrl+X 退出。底部的 <code>^O</code> 表示 Ctrl+O。如果提示找不到 nano，它可能未安装；先用已有的文本编辑器完成这一小步，软件安装在第 14 节说明。</p>
+<p>修改后，再用 <code>cat results/visits.txt</code> 查看实际保存的内容。编辑器窗口里有文字，不一定意味着文件已经保存。</p>
+<h2 id="07-part-4">错误信息为什么还在屏幕上</h2>
+<p>很多程序把正常结果写到标准输出，把诊断信息写到<a class="term" data-term="stderr" href="reading.html#term-stderr">标准错误</a>。两条通道可以分别保存：<code>2&gt;</code> 用于标准错误。数字 2 是约定的文件描述符，不是错误的数量。</p>
+<p>下面是<strong>刻意触发的报错实验</strong>，missing.txt 在初始材料中不存在：</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>cat missing.txt &gt; results/output.txt 2&gt; results/error.txt
+cat results/error.txt</code></pre></div>
+<p>第一条会失败，第二条展示保存下来的诊断信息。错误文字可能受系统语言影响，但应指出文件不存在。<code>&gt;</code> 创建的 output.txt 可能为空，不能据“有输出文件”就认定任务成功。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>观察覆盖与追加</h3><p>在 results 下选一个新的文件名，先写第一行，再追加第二行，最后使用 &gt; 写第三行。文件里最终会有几行？先预测，再查看。</p>
+<details><summary>给我一点提示</summary><p>把 &gt; 想成重新开始写，把 &gt;&gt; 想成接在已有内容后面。</p>
+</details><details><summary>查看参考解法与解释</summary><p>若每次只写一行且带换行符，最终只剩第三行。重定向改变输出目的地，本身不帮你保留旧内容。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>连续两次使用 &gt; 写同一个文件会怎样？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-07" value="0"> <span>第二次覆盖原有内容</span></label><label><input type="radio" name="quiz-07" value="1"> <span>自动在末尾追加</span></label><label><input type="radio" name="quiz-07" value="2"> <span>自动创建备份</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>&gt; 会创建文件或截断已有文件；&gt;&gt; 才是追加。练习时先使用专门的结果文件。</p></details></section></section><section id="lesson-08" class="print-lesson"><p class="eyebrow">第 08 节 · 从文件找到线索</p><h1>文件名的线索</h1><p class="lesson-question">几十个文件，怎样准确选中其中几个？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解空格、引号与通配符；用 find 按名字查找。</p></div><h2 id="08-part-1">文件名里的空格，也是信息</h2>
+<p>起始位置是 <code>~/linux-lab</code>。材料中有 <code>notes/雨后 记录.txt</code>。如果不加<a class="term" data-term="quote" href="reading.html#term-quote">引号</a>，空格可能使 Shell 把它拆成两个参数；命令就会去寻找两份名字不完整的文件。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>cat &#x27;notes/雨后 记录.txt&#x27;
+find notes -type f -name &#x27;*.txt&#x27;</code></pre></div><div class="output-box"><span>参考输出</span><pre>雨后：湖边有水洼。
+notes/evening.txt
+notes/morning.txt
+notes/雨后 记录.txt</pre></div><p class="source-link"><a href="practice/snippets/08-find.sh" download>下载这段命令 ↓</a></p>
+<p>单引号通常让其中字符保持字面意义；双引号也能保护空格，但允许后面将学到的变量展开。本节使用单引号来传递固定名字和匹配模式。引号本身一般不会成为传给命令的文件名内容。</p>
+<p>参考输出中的 find 结果顺序可能不同，核对找到的文件即可，不必要求同一排列顺序。</p>
+<h2 id="08-part-2">通配符是一张“按名字挑选”的筛网</h2>
+<p><a class="term" data-term="glob" href="reading.html#term-glob">通配符</a> <code>*</code> 匹配任意数量的字符，包括零个；<code>?</code> 匹配一个字符。在常见 Bash 文件名展开中，它们默认不会跨越路径分隔符 <code>/</code>，也不会自动选中以点开头的隐藏名字。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>ls notes/*.txt</code></pre></div>
+<p>这里 Shell 先展开匹配的路径，再把它们交给 ls。<code>ls</code> 并不是唯一能接收这些名字的命令。同样的模式交给删除命令会产生完全不同的后果，所以操作前先列出来看清。</p>
+<section class="lab" data-lab="glob"><p class="eyebrow">动手看 · 一张文件名筛网</p><h3>哪些名字会被选中？</h3><label>选择模式 <select id="glob-pattern"><option>*.txt</option><option>day-??.log</option><option>*</option><option>.*</option></select></label><ul class="filename-list" id="glob-files"></ul><p id="glob-result" class="lab-result" aria-live="polite"></p><p>这里演示固定的一组名字与四种 Bash 常见模式；每个 ? 匹配一个字符。默认 * 不包含以点开头的隐藏名字，不包含子目录中的文件。</p></section>
+<h2 id="08-part-3">find 是顺着目录继续找</h2>
+<p><code>find notes -type f -name '*.txt'</code> 从 notes 开始向下查找：<code>-type f</code> 限定普通文件，<code>-name</code> 根据名字匹配。给 <code>*.txt</code> 加引号，是为了让 <strong>find 收到模式本身</strong>，而不是让外层 Shell 先替换成当前位置的文件列表。</p>
+<p>查找文件名与查找文件内容是两件事。find 回答“这个文件在哪里”，下一节的 grep 回答“哪些文本行有这个内容”。</p>
+<h2 id="08-part-4">隐藏文件并不神秘</h2>
+<p>以点开头的名字，例如 <code>.bashrc</code>，在默认 <code>ls</code> 中通常不显示。<code>ls -a</code> 可以列出它们；其中 <code>.</code> 和 <code>..</code> 是前面见过的当前目录与父目录。</p>
+<p>隐藏只是命名和显示习惯，不等于文件被加密，也不等于你不能访问。配置文件有各自用途，先阅读再修改。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>找到所有日志文件</h3><p>从 linux-lab 出发，用 find 在 logs 中寻找以 .log 结尾的普通文件，再试着用 ls 的通配符列出同一批文件。</p>
+<details><summary>给我一点提示</summary><p>区分“让 find 收到模式”和“让 Shell 展开模式”。</p>
+</details><details><summary>查看参考解法与解释</summary><p>find logs -type f -name '<em>.log'；ls logs/</em>.log。当前材料没有更深的日志子目录，因此结果集合一致；以后有子目录时，两者搜索范围会不同。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>find notes -name &quot;*.txt&quot; 中为什么给模式加引号？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-08" value="0"> <span>让文件变成隐藏文件</span></label><label><input type="radio" name="quiz-08" value="1"> <span>让 find 自己收到并解释这个模式</span></label><label><input type="radio" name="quiz-08" value="2"> <span>引号是文件名的一部分</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>引号防止 Shell 提前展开 *.txt；find 才能在它搜索的目录中按模式匹配。</p></details></section></section><section id="lesson-09" class="print-lesson"><p class="eyebrow">第 09 节 · 从文件找到线索</p><h1>在文本里搜索</h1><p class="lesson-question">从很多行里，怎样找到那条出错记录？</p><div class="objectives"><strong>这一节，带走什么</strong><p>用 grep 搜索文本；区分固定字符串和简单正则。</p></div><h2 id="09-part-1">把错误那一行找出来</h2>
+<p>起始位置是 <code>~/linux-lab</code>。日志里有 INFO、WARN 和 ERROR，它们在练习中分别表示普通信息、提醒和错误。我们先不看全部内容，只找想追踪的事件。</p>
+<p><a class="term" data-term="grep" href="reading.html#term-grep">grep</a> 从输入文本里选择匹配的行。<code>-F</code> 表示按固定字符串寻找；<code>-n</code> 把原文件行号放在结果前面。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>grep -n -F &#x27;WARN&#x27; logs/day-01.log
+grep -F &#x27;ERROR&#x27; logs/day-02.log</code></pre></div><div class="output-box"><span>参考输出</span><pre>3:08:10 WARN battery low
+08:05 ERROR sensor missing</pre></div><p class="source-link"><a href="practice/snippets/09-grep.sh" download>下载这段命令 ↓</a></p>
+<p>结果中的 <code>3:</code> 表示原文件的第 3 行，并不是“发生了三次报警”。不加 <code>-n</code> 时，匹配行为没有因此改变，只是不显示行号。</p>
+<h2 id="09-part-2">先用最简单的模式</h2>
+<table>
+<thead>
+<tr>
+<th>用法</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grep -F 'WARN' 文件</code></td>
+<td>哪些行含有这段固定文字？</td>
+</tr>
+<tr>
+<td><code>grep -i -F 'warn' 文件</code></td>
+<td>忽略大小写后，哪些行含有它？</td>
+</tr>
+<tr>
+<td><code>grep -v -F 'INFO' 文件</code></td>
+<td>哪些行不含有 INFO？</td>
+</tr>
+<tr>
+<td><code>grep -c -F 'WARN' 文件</code></td>
+<td>有多少行包含 WARN？</td>
+</tr>
+</tbody>
+</table>
+<p><code>-c</code> 数匹配的行，不是某个单词出现的总次数。同一行出现两次 WARN，仍然只计一行。</p>
+<h2 id="09-part-3">正则表达式是另一套规则</h2>
+<p><a class="term" data-term="regex" href="reading.html#term-regex">正则表达式</a>描述文本的模式。先认识三个常见符号即可：<code>^</code> 表示行首，<code>$</code> 表示行尾，<code>.</code> 通常表示任意一个字符。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>grep &#x27;^08:00&#x27; logs/day-01.log</code></pre></div>
+<p>这条命令查找以 08:00 开头的行。文件名通配符和正则不是一套语法：例如通配符中的 <code>*</code> 与正则中的 <code>*</code> 不能直接互换。需要匹配字面量点号时，优先用 <code>grep -F</code>，避免无意中把点当模式。</p>
+<p>本节不要求背完整正则语法。先用固定字符串解决大多数简单查找，再在确实需要时扩展。</p>
+<h2 id="09-part-4">没有结果，不一定是坏了</h2>
+<p>试 <code>grep -F 'ERROR' logs/day-01.log</code>，它没有输出，因为这份文件中没有对应行。grep 通常在找到匹配时返回状态 0，没找到时返回 1；工具本身出错则是其他非零状态。退出状态会在第 17 节正式用到。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>同样的词，两个文件</h3><p>分别查询两份日志中含有 WARN 的行。再找第二份日志中不含 INFO 的行。结果分别有多少行？</p>
+<details><summary>给我一点提示</summary><p>观察 -v 和 -c 各自改变了什么。</p>
+</details><details><summary>查看参考解法与解释</summary><p>每份日志各有一行 WARN；第二份日志中不含 INFO 的行有两行，分别是 ERROR 与 WARN。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>查找文本中的字面量 a.b，哪种方式最清楚？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-09" value="0"> <span>grep -F &quot;a.b&quot; 文件</span></label><label><input type="radio" name="quiz-09" value="1"> <span>grep &quot;a.b&quot; 文件</span></label><label><input type="radio" name="quiz-09" value="2"> <span>ls a.b</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>-F 把模式当固定字符串。正则中的点通常表示任意一个字符，两者含义不同。</p></details></section></section><section id="lesson-10" class="print-lesson"><p class="eyebrow">第 10 节 · 让小工具合作</p><h1>让工具接力</h1><p class="lesson-question">怎样把一长串记录变成一份计数？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解管道；组合 sort、uniq 和 wc；查看中间结果。</p></div><h2 id="10-part-1">一个工具的出口，接到另一个工具的入口</h2>
+<p>起始位置是 <code>~/linux-lab</code>。tables/birds.txt 每行记录一次观测中的物种名称，共六条。我们想知道每个名称出现了几条记录。</p>
+<p><a class="term" data-term="pipe" href="reading.html#term-pipe">管道</a> <code>|</code> 把左侧命令的标准输出连接到右侧命令的<a class="term" data-term="stdin" href="reading.html#term-stdin">标准输入</a>。它传递数据，不会自动产生一个中间文件，也不会自动把标准错误一起传过去。</p>
+<figure class="concept"><p class="eyebrow">图解 · 小工具怎样合作</p><a class="zoom-image" href="assets/illustrations/pipeline.svg" data-description="相同名称先排在一起，uniq -c 才能合并相邻行并计数。这是记录条数，不能直接当作鸟的数量。"><img src="assets/illustrations/pipeline.svg" alt="小工具怎样合作" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>相同名称先排在一起，uniq -c 才能合并相邻行并计数。这是记录条数，不能直接当作鸟的数量。</p><a class="zoom-image" href="assets/illustrations/pipeline.svg" data-description="相同名称先排在一起，uniq -c 才能合并相邻行并计数。这是记录条数，不能直接当作鸟的数量。">放大查看 ↗</a> <a href="assets/illustrations/pipeline.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="10-part-2">先看排序，再做计数</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>sort tables/birds.txt
+sort tables/birds.txt | uniq -c</code></pre></div><div class="output-box"><span>参考输出</span><pre>magpie
+magpie
+sparrow
+sparrow
+sparrow
+sparrow
+      2 magpie
+      4 sparrow</pre></div><p class="source-link"><a href="practice/snippets/10-pipe.sh" download>下载这段命令 ↓</a></p>
+<p>第一条只排序，让你看见中间结果。第二条把同一份排序结果交给 <code>uniq -c</code>，合并相邻相同的行并计数。数字前可能有用于对齐的空格。</p>
+<p><a class="term" data-term="sort" href="reading.html#term-sort">sort</a> 不指定其他选项时通常按文本排序，顺序会受语言区域设置影响。<a class="term" data-term="uniq" href="reading.html#term-uniq">uniq</a> 只比较相邻行；因此未排序的输入不一定能得到全局计数。这里先排序，是因为我们只关心名称及出现次数，不需要保留观测的先后顺序。</p>
+<section class="lab" data-lab="pipeline"><p class="eyebrow">动手看 · 每一站的数据</p><h3>打开或关闭排序，再比较计数</h3><label class="check-label"><input type="checkbox" id="pipe-sort" checked> 先经过 sort</label><div class="pipe-panels"><div><strong>输入</strong><pre>sparrow
+magpie
+sparrow
+sparrow
+magpie
+sparrow</pre></div><div><strong id="pipe-middle-label">sort</strong><pre id="pipe-middle"></pre></div><div><strong>uniq -c</strong><pre id="pipe-output"></pre></div></div><p id="pipe-result" class="lab-result" aria-live="polite"></p><p>使用与随包 birds.txt 相同的六条记录；演示相邻行合并。关闭排序后，同一种名称会分散到多组。</p></section>
+<h2 id="10-part-3">每一步都能单独检查</h2>
+<p>如果整条管道结果奇怪，把它拆开看：原文件是否完整？排序后相同值是否靠在一起？最后的数字是记录条数，还是鸟的数量？</p>
+<p>本例 sparrow 有 4 条记录，不代表只有 4 只麻雀。每次记录里观察到多少只，保存在另一张表的 count 列。计算之前，先说清自己数的是什么。</p>
+<h2 id="10-part-4">为什么这种组合方式很常见</h2>
+<p>Unix 工具传统鼓励程序完成明确的任务，并通过简单的数据接口合作。管道让“按行输出文字”的工具很容易拼接。今天处理日志和简单表格时，这种思路仍然实用。</p>
+<p>比喻成传送带很直观，但不是所有程序都接收文本标准输入；也不是任意两条命令都可以随意串起来。连接前要了解左边产出什么、右边需要什么。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>有几种，而不是有几条</h3><p>在已有管道末尾接上 <code>wc -l</code>，数一数物种名称的种类数。再解释为什么这个数字不是六。</p>
+<details><summary>给我一点提示</summary><p>可以用 sort tables/birds.txt | uniq | wc -l。</p>
+</details><details><summary>查看参考解法与解释</summary><p>结果为 2。uniq 合并相邻重复名称后只剩 magpie 与 sparrow 两行，因此最后数的是不同名称的数量。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>uniq 会自动合并相隔很远的重复行吗？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-10" value="0"> <span>会</span></label><label><input type="radio" name="quiz-10" value="1"> <span>不会，只处理相邻的重复行</span></label><label><input type="radio" name="quiz-10" value="2"> <span>只在文件小于 1 MB 时会</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>通常先 sort 把相同内容放在一起，再 uniq 或 uniq -c。排序会改变原有顺序。</p></details></section></section><section id="lesson-11" class="print-lesson"><p class="eyebrow">第 11 节 · 让小工具合作</p><h1>整理一张小表</h1><p class="lesson-question">先弄清表头和分隔符，再动手选列。</p><div class="objectives"><strong>这一节，带走什么</strong><p>读懂 TSV 表头；用 cut 选列、sort -n 排数值；保留字段含义。</p></div><h2 id="11-part-1">先读表头，别急着计算</h2>
+<p>起始位置是 <code>~/linux-lab</code>。<code>tables/observations.tsv</code> 第一行是表头，后面六行是记录。<a class="term" data-term="tsv" href="reading.html#term-tsv">TSV</a> 使用制表符分隔字段；屏幕上看起来像若干空格，但实际字符不同。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>date</td>
+<td>日期</td>
+</tr>
+<tr>
+<td>site</td>
+<td>地点：lake 或 wood</td>
+</tr>
+<tr>
+<td>species</td>
+<td>物种名称</td>
+</tr>
+<tr>
+<td>count</td>
+<td>这一次记录到的数量</td>
+</tr>
+</tbody>
+</table>
+<p>一行是一条观测记录，不是一只鸟；一列是一种属性。这个区分在以后使用电子表格、R 或 Python 时同样重要。</p>
+<figure class="concept"><p class="eyebrow">图解 · 先知道一行与一列代表什么</p><a class="zoom-image" href="assets/illustrations/table.svg" data-description="每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。"><img src="assets/illustrations/table.svg" alt="先知道一行与一列代表什么" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。</p><a class="zoom-image" href="assets/illustrations/table.svg" data-description="每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。">放大查看 ↗</a> <a href="assets/illustrations/table.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="11-part-2">按列取出，再按数字排好</h2>
+<p><code>tail -n +2</code> 表示从第 2 行开始输出，与 <code>tail -n 2</code> 的“只取最后两行”不同。<code>cut -f</code> 默认按制表符选取字段，<code>2,4</code> 表示第二和第四列。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>head -n 1 tables/observations.tsv
+tail -n +2 tables/observations.tsv | cut -f 2,4
+tail -n +2 tables/observations.tsv | cut -f 4 | sort -n</code></pre></div><div class="output-box"><span>参考输出</span><pre>date	site	species	count
+lake	12
+wood	3
+lake	8
+wood	5
+lake	2
+wood	7
+2
+3
+5
+7
+8
+12</pre></div><p class="source-link"><a href="practice/snippets/11-table.sh" download>下载这段命令 ↓</a></p>
+<p>第一条让我们先确认字段名称。第二条留下地点与数量；第三条只保留数量，再交给 <code>sort -n</code> 按数值排序。你应该看到 2、3、5、7、8、12，而不是把 12 排在 2 前面。</p>
+<h2 id="11-part-3">表头需要单独照顾</h2>
+<p>把表头也交给数值排序，可能让它出现在意外的位置。此处先剔除表头再处理数据；如果要输出一张完整的新表，应另外写入正确的新表头，再追加整理后的数据。</p>
+<p>我们的表格非常小，约定每条记录占一行，字段内部没有制表符或换行。<code>cut</code> 不会理解带引号、嵌入逗号等复杂 <a class="term" data-term="csv" href="reading.html#term-csv">CSV</a> 规则。遇到那类表格，应使用真正的表格解析工具。</p>
+<h2 id="11-part-4">看懂选择造成的信息变化</h2>
+<p>选出第二和第四列后，物种与日期信息已经不在输出里。并不是原文件被删除了这些列，而是新输出只包含你要求的部分。新文件的用途应该与保留下来的信息一致。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>把记录条数与数量分开</h3><p>先用管道统计 observations.tsv 的数据记录条数，再列出物种名称并统计每种的记录条数。是否与上一节一致？</p>
+<details><summary>给我一点提示</summary><p>先用 tail -n +2 排除表头。物种是第三列。</p>
+</details><details><summary>查看参考解法与解释</summary><p>tail -n +2 tables/observations.tsv | wc -l 得到 6；tail -n +2 tables/observations.tsv | cut -f 3 | sort | uniq -c 得到 magpie 2 条、sparrow 4 条，与上一节一致。这仍然不是各物种的观测数量之和。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>对 2、12、8 按数值排序应该得到什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-11" value="0"> <span>12、2、8</span></label><label><input type="radio" name="quiz-11" value="1"> <span>2、8、12</span></label><label><input type="radio" name="quiz-11" value="2"> <span>8、12、2</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>默认排序不等于数值排序。数值列需要指定数值比较，表头也应与数据行分开。</p></details></section></section><section id="lesson-12" class="print-lesson"><p class="eyebrow">第 12 节 · 让小工具合作</p><h1>把资料打包</h1><p class="lesson-question">压缩包里是什么，能不能先看再解压？</p><div class="objectives"><strong>这一节，带走什么</strong><p>区分打包与压缩；用 tar 列出、生成和解开自己的归档。</p></div><h2 id="12-part-1">先装进箱子，再压缩体积</h2>
+<p>起始位置是 <code>~/linux-lab</code>。<a class="term" data-term="archive" href="reading.html#term-archive">归档</a>把多个文件及目录组织在一个包中；<a class="term" data-term="compression" href="reading.html#term-compression">压缩</a>使用编码方式减少存储体积。两件事经常连在一起，但不是同一件事。</p>
+<p><code>tar</code> 用于归档；常见的 <code>.tar.gz</code> 是 tar 归档再经过 gzip 压缩。压缩不保证每种文件都会明显变小，已压缩过的图片常常变化有限。</p>
+<figure class="concept"><p class="eyebrow">图解 · 把文件装箱，再压缩</p><a class="zoom-image" href="assets/illustrations/archive.svg" data-description="tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。"><img src="assets/illustrations/archive.svg" alt="把文件装箱，再压缩" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。</p><a class="zoom-image" href="assets/illustrations/archive.svg" data-description="tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。">放大查看 ↗</a> <a href="assets/illustrations/archive.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="12-part-2">为笔记做一个资料包</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>tar -czf results/notes.tar.gz notes
+tar -tzf results/notes.tar.gz | sort
+mkdir -p results/unpacked
+tar -xzf results/notes.tar.gz -C results/unpacked
+cat results/unpacked/notes/morning.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>notes/
+notes/evening.txt
+notes/morning.txt
+notes/雨后 记录.txt
+Morning observation
+Lake: clear
+Birds: 12</pre></div><p class="source-link"><a href="practice/snippets/12-archive.sh" download>下载这段命令 ↓</a></p>
+<p>先创建 notes.tar.gz，再列出其中的名字，最后解压到新目录 results/unpacked。末尾读取解出的 morning.txt，用内容验证，而不只看“有没有一个文件夹”。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>在这组用法中表示什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c</code></td>
+<td>创建归档</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>列出归档内的条目</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>解出归档</td>
+</tr>
+<tr>
+<td><code>z</code></td>
+<td>使用 gzip</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>后面指定归档文件名</td>
+</tr>
+<tr>
+<td><code>-C 目录</code></td>
+<td>在指定目录中完成相关操作</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-part-3">目录名很容易多一层</h2>
+<p>我们打包时指定 notes，因此解压后会在 results/unpacked 下面得到 notes。先列出归档内容，能看清它会带来哪些目录层级。</p>
+<p>下载的资料包尤其适合先查看、再解压到一个新的空目录。主线只处理自己创建的归档；不要把陌生归档直接展开到重要项目目录。</p>
+<h2 id="12-part-4">下载与完整性</h2>
+<p>资料页提供的练习 ZIP 可以用图形界面解压。命令行下载可使用 curl 或 wget，但不是理解归档的前提。下载完成也不自动等于内容正确，重要资料应核对来源和提供方公布的校验值。</p>
+<p><a class="term" data-term="checksum" href="reading.html#term-checksum">校验值</a>像文件内容的指纹；相同的校验值可以帮助核对传输前后内容是否一致，但它本身不证明来源可信。需要核对 SHA-256 时，可用 <code>sha256sum 文件名</code> 与提供方公布的值比较。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>给日志单独装箱</h3><p>仿照示例，把 logs 打成 results/logs.tar.gz，先列出清单，再解压到一个新目录。确认两份日志都在，且原始 logs 仍然存在。</p>
+<details><summary>给我一点提示</summary><p>打包不等于移动；新建的解压目录与原始目录分开。</p>
+</details><details><summary>查看参考解法与解释</summary><p>tar -czf results/logs.tar.gz logs；tar -tzf results/logs.tar.gz；mkdir -p results/logs-copy；tar -xzf results/logs.tar.gz -C results/logs-copy。清单与解出目录都应包含两份日志。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>收到一个 tar.gz 后，先查看文件清单用哪一个操作？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-12" value="0"> <span>tar -tzf 文件.tar.gz</span></label><label><input type="radio" name="quiz-12" value="1"> <span>rm 文件.tar.gz</span></label><label><input type="radio" name="quiz-12" value="2"> <span>chmod 文件.tar.gz</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>t 表示列出归档内容，z 表示通过 gzip 处理，f 后面跟归档文件名。</p></details></section></section><section id="lesson-13" class="print-lesson"><p class="eyebrow">第 13 节 · 让程序为你工作</p><h1>谁能做什么</h1><p class="lesson-question">Permission denied 到底在说什么？</p><div class="objectives"><strong>这一节，带走什么</strong><p>区分文件与目录权限；理解所有者、组和执行权限。</p></div><h2 id="13-part-1">同一份文件，为什么有人能改，有人不能</h2>
+<p>起始位置是 <code>~/linux-lab</code>。Linux 可以让多个<a class="term" data-term="user" href="reading.html#term-user">用户</a>使用同一系统。文件通常有一个<a class="term" data-term="owner" href="reading.html#term-owner">所有者</a>和一个所属<a class="term" data-term="group" href="reading.html#term-group">组</a>，基本权限分别针对所有者、所属组和其他人。</p>
+<p>运行 <code>ls -l notes/morning.txt</code>，开头可能看见 <code>-rw-r--r--</code>。第一位描述文件类型；随后九位分成三组，分别是所有者、组、其他人的权限。实际权限随环境而变，不必与例子完全相同。</p>
+<figure class="concept"><p class="eyebrow">图解 · 一份文件，三组基本权限</p><a class="zoom-image" href="assets/illustrations/permissions.svg" data-description="从左到右是所有者、所属组和其他人。本图展示普通文件的 640：所有者读写、组只读、其他人无权限；目录含义另作说明。"><img src="assets/illustrations/permissions.svg" alt="一份文件，三组基本权限" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>从左到右是所有者、所属组和其他人。本图展示普通文件的 640：所有者读写、组只读、其他人无权限；目录含义另作说明。</p><a class="zoom-image" href="assets/illustrations/permissions.svg" data-description="从左到右是所有者、所属组和其他人。本图展示普通文件的 640：所有者读写、组只读、其他人无权限；目录含义另作说明。">放大查看 ↗</a> <a href="assets/illustrations/permissions.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="13-part-2">先用字母理解 rwx</h2>
+<p>对普通文件，<a class="term" data-term="permission" href="reading.html#term-permission">权限</a>中的 <code>r</code> 允许读取，<code>w</code> 允许写入，<code>x</code> 允许将其作为程序尝试执行。文件拥有 x 也不保证它是有效的程序。</p>
+<p>对目录，r 主要允许列出目录项，x 允许搜索／穿过目录路径，w 与在目录中创建或删除目录项有关。能否删除某个文件主要取决于其父目录的相应权限和其他限制，不只是文件自身有没有 w。</p>
+<section class="lab" data-lab="permissions"><p class="eyebrow">动手看 · 普通文件的模式位</p><h3>给三组身份分配权限</h3><div class="permission-controls"><fieldset><legend>所有者</legend><label><input type="checkbox" data-perm="0" value="4" checked> r 读</label><label><input type="checkbox" data-perm="0" value="2" checked> w 写</label><label><input type="checkbox" data-perm="0" value="1" > x 执行</label></fieldset><fieldset><legend>所属组</legend><label><input type="checkbox" data-perm="1" value="4" checked> r 读</label><label><input type="checkbox" data-perm="1" value="2" > w 写</label><label><input type="checkbox" data-perm="1" value="1" > x 执行</label></fieldset><fieldset><legend>其他人</legend><label><input type="checkbox" data-perm="2" value="4" > r 读</label><label><input type="checkbox" data-perm="2" value="2" > w 写</label><label><input type="checkbox" data-perm="2" value="1" > x 执行</label></fieldset></div><p class="lab-result" id="permission-result" aria-live="polite"></p><p>这里只演示普通文件的基本模式位，不修改真实文件，也不包含 ACL 或管理员能力。</p></section>
+<h2 id="13-part-3">只调整自己创建的副本</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>cp notes/morning.txt results/private-note.txt
+chmod u=rw,go= results/private-note.txt
+stat -c &#x27;%a&#x27; results/private-note.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>600</pre></div><p class="source-link"><a href="practice/snippets/13-permission.sh" download>下载这段命令 ↓</a></p>
+<p><code>chmod</code> 修改模式位。<code>u=rw</code> 给所有者读写，<code>go=</code> 清除组和其他人的模式位。<code>stat -c '%a'</code> 在 GNU stat 中显示八进制权限；本例得到 600，因为 r 对应 4、w 对应 2、x 对应 1。</p>
+<p>这只是基本 Unix 权限的练习，并不是加密，也不能保证管理员无法读取。ACL、挂载设置等可能进一步影响访问；入门先掌握基本三组规则。</p>
+<h2 id="13-part-4">为程序增加执行权限</h2>
+<p>下一节会遇到 <code>chmod u+x</code>：仅为所有者增加执行权限，不把其他位一并改掉。比起记住一串数字，这种写法更容易看清本次改动。</p>
+<p>遇到 <code>Permission denied</code>，先核对自己是谁、操作哪个路径、需要哪种权限。<code>sudo</code> 可以按系统授权以其他身份执行命令，常见的是管理员身份；它不是通用的“修复报错”前缀。共享服务器没有授予权限时，应联系管理员或使用自己的目录。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>读出三组权限</h3><p>在网页演示中设置所有者读写、组只读、其他人无权限。读出符号表示和数字表示，再说明与 600 有何区别。</p>
+<details><summary>给我一点提示</summary><p>每组分别把 r=4、w=2、x=1 相加。</p>
+</details><details><summary>查看参考解法与解释</summary><p>符号是 rw-r-----，数字是 640。相比 600，所属组多了读取权限。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>对目录来说，x 权限主要允许什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-13" value="0"> <span>把目录当脚本执行</span></label><label><input type="radio" name="quiz-13" value="1"> <span>进入和穿过目录路径</span></label><label><input type="radio" name="quiz-13" value="2"> <span>自动删除目录</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>目录的 x 是搜索／穿越权限；目录的 r 是列出目录项。文件与目录的 rwx 意义有区别。</p></details></section></section><section id="lesson-14" class="print-lesson"><p class="eyebrow">第 14 节 · 让程序为你工作</p><h1>命令从哪里来</h1><p class="lesson-question">明明有一个程序，为什么仍然提示找不到？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解 PATH、command -v 与 ./；区分程序安装和启用环境。</p></div><h2 id="14-part-1">一个命令名，怎样找到一个程序</h2>
+<p>起始位置是 <code>~/linux-lab</code>。输入 <code>ls</code> 时没有写完整路径，Shell 怎么知道去哪里找？对外部程序，<a class="term" data-term="pathenv" href="reading.html#term-pathenv">PATH</a> 列出一组搜索目录，通常以冒号分隔。Shell 还会处理别名、函数和内建命令，所以不能把所有命令都简单理解成 PATH 中的文件。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>command -v ls
+command -v bash</code></pre></div>
+<p><code>command -v</code> 告诉你当前 Shell 会如何识别这个名字。返回路径因环境而异；<code>cd</code> 这样的内建命令可能直接返回命令名。</p>
+<figure class="concept"><p class="eyebrow">图解 · 沿 PATH 寻找外部程序</p><a class="zoom-image" href="assets/illustrations/pathenv.svg" data-description="Shell 按搜索顺序查找外部命令；前面的目录可能遮住后面的同名程序。示意不包含别名、函数和内建命令等其他处理。"><img src="assets/illustrations/pathenv.svg" alt="沿 PATH 寻找外部程序" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>Shell 按搜索顺序查找外部命令；前面的目录可能遮住后面的同名程序。示意不包含别名、函数和内建命令等其他处理。</p><a class="zoom-image" href="assets/illustrations/pathenv.svg" data-description="Shell 按搜索顺序查找外部命令；前面的目录可能遮住后面的同名程序。示意不包含别名、函数和内建命令等其他处理。">放大查看 ↗</a> <a href="assets/illustrations/pathenv.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="14-part-2">当前目录不一定在搜索路线中</h2>
+<p>材料中的 tools/hello.sh 是一个很小的 Bash 程序，内容只会输出 hello。先给自己执行权限，再通过路径运行：</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>chmod u+x tools/hello.sh
+./tools/hello.sh</code></pre></div><div class="output-box"><span>参考输出</span><pre>hello</pre></div><p class="source-link"><a href="practice/snippets/14-program.sh" download>下载这段命令 ↓</a></p>
+<p><code>./</code> 指明从当前目录出发。不给路径、只输入 hello.sh，通常不会自动搜索当前目录。也可以运行 <code>bash tools/hello.sh</code>，明确让 Bash 读取脚本；这需要文件可读，不要求脚本本身具有执行位。</p>
+<h2 id="14-part-3">环境变量是程序启动时带上的设置</h2>
+<p><a class="term" data-term="envvar" href="reading.html#term-envvar">环境变量</a>可以把设置传给后续启动的程序。查看 PATH 可以用 <code>printf '%s\n' &quot;$PATH&quot;</code>。这里 <code>$PATH</code> 是读取变量，双引号保护展开后的整体内容；变量在第 16 节继续讲。</p>
+<p>常见的个人工具目录是 <code>~/bin</code>。需要时可以在当前终端尝试 <code>export PATH=&quot;$HOME/bin:$PATH&quot;</code>，把它放在已有搜索路径前面。不要用一个新目录直接覆盖全部 PATH。永久配置涉及 Bash 启动文件，先在临时会话验证，再按附录阅读 <code>.bashrc</code> 的说明。</p>
+<h2 id="14-part-4">安装软件：先选对管理它的人</h2>
+<p>Ubuntu 的<a class="term" data-term="package" href="reading.html#term-package">软件包</a>可以由系统包管理器安装。自己的 Ubuntu 环境若缺少 nano，可先运行 <code>sudo apt update</code> 更新包索引，再运行 <code>sudo apt install nano</code>。这些操作需要网络、磁盘空间和管理员授权；它们只属于环境准备，不会在打开教材或构建网页时自动执行。</p>
+<p><code>apt update</code> 更新索引，不等于已经升级所有软件。没有管理权限的服务器不能照搬这一路线。需要用户级环境时，再看附录中的 <a class="term" data-term="conda" href="reading.html#term-conda">Conda</a> 基础。</p>
+<p>GNU 工具、Linux 内核和发行版来自不同项目。发行版与包管理器把这些部件组织在一起，因此“软件已经安装”和“当前 Shell 找到了哪一份软件”也需要分别确认。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>安装位置与工作位置</h3><p>切换到 notes 后，再输入 command -v ls。ls 的程序位置是否因为工作目录改变而变化？随后回到 linux-lab。</p>
+<details><summary>给我一点提示</summary><p>区分“我要处理的文件在哪里”和“执行工具本身在哪里”。</p>
+</details><details><summary>查看参考解法与解释</summary><p>在没有其他配置变化时，ls 通常仍指向同一程序；工作目录改变的是相对路径的起点，不会自动把系统工具移动到 notes。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>当前目录有 hello.sh，为什么常用 ./hello.sh？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-14" value="0"> <span>明确指出执行当前目录中的文件</span></label><label><input type="radio" name="quiz-14" value="1"> <span>让脚本拥有管理员权限</span></label><label><input type="radio" name="quiz-14" value="2"> <span>自动安装 Bash</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>./ 指明路径；仅输入程序名通常按 Shell 的查找规则寻找，其中外部程序会在 PATH 中查找。</p></details></section></section><section id="lesson-15" class="print-lesson"><p class="eyebrow">第 15 节 · 让程序为你工作</p><h1>观察运行中的任务</h1><p class="lesson-question">没有马上回到提示符，是卡住了吗？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解前台、后台与进程；查看日志、CPU、内存和磁盘。</p></div><h2 id="15-part-1">程序是配方，进程是正在做的那一次</h2>
+<p>一个程序文件可以被多次运行，每次运行产生一个或多个<a class="term" data-term="process" href="reading.html#term-process">进程</a>。<a class="term" data-term="pid" href="reading.html#term-pid">PID</a> 是系统用于识别进程的编号。不要把程序文件名、终端窗口和 PID 混成同一个东西。</p>
+<p>在<a class="term" data-term="foreground" href="reading.html#term-foreground">前台</a>运行时，终端通常等它结束再给出提示符；在<a class="term" data-term="background" href="reading.html#term-background">后台</a>运行时，你可以继续输入其他命令。后台不等于任务已经完成，也不保证关掉连接后继续运行。</p>
+<figure class="concept"><p class="eyebrow">图解 · 同一个程序，可以有不同的运行实例</p><a class="zoom-image" href="assets/illustrations/process.svg" data-description="程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。"><img src="assets/illustrations/process.svg" alt="同一个程序，可以有不同的运行实例" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。</p><a class="zoom-image" href="assets/illustrations/process.svg" data-description="程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。">放大查看 ↗</a> <a href="assets/illustrations/process.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="15-part-2">用一个很短的任务观察等待</h2>
+<p>这一段可以在练习目录运行：<code>sleep 1</code> 等待一秒，<code>&amp;</code> 把它放到后台，<code>wait</code> 等待当前 Shell 的后台任务完成。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>sleep 1 &amp;
+wait
+echo &#x27;后台任务已结束&#x27;</code></pre></div><div class="output-box"><span>参考输出</span><pre>后台任务已结束</pre></div><p class="source-link"><a href="practice/snippets/15-job.sh" download>下载这段命令 ↓</a></p>
+<p>交互终端可能额外显示任务编号和 PID，它们会变化，因此参考输出只列程序本身的文字。想多观察一会儿，可以手动运行 <code>sleep 15 &amp;</code>，随后使用 <code>jobs</code> 查看当前 Shell 的作业；它不代表整个系统的进程清单。</p>
+<p>用 <code>ps -u &quot;$USER&quot;</code> 查看自己的进程；在使用这个变量前，先通过 <code>echo &quot;$USER&quot;</code> 确认当前环境中的用户名。<code>top</code> 动态显示资源情况，按 q 退出。使用 <code>kill PID</code> 前必须确认目标是自己刚启动的练习进程；默认的终止请求与强制终止不是同一种处理方式。</p>
+<h2 id="15-part-3">看日志，也看资源</h2>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>适合观察什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tail -f 日志文件</code></td>
+<td>继续观察后来追加的日志；Ctrl+C 停止跟随</td>
+</tr>
+<tr>
+<td><code>free -h</code></td>
+<td>内存使用情况，注意 available 等字段</td>
+</tr>
+<tr>
+<td><code>df -h .</code></td>
+<td>当前目录所在文件系统的容量和剩余空间</td>
+</tr>
+<tr>
+<td><code>du -sh results</code></td>
+<td>results 目录占用了多少磁盘空间</td>
+</tr>
+</tbody>
+</table>
+<p>内存中的缓存不一定是“浪费”；磁盘满了也不同于内存不足。先对应报错判断资源类型，再决定下一步。</p>
+<h2 id="15-part-4">远程任务多问一步</h2>
+<p>通过 SSH 运行任务时，连接断开可能影响进程。<code>nohup</code> 或 tmux 有各自的适用场景，不能把单独一个 <code>&amp;</code> 理解为可靠的长期托管。附录给出进一步学习入口，主线只运行短小练习。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>观察而不是猜测</h3><p>运行 sleep 15 &amp;，立即执行 jobs；等十几秒再查看。说明任务还在运行、任务结束、命令失败三种状态为什么不同。</p>
+<details><summary>给我一点提示</summary><p>没有马上显示结果并不自动等于失败。</p>
+</details><details><summary>查看参考解法与解释</summary><p>等待期间作业处于运行状态；时间到了，sleep 正常结束，随后不再是运行中的作业。失败要结合退出状态或诊断信息判断。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>df -h 和 du -h 分别主要看什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-15" value="0"> <span>网络速度与网速</span></label><label><input type="radio" name="quiz-15" value="1"> <span>文件系统空间与文件／目录占用</span></label><label><input type="radio" name="quiz-15" value="2"> <span>用户数量与密码</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>df 报告文件系统的容量和使用情况，du 统计指定文件或目录的磁盘占用。</p></details></section></section><section id="lesson-16" class="print-lesson"><p class="eyebrow">第 16 节 · 把重复交给脚本</p><h1>把步骤写成脚本</h1><p class="lesson-question">已经做对的一串操作，怎样下次继续用？</p><div class="objectives"><strong>这一节，带走什么</strong><p>创建 Bash 脚本；使用变量、引号和第一个位置参数。</p></div><h2 id="16-part-1">把已经做对的步骤记下来</h2>
+<p>起始位置是 <code>~/linux-lab</code>。<a class="term" data-term="script" href="reading.html#term-script">脚本</a>是保存命令的文本文件。它让我们再次执行同一组步骤，也让别人看清做过什么；脚本本身不会保证步骤正确。</p>
+<h2 id="16-part-2">先把会变化的部分取个名字</h2>
+<p><a class="term" data-term="variable" href="reading.html#term-variable">变量</a>把名字与值联系起来。Shell 赋值时等号两侧不能随意加空格；读取变量时使用 <code>$名字</code>。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>record=&#x27;notes/雨后 记录.txt&#x27;
+cat &quot;$record&quot;</code></pre></div><div class="output-box"><span>参考输出</span><pre>雨后：湖边有水洼。</pre></div><p class="source-link"><a href="practice/snippets/16-variable.sh" download>下载这段命令 ↓</a></p>
+<p>这里 record 保存路径，<code>&quot;$record&quot;</code> 将包含空格的值作为一个参数交给 cat。Shell 的普通变量默认不会全部传给子进程；第 14 节的 export 用于把变量加入后续程序的环境。</p>
+<h2 id="16-part-3">一个真正的小脚本</h2>
+<p>材料中的 tools/line-count.sh 内容如下。<code>#</code> 开头的行是注释；第一行 <code>#!</code> 称为 <a class="term" data-term="shebang" href="reading.html#term-shebang">shebang</a>，用于直接执行脚本时指定解释器。</p>
+<details class="full-source"><summary>查看完整脚本：line-count.sh</summary><div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>#!/usr/bin/env bash
+record=$1
+wc -l &lt; &quot;$record&quot;</code></pre></div><p class="source-link"><a href="practice/scripts/line-count.sh" download>下载这段命令 ↓</a></p></details>
+<p><code>$1</code> 是第一个<a class="term" data-term="positional" href="reading.html#term-positional">位置参数</a>，不需要把这里的 1 改成文件名。<code>&lt;</code> 把指定文件接到 wc 的标准输入，因此 wc 只显示计数，而不附带文件名。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>bash tools/line-count.sh notes/morning.txt</code></pre></div>
+<p>输出应为 3。把最后一个参数换成 <code>logs/day-01.log</code>，同一个脚本应输出 4。对于这个最小示例，传入一个存在、可读的文本文件是使用前提；下一节再学习如何检查前提。</p>
+<h2 id="16-part-4">一次只改一件事</h2>
+<p>先运行原版确认结果，再复制一份脚本进行修改。比如在 wc 前加入 <code>echo '正在数行'</code>，观察新增输出来自哪里。不要一次修改目录、文件名和统计规则，最后分不清是哪一处产生影响。</p>
+<h2 id="16-part-5">脚本与交互命令有什么不同</h2>
+<p>脚本由 Bash 逐行执行，通常不会显示交互提示符。脚本中用 cd 改变的位置属于执行它的进程；使用 <code>bash 脚本</code> 时，一般不会改变原来终端的工作目录。</p>
+<p>如果脚本从 Windows 编辑器保存后出现带 <code>\r</code> 的奇怪报错，可能是 CRLF 与 LF 行尾差异。使用支持 Unix/LF 行尾和 UTF-8 的编辑器保存，先确认再改动文件。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>同一个脚本，处理另一个文件</h3><p>给 line-count.sh 传入带空格的中文笔记路径，观察行数。再解释去掉引号可能发生什么。</p>
+<details><summary>给我一点提示</summary><p>调用方式是 bash tools/line-count.sh 'notes/雨后 记录.txt'。</p>
+</details><details><summary>查看参考解法与解释</summary><p>得到 1 行。去掉引号时，Shell 会把带空格的路径拆开，$1 只收到前一部分，从而无法打开正确文件。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>变量指向带空格的路径时，应该怎样传递？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-16" value="0"> <span>通常使用 &quot;$变量名&quot;</span></label><label><input type="radio" name="quiz-16" value="1"> <span>去掉路径中的所有空格</span></label><label><input type="radio" name="quiz-16" value="2"> <span>给变量名加中文括号</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>双引号保留变量值内部的空格，让它作为一个参数传递。</p></details></section></section><section id="lesson-17" class="print-lesson"><p class="eyebrow">第 17 节 · 把重复交给脚本</p><h1>判断与重复</h1><p class="lesson-question">一份记录能处理，十份呢？缺了一份怎么办？</p><div class="objectives"><strong>这一节，带走什么</strong><p>使用简单 if 和 for；检查文件存在；理解退出状态。</p></div><h2 id="17-part-1">一次处理一份，再把动作重复起来</h2>
+<p>起始位置是 <code>~/linux-lab</code>。到这里，已经有一个能处理单个文件的动作。<a class="term" data-term="loop" href="reading.html#term-loop">循环</a>让同一个动作应用到一组对象；<a class="term" data-term="condition" href="reading.html#term-condition">条件判断</a>决定某个动作是否应该执行。</p>
+<figure class="concept"><p class="eyebrow">图解 · 每次拿一份，做相同的检查</p><a class="zoom-image" href="assets/illustrations/loop.svg" data-description="for 依次给变量赋一个路径；if 先检查，再执行动作。下一次循环换一个路径，动作仍然相同。"><img src="assets/illustrations/loop.svg" alt="每次拿一份，做相同的检查" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>for 依次给变量赋一个路径；if 先检查，再执行动作。下一次循环换一个路径，动作仍然相同。</p><a class="zoom-image" href="assets/illustrations/loop.svg" data-description="for 依次给变量赋一个路径；if 先检查，再执行动作。下一次循环换一个路径，动作仍然相同。">放大查看 ↗</a> <a href="assets/illustrations/loop.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="17-part-2">从一段完整但很小的循环开始</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>for record in logs/*.log; do
+  if [ -f &quot;$record&quot; ]; then
+    printf &#x27;%s: &#x27; &quot;$record&quot;
+    wc -l &lt; &quot;$record&quot;
+  fi
+done</code></pre></div><div class="output-box"><span>参考输出</span><pre>logs/day-01.log: 4
+logs/day-02.log: 4</pre></div><p class="source-link"><a href="practice/snippets/17-loop.sh" download>下载这段命令 ↓</a></p>
+<p><code>for record in logs/*.log</code> 依次把匹配到的路径放进 record；<code>do</code> 和 <code>done</code> 围住每次重复的动作。变量值需要双引号保护。</p>
+<p><code>if [ -f &quot;$record&quot; ]</code> 检查它是否是普通文件。<code>[</code> 和 <code>]</code> 周围的空格是语法的一部分，不能随意省略；<code>then</code> 开始条件成立后的动作，<code>fi</code> 结束判断。这也能避免没有匹配文件时，把未展开的 <code>logs/*.log</code> 当成一个真实文件处理。</p>
+<h2 id="17-part-3">成功与失败也是一种条件</h2>
+<p><a class="term" data-term="exitstatus" href="reading.html#term-exitstatus">退出状态</a>通常用 0 表示成功，非零表示其他状态。<code>$?</code> 表示刚结束的上一条命令的状态；执行另一条命令后它就会更新。</p>
+<p>一个直接的判断方式是：</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>if grep -F &#x27;ERROR&#x27; logs/day-02.log; then
+  echo &#x27;发现需要检查的记录&#x27;
+else
+  echo &#x27;没有得到匹配；如有报错，还要检查路径和读取权限&#x27;
+fi</code></pre></div>
+<p>这里 else 包含没匹配到和 grep 出错两种可能，不能把它一概解释成“日志完全正常”。需要严格区分时，再分别检查退出状态；综合脚本会示范这个细节。</p>
+<h2 id="17-part-4">条件不是只能看文件</h2>
+<p><code>[ -d 路径 ]</code> 检查目录，<code>[ -r 路径 ]</code> 检查当前身份是否可读；整数比较中 <code>-eq</code> 表示相等，<code>-gt</code> 表示大于。本节先会用少数明确场景，不需要背完整运算符表。</p>
+<p>常见错误是少一个 done、多一个 fi，或给变量赋值时加入不合适的空格。可以用 <code>bash -n 脚本文件</code> 只检查 Bash 语法；通过语法检查不意味着计算逻辑一定正确。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>从日志换到笔记</h3><p>把循环的范围改成 notes/*.txt，分别显示每份文件名与行数。能不能正确处理带空格的中文文件名？</p>
+<details><summary>给我一点提示</summary><p>Shell 展开的每个路径作为一个循环项；使用时继续保留 &quot;$record&quot; 的引号。</p>
+</details><details><summary>查看参考解法与解释</summary><p>保留其他部分，只把 logs/<em>.log 改成 notes/</em>.txt。两份英文笔记各 3 行，中文笔记 1 行。文件名里的空格不会因为这样展开而自动拆成两项。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>Shell 中退出状态 0 通常表示什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-17" value="0"> <span>成功</span></label><label><input type="radio" name="quiz-17" value="1"> <span>失败</span></label><label><input type="radio" name="quiz-17" value="2"> <span>程序没有运行</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>通常 0 表示成功，非零表示其他状态或错误。grep 没有匹配时返回 1，并不一定是软件损坏。</p></details></section></section><section id="lesson-18" class="print-lesson"><p class="eyebrow">第 18 节 · 把重复交给脚本</p><h1>完成一份观察简报</h1><p class="lesson-question">这次，自己把文件变成可检查的结果。</p><div class="objectives"><strong>这一节，带走什么</strong><p>综合整理、搜索、汇总和脚本；根据输入核对结果。</p></div><h2 id="18-part-1">这次，把线索整理成一份可核对的简报</h2>
+<p>起始位置是 <code>~/linux-lab</code>。观察站要交接一周材料，需要两份结果：每个物种有几条观测记录，以及两份设备日志中出现 WARN 的位置。</p>
+<p>先把交付说清楚：输入是固定的 observations.tsv 和两份 day 日志；结果放在 results/report；统计的是<strong>记录条数</strong>，不是鸟的数量总和。所有材料都是练习数据。</p>
+<h2 id="18-part-2">先自己拼出命令</h2>
+<p>给自己三个小任务：去掉表头、提取物种列并计数；从两份日志中找到 WARN；把两种结果保存成不同文件。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>先做，再对照</h3><p>尽量只使用前面学过的命令，完成以上两个结果文件，并读取它们检查内容。预期是 magpie 2 条、sparrow 4 条，以及两行 WARN。</p>
+<details><summary>给我一点提示</summary><p>表格从第 2 行开始；物种是第 3 列；查日志可以把两个路径都传给 grep。</p>
+</details><details><summary>查看参考解法与解释</summary><p>下方的分步示例是一种解法。也可以用其他等价组合，但需要解释输入、过滤与统计的含义。</p>
+</details></section>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>mkdir -p results/report
+tail -n +2 tables/observations.tsv | cut -f 3 | sort | uniq -c &gt; results/report/species-records.txt
+grep -n -F &#x27;WARN&#x27; logs/day-01.log logs/day-02.log &gt; results/report/warnings.txt
+cat results/report/species-records.txt
+cat results/report/warnings.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>      2 magpie
+      4 sparrow
+logs/day-01.log:3:08:10 WARN battery low
+logs/day-02.log:3:08:10 WARN battery low</pre></div><p class="source-link"><a href="practice/snippets/18-report.sh" download>下载这段命令 ↓</a></p>
+<h2 id="18-part-3">把工作保存为脚本</h2>
+<p>随包的 tools/summarize.sh 把相同步骤保存下来，并补充几个必要检查：必须传入一个练习目录、输入文件可读、输出目录能创建、处理失败时给出提示。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>bash tools/summarize.sh .</code></pre></div>
+<p>这里 <code>.</code> 把当前 linux-lab 目录传给脚本。脚本的全部内容可以展开查看或直接下载：</p>
+<details class="full-source"><summary>查看完整脚本：summarize.sh</summary><div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>#!/usr/bin/env bash
+# A deliberately small report for this course&#x27;s bundled TSV and logs.
+# pipefail makes a failed stage visible in the pipeline&#x27;s exit status.
+set -o pipefail
+if [ &quot;$#&quot; -ne 1 ]; then
+  echo &#x27;Usage: bash summarize.sh &lt;linux-lab directory&gt;&#x27; &gt;&amp;2
+  exit 2
+fi
+project=$1
+for required in tables/observations.tsv logs/day-01.log logs/day-02.log; do
+  if [ ! -r &quot;$project/$required&quot; ]; then
+    printf &#x27;Cannot read: %s\n&#x27; &quot;$project/$required&quot; &gt;&amp;2
+    exit 2
+  fi
+done
+output=&quot;$project/results/report&quot;
+if ! mkdir -p &quot;$output&quot;; then
+  exit 1
+fi
+if ! tail -n +2 &quot;$project/tables/observations.tsv&quot; | cut -f 3 | sort | uniq -c &gt; &quot;$output/species-records.txt&quot;; then
+  echo &#x27;Could not build species record counts.&#x27; &gt;&amp;2
+  exit 1
+fi
+grep -n -F &#x27;WARN&#x27; &quot;$project/logs/day-01.log&quot; &quot;$project/logs/day-02.log&quot; &gt; &quot;$output/warnings.txt&quot;
+status=$?
+if [ &quot;$status&quot; -gt 1 ]; then
+  echo &#x27;Could not search the logs.&#x27; &gt;&amp;2
+  exit &quot;$status&quot;
+fi
+printf &#x27;Report saved in: %s\n&#x27; &quot;$output&quot;
+cat &quot;$output/species-records.txt&quot;</code></pre></div><p class="source-link"><a href="practice/scripts/summarize.sh" download>下载这段命令 ↓</a></p></details>
+<p><code>$#</code> 是参数个数，<code>exit 2</code> 用非零状态结束脚本，<code>&gt;&amp;2</code> 将提示送到标准错误。<code>set -o pipefail</code> 让管道中某个工具失败时，整条管道也能返回失败状态；它本身不会自动退出脚本，所以这里配合 if 检查。<code>if ! ...</code> 表示在命令失败时进入对应分支。</p>
+<p>搜索 WARN 后单独检查状态，是因为 grep 没找到时返回 1，可能只是“本次没有提醒”；大于 1 才按搜索失败处理。先理解这几个保护措施的作用，再逐行对应代码。</p>
+<h2 id="18-part-4">完成不是只看文件存在</h2>
+<ul>
+<li>打开 species-records.txt，确认两种物种的记录条数合计为 6。</li>
+<li>打开 warnings.txt，回到原始日志确认文件名和行号。</li>
+<li>再运行一次脚本，确认计数没有因为上次结果而翻倍。</li>
+<li>复制一份练习目录，移走其中一份日志再运行，确认脚本明确报告缺失输入。</li>
+</ul>
+<p>脚本约定表格格式与随包材料一致，并不是任意数据的通用分析器。换成自己的数据时，还需要核对表头、分隔符、缺失值和字段含义。</p>
+<h2 id="18-part-5">现在，你能把过程讲清楚了</h2>
+<p>你已经经历了找位置、管文件、读内容、提线索、接工具、存脚本的完整过程。以后遇到新任务，可以先问三件事：输入是什么，想得到什么结果，怎样核对它。</p>
+<p>需要回查时，课程目录、命令索引和术语手册都可以单独使用。下一步先选择一个真实而小的问题，把这里的方法用一次。</p>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>如何判断简报可信，而不只是脚本跑完了？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-18" value="0"> <span>文件名好看即可</span></label><label><input type="radio" name="quiz-18" value="1"> <span>核对输入范围、中间结果与计数含义</span></label><label><input type="radio" name="quiz-18" value="2"> <span>终端不显示红字就行</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>执行成功只是一步；还应确认处理了哪些输入、表头是否排除、统计的是记录条数还是观测数量。</p></details></section></section><section id="glossary"><h1>随身术语手册</h1><article class="term-entry" id="term-linux"><p class="eyebrow">环境与系统</p><h3>Linux <span lang="en">Linux</span></h3><p>Linux 严格指内核，日常也用来指使用它的一套操作系统。</p><h4>放进例子里</h4><p>Ubuntu 是使用 Linux 内核的发行版。</p><h4>在本课里有什么用</h4><p>先知道自己在学习哪种系统，再理解常用文件和程序操作。</p><h4>容易混淆的地方</h4><p>Linux 不是一种编程语言，终端也不是内核。</p><h4>接着理解</h4><p><a data-term="kernel" href="#term-kernel">内核</a> · <a data-term="distribution" href="#term-distribution">发行版</a></p></article><article class="term-entry" id="term-kernel"><p class="eyebrow">环境与系统</p><h3>内核 <span lang="en">kernel</span></h3><p>操作系统中协调硬件资源并向程序提供基础能力的核心部分。</p><h4>放进例子里</h4><p>程序读取磁盘文件时需要使用操作系统提供的能力。</p><h4>在本课里有什么用</h4><p>把硬件资源这一层与终端窗口、命令解释器区分开。</p><h4>容易混淆的地方</h4><p>完整可用的系统还需要工具、库和其他软件。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="distribution" href="#term-distribution">发行版</a></p></article><article class="term-entry" id="term-distribution"><p class="eyebrow">环境与系统</p><h3>发行版 <span lang="en">distribution</span></h3><p>把内核、软件与维护机制组织成可安装系统的集合。</p><h4>放进例子里</h4><p>Ubuntu、Debian 都是 Linux 发行版。</p><h4>在本课里有什么用</h4><p>选择 Ubuntu 作为一致的练习环境，减少工具差异带来的困惑。</p><h4>容易混淆的地方</h4><p>不同发行版的软件版本和管理命令可能不同。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-terminal"><p class="eyebrow">环境与系统</p><h3>终端 <span lang="en">terminal</span></h3><p>呈现文字输入输出的交互界面；这里通常指终端模拟器窗口。</p><h4>放进例子里</h4><p>在 Ubuntu 中打开终端应用。</p><h4>在本课里有什么用</h4><p>找到输入命令和查看输出的地方，区分窗口与其中运行的程序。</p><h4>容易混淆的地方</h4><p>终端窗口与里面运行的 Shell 不是同一程序。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-shell"><p class="eyebrow">环境与系统</p><h3>Shell <span lang="en">shell</span></h3><p>解释命令、组织输入输出并启动程序的命令解释器。</p><h4>放进例子里</h4><p>输入带管道的命令时，Shell 负责建立连接。</p><h4>在本课里有什么用</h4><p>理解为什么引号、管道和重定向由 Shell 先解释。</p><h4>容易混淆的地方</h4><p>Shell 不只是显示文字，也会解释引号和变量。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-bash"><p class="eyebrow">环境与系统</p><h3>Bash <span lang="en">Bourne Again SHell</span></h3><p>一种常用 Shell，也是本课脚本使用的解释器。</p><h4>放进例子里</h4><p>bash tools/line-count.sh notes/morning.txt。</p><h4>在本课里有什么用</h4><p>确保终端示例与 .sh 脚本使用本课程说明的语法。</p><h4>容易混淆的地方</h4><p>其他 Shell 的部分语法与 Bash 不同。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-wsl"><p class="eyebrow">环境与系统</p><h3>WSL <span lang="en">Windows Subsystem for Linux</span></h3><p>让 Windows 使用 Linux 环境的系统功能。</p><h4>放进例子里</h4><p>在 Windows 中安装并打开 Ubuntu 发行版。</p><h4>在本课里有什么用</h4><p>为 Windows 用户准备可跟做的 Ubuntu 环境。</p><h4>容易混淆的地方</h4><p>PowerShell 与 Ubuntu Bash 的命令不能不加区分地混用。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-ssh"><p class="eyebrow">环境与系统</p><h3>SSH <span lang="en">Secure Shell</span></h3><p>用于加密远程登录等操作的一组协议和工具。</p><h4>放进例子里</h4><p>用已有账号连接自己的 Linux 服务器。</p><h4>在本课里有什么用</h4><p>为已有服务器账号的读者提供另一条操作环境入口。</p><h4>容易混淆的地方</h4><p>命令通常在远程机器运行；本机文件不会自动出现在远程机器。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-prompt"><p class="eyebrow">命令与运行</p><h3>提示符 <span lang="en">prompt</span></h3><p>Shell 用来提示可以输入命令的一段文字。</p><h4>放进例子里</h4><p>river@station:~$ 后面输入 pwd。</p><h4>在本课里有什么用</h4><p>判断哪些是需要输入的命令，哪些只是环境的提示。</p><h4>容易混淆的地方</h4><p>通常不需要把教程展示的 $ 一起复制。</p><h4>接着理解</h4><p><a data-term="option" href="#term-option">选项</a> · <a data-term="argument" href="#term-argument">参数</a></p></article><article class="term-entry" id="term-option"><p class="eyebrow">命令与运行</p><h3>选项 <span lang="en">option</span></h3><p>用于选择命令行为的一类参数。</p><h4>放进例子里</h4><p>ls -l 中的 -l 选择详细列表。</p><h4>在本课里有什么用</h4><p>看懂 -l、-n 等写法怎样改变具体命令的行为。</p><h4>容易混淆的地方</h4><p>同一个字母在不同命令中的含义可能不同。</p><h4>接着理解</h4><p><a data-term="prompt" href="#term-prompt">提示符</a> · <a data-term="argument" href="#term-argument">参数</a></p></article><article class="term-entry" id="term-argument"><p class="eyebrow">命令与运行</p><h3>参数 <span lang="en">argument</span></h3><p>传给命令的一项输入信息，可以是选项、路径或其他值。</p><h4>放进例子里</h4><p>ls -l notes 中 -l 和 notes 都是参数。</p><h4>在本课里有什么用</h4><p>明确命令的输入对象，尤其注意路径中的空格。</p><h4>容易混淆的地方</h4><p>没有引号保护的空格可能把一个预期的值拆成多个参数。</p><h4>接着理解</h4><p><a data-term="prompt" href="#term-prompt">提示符</a> · <a data-term="option" href="#term-option">选项</a></p></article><article class="term-entry" id="term-manual"><p class="eyebrow">命令与运行</p><h3>手册 <span lang="en">manual page</span></h3><p>解释命令用途、语法和选项的参考文档。</p><h4>放进例子里</h4><p>man ls，阅读时按 q 退出。</p><h4>在本课里有什么用</h4><p>遇到不熟悉的命令时查找用法，不必靠记忆猜选项。</p><h4>容易混淆的地方</h4><p>精简系统可能未安装 man 或完整手册。</p><h4>接着理解</h4><p><a data-term="prompt" href="#term-prompt">提示符</a> · <a data-term="option" href="#term-option">选项</a></p></article><article class="term-entry" id="term-builtin"><p class="eyebrow">命令与运行</p><h3>内建命令 <span lang="en">shell builtin</span></h3><p>由 Shell 自身实现的命令。</p><h4>放进例子里</h4><p>cd 改变当前 Shell 的工作目录。</p><h4>在本课里有什么用</h4><p>解释为什么 cd 的帮助使用 help，为什么它会改变当前 Shell 的位置。</p><h4>容易混淆的地方</h4><p>不是每个命令都对应 PATH 中的一个独立可执行文件。</p><h4>接着理解</h4><p><a data-term="prompt" href="#term-prompt">提示符</a> · <a data-term="option" href="#term-option">选项</a></p></article><article class="term-entry" id="term-cwd"><p class="eyebrow">文件与路径</p><h3>当前工作目录 <span lang="en">current working directory</span></h3><p>当前进程处理相对路径时的默认出发位置。</p><h4>放进例子里</h4><p>pwd 显示当前工作目录。</p><h4>在本课里有什么用</h4><p>每次寻找相对路径前，先用 pwd 确认自己站在哪里。</p><h4>容易混淆的地方</h4><p>进入别的目录后，同一个相对路径可能指向另一位置。</p><h4>接着理解</h4><p><a data-term="home" href="#term-home">家目录</a> · <a data-term="rootdir" href="#term-rootdir">根目录</a></p></article><article class="term-entry" id="term-home"><p class="eyebrow">文件与路径</p><h3>家目录 <span lang="en">home directory</span></h3><p>分配给某个用户保存个人文件和配置的目录。</p><h4>放进例子里</h4><p>~/linux-lab 位于当前用户的家目录下。</p><h4>在本课里有什么用</h4><p>给练习副本选一个属于自己的位置，并理解 ~ 的作用。</p><h4>容易混淆的地方</h4><p>家目录不一定都在 /home 下，也不等于根目录。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="rootdir" href="#term-rootdir">根目录</a></p></article><article class="term-entry" id="term-rootdir"><p class="eyebrow">文件与路径</p><h3>根目录 <span lang="en">root directory</span></h3><p>Linux 目录树的起点，用 / 表示。</p><h4>放进例子里</h4><p>/home 从根目录开始寻找 home。</p><h4>在本课里有什么用</h4><p>读懂以 / 开头的路径，并区分系统起点与个人家目录。</p><h4>容易混淆的地方</h4><p>根目录与名为 root 的管理员账号不是同一概念。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-path"><p class="eyebrow">文件与路径</p><h3>路径 <span lang="en">path</span></h3><p>表示文件或目录位置的写法。</p><h4>放进例子里</h4><p>notes/morning.txt 指向某个目录中的文件。</p><h4>在本课里有什么用</h4><p>给文件操作写出准确的源位置和目标位置。</p><h4>容易混淆的地方</h4><p>路径是写法，不保证目标一定存在。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-absolute"><p class="eyebrow">文件与路径</p><h3>绝对路径 <span lang="en">absolute path</span></h3><p>从根目录出发的完整位置表示。</p><h4>放进例子里</h4><p>/home/river/linux-lab/notes。</p><h4>在本课里有什么用</h4><p>在不依赖当前工作位置时明确指向同一文件。</p><h4>容易混淆的地方</h4><p>具体用户名和家目录位置因机器而异。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-relative"><p class="eyebrow">文件与路径</p><h3>相对路径 <span lang="en">relative path</span></h3><p>相对于当前工作目录解释的路径。</p><h4>放进例子里</h4><p>在 notes 中用 ../tables 到达旁边的 tables。</p><h4>在本课里有什么用</h4><p>在 notes、logs 与 tables 之间用短路径移动。</p><h4>容易混淆的地方</h4><p>换一个出发点，同一写法的含义可能变化。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-newline"><p class="eyebrow">文本与数据</p><h3>换行符 <span lang="en">newline / LF</span></h3><p>标记文本行结束的字符。</p><h4>放进例子里</h4><p>printf &#x27;hello\n&#x27; 在 hello 后输出换行。</p><h4>在本课里有什么用</h4><p>解释 wc -l 的结果，排查末行缺少换行导致的差异。</p><h4>容易混淆的地方</h4><p>wc -l 数换行符；末行没有换行时，视觉行数可能不一致。</p><h4>接着理解</h4><p><a data-term="byte" href="#term-byte">字节</a> · <a data-term="editor" href="#term-editor">编辑器</a></p></article><article class="term-entry" id="term-byte"><p class="eyebrow">文本与数据</p><h3>字节 <span lang="en">byte</span></h3><p>常见的数据存储计量单位，通常由 8 位组成。</p><h4>放进例子里</h4><p>wc -c 查看文件字节数。</p><h4>在本课里有什么用</h4><p>区分文件存储大小、字符数和行数。</p><h4>容易混淆的地方</h4><p>一个中文字符在 UTF-8 中通常占多个字节。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="editor" href="#term-editor">编辑器</a></p></article><article class="term-entry" id="term-stdout"><p class="eyebrow">输入与输出</p><h3>标准输出 <span lang="en">standard output</span></h3><p>程序输出正常结果的约定通道，编号为 1。</p><h4>放进例子里</h4><p>cat 的输出可以显示到终端或写入文件。</p><h4>在本课里有什么用</h4><p>理解屏幕上的正常结果怎样接到文件或下一个工具。</p><h4>容易混淆的地方</h4><p>输出文件存在不代表运行成功，也不保证结果完整。</p><h4>接着理解</h4><p><a data-term="stderr" href="#term-stderr">标准错误</a> · <a data-term="stdin" href="#term-stdin">标准输入</a></p></article><article class="term-entry" id="term-stderr"><p class="eyebrow">输入与输出</p><h3>标准错误 <span lang="en">standard error</span></h3><p>程序输出诊断信息的约定通道，编号为 2。</p><h4>放进例子里</h4><p>2&gt; results/error.txt 保存错误信息。</p><h4>在本课里有什么用</h4><p>单独保存诊断信息，判断有结果文件是否真的意味着成功。</p><h4>容易混淆的地方</h4><p>通道名是约定；具体软件也可能把其他信息写到这里。</p><h4>接着理解</h4><p><a data-term="stdout" href="#term-stdout">标准输出</a> · <a data-term="stdin" href="#term-stdin">标准输入</a></p></article><article class="term-entry" id="term-stdin"><p class="eyebrow">输入与输出</p><h3>标准输入 <span lang="en">standard input</span></h3><p>程序接收输入的约定通道，编号为 0。</p><h4>放进例子里</h4><p>管道右侧的 uniq 读取左侧送来的文本。</p><h4>在本课里有什么用</h4><p>理解管道右端与 wc -l &lt; 文件 从哪里接收内容。</p><h4>容易混淆的地方</h4><p>不是所有程序都会读取标准输入。</p><h4>接着理解</h4><p><a data-term="stdout" href="#term-stdout">标准输出</a> · <a data-term="stderr" href="#term-stderr">标准错误</a></p></article><article class="term-entry" id="term-redirect"><p class="eyebrow">输入与输出</p><h3>重定向 <span lang="en">redirection</span></h3><p>由 Shell 调整命令输入或输出的来源与去向。</p><h4>放进例子里</h4><p>&gt; 覆盖写入，&gt;&gt; 追加写入，&lt; 从文件读入。</p><h4>在本课里有什么用</h4><p>把观察记录与程序结果保存下来，区分覆盖和追加。</p><h4>容易混淆的地方</h4><p>重定向通常在命令真正运行前建立，会影响已有目标文件。</p><h4>接着理解</h4><p><a data-term="stdout" href="#term-stdout">标准输出</a> · <a data-term="stderr" href="#term-stderr">标准错误</a></p></article><article class="term-entry" id="term-pipe"><p class="eyebrow">输入与输出</p><h3>管道 <span lang="en">pipeline</span></h3><p>把一个命令的标准输出接到下一个命令的标准输入。</p><h4>放进例子里</h4><p>sort 文件 | uniq -c。|普通的 </p><h4>在本课里有什么用</h4><p>将排序、相邻去重和计数连成可以逐段核对的步骤。</p><h4>容易混淆的地方</h4><p> 不会自动把标准错误传过去。</p><h4>接着理解</h4><p><a data-term="stdout" href="#term-stdout">标准输出</a> · <a data-term="stderr" href="#term-stderr">标准错误</a></p></article><article class="term-entry" id="term-editor"><p class="eyebrow">文本与数据</p><h3>编辑器 <span lang="en">text editor</span></h3><p>用于创建和修改文本文件的软件。</p><h4>放进例子里</h4><p>nano results/visits.txt。</p><h4>在本课里有什么用</h4><p>修改自己的笔记和脚本，并确认内容已经保存。</p><h4>容易混淆的地方</h4><p>屏幕上改了内容不等于已经保存到文件。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-quote"><p class="eyebrow">命令与运行</p><h3>引号 <span lang="en">quoting</span></h3><p>控制 Shell 如何解释一段字符的机制。</p><h4>放进例子里</h4><p>用单引号保护带空格的固定文件名。</p><h4>在本课里有什么用</h4><p>保护带空格的路径，并把模式完整传给 find。</p><h4>容易混淆的地方</h4><p>单引号与双引号对变量展开的处理不同。</p><h4>接着理解</h4><p><a data-term="prompt" href="#term-prompt">提示符</a> · <a data-term="option" href="#term-option">选项</a></p></article><article class="term-entry" id="term-glob"><p class="eyebrow">文件与路径</p><h3>通配符 <span lang="en">filename globbing</span></h3><p>Shell 根据模式展开文件名的一种机制。</p><h4>放进例子里</h4><p>notes/*.txt 可展开为匹配的路径。</p><h4>在本课里有什么用</h4><p>按文件名选择一批日志或笔记，在批量操作前先核对范围。</p><h4>容易混淆的地方</h4><p>通配符不是正则表达式；默认通常不匹配隐藏名字。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-grep"><p class="eyebrow">文本与数据</p><h3>grep <span lang="en">grep</span></h3><p>从文本中选出匹配某种模式的行的工具。</p><h4>放进例子里</h4><p>grep -n -F WARN logs/day-01.log。</p><h4>在本课里有什么用</h4><p>从设备日志里找到 WARN、ERROR 和对应行号。</p><h4>容易混淆的地方</h4><p>-c 统计匹配行，不是子串出现的总次数。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-regex"><p class="eyebrow">文本与数据</p><h3>正则表达式 <span lang="en">regular expression</span></h3><p>表达文本匹配规则的一套模式语言。</p><h4>放进例子里</h4><p>^08:00 匹配以 08:00 开头的行。</p><h4>在本课里有什么用</h4><p>在确实需要按行首等规则搜索时描述一个简单模式。</p><h4>容易混淆的地方</h4><p>正则中的 * 与文件名通配符中的 * 含义不同。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-sort"><p class="eyebrow">文本与数据</p><h3>排序 <span lang="en">sort</span></h3><p>按照比较规则重新排列文本行。</p><h4>放进例子里</h4><p>sort -n 让数字按数值顺序排列。</p><h4>在本课里有什么用</h4><p>让重复记录靠在一起，或把数量按数值排好。</p><h4>容易混淆的地方</h4><p>默认文本排序受区域设置影响，也会改变原始记录顺序。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-uniq"><p class="eyebrow">文本与数据</p><h3>相邻去重 <span lang="en">uniq</span></h3><p>比较并合并相邻相同的文本行。</p><h4>放进例子里</h4><p>sort 文件再 uniq -c，可以统计各行出现次数。</p><h4>在本课里有什么用</h4><p>在排序后统计每个物种名称的记录条数。</p><h4>容易混淆的地方</h4><p>未相邻的重复行不会直接被合并。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-tsv"><p class="eyebrow">文本与数据</p><h3>TSV <span lang="en">tab-separated values</span></h3><p>以制表符分隔字段的一种表格文本形式。</p><h4>放进例子里</h4><p>observations.tsv 有 date、site、species、count 四列。</p><h4>在本课里有什么用</h4><p>按表头和制表符选取观测表的正确字段。</p><h4>容易混淆的地方</h4><p>屏幕对齐的空格不一定就是制表符。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-csv"><p class="eyebrow">文本与数据</p><h3>CSV <span lang="en">comma-separated values</span></h3><p>常用逗号分隔字段，并约定引号等规则的表格文本形式。</p><h4>放进例子里</h4><p>包含逗号的一个字段可能需要引号包围。</p><h4>在本课里有什么用</h4><p>知道何时简单切列不足以正确处理一张表。</p><h4>容易混淆的地方</h4><p>简单按逗号切割不能正确解析所有 CSV。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-archive"><p class="eyebrow">文件与路径</p><h3>归档 <span lang="en">archive</span></h3><p>把多个文件和目录组织成一个可保存或传输的包。</p><h4>放进例子里</h4><p>tar -cf notes.tar notes。</p><h4>在本课里有什么用</h4><p>保留目录结构，把笔记或日志作为一份资料分享。</p><h4>容易混淆的地方</h4><p>打包与压缩是两件不同的事。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-compression"><p class="eyebrow">文件与路径</p><h3>压缩 <span lang="en">compression</span></h3><p>通过编码方式减少数据占用的过程。</p><h4>放进例子里</h4><p>gzip 常用于压缩 tar 归档。</p><h4>在本课里有什么用</h4><p>分清 tar 与 gzip 的职责，并理解压缩包后缀。</p><h4>容易混淆的地方</h4><p>已经压缩过的数据不一定还能明显变小。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-checksum"><p class="eyebrow">文件与路径</p><h3>校验值 <span lang="en">checksum / digest</span></h3><p>根据内容计算的摘要，用于辅助比较文件内容。</p><h4>放进例子里</h4><p>用 sha256sum 比对提供方公布的 SHA-256。</p><h4>在本课里有什么用</h4><p>核对下载或复制前后的文件内容是否一致。</p><h4>容易混淆的地方</h4><p>校验一致不等于内容安全或来源可信。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-user"><p class="eyebrow">权限与进程</p><h3>用户 <span lang="en">user</span></h3><p>系统用于识别身份及其权限的账号概念。</p><h4>放进例子里</h4><p>whoami 显示当前有效用户名。</p><h4>在本课里有什么用</h4><p>确认当前操作身份以及自己的工作目录。</p><h4>容易混淆的地方</h4><p>同一个人在不同机器上可能使用不同账号。</p><h4>接着理解</h4><p><a data-term="owner" href="#term-owner">所有者</a> · <a data-term="group" href="#term-group">组</a></p></article><article class="term-entry" id="term-owner"><p class="eyebrow">权限与进程</p><h3>所有者 <span lang="en">owner</span></h3><p>文件所属的用户身份。</p><h4>放进例子里</h4><p>ls -l 显示所有者与所属组。</p><h4>在本课里有什么用</h4><p>读取 ls -l 中的身份信息，判断哪一组模式位适用。</p><h4>容易混淆的地方</h4><p>所有者不等于唯一能访问文件的人。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="group" href="#term-group">组</a></p></article><article class="term-entry" id="term-group"><p class="eyebrow">权限与进程</p><h3>组 <span lang="en">group</span></h3><p>把用户组织起来以便管理权限的机制。</p><h4>放进例子里</h4><p>共享目录可以给某个组读取权限。</p><h4>在本课里有什么用</h4><p>理解共享系统中为什么一组人可能拥有共同的访问权限。</p><h4>容易混淆的地方</h4><p>用户可以属于多个组。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-permission"><p class="eyebrow">权限与进程</p><h3>权限 <span lang="en">permission</span></h3><p>限定身份能够执行哪些文件或目录操作的规则。</p><h4>放进例子里</h4><p>普通文件的 r、w、x 分别涉及读、写、执行。</p><h4>在本课里有什么用</h4><p>解释 Permission denied，并有目的地修改练习副本的权限。</p><h4>容易混淆的地方</h4><p>目录的 rwx 含义不同，还可能受 ACL 等机制影响。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-pathenv"><p class="eyebrow">环境与系统</p><h3>PATH <span lang="en">PATH environment variable</span></h3><p>保存外部程序搜索目录列表的环境变量。</p><h4>放进例子里</h4><p>多个目录通常用冒号分隔，按顺序查找。</p><h4>在本课里有什么用</h4><p>排查 command not found，并确认同名工具到底使用了哪一份。</p><h4>容易混淆的地方</h4><p>PATH 与某个文件的普通路径不是同一个概念。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-envvar"><p class="eyebrow">环境与系统</p><h3>环境变量 <span lang="en">environment variable</span></h3><p>传给后续启动程序的一组命名设置。</p><h4>放进例子里</h4><p>export 把变量加入后续程序的环境。</p><h4>在本课里有什么用</h4><p>观察 PATH 这类设置怎样影响后续启动的程序。</p><h4>容易混淆的地方</h4><p>Shell 中的普通变量并不都会自动导出。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-package"><p class="eyebrow">环境与系统</p><h3>软件包 <span lang="en">software package</span></h3><p>按约定打包的软件及其安装元信息。</p><h4>放进例子里</h4><p>Ubuntu 通过 apt 安装 nano。</p><h4>在本课里有什么用</h4><p>在缺少编辑器或小工具时，通过适合环境的管理方式安装。</p><h4>容易混淆的地方</h4><p>安装成功不一定代表当前 Shell 调用的是这一份软件。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-conda"><p class="eyebrow">环境与系统</p><h3>Conda <span lang="en">Conda</span></h3><p>管理软件包和相对隔离的软件环境的工具。</p><h4>放进例子里</h4><p>为特定工具组合创建一个环境。</p><h4>在本课里有什么用</h4><p>在有需要时为小工具准备独立环境，不把软件环境和数据目录混淆。</p><h4>容易混淆的地方</h4><p>环境不是一台虚拟机；激活环境也不是进入某个数据目录。</p><h4>接着理解</h4><p><a data-term="linux" href="#term-linux">Linux</a> · <a data-term="kernel" href="#term-kernel">内核</a></p></article><article class="term-entry" id="term-process"><p class="eyebrow">权限与进程</p><h3>进程 <span lang="en">process</span></h3><p>正在执行的程序实例及其运行状态。</p><h4>放进例子里</h4><p>两次运行同一程序可以产生不同进程。</p><h4>在本课里有什么用</h4><p>区分磁盘上的程序与当前正在进行的工作。</p><h4>容易混淆的地方</h4><p>程序文件、进程和终端窗口不是一一对应。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-pid"><p class="eyebrow">权限与进程</p><h3>PID <span lang="en">process ID</span></h3><p>系统用于识别进程的编号。</p><h4>放进例子里</h4><p>ps 列出进程编号及相关信息。</p><h4>在本课里有什么用</h4><p>在查看任务或请求终止时准确识别自己的进程。</p><h4>容易混淆的地方</h4><p>编号会变化和复用，不能照抄别人的 PID 去终止任务。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-foreground"><p class="eyebrow">权限与进程</p><h3>前台 <span lang="en">foreground</span></h3><p>与当前终端交互、通常占用当前命令输入时机的运行方式。</p><h4>放进例子里</h4><p>直接运行 sleep 5，等待结束才回到提示符。</p><h4>在本课里有什么用</h4><p>理解终端为何等待任务结束，以及 Ctrl+C 请求中断的对象。</p><h4>容易混淆的地方</h4><p>等待不等于死机或运行失败。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-background"><p class="eyebrow">权限与进程</p><h3>后台 <span lang="en">background</span></h3><p>允许 Shell 继续接收命令的一种作业运行方式。</p><h4>放进例子里</h4><p>在命令末尾加 &amp; 启动作业。</p><h4>在本课里有什么用</h4><p>观察短任务与 jobs 的变化，避免把 &amp; 误认为任务已经完成。</p><h4>容易混淆的地方</h4><p>&amp; 本身不保证断开远程连接后任务仍可靠运行。</p><h4>接着理解</h4><p><a data-term="user" href="#term-user">用户</a> · <a data-term="owner" href="#term-owner">所有者</a></p></article><article class="term-entry" id="term-script"><p class="eyebrow">脚本与逻辑</p><h3>脚本 <span lang="en">script</span></h3><p>保存交给解释器执行的操作步骤的文本文件。</p><h4>放进例子里</h4><p>Bash 读取 .sh 文件中的命令。</p><h4>在本课里有什么用</h4><p>把已经验证的一串命令保存下来，重复生成同一份简报。</p><h4>容易混淆的地方</h4><p>脚本扩展名不保证解释器和语法一定匹配。</p><h4>接着理解</h4><p><a data-term="variable" href="#term-variable">变量</a> · <a data-term="shebang" href="#term-shebang">shebang</a></p></article><article class="term-entry" id="term-variable"><p class="eyebrow">脚本与逻辑</p><h3>变量 <span lang="en">variable</span></h3><p>把一个名字与一个值联系起来的方式。</p><h4>放进例子里</h4><p>record=&#x27;notes/morning.txt&#x27;，用 &quot;$record&quot; 读取。</p><h4>在本课里有什么用</h4><p>把会变化的文件路径取一个名字，并用引号完整传递。</p><h4>容易混淆的地方</h4><p>Shell 赋值语句等号两边通常不能加空格。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="shebang" href="#term-shebang">shebang</a></p></article><article class="term-entry" id="term-shebang"><p class="eyebrow">脚本与逻辑</p><h3>shebang <span lang="en">interpreter directive</span></h3><p>脚本首行以 #! 开头的解释器声明。</p><h4>放进例子里</h4><p>#!/usr/bin/env bash。</p><h4>在本课里有什么用</h4><p>读懂示例脚本首行如何声明解释器。</p><h4>容易混淆的地方</h4><p>用 bash 文件 显式执行时，由调用的 Bash 解释内容。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="variable" href="#term-variable">变量</a></p></article><article class="term-entry" id="term-positional"><p class="eyebrow">脚本与逻辑</p><h3>位置参数 <span lang="en">positional parameter</span></h3><p>按传入顺序编号的脚本参数。</p><h4>放进例子里</h4><p>$1 代表第一个参数，$# 代表参数个数。</p><h4>在本课里有什么用</h4><p>让同一个数行脚本处理不同的文件，而不反复改源代码。</p><h4>容易混淆的地方</h4><p>$1 不是脚本的第一行，也不是文件中的第一列。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="variable" href="#term-variable">变量</a></p></article><article class="term-entry" id="term-loop"><p class="eyebrow">脚本与逻辑</p><h3>循环 <span lang="en">loop</span></h3><p>按照序列或条件重复执行一组动作。</p><h4>放进例子里</h4><p>for 遍历一组日志文件。</p><h4>在本课里有什么用</h4><p>对每份日志重复同一个检查和计数动作。</p><h4>容易混淆的地方</h4><p>要考虑没有匹配项、文件名含空格等情况。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="variable" href="#term-variable">变量</a></p></article><article class="term-entry" id="term-condition"><p class="eyebrow">脚本与逻辑</p><h3>条件判断 <span lang="en">conditional</span></h3><p>根据条件结果选择是否执行或执行哪组动作。</p><h4>放进例子里</h4><p>if [ -f &quot;$record&quot; ] 检查普通文件。</p><h4>在本课里有什么用</h4><p>在文件存在且可读等前提成立时才执行操作。</p><h4>容易混淆的地方</h4><p>方括号命令周围的空格有语法意义。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="variable" href="#term-variable">变量</a></p></article><article class="term-entry" id="term-exitstatus"><p class="eyebrow">脚本与逻辑</p><h3>退出状态 <span lang="en">exit status</span></h3><p>命令结束时返回给调用者的数值状态。</p><h4>放进例子里</h4><p>0 通常表示成功；$? 是上一条命令的状态。</p><h4>在本课里有什么用</h4><p>区分成功、没有匹配与程序错误，让综合脚本作出明确响应。</p><h4>容易混淆的地方</h4><p>grep 没有匹配的状态 1 不一定代表工具损坏。</p><h4>接着理解</h4><p><a data-term="script" href="#term-script">脚本</a> · <a data-term="variable" href="#term-variable">变量</a></p></article><article class="term-entry" id="term-symlink"><p class="eyebrow">文件与路径</p><h3>符号链接 <span lang="en">symbolic link</span></h3><p>保存对另一个路径的引用的特殊文件。</p><h4>放进例子里</h4><p>ln -s 可创建链接。</p><h4>在本课里有什么用</h4><p>作为选读概念，提醒复制文件与保存对路径的引用并不相同。</p><h4>容易混淆的地方</h4><p>不是独立的数据副本；目标移动后可能失效。</p><h4>接着理解</h4><p><a data-term="cwd" href="#term-cwd">当前工作目录</a> · <a data-term="home" href="#term-home">家目录</a></p></article><article class="term-entry" id="term-encoding"><p class="eyebrow">文本与数据</p><h3>字符编码 <span lang="en">character encoding</span></h3><p>把字符转换为字节及从字节恢复字符的约定。</p><h4>放进例子里</h4><p>本课程文本使用 UTF-8。</p><h4>在本课里有什么用</h4><p>排查中文乱码，并保存适合终端读取的文本。</p><h4>容易混淆的地方</h4><p>乱码可能来自编码不匹配，不一定是内容丢失。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article><article class="term-entry" id="term-locale"><p class="eyebrow">文本与数据</p><h3>区域设置 <span lang="en">locale</span></h3><p>影响语言、字符分类、排序等行为的环境设置。</p><h4>放进例子里</h4><p>不同 locale 可能改变 sort 的文本顺序。</p><h4>在本课里有什么用</h4><p>解释同一批文本在不同机器上的排序为何可能不同。</p><h4>容易混淆的地方</h4><p>需要精确可比的自动检查时，应记录或固定相关设置。</p><h4>接着理解</h4><p><a data-term="newline" href="#term-newline">换行符</a> · <a data-term="byte" href="#term-byte">字节</a></p></article></section></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="library.html#sources">资料与来源</a><a href="README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="assets/glossary-data.js"></script><script src="assets/app.js"></script></body></html>

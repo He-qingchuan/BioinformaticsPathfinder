@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>把资料打包 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="../assets/style.css"></head>
+<body class="lesson-page" data-lesson="12"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="../index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="../index.html#course">课程目录</a><a href="../library.html">代码与资料</a><a href="../reading.html">全文阅读</a><a class="open-glossary" href="../reading.html#glossary">术语手册</a></nav></header><main id="main" class="lesson-layout"><aside class="lesson-aside"><a href="../index.html#course">← 全部课程</a><p class="eyebrow">本节路线</p><nav><a href="#12-part-1">先装进箱子，再压缩体积</a><a href="#12-part-2">为笔记做一个资料包</a><a href="#12-part-3">目录名很容易多一层</a><a href="#12-part-4">下载与完整性</a></nav><a href="../practice/linux-lab.zip" download>练习材料 ↓</a><button type="button" id="focus-mode" aria-pressed="false">专注阅读</button></aside><article class="prose lesson-body"><p class="eyebrow">第 12 节 · 让小工具合作</p><h1>把资料打包</h1><p class="lesson-question">压缩包里是什么，能不能先看再解压？</p><div class="objectives"><strong>这一节，带走什么</strong><p>区分打包与压缩；用 tar 列出、生成和解开自己的归档。</p></div><details class="mobile-toc"><summary>本节目录</summary><nav><a href="#12-part-1">先装进箱子，再压缩体积</a><a href="#12-part-2">为笔记做一个资料包</a><a href="#12-part-3">目录名很容易多一层</a><a href="#12-part-4">下载与完整性</a></nav></details><h2 id="12-part-1">先装进箱子，再压缩体积</h2>
+<p>起始位置是 <code>~/linux-lab</code>。<a class="term" data-term="archive" href="../reading.html#term-archive">归档</a>把多个文件及目录组织在一个包中；<a class="term" data-term="compression" href="../reading.html#term-compression">压缩</a>使用编码方式减少存储体积。两件事经常连在一起，但不是同一件事。</p>
+<p><code>tar</code> 用于归档；常见的 <code>.tar.gz</code> 是 tar 归档再经过 gzip 压缩。压缩不保证每种文件都会明显变小，已压缩过的图片常常变化有限。</p>
+<figure class="concept"><p class="eyebrow">图解 · 把文件装箱，再压缩</p><a class="zoom-image" href="../assets/illustrations/archive.svg" data-description="tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。"><img src="../assets/illustrations/archive.svg" alt="把文件装箱，再压缩" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。</p><a class="zoom-image" href="../assets/illustrations/archive.svg" data-description="tar 保存文件与目录层次，gzip 压缩归档。查看清单后在新目录解开，才能看清有没有多一层目录。">放大查看 ↗</a> <a href="../assets/illustrations/archive.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="12-part-2">为笔记做一个资料包</h2>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>tar -czf results/notes.tar.gz notes
+tar -tzf results/notes.tar.gz | sort
+mkdir -p results/unpacked
+tar -xzf results/notes.tar.gz -C results/unpacked
+cat results/unpacked/notes/morning.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>notes/
+notes/evening.txt
+notes/morning.txt
+notes/雨后 记录.txt
+Morning observation
+Lake: clear
+Birds: 12</pre></div><p class="source-link"><a href="../practice/snippets/12-archive.sh" download>下载这段命令 ↓</a></p>
+<p>先创建 notes.tar.gz，再列出其中的名字，最后解压到新目录 results/unpacked。末尾读取解出的 morning.txt，用内容验证，而不只看“有没有一个文件夹”。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>在这组用法中表示什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c</code></td>
+<td>创建归档</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>列出归档内的条目</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>解出归档</td>
+</tr>
+<tr>
+<td><code>z</code></td>
+<td>使用 gzip</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>后面指定归档文件名</td>
+</tr>
+<tr>
+<td><code>-C 目录</code></td>
+<td>在指定目录中完成相关操作</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-part-3">目录名很容易多一层</h2>
+<p>我们打包时指定 notes，因此解压后会在 results/unpacked 下面得到 notes。先列出归档内容，能看清它会带来哪些目录层级。</p>
+<p>下载的资料包尤其适合先查看、再解压到一个新的空目录。主线只处理自己创建的归档；不要把陌生归档直接展开到重要项目目录。</p>
+<h2 id="12-part-4">下载与完整性</h2>
+<p>资料页提供的练习 ZIP 可以用图形界面解压。命令行下载可使用 curl 或 wget，但不是理解归档的前提。下载完成也不自动等于内容正确，重要资料应核对来源和提供方公布的校验值。</p>
+<p><a class="term" data-term="checksum" href="../reading.html#term-checksum">校验值</a>像文件内容的指纹；相同的校验值可以帮助核对传输前后内容是否一致，但它本身不证明来源可信。需要核对 SHA-256 时，可用 <code>sha256sum 文件名</code> 与提供方公布的值比较。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>给日志单独装箱</h3><p>仿照示例，把 logs 打成 results/logs.tar.gz，先列出清单，再解压到一个新目录。确认两份日志都在，且原始 logs 仍然存在。</p>
+<details><summary>给我一点提示</summary><p>打包不等于移动；新建的解压目录与原始目录分开。</p>
+</details><details><summary>查看参考解法与解释</summary><p>tar -czf results/logs.tar.gz logs；tar -tzf results/logs.tar.gz；mkdir -p results/logs-copy；tar -xzf results/logs.tar.gz -C results/logs-copy。清单与解出目录都应包含两份日志。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>收到一个 tar.gz 后，先查看文件清单用哪一个操作？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-12" value="0"> <span>tar -tzf 文件.tar.gz</span></label><label><input type="radio" name="quiz-12" value="1"> <span>rm 文件.tar.gz</span></label><label><input type="radio" name="quiz-12" value="2"> <span>chmod 文件.tar.gz</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>t 表示列出归档内容，z 表示通过 gzip 处理，f 后面跟归档文件名。</p></details></section><nav class="lesson-navigation"><a href="11.html">← 上一节</a><button type="button" id="mark-read">标记本节已读</button><a href="13.html">下一节 →</a></nav></article></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="../library.html#sources">资料与来源</a><a href="../README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="../assets/glossary-data.js"></script><script src="../assets/app.js"></script></body></html>
