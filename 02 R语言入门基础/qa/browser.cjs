@@ -23,7 +23,7 @@ async function noOverflow(p){const d=await p.evaluate(()=>({actual:document.docu
  assert.equal(await p.locator('.district-panel:visible').count(),1);
  for(const zone of course.zones){await p.locator(`[data-select-zone="${zone.id}"]`).click();const panel=p.locator(`[data-panel-zone="${zone.id}"]`);assert(await panel.isVisible());assert.equal(await panel.locator('a[data-course-lesson]').count(),course.lessons.filter(l=>l.zone===zone.id).length);}
  checks.push('all eight districts expose the correct lesson links');
- await p.locator('[data-select-zone="welcome"]').click();await p.screenshot({path:path.join(out,'town-desktop.png'),fullPage:true});
+ await p.locator('[data-select-zone="welcome"]').click();await p.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await frames(p);await p.screenshot({path:path.join(out,'town-desktop.png'),fullPage:true});
  for(const width of [320,390,768,820,1024,1440,1920]){
   await p.setViewportSize({width,height:900});await frames(p);await noOverflow(p);
   const expected=width<820?8:1;assert.equal(await p.locator('.district-panel:visible').count(),expected);
@@ -53,11 +53,11 @@ async function noOverflow(p){const d=await p.evaluate(()=>({actual:document.docu
  const backlink=p.locator('#glossary-dialog .term-backlinks a').first();assert((await backlink.getAttribute('href')).startsWith('../lessons/'));
  await p.locator('#all-terms').click();await p.locator('#term-query').fill('NA');assert((await p.locator('#term-results').innerText()).includes('缺失值'));
  await p.locator('#term-query').fill('not-a-term');assert((await p.locator('#term-status').innerText()).includes('0'));
- await p.keyboard.press('Escape');assert(!(await p.locator('#glossary-dialog').isVisible()));
+ await p.keyboard.press('Escape');await p.locator('#glossary-dialog').waitFor({state:'hidden'});assert(!(await p.locator('#glossary-dialog').isVisible()));
  await p.locator('.zoom-image').first().click();assert(await p.locator('#image-dialog').isVisible());await p.keyboard.press('Escape');
- await p.locator('.copy-code').first().click();assert((await p.locator('#toast').innerText()).match(/复制/));
+ await p.locator('.copy-code').first().click();await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('复制'));assert((await p.locator('#toast').innerText()).match(/复制/));
  await p.locator('.quiz input').nth(course.lessons[26].quiz.answer).check();await p.locator('.check-quiz').click();assert((await p.locator('.quiz-status').innerText()).includes('理解正确'));
- await p.setViewportSize({width:390,height:844});await noOverflow(p);await p.screenshot({path:path.join(out,'confidence-interval-mobile.png'),fullPage:true});
+ await p.setViewportSize({width:390,height:844});await noOverflow(p);await p.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await frames(p);await p.screenshot({path:path.join(out,'confidence-interval-mobile.png'),fullPage:true});
  checks.push('glossary search, empty result, contextual backlink, Escape, figure zoom, copy and quiz feedback');
  await p.goto(file('reading.html'));await p.emulateMedia({media:'print'});await p.evaluate(()=>window.dispatchEvent(new Event('beforeprint')));assert.equal(await p.locator('main details:not([open])').count(),0);await p.emulateMedia({media:'screen'});
  await p.goto(file('index.html'));await p.keyboard.press('Tab');assert(await p.locator('.skip-link').evaluate(x=>x===document.activeElement));

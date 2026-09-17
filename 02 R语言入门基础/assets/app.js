@@ -51,6 +51,7 @@
   $('term-query').oninput=()=>renderTerms();$('term-category').onchange=()=>renderTerms();
   $('all-terms').onclick=()=>{$('term-query').value='';$('term-category').value='';renderTerms();$('term-query').focus();};
   for(const dialog of [glossary,image]){dialog.addEventListener('close',()=>{if(opener?.isConnected)opener.focus({preventScroll:true});});}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const dialog=image.open?image:glossary.open?glossary:null;if(dialog){e.preventDefault();dialog.close();}}},true);
   document.addEventListener('click',async e=>{
     const close=e.target.closest('[data-close]');if(close){$(close.dataset.close).close();return;}
     const term=e.target.closest('[data-term]');if(term){e.preventDefault();openTerms(term,term.dataset.term);return;}

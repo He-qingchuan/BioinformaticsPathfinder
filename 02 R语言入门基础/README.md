@@ -40,7 +40,7 @@ python tools/package.py
 
 上述命令供维护者在本教材目录中使用。若 Rscript 不在 PATH，可向两个 R 检查程序传入 `--rscript /path/to/Rscript`。只有显式运行 `qa/check_r.py --record` 才更新参考输出和统计图；更新后检查差异再提交。正常检查在临时项目中执行，不覆盖输入或预期结果。
 
-推荐验证基线为 R 4.6.1。实现时的本地兼容性运行使用 R 4.5.3、dplyr 1.2.1、tidyr 1.3.2、stringr 1.6.0 和 ggplot2 4.0.3；跨平台状态与最终范围记录在 [qa/README.md](qa/README.md)。每次实际运行保存环境信息，统计图允许跨操作系统字体渲染差异，数值及数据关系须通过验证。
+R 4.6.1 的 Windows、macOS 和 Linux 三个平台已通过代码与统计检查。实现时的本地兼容性运行使用 R 4.5.3、dplyr 1.2.1、tidyr 1.3.2、stringr 1.6.0 和 ggplot2 4.0.3；跨平台状态与最终范围记录在 [qa/README.md](qa/README.md)。每次实际运行保存环境信息，统计图允许跨操作系统字体渲染差异，数值及数据关系须通过验证。
 
 ## 版本与来源
 
