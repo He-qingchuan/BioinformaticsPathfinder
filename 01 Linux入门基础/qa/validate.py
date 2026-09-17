@@ -11,6 +11,7 @@ import sys
 import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
+EXCLUDED={'__pycache__','artifacts','dist','node_modules'}
 
 
 class Page(HTMLParser):
@@ -24,7 +25,7 @@ class Page(HTMLParser):
 
 
 def manifest(root):
-    return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file() and not any(x in p.parts for x in ['__pycache__','artifacts','dist'])}
+    return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file() and not EXCLUDED.intersection(p.relative_to(root).parts)}
 
 
 def main():
@@ -34,7 +35,7 @@ def main():
         assert all(t[k] for k in ['zh','en','summary','example','pitfall','in_course']),t['id']
     pages={}
     for path in ROOT.rglob('*.html'):
-        if any(x in path.parts for x in ['dist','artifacts']):continue
+        if EXCLUDED.intersection(path.relative_to(ROOT).parts):continue
         p=Page();content=path.read_text();p.feed(content)
         assert len(p.ids)==len(set(p.ids)),f'duplicate ids: {path}'
         assert '{{' not in content and '@@BLOCK' not in content,path
@@ -60,7 +61,7 @@ def main():
         assert '{{exercise:' in body and '{{answer:' in body and len(body)>650
     # Copy just this course, then rebuild while denying access to the original project.
     with tempfile.TemporaryDirectory(prefix='linux-independent-') as temp:
-        moved=Path(temp)/'独立 教材';shutil.copytree(ROOT,moved,ignore=shutil.ignore_patterns('artifacts','__pycache__','dist'))
+        moved=Path(temp)/'独立 教材';shutil.copytree(ROOT,moved,ignore=shutil.ignore_patterns(*EXCLUDED))
         before=manifest(moved)
         guard='''import pathlib,runpy,sys
 root=pathlib.Path(sys.argv[1]).resolve(); forbidden=pathlib.Path(sys.argv[2]).resolve()
