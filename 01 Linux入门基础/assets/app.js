@@ -7,15 +7,32 @@
   const image = $('image-dialog');
   const key = 'pathfinder-linux-read-v1';
   let read = new Set(), storageWorks = true, opener = null, toastTimer;
-  try { const a=JSON.parse(localStorage.getItem(key)||'[]'); if(Array.isArray(a)) read=new Set(a.filter(x=>/^\d{2}$/.test(x)&&+x>=1&&+x<=18)); } catch { storageWorks=false; }
+  function loadProgress(){
+    try { const a=JSON.parse(localStorage.getItem(key)||'[]'); read=new Set(Array.isArray(a)?a.filter(x=>/^\d{2}$/.test(x)&&+x>=1&&+x<=18):[]);storageWorks=true; } catch { storageWorks=false; }
+  }
+  loadProgress();
   function toast(s){$('toast').textContent=s;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2600);}
   function progress(){
-    document.querySelectorAll('[data-course-lesson]').forEach(a=>a.classList.toggle('is-read',read.has(a.dataset.courseLesson)));
-    if($('progress-summary')) $('progress-summary').textContent=`已读 ${read.size} / 18 节 · 每一步都可以回看`;
-    if($('continue-link')&&read.size){const n=Array.from({length:18},(_,i)=>String(i+1).padStart(2,'0')).find(x=>!read.has(x));$('continue-link').href=n?`lessons/${n}.html`:'lessons/18.html';$('continue-link').textContent=n?'继续阅读 →':'再看综合实践 →';}
+    const next=Array.from({length:18},(_,i)=>String(i+1).padStart(2,'0')).find(x=>!read.has(x));
+    document.querySelectorAll('[data-course-lesson]').forEach(a=>{
+      const done=read.has(a.dataset.courseLesson),suggested=a.dataset.courseLesson===next;
+      a.classList.toggle('is-read',done);a.classList.toggle('is-next',suggested);
+      const state=a.querySelector('.map-state'),symbol=a.querySelector('.map-lesson-status');
+      if(state)state.textContent=done?'已读':suggested?'建议下一站':'未读';
+      if(symbol)symbol.textContent=done?'✓':suggested?'→':'↗';
+    });
+    document.querySelectorAll('[data-zone-lessons]').forEach(zone=>{
+      const ids=zone.dataset.zoneLessons.split(','),count=ids.filter(id=>read.has(id)).length;
+      zone.querySelector('.zone-progress').textContent=`${count} / ${ids.length} 已读`;
+      zone.classList.toggle('is-complete',count===ids.length);
+    });
+    if($('progress-summary')) $('progress-summary').textContent=`已读 ${read.size} / 18 节${read.size===18?' · 随时回来看看':''}`;
+    if($('continue-link')){$('continue-link').href=next?`lessons/${next}.html`:'lessons/18.html';$('continue-link').textContent=!read.size?'从营地出发 ↗':next?'继续阅读 →':'再看综合实践 →';}
     if($('mark-read')){$('mark-read').textContent=read.has(document.body.dataset.lesson)?'本节已读 ✓':'标记本节已读';$('mark-read').setAttribute('aria-pressed',String(read.has(document.body.dataset.lesson)));}
   }
   progress();
+  window.addEventListener('pageshow',()=>{loadProgress();progress();});
+  window.addEventListener('storage',event=>{if(event.key===key||event.key===null){loadProgress();progress();}});
   if($('mark-read')) $('mark-read').onclick=()=>{const id=document.body.dataset.lesson;read.has(id)?read.delete(id):read.add(id);try{localStorage.setItem(key,JSON.stringify([...read]));}catch{storageWorks=false;}progress();if(!storageWorks)toast('本次阅读已记录；浏览器限制了跨次保存。');};
   if($('focus-mode')) $('focus-mode').onclick=()=>{const on=document.body.classList.toggle('focus-reading');$('focus-mode').textContent=on?'退出专注阅读':'专注阅读';$('focus-mode').setAttribute('aria-pressed',String(on));};
   function renderTerms(exact){

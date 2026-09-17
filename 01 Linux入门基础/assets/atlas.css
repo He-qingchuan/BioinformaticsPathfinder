@@ -1,0 +1,165 @@
+/* The atlas is a continuous landscape; lesson labels remain ordinary links. */
+.home-page [hidden] { display: none !important; }
+.atlas-intro { max-width: 1360px; margin: auto; padding: 40px 40px 32px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 55px; align-items: center; }
+.atlas-intro .eyebrow { margin-bottom: 12px; }
+.atlas-intro h1 { font: 600 clamp(32px, 3.3vw, 48px)/1.4 var(--display); letter-spacing: -.8px; margin: 0 0 12px; }
+.atlas-intro .intro-description { color: var(--muted); font-size: 15px; line-height: 1.9; margin: 0; }
+.atlas-intro .hero-actions { margin-top: 22px; }
+.expedition-note { border-left: 2px solid #b6c9b7; padding: 12px 0 12px 30px; max-width: 360px; justify-self: end; }
+.expedition-note .eyebrow { color: #7b7855; font-size: 11px; letter-spacing: 2px; }
+.expedition-note strong { display: block; font: 600 22px/1.75 var(--display); }
+.expedition-note p:last-child { font-size: 13px; color: var(--muted); margin-bottom: 0; }
+.expedition-note .note-path { color: var(--teal); letter-spacing: 1px; }
+.atlas-section { max-width: 1480px; margin: auto; padding: 8px 32px 36px; }
+.atlas-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 8px 5px 17px; }
+.atlas-toolbar h2 { font: 600 27px/1.4 var(--display); margin: 0; }
+.atlas-toolbar .eyebrow { margin-bottom: 5px; font-size: 10px; }
+.atlas-controls { display: flex; align-items: center; gap: 14px; }
+.atlas-view-switch { display: flex; padding: 3px; border: 1px solid #c3d3c5; border-radius: 9px; background: #e7eee8; }
+.atlas-view-switch button { border: 0; background: none; min-width: 60px; min-height: 44px; padding: 6px 14px; font-size: 13px; }
+.atlas-view-switch [aria-pressed="true"] { color: #fff; background: var(--teal); box-shadow: 0 2px 4px #244b3c16; }
+#atlas-motion { min-height: 44px; font-size: 12px; background: transparent; border-color: #bdcebf; min-width: 105px; padding: 7px 12px; }
+#atlas-motion:disabled { opacity: .8; }
+.atlas-help { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin: 0 5px 14px; color: var(--muted); font-size: 12px; }
+.atlas-help p { margin: 0; }
+.atlas-help #progress-summary { color: var(--teal); white-space: nowrap; }
+.atlas-map { position: relative; isolation: isolate; aspect-ratio: 1440 / 1100; background: #e6efdf; border: 1px solid #b6cbb6; border-radius: 20px; overflow: hidden; }
+.atlas-scenery { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+.atlas-portrait { display: none; }
+.map-corner-note { position: absolute; left: 28px; top: 12px; margin: 0; color: #627d64; font-size: 12px; line-height: 1.8; }
+.map-corner-note span { display: block; font: 10px/2 var(--mono); letter-spacing: 2px; color: #7e9077; }
+.atlas-zone { position: absolute; width: 24%; transform: translateX(-50%); text-align: center; }
+.zone-camp { left: 20%; top: 12%; }
+.zone-files { left: 50%; top: 7%; }
+.zone-clues { left: 80%; top: 12%; }
+.zone-stream { left: 80%; top: 56%; }
+.zone-watch { left: 50%; top: 55%; }
+.zone-scripts { left: 20%; top: 56%; }
+.zone-art { width: 100%; margin: 0 auto; line-height: 0; }
+.landmark { width: 100%; max-width: 244px; height: clamp(92px, 10.5vw, 150px); overflow: visible; }
+.zone-meta { display: flex; gap: 16px; justify-content: center; align-items: center; margin: 0 0 2px; color: #4f6b51; font-size: 10px; line-height: 1.6; }
+.zone-meta>span:first-child { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; }
+.zone-progress { border-left: 1px solid #b6c7a8; padding-left: 16px; }
+.zone-info h3 { font: 600 clamp(18px, 1.7vw, 24px)/1.5 var(--display); margin: 0; color: #284e42; }
+.zone-subtitle { margin: 2px 0 11px; font-size: 11px; color: #516c53; }
+.zone-lessons { list-style: none; padding: 0; margin: 0 auto; display: grid; gap: 4px; max-width: 266px; text-align: left; }
+.zone-lessons li { margin: 0; }
+.map-lesson { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 5px 10px 5px 7px; border-radius: 7px; background: #fffef0; border: 1px solid #bfceb1; color: #315647; text-decoration: none; box-shadow: 0 2px 0 #bac7a84f; transition: background .15s, border-color .15s, transform .15s; }
+.map-lesson-number { flex-shrink: 0; display: grid; place-items: center; width: 28px; height: 27px; border-right: 1px solid #d0d9bc; padding-right: 6px; font: 11px/1 var(--mono); color: #607457; }
+.map-lesson-title { font-size: clamp(14px, 1.1vw, 15px); font-weight: 500; line-height: 1.55; }
+.map-lesson-status { margin-left: auto; font-size: 14px; color: #829876; padding-left: 2px; }
+.map-lesson:hover,.map-lesson:focus-visible { background: #fffced; border-color: #789f7c; transform: translateY(-2px); color: #234f43; }
+.map-lesson.is-read { background: #dcebd8; border-color: #a5bea1; }
+.map-lesson.is-read .map-lesson-status { color: #357657; font-weight: 700; }
+.map-lesson.is-next { border-color: #b39558; background: #fff4d7; box-shadow: 0 0 0 2px #debd7333, 0 2px 0 #c4bc9770; }
+.map-lesson.is-next .map-lesson-number { color: #94682f; }
+.map-lesson.is-next .map-lesson-status { color: #95662d; }
+.atlas-zone.is-complete .zone-progress { color: #2d7253; font-weight: 600; }
+.trail-highlight { transition: stroke .2s, stroke-width .2s; }
+.trail-section.is-active .trail-highlight { stroke: #3c7d62; stroke-width: 4; stroke-dasharray: 3 8; }
+.atlas-legend { display: flex; align-items: center; gap: 23px; margin: 15px 5px 0; color: var(--muted); font-size: 12px; }
+.atlas-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.atlas-legend b { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 10px; line-height: 1; font-weight: 500; }
+.legend-next { color: #88642e; background: #f5e3b9; border: 1px solid #bba56b; }
+.legend-read { color: #327452; background: #dcebd8; border: 1px solid #9bb59a; }
+.legend-open { color: #5f7e60; background: #f8f9e8; border: 1px solid #b1c1a5; }
+.atlas-legend .legend-note { margin-left: auto; }
+.map-directory { padding: 18px 28px 0; }
+.map-directory h3 { font-family: var(--display); }
+.map-directory .lesson-list a { min-height: 44px; }
+.home-page .start-note { margin-top: 22px; }
+.home-page .site-header nav a,.home-page .hero-actions>a:not(.primary) { min-height: 44px; display: inline-flex; align-items: center; }
+.home-page .site-header { padding-top: 15px; padding-bottom: 15px; }
+.atlas-noscript { font-size: 13px; color: var(--muted); }
+
+/* Every moving element has a paused base state: a static map also works without JS. */
+.cloud-drift { animation: atlas-cloud 38s ease-in-out infinite alternate; }
+.cloud-slow { animation-duration: 49s; animation-delay: -16s; }
+.bird-flight { animation: atlas-flight 22s linear infinite; animation-delay: -7s; }
+.bird-wing { animation: atlas-wing 1.3s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+.bird-wing path { fill: none; stroke: #547669; stroke-width: 2.5px; stroke-linecap: round; }
+.tree-crown { animation: atlas-sway 7s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: bottom center; }
+.waterwheel { animation: atlas-wheel 20s linear infinite; transform-box: fill-box; transform-origin: center; }
+.water-current { animation: atlas-stream 16s linear infinite; }
+.atlas-map .atlas-moving { animation-play-state: paused; }
+.atlas-map[data-motion="playing"] .atlas-moving { animation-play-state: running; }
+@keyframes atlas-cloud { from { transform: translateX(-16px); } to { transform: translateX(23px); } }
+@keyframes atlas-flight { 0% { transform: translate(-65px, 5px); opacity: 0; } 10% { opacity: 1; } 45% { transform: translate(36px, -16px); } 85% { opacity: 1; } 100% { transform: translate(182px, 3px); opacity: 0; } }
+@keyframes atlas-wing { from { transform: scaleY(.7); } to { transform: scaleY(1.15); } }
+@keyframes atlas-sway { from { transform: rotate(-1.5deg); } to { transform: rotate(1.5deg); } }
+@keyframes atlas-wheel { to { transform: rotate(360deg); } }
+@keyframes atlas-stream { to { stroke-dashoffset: -145; } }
+
+@media (max-width: 1100px) and (min-width: 1024px) {
+  .atlas-section { padding-inline: 20px; }
+  .atlas-zone { width: 25.5%; }
+  .zone-subtitle { margin-bottom: 7px; }
+  .zone-meta { gap: 8px; }
+  .zone-progress { padding-left: 8px; }
+  .landmark { height: 90px; }
+}
+@media (max-width: 1023px) {
+  .atlas-intro { padding: 32px 26px 24px; gap: 28px; }
+  .atlas-intro h1 { font-size: 35px; }
+  .expedition-note { padding-left: 23px; }
+  .expedition-note strong { font-size: 18px; }
+  .atlas-section { max-width: 800px; padding: 8px 24px 28px; }
+  .atlas-map { aspect-ratio: auto; display: grid; gap: 8px; padding: 64px 22px 72px; }
+  .atlas-landscape { display: none; }
+  .atlas-portrait { display: block; }
+  .atlas-zone { position: relative; width: auto; left: auto; top: auto; transform: none; display: grid; grid-template-columns: 28% minmax(0,1fr); align-items: center; gap: 18px; min-height: 272px; text-align: left; }
+  .zone-art { transform: translateX(-5px); }
+  .landmark { height: auto; max-width: 190px; }
+  .zone-meta { justify-content: flex-start; font-size: 11px; }
+  .zone-info h3 { font-size: 22px; }
+  .zone-subtitle { margin-bottom: 10px; font-size: 12px; }
+  .zone-lessons { margin: 0; max-width: none; gap: 6px; }
+  .map-lesson { min-height: 46px; }
+  .map-lesson-title { font-size: 15px; }
+  .map-corner-note { top: 15px; left: 22px; }
+  .atlas-legend { flex-wrap: wrap; gap: 10px 18px; }
+  .atlas-legend .legend-note { margin-left: 0; }
+}
+@media (max-width: 700px) {
+  .atlas-intro { display: block; padding: 25px 22px 20px; }
+  .atlas-intro h1 { font-size: 33px; }
+  .atlas-intro .intro-description { font-size: 14px; }
+  .atlas-intro .eyebrow { font-size: 10px; }
+  .expedition-note { display: none; }
+  .atlas-intro .hero-actions { margin-top: 18px; gap: 18px; font-size: 12px; }
+  .atlas-intro .primary { padding: 11px 18px; font-size: 14px; gap: 20px; }
+  .atlas-section { padding: 8px 14px 22px; }
+  .atlas-toolbar { flex-wrap: wrap; gap: 12px; padding-inline: 8px; }
+  .atlas-toolbar h2 { font-size: 24px; }
+  .atlas-controls { width: 100%; justify-content: space-between; gap: 8px; }
+  .atlas-view-switch button { min-width: 66px; }
+  .atlas-help { flex-direction: column; gap: 4px; padding-inline: 5px; font-size: 11px; }
+  .atlas-map { padding: 65px 12px 65px; border-radius: 14px; gap: 10px; }
+  .atlas-zone { gap: 8px; grid-template-columns: 25% minmax(0,1fr); min-height: 272px; }
+  .zone-info h3 { font-size: 21px; }
+  .zone-meta { gap: 8px; font-size: 10px; }
+  .zone-progress { padding-left: 8px; }
+  .zone-subtitle { font-size: 11px; }
+  .map-lesson { gap: 5px; padding: 5px 7px 5px 4px; }
+  .map-lesson-title { font-size: 14px; }
+  .map-lesson-number { width: 24px; font-size: 10px; padding-right: 4px; }
+  .map-lesson-status { font-size: 12px; }
+  .map-corner-note { left: 18px; font-size: 11px; }
+  .atlas-legend { font-size: 11px; margin-left: 8px; margin-right: 8px; gap: 10px 15px; }
+  .atlas-legend .legend-note { width: 100%; }
+  .map-directory { padding: 0 8px; }
+  .home-page .site-header { gap: 6px; padding-bottom: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-map .atlas-moving { animation: none !important; }
+  .map-lesson,.trail-highlight { transition: none; }
+  html { scroll-behavior: auto; }
+}
+@media print {
+  .atlas-intro { display: block; padding: 20px 0; }
+  .atlas-map,.atlas-controls,.atlas-legend,.expedition-note,.atlas-help { display: none !important; }
+  .home-page .map-directory[hidden] { display: block !important; }
+  .atlas-section { padding: 0; }
+  .map-directory { padding: 0; }
+  .atlas-moving { animation: none !important; }
+}
