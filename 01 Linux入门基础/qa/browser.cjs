@@ -20,7 +20,7 @@ async function images(page){await page.locator('img[src]').evaluateAll(xs=>xs.fo
  const page=await context.newPage();
  page.on('pageerror',e=>report.errors.push(e.message));
  page.on('request',r=>{if(/^https?:/.test(r.url()))report.externalRequests.push(r.url());});
- await page.goto(url('index.html'));await images(page);assert.equal(await page.locator('[data-course-lesson]').count(),18);
+ await page.goto(url('index.html'));await images(page);assert.equal(await page.locator('#atlas-map [data-course-lesson]').count(),18);assert.equal(await page.locator('#map-directory [data-course-lesson]').count(),18);
  await page.screenshot({path:path.join(out,'home-1440.png'),fullPage:true});
  for(let i=1;i<=18;i++){
   const id=String(i).padStart(2,'0');await page.goto(url(`lessons/${id}.html`));await images(page);
@@ -61,7 +61,7 @@ async function images(page){await page.locator('img[src]').evaluateAll(xs=>xs.fo
  const plain=await browser.newContext({javaScriptEnabled:false,offline:true});const staticPage=await plain.newPage();await staticPage.goto(url('lessons/04.html'));await staticPage.locator('[data-term="cwd"]').first().click();assert.match(staticPage.url(),/reading.html#term-cwd$/);assert.equal(await staticPage.locator('#term-cwd').count(),1);await plain.close();
  const blocked=await browser.newContext({offline:true});await blocked.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked for test')}});});const bp=await blocked.newPage();await bp.goto(url('lessons/03.html'));await bp.click('#mark-read');assert.match(await bp.locator('#toast').textContent(),/浏览器限制/);await blocked.close();
  server=http.createServer((req,res)=>{let name=decodeURIComponent(req.url.split('?')[0]);if(name.endsWith('/'))name+='index.html';const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404).end();return;}const type={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'}[path.extname(file)]||'application/octet-stream';res.setHeader('Content-Type',type);res.end(data);});});
- await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const online=await browser.newContext();const op=await online.newPage();await op.goto(`http://127.0.0.1:${server.address().port}/`);await op.locator('[data-course-lesson="03"]').click();assert.match(op.url(),/lessons\/03.html$/);await online.close();
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const online=await browser.newContext();const op=await online.newPage();await op.goto(`http://127.0.0.1:${server.address().port}/`);await op.locator('#atlas-map [data-course-lesson="03"]').click();assert.match(op.url(),/lessons\/03.html$/);await online.close();
  report.checks.push('offline file protocol','HTTP navigation','no-JavaScript glossary fallback','blocked localStorage','print answers and glossary');
  assert.deepEqual(report.errors,[]);assert.deepEqual(report.externalRequests,[]);
  fs.writeFileSync(path.join(out,'browser.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

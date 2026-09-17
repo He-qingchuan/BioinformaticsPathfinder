@@ -34,6 +34,7 @@ jobs:
           python tools/build.py
           python qa/validate.py
           node qa/browser.cjs
+          node qa/atlas.cjs
           python tools/package.py
       - name: Generated pages match committed sources
         run: git diff --exit-code -- '01 Linux入门基础'
@@ -44,4 +45,5 @@ jobs:
           path: |
             01 Linux入门基础/qa/artifacts/*.json
             01 Linux入门基础/qa/artifacts/*.png
+            01 Linux入门基础/qa/artifacts/*.webm
             01 Linux入门基础/dist/*.zip
