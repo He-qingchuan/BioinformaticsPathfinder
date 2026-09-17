@@ -1,0 +1,87 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>README.md</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/web/README.md" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>README.md</h1><h1>web｜单细胞结果阅览</h1>
+<p>在课程根目录启动：</p>
+<pre><code class="language-bash">bash web/start.sh
+# 若端口已占用，指定另一个空闲端口：
+bash web/start.sh 8768
+</code></pre>
+<p>打开终端输出的 <code>http://127.0.0.1:8767</code>（或所选端口）。保留该终端，按 Ctrl+C 停止。脚本从自身位置寻找课程根目录，可以整体搬迁；不依赖本服务器路径。</p>
+<p>服务器上的网页在服务器回环地址监听。自己的电脑需用编辑器“端口转发”，或运行 <code>ssh -L 8767:127.0.0.1:8767 用户名@服务器地址</code> 后在电脑浏览器打开同一地址。这里只提供本地阅读服务，没有公网账户与访问控制，不应直接改成公网监听。</p>
+<h2>怎么看</h2>
+<ol>
+<li><strong>当前项目</strong>：选择自己的研究；<code>tutorial_example</code> 明确标为历史参考。不同项目的图表与报告分开。</li>
+<li><strong>分析步骤</strong>：阅读目的、方法、当前尝试、运行摘要、交互记录和有效解读。等待输入、等待确认、跳过、过期与失败分别显示。保存时状态与刷新后核验状态是不同概念。</li>
+<li><strong>结果图册</strong>：按章节、当前/历史尝试、候选路线、图形类型和文件类型筛选；每页 24 项。悬停或键盘聚焦看摘要，点击看原图和完整说明。可以适合窗口、原始尺寸查看及下载原件。</li>
+<li><strong>数字表</strong>：点击 CSV/TSV，预览数据并阅读逐列含义。保留重复列和双层表头；最多 80 行、512 列、1 MiB，完整表通过下载获取。原表空值不自动填 0。</li>
+<li><strong>课件与说明</strong>：读取当前项目 Notebook 的完整源码、注释及 Markdown 报告；Word 点击下载后打开。Notebook 输出图在图册查看。</li>
+<li><strong>原理与读图</strong>：页首进入同一端口下的固定海岛教程；它使用独立复制的骨髓材料，不随项目切换而变化。也可以直接打开 <code>tutorials/scrna_island/01_海岛探险教案.html</code> 离线学习。</li>
+</ol>
+<p>本页只读已有产物，不调用 Notebook、模型或路线确认。完成分析、<code>review</code>、<code>redraw</code> 后点击“刷新项目与结果”。核验可能读取较大的检查点；期间显示“尚未核验”，不会用旧状态冒充完成。修改科学参数后继续按 99 指南重跑和更新报告。</p>
+<h2>图片说明与报告怎样更新</h2>
+<ul>
+<li>历史图片的详细说明绑定图片 SHA256；只有原图内容一致才使用该案例说明。重绘改变图片后，网页自动退回类型阅读提示，避免错误沿用旧数值。</li>
+<li>新项目根据执行 Notebook 中明确的绘图调用提供阅读提示。未知图形明确待核对；不是自动生物学结论。AI 必须读原图、运行摘要、实际表格后撰写本章解读。</li>
+<li>本章解读复用课程已有 <code>chapter_status</code> / <code>review_valid</code> 检查；过期正文不会作为“本章有效解读”显示。文档页和下载保留原文件供复查，不能把下载到旧文件理解为当前有效。</li>
+<li>网页不重建 Word。用户改图后，AI 仍需 <code>redraw → 看图 → review/report</code>，随后刷新网页并下载更新后的 Word。</li>
+<li><code>.viewer/thumbs/</code> 是每个项目内可删除、可重建的缩略图缓存，不是科学结果。原图时间/大小改变后更新；若不能写缓存则使用原图。需要完全不写缓存时：<code>SC_WEB_THUMBNAILS=0 bash web/start.sh</code>。</li>
+</ul>
+<h2>环境</h2>
+<p>通常先按根目录迁移说明运行 <code>bash setup.sh</code>。主环境已锁定 Tornado、Mistune、Pillow，无需 R/Shiny 或联网前端库。</p>
+<p>只阅读既有结果时，可单独使用 Python 3.12 网页环境；这不代表科学分析环境已经验收：</p>
+<pre><code class="language-bash">conda create --prefix .envs/web python=3.12 pip
+.envs/web/bin/python -m pip install -r web/requirements.txt
+SC_WEB_PYTHON=&quot;$PWD/.envs/web/bin/python&quot; bash web/start.sh
+</code></pre>
+<p>如果解释器/依赖缺失，启动脚本会明确停止。将已初始化的 <code>.envs/sc_rna</code> 直接搬家仍受 Conda 路径限制，按根目录迁移说明处理。静态海岛教程的已生成 HTML 不需要 Python 或 Conda。</p>
+<h2>文件导航（包括下级文件）</h2>
+<table>
+<thead>
+<tr>
+  <th>文件或目录</th>
+  <th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>start.sh</code>、<code>check_runtime.py</code>、<code>requirements.txt</code></td>
+  <td>相对路径启动、网页依赖检查、独立网页环境版本</td>
+</tr>
+<tr>
+  <td><code>app.py</code></td>
+  <td>本地 HTTP 服务；项目、状态、预览、下载和教程路由</td>
+</tr>
+<tr>
+  <td><code>viewer.py</code></td>
+  <td>扫描当前与历史尝试、受限文件路径、缩略图、Markdown/源码预览</td>
+</tr>
+<tr>
+  <td><code>check_status.py</code></td>
+  <td>只读子进程，调用原课程的状态和解读有效性判定</td>
+</tr>
+<tr>
+  <td><code>explanations.py</code></td>
+  <td>图形类型识别与表格字段解释；未知保持未知</td>
+</tr>
+<tr>
+  <td><code>descriptions/figures.json</code></td>
+  <td>各类图形的用途、坐标、编码、读法和边界</td>
+</tr>
+<tr>
+  <td><code>descriptions/case_catalog.json</code></td>
+  <td>历史案例逐图说明、生成代码与原图 SHA256</td>
+</tr>
+<tr>
+  <td><code>www/index.html</code>、<code>www/viewer.js</code></td>
+  <td>页面结构与交互；不进行分析</td>
+</tr>
+<tr>
+  <td><code>www/reference.css</code>、<code>www/viewer.css</code></td>
+  <td>参考项目海岛风格及本项目控件适配</td>
+</tr>
+<tr>
+  <td><code>tests/test_viewer.py</code></td>
+  <td>小型临时夹具的展示层测试，不在研究目录生成科学结果</td>
+</tr>
+</tbody>
+</table>
+<p>维护时在临时课程副本修改并审核，新增图形需要实际看图、对照源代码及表格后补充说明。不要把浏览器测试截图、维护记录或临时项目放进学生包。</p>
+</main></body></html>

@@ -1,0 +1,230 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>11_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/11_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>11_executed.ipynb</h1><section><small>单元格 0</small><h1>第 11 章 CellTypist 自动注释</h1>
+<h2>学习目标</h2>
+<p>学习自动注释，并用标记基因和手工结果检查模型预测。</p>
+<h2>为什么做与怎样做</h2>
+<p>从 counts 层构造每细胞 10,000 counts 的 log1p 输入，加载本地 High/Low 模型。分别保存单细胞预测、多数投票标签及与标签对应的置信度。</p>
+<p>前置章节：10。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;11&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>11.1 自动注释</h2>
+</section><section><small>单元格 3</small><pre><code># 功能说明：更新图形输出目录。
+# 运行目的：为自动注释部分设置单独的图片保存路径。
+
+# 设置输出目录
+sc.settings.figdir = ctx.figures</code></pre></section><section><small>单元格 4</small><p>与手动注释数据方法不同，如下所述，生成的注释质量可能参差不齐。因此，重要的是将这些方法视为注释过程的起点而不是终点。
+如前所述，自动生成的注释质量可能会有所不同。更具体地说，注释的质量取决于：</p>
+<ol>
+<li>分类器训练数据的质量。如果训练数据没有得到很好的注释或注释分辨率很低，分类器也会这样做。同样，如果训练数据和/或其注释有噪声，分类器可能表现不佳。<br></li>
+<li>您自己的数据与分类器训练数据的相似性。例如，如果分类器是在 drop-seq 单细胞数据集上训练的，而您的数据是 10X 单核而不是单细胞 drop-seq，这可能会降低注释的质量。在包含多种数据集的跨数据集图谱上训练的分类器可能比在单个数据集上训练的分类器提供更稳健和质量更好的注释。一个例子是在人类肺细胞图谱 （参考文献：anno:Sikkema2023） 上训练的 CellTypist（一种将在下面更广泛讨论的自动注释方法）分类器，其中包括 14 个不同的肺数据集。该模型在新肺数据上的表现可能优于在单个肺数据集上训练的模型。</li>
+</ol>
+<p>上述几点强调了使用分类器的可能缺点，具体取决于训练数据和模型类型。尽管如此，使用预训练分类器注释数据有几个重要的优点。首先，这是一种快速简便的注释数据的方法。注释不需要下载也不需要预处理训练数据，有时只涉及将数据上传到在线网页。其次，这些方法不依赖于将数据划分为簇，就像手动注释那样。第三，预训练分类器使您能够直接利用先前研究的知识和信息，例如高质量的注释。最后，使用此类分类器有助于协调整个领域的细胞类型定义，从而为就这些定义达成全领域共识扫清道路。</p>
+</section><section><small>单元格 5</small><p>值得注意的是，到目前为止讨论的方法仅使用了数据中检测到的一小部分基因：通常每个细胞类型仅使用 1 到 ~10 个标记基因。另一种方法是使用将更大的基因集（数千个或更多）作为输入的分类器，从而更多地利用 scRNA-seq 数据的广度。此类分类器在先前注释的数据集或图谱上进行训练。这些示例包括 CellTypist （参考文献：anno:Conde2022）（另请参见 https://www.celltypist.org，可以将数据上传到门户以获得自动细胞注释）和 Clustifyr （参考文献：anno:Fu2020）。</p>
+</section><section><small>单元格 6</small><p>让我们在我们的数据上试用 CellTypist。根据 CellTypist 教程 (https://www.celltypist.org/tutorials;https://www.celltypist.org/models)，我们知道我们需要准备数据，以便将计数归一化为每个细胞 10,000 个计数，然后进行 log1p 转换：</p>
+</section><section><small>单元格 7</small><pre><code># 从 counts 构造模型要求的输入；主分析对象的 log1p 层保持原含义。
+adata_celltypist = adata.copy()
+adata_celltypist.X = adata_celltypist.layers[&quot;counts&quot;].copy()
+sc.pp.normalize_total(adata_celltypist, target_sum=10**4)
+sc.pp.log1p(adata_celltypist)
+# CellTypist 接受稀疏 AnnData；模型内部仅对所需特征做缩放。</code></pre></section><section><small>单元格 8</small><p>本课程使用随包提供的免疫细胞 CellTypist 模型，可直接从 model 目录加载。</p>
+</section><section><small>单元格 9</small><pre><code># 功能说明：导入 CellTypist 库。
+# 运行目的：加载自动注释所需的工具包。
+# 详细代码解析：
+# - `import celltypist`: 导入主包。
+# - `from celltypist import models`: 导入模型管理模块。
+
+# import sys
+# !{sys.executable} -m pip install celltypist
+
+import celltypist
+from celltypist import models</code></pre></section><section><small>单元格 10</small><pre><code>print(ROOT / &quot;model&quot;)</code></pre></section><section><small>单元格 11</small><pre><code>model_paths = [ROOT / &quot;model/Immune_All_High.pkl&quot;, ROOT / &quot;model/Immune_All_Low.pkl&quot;]
+for path in model_paths:
+    if not path.is_file():
+        raise FileNotFoundError(f&quot;缺少课程模型：{path}&quot;)
+    print(path.name, path.stat().st_size, &quot;bytes&quot;)</code></pre></section><section><small>单元格 12</small><p>让我们尝试 <code>Immune_All_Low</code> 和 <code>Immune_All_High</code> 模型（这些分别在更精细的注释级别（低）和更粗略的级别（高）注释免疫细胞类型）：</p>
+</section><section><small>单元格 13</small><pre><code># 功能说明：加载下载好的 CellTypist 模型。
+# 运行目的：将模型文件读入内存，准备进行预测。
+# 详细代码解析：
+# 1. `models.Model.load(...)`
+#    - 加载指定的模型文件。
+#    - `model_low`: 精细注释模型。
+#    - `model_high`: 粗略注释模型。
+
+model_low = models.Model.load(model=str(ROOT / &quot;model&quot; / &quot;Immune_All_Low.pkl&quot;))
+model_high = models.Model.load(model=str(ROOT / &quot;model&quot; / &quot;Immune_All_High.pkl&quot;))</code></pre></section><section><small>单元格 14</small><p>对于其中的每一个，我们可以查看它包含哪些细胞类型，看看是否包含骨髓细胞类型：</p>
+</section><section><small>单元格 15</small><pre><code># 功能说明：查看粗略模型包含的细胞类型。
+# 运行目的：了解该模型能识别哪些细胞类型，确认是否包含我们感兴趣的类型。
+# 详细代码解析：
+# 1. `model_high.cell_types`
+#    - 打印模型中定义的所有细胞类型标签列表。
+
+model_high.cell_types</code></pre></section><section><small>单元格 16</small><pre><code># 功能说明：查看精细模型包含的细胞类型。
+# 运行目的：了解精细模型能识别哪些具体的细胞亚型。
+
+model_low.cell_types</code></pre></section><section><small>单元格 17</small><p>看起来这些模型包括许多不同的免疫细胞类型祖细胞！
+现在让我们运行模型。首先是粗略的那个：</p>
+</section><section><small>单元格 18</small><pre><code># 功能说明：使用粗略模型进行细胞类型预测。
+# 运行目的：自动注释数据中的细胞类型（粗略级别）。
+# 详细代码解析：
+# 1. `celltypist.annotate(...)`
+#    - `adata_celltypist`: 预处理好的数据对象。
+#    - `model=model_high`: 使用粗略模型。
+#    - `majority_voting=True`:
+#      - 启用多数投票机制。
+#      - 结合细胞周围邻居的预测结果来修正当前细胞的预测，通常能提高准确性并减少噪声。
+
+predictions_high = celltypist.annotate(
+    adata_celltypist, model=model_high, majority_voting=True
+)</code></pre></section><section><small>单元格 19</small><p>将预测转换为 adata 以获得完整输出...</p>
+</section><section><small>单元格 20</small><pre><code># 功能说明：将预测结果转换为 AnnData 对象。
+# 运行目的：方便后续处理和提取结果。
+# 详细代码解析：
+# 1. `.to_adata()`
+#    - 将 `AnnotationResult` 对象转换为 `AnnData` 对象。
+#    - 预测结果（标签、概率等）存储在返回对象的 `.obs` 中。
+
+predictions_high_adata = predictions_high.to_adata(insert_conf_by=&quot;majority_voting&quot;)</code></pre></section><section><small>单元格 21</small><p>...并将结果复制到我们原始的 AnnData 对象：</p>
+</section><section><small>单元格 22</small><pre><code># 功能说明：将粗略注释结果复制回原始 AnnData 对象。
+# 运行目的：将自动注释结果整合到主分析对象中，以便进行可视化和对比。
+# 详细代码解析：
+# 1. `adata.obs[&quot;celltypist_cell_label_coarse&quot;]`
+#    - 存储多数投票后的预测标签 (`&quot;majority_voting&quot;`)。
+# 2. `adata.obs[&quot;celltypist_conf_score_coarse&quot;]`
+#    - 存储预测的置信度分数 (`&quot;conf_score&quot;`)。
+
+adata.obs[&quot;celltypist_cell_label_coarse&quot;] = predictions_high_adata.obs.loc[
+    adata.obs.index, &quot;majority_voting&quot;
+]
+adata.obs[&quot;celltypist_conf_score_coarse&quot;] = predictions_high_adata.obs.loc[
+    adata.obs.index, &quot;conf_score&quot;
+]
+adata.obs[&quot;celltypist_predicted_label_coarse&quot;] = predictions_high.predicted_labels[&quot;predicted_labels&quot;].reindex(adata.obs_names)
+</code></pre></section><section><small>单元格 23</small><p>现在对更精细的注释做同样的事情：</p>
+</section><section><small>单元格 24</small><pre><code># 功能说明：使用精细模型进行细胞类型预测。
+# 运行目的：自动注释数据中的细胞类型（精细级别）。
+# 详细代码解析：
+# 1. `celltypist.annotate(...)`
+#    - 使用 `model_low` 进行预测。
+
+predictions_low = celltypist.annotate(
+    adata_celltypist, model=model_low, majority_voting=True
+)</code></pre></section><section><small>单元格 25</small><pre><code># 功能说明：将精细预测结果转换为 AnnData 对象。
+
+predictions_low_adata = predictions_low.to_adata(insert_conf_by=&quot;majority_voting&quot;)</code></pre></section><section><small>单元格 26</small><pre><code># 功能说明：将精细注释结果复制回原始 AnnData 对象。
+# 运行目的：整合精细注释结果。
+
+adata.obs[&quot;celltypist_cell_label_fine&quot;] = predictions_low_adata.obs.loc[
+    adata.obs.index, &quot;majority_voting&quot;
+]
+adata.obs[&quot;celltypist_conf_score_fine&quot;] = predictions_low_adata.obs.loc[
+    adata.obs.index, &quot;conf_score&quot;
+]
+adata.obs[&quot;celltypist_predicted_label_fine&quot;] = predictions_low.predicted_labels[&quot;predicted_labels&quot;].reindex(adata.obs_names)
+</code></pre></section><section><small>单元格 27</small><p>现在绘图：</p>
+</section><section><small>单元格 28</small><pre><code># 功能说明：在 UMAP 上可视化粗略注释结果和置信度。
+# 运行目的：直观评估自动注释的效果和可靠性。
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - `color=[&quot;celltypist_cell_label_coarse&quot;, &quot;celltypist_conf_score_coarse&quot;]`:
+#      - 左图：展示粗略分类标签。
+#      - 右图：展示分类的置信度分数。颜色越深/亮表示置信度越高。
+#    - `wspace=1`: 增加子图间距。
+
+sc.pl.umap(
+    adata,
+    color=[&quot;celltypist_cell_label_coarse&quot;, &quot;celltypist_conf_score_coarse&quot;],
+    frameon=False,
+    sort_order=False,
+    wspace=1,
+    save=&quot;_11_303.pdf&quot;
+)</code></pre></section><section><small>单元格 29</small><pre><code># 功能说明：在 UMAP 上可视化精细注释结果和置信度。
+# 运行目的：评估精细注释的效果。
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - `color=[&quot;celltypist_cell_label_fine&quot;, &quot;celltypist_conf_score_fine&quot;]`: 展示精细标签和置信度。
+
+sc.pl.umap(
+    adata,
+    color=[&quot;celltypist_cell_label_fine&quot;, &quot;celltypist_conf_score_fine&quot;],
+    frameon=False,
+    sort_order=False,
+    wspace=1,
+    save=&quot;_11_304.pdf&quot;
+)</code></pre></section><section><small>单元格 30</small><p>了解这些注释质量的一种方法是查看观察到的细胞类型相似性是否符合我们的预期：</p>
+</section><section><small>单元格 31</small><pre><code># 功能说明：绘制树状图（Dendrogram），展示预测细胞类型之间的转录组相似性。
+# 运行目的：检查自动注释的细胞类型在转录组水平上是否合理聚类。例如，不同类型的 T 细胞应该聚在一起。如果出现生物学上不合理的聚类（如 T 细胞与红细胞聚在一起），可能提示注释错误。
+# 详细代码解析：
+# 1. `sc.pl.dendrogram(adata, groupby=&quot;celltypist_cell_label_fine&quot;)`
+#    - `sc.pl.dendrogram`: 绘制树状图。
+#    - `groupby=&quot;celltypist_cell_label_fine&quot;`: 计算给定分组（这里是精细注释标签）的平均表达谱，并基于相关性构建树状图。
+
+sc.pl.dendrogram(adata, groupby=&quot;celltypist_cell_label_fine&quot;, save=&quot;_11_306.pdf&quot;)</code></pre></section><section><small>单元格 32</small><p>观察同类或相关细胞群是否具有相似的表达模式。树状图是转录组相似性的概括，不能单独证明发育谱系或断定标签正确。</p>
+</section><section><small>单元格 33</small><p>现在让我们看看我们早期的手动注释：</p>
+</section><section><small>单元格 34</small><pre><code># 功能说明：在 UMAP 上对比手动注释和自动注释结果。
+# 运行目的：直观比较两种注释方法的一致性和差异。
+# 详细代码解析：
+# 1. `color=[...]`:
+#    - `cell_type_res_0.50_lvl2`: 手动二级注释。
+#    - `celltypist_cell_label_coarse`: 自动粗略注释。
+#    - `leiden_res_0_50`: 聚类结果。
+
+# 查看注释结果
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    sc.pl.umap(
+            adata,
+            color=[&quot;cell_type_res_0.50_lvl2&quot;,&quot;celltypist_cell_label_coarse&quot;,&quot;leiden_res_0_50&quot; ],
+            legend_loc=&quot;on data&quot;,
+            save=&quot;_11_309.pdf&quot;,
+            )</code></pre></section><section><small>单元格 35</small><p>比较手工注释与自动标签的一致性，并结合置信度和标记基因解释不一致区域。两者都不是独立的真实标签；一致并不等同于已验证准确。</p>
+</section><section><small>单元格 36</small><p>下面选择精细模型多数投票标签置信度中位数最低的聚类，检查该簇内部的粗、细预测组成。</p>
+</section><section><small>单元格 37</small><pre><code>focus_cluster = adata.obs.groupby(&quot;leiden_res_0_50&quot;, observed=True)[&quot;celltypist_conf_score_fine&quot;].median().idxmin()
+print(&quot;本次检查的聚类：&quot;, focus_cluster)
+# 功能说明：查看特定簇（Cluster 4）在自动注释（粗略）中的构成。
+# 运行目的：定量分析手动聚类与自动注释的对应关系。
+# 详细代码解析：
+# 1. `pd.crosstab(...)`
+#    - 创建交叉表：行是 Leiden 聚类，列是 CellTypist 粗略标签。
+# 2. `.loc[focus_cluster, :]`
+#    - 提取 Cluster 4 的数据。
+# 3. `.sort_values(ascending=False)`
+#    - 排序，查看 Cluster 4 主要被预测为什么类型。
+
+pd.crosstab(adata.obs.leiden_res_0_50, adata.obs.celltypist_cell_label_coarse).loc[
+    focus_cluster, :
+].sort_values(ascending=False)</code></pre></section><section><small>单元格 38</small><pre><code># 功能说明：查看特定簇（Cluster 4）在自动注释（精细）中的构成。
+# 运行目的：更细致地分析 Cluster 4 的成分。
+
+pd.crosstab(adata.obs.leiden_res_0_50, adata.obs.celltypist_cell_label_fine).loc[
+    focus_cluster, :
+].sort_values(ascending=False)</code></pre></section><section><small>单元格 39</small><p>自动注释为进一步审阅提供起点。对不一致或证据不足的标签保留不确定性，并利用已知标记基因、样本组成和模型适用范围继续检查。</p>
+</section><section><small>单元格 40</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 41</small><pre><code>ctx.table(&quot;celltypist_annotations&quot;, adata.obs)
+ctx.table(&quot;manual_vs_auto_coarse&quot;, pd.crosstab(adata.obs[&quot;cell_type_res_0.50_lvl1&quot;], adata.obs[&quot;celltypist_cell_label_coarse&quot;]))
+ctx.table(&quot;manual_vs_auto_fine&quot;, pd.crosstab(adata.obs[&quot;cell_type_res_0.50_lvl2&quot;], adata.obs[&quot;celltypist_cell_label_fine&quot;]))
+ctx.table(&quot;confidence_by_cluster&quot;, adata.obs.groupby(&quot;leiden_res_0_50&quot;, observed=True)[[&quot;celltypist_conf_score_coarse&quot;, &quot;celltypist_conf_score_fine&quot;]].agg([&quot;median&quot;, &quot;mean&quot;, &quot;min&quot;]))
+ctx.finish(adata, {&quot;coarse_labels&quot;: adata.obs[&quot;celltypist_cell_label_coarse&quot;].value_counts().to_dict(), &quot;fine_labels&quot;: adata.obs[&quot;celltypist_cell_label_fine&quot;].value_counts().to_dict(), &quot;median_confidence_coarse&quot;: float(adata.obs[&quot;celltypist_conf_score_coarse&quot;].median()), &quot;median_confidence_fine&quot;: float(adata.obs[&quot;celltypist_conf_score_fine&quot;].median())})</code></pre></section><section><small>单元格 42</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：自动注释与手工注释不一致时，应继续检查哪些证据？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

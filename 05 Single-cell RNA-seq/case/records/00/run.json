@@ -1,0 +1,87 @@
+{
+  "id": "00",
+  "title": "课程导学与运行准备",
+  "attempt": "20260915T072614_3f337a",
+  "status": "complete",
+  "directory": "results/00_orientation/20260915T072614_3f337a",
+  "parents": {},
+  "source_sha256": "144fc48983765ebb643ea66bd0b7b8d494680fd6a5a5cfdbd3109181a2c4d909",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:26:19+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "elapsed_seconds": 3.98,
+  "summary": {
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+      "machine": "x86_64",
+      "scanpy": "1.11.5",
+      "anndata": "0.12.19",
+      "numpy": "2.3.5",
+      "scipy": "1.16.3",
+      "pandas": "2.3.3",
+      "matplotlib": "3.10.9",
+      "scikit-learn": "1.9.1",
+      "harmonypy": "0.0.10",
+      "bbknn": "1.6.0",
+      "igraph": "0.11.9",
+      "leidenalg": "0.10.2",
+      "celltypist": "1.7.1",
+      "nbclient": "0.10.4"
+    },
+    "main_samples": [
+      "s1d1",
+      "s1d3"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "results/00_orientation/20260915T072614_3f337a/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 13407
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 384339968,
+    "wall_seconds": 8.34
+  },
+  "original_source_sha256": "fa6f08e96f46de6c97fcce8b65d5364d0a0934d71edca229ddec8fc9dcc07242",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

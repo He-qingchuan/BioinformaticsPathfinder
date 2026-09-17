@@ -1,0 +1,148 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>00_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/00_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>00_executed.ipynb</h1><section><small>单元格 0</small><h1>第 00 章 课程导学与运行准备</h1>
+<h2>学习目标</h2>
+<p>认识从计数矩阵到细胞类型注释的完整流程，确认分析环境与数据已准备好。</p>
+<h2>为什么做与怎样做</h2>
+<p>本课程用同一组 H5 数据逐章推进。每章从磁盘读取上游检查点，并将本章的表格、图像和数据保存到独立目录。</p>
+<p>前置章节：无。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;00&quot;)
+</code></pre></section><section><small>单元格 2</small><pre><code># 功能说明：打印当前工作目录。
+# 运行目的：确认代码运行的文件路径上下文，方便定位数据文件。
+# 详细代码解析：
+# 1. `import os`
+#    - `import`: Python 关键字，用于导入标准库。
+#    - `os`: 操作系统接口模块，提供与操作系统交互的功能（如文件路径操作）。
+# 2. `print(f&quot;当前工作目录是: {os.getcwd()}&quot;)`
+#    - `print()`: 输出函数。
+#    - `f&quot;...&quot;`: f-string 格式化字符串，允许在字符串中嵌入表达式。
+#    - `os.getcwd()`: Get Current Working Directory，获取当前工作目录的绝对路径。
+
+import os
+print(f&quot;当前工作目录是: {os.getcwd()}&quot;)
+
+import sys
+print(&quot;Python路径:&quot;, sys.executable)
+print(&quot;Python版本:&quot;, sys.version)</code></pre></section><section><small>单元格 3</small><pre><code># 功能说明：导入单细胞分析所需的核心库与数据获取工具。
+# 运行目的：为后续 AnnData 构建、数据读取与分析流程提供依赖环境。
+# 变量/函数/参数解析（详细）：
+# - from __future__ import annotations：
+#   - 用途：启用未来的注解行为，将类型注解在运行时按字符串处理，减少循环依赖。
+# - import anndata as ad：
+#   - 模块：AnnData 数据结构库；别名 ad 用于简写。
+#   - AnnData：用于存放单细胞矩阵（X）、细胞注释（obs）、基因注释（var）及多层数据（layers）。
+# - import pooch：
+#   - 模块：数据下载与缓存管理；用于从 DOI/URL 获取示例数据。
+# - import scanpy as sc：
+#   - 模块：单细胞分析主库；别名 sc。包含预处理（pp）、工具（tl）、绘图（pl）等子模块。
+# 数据流程：
+# - 输入：无（仅导入依赖）。
+# - 输出：已加载的库供后续代码块使用。
+from __future__ import annotations
+
+import anndata as ad
+
+# 数据获取
+import pooch
+import scanpy as sc
+from matplotlib.pyplot import rc_context
+import pandas as pd
+from scipy.sparse import csr_matrix
+import numpy as np
+from pathlib import Path
+import urllib.request
+# 使用show=False配合plt.savefig
+import matplotlib.pyplot as plt
+from scipy.stats import median_abs_deviation</code></pre></section><section><small>单元格 4</small><pre><code># 功能说明：配置 Scanpy 的全局绘图参数和日志设置。
+# 运行目的：统一绘图风格，设置日志级别以减少冗余输出，并打印版本信息。
+# 变量/函数/参数解析：
+# - sc.set_figure_params(dpi=90, facecolor=&quot;white&quot;)：
+#   - dpi(int)：每英寸点数，数值越大越清晰；此处设为 90。
+#   - facecolor(str)：图像背景色；设为 &quot;white&quot;（白色）。
+#   - color_map(str)：设置默认的颜色映射表，此处为 &quot;viridis_r&quot;（viridis 的反转色）,color_map设置的是连续变量的默认颜色映射。而离散变量的颜色通常由sc.pl.palettes中的调色板控制。
+#  - sc.settings.set_figure_params(figsize=(4, 4))
+#   - figsize  控制图形的宽度和高度，单位是英寸。它决定了图形在屏幕上的显示大小以及保存时的尺寸。
+# - sc.settings.verbosity = 1：
+#   - 设置日志详细程度。0 表示只显示错误，减少警告和提示信息的输出。
+# - sc.logging.print_header()：
+#   - 打印 Scanpy 及其依赖库（如 anndata, umap, numpy 等）的版本信息，用于记录分析环境。
+
+sc.set_figure_params(dpi=90, facecolor=&quot;white&quot;, color_map=&quot;viridis_r&quot;)
+sc.settings.set_figure_params(figsize=(4, 4))
+
+sc.settings.verbosity = 1
+sc.logging.print_header()
+
+np.random.seed(0)   # NumPy随机数生成器
+
+
+# 附： 色彩：https://matplotlib.org/stable/users/explain/colors/colormaps.html
+# 连续/发散型调色板（适合连续变量或强调中点）
+# &quot;viridis&quot; # 紫-蓝-绿-黄渐变，感知均匀，色盲友好，打印友好（默认推荐）
+# &quot;viridis_r&quot; # viridis的反转版本，黄-绿-蓝-紫渐变
+# &quot;PiYG&quot;      # 粉红-浅绿发散色，适合强调中点的连续变量（如表达差异）
+# &quot;PRGn&quot;      # 紫色-绿色发散色，适合生物学数据中的正负变化
+# &quot;BrBG&quot;      # 棕色-蓝绿发散色，适合地质或环境数据
+# &quot;PuOr&quot;      # 紫色-橙色发散色，适合对比明显的连续变量
+# &quot;RdGy&quot;      # 红色-灰色发散色，适合强调正负差异
+# &quot;RdBu&quot;      # 红色-蓝色发散色（常用），适合基因表达上下调
+# &quot;RdYlBu&quot;    # 红-黄-蓝三色发散，适合展示三类变化
+# &quot;RdYlGn&quot;    # 红-黄-绿三色发散，适合生物学表达数据
+# &quot;Spectral&quot;  # 光谱色（彩虹色），适合展示连续范围但需谨慎使用（可能误导）
+# &quot;coolwarm&quot;  # 蓝-红发散色，适合温度或变化幅度数据
+# &quot;bwr&quot;       # 蓝-白-红发散色，适合基因表达正负差异（常用）
+# &quot;seismic&quot;   # 蓝-白-红发散色（地震图风格），适合强烈对比数据
+
+# scanpy/scFates特殊调色板（适合轨迹/时间序列数据）
+# &quot;berlin&quot;    # 柏林色系，蓝-紫-红渐变，适合伪时间或轨迹分析
+# &quot;managua&quot;   # 马那瓜色系，绿-黄-红渐变，适合发育轨迹
+# &quot;vanimo&quot;    # 瓦尼莫色系，紫-粉-橙渐变，适合细胞分化轨迹
+
+# 分类调色板（适合离散类别），可在使用绘图函数是单独指定palette参数
+# palette=&quot;Set1&quot;      # 9种鲜艳颜色，适合9个以内的类别
+# palette=&quot;Set2&quot;      # 8种柔和颜色，适合颜色对比不需要太强烈的场合
+# palette=&quot;Set3&quot;      # 12种柔和颜色，适合12个类别
+# palette=&quot;tab10&quot;     # 10种高对比度颜色（默认推荐）
+# palette=&quot;tab20&quot;     # 20种颜色，适合类别较多的情况
+# palette=&quot;tab20b&quot;    # 20种蓝色系为主的颜色
+# palette=&quot;tab20c&quot;    # 20种青色系为主的颜色
+
+## 使用建议：
+### 连续变量（如基因表达量）：
+# - 围绕零的标准化表达量可使用发散色：&#x27;RdBu&#x27;, &#x27;bwr&#x27;, &#x27;coolwarm&#x27;
+# - 轨迹分析：&#x27;berlin&#x27;, &#x27;managua&#x27;, &#x27;vanimo&#x27;
+
+### 离散变量（如聚类结果）：
+# - 类别≤10：&#x27;tab10&#x27;（推荐）
+# - 类别≤9：&#x27;Set1&#x27;（鲜艳）
+# - 类别≤8：&#x27;Set2&#x27;（柔和）
+# - 类别≤12：&#x27;Set3&#x27;（柔和）
+# - 类别≤20：&#x27;tab20&#x27;, &#x27;tab20b&#x27;, &#x27;tab20c&#x27;
+
+</code></pre></section><section><small>单元格 5</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 6</small><pre><code>from course_runtime import environment_versions
+ctx.finish(summary={&quot;environment&quot;: environment_versions(), &quot;main_samples&quot;: list(ctx.config[&quot;samples&quot;])})</code></pre></section><section><small>单元格 7</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：为什么保存一张 UMAP 图片不能替代保存 AnnData？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

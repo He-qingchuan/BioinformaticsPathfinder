@@ -1,0 +1,21 @@
+{
+  "retention": {
+    "s1d1": {
+      "before": 8785,
+      "after": 8713,
+      "removed": 72,
+      "retained_fraction": 0.9918042117245305
+    },
+    "s1d3": {
+      "before": 8340,
+      "after": 8328,
+      "removed": 12,
+      "retained_fraction": 0.9985611510791367
+    }
+  },
+  "predicted_doublets": 213,
+  "qc_metrics_basis": "过滤前的基因集合",
+  "doublets_removed": false,
+  "n_cells": 17041,
+  "n_genes": 23427
+}

@@ -1,0 +1,60 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>environment_smoke.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/environment_smoke.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>environment_smoke.py</h1><pre><code>&quot;&quot;&quot;Small computations in a fresh kernel; never starts a teaching chapter.&quot;&quot;&quot;
+from pathlib import Path
+import json
+import sys
+
+import anndata as ad
+import bbknn
+import harmonypy
+import matplotlib
+matplotlib.use(&quot;Agg&quot;)
+from matplotlib import font_manager
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scanpy as sc
+from scipy import sparse
+
+root, output = Path(sys.argv[1]), Path(sys.argv[2])
+# 环境测试使用合成矩阵；缺少研究数据或物种模型不会被误判为环境缺失。
+samples = {}
+
+rng = np.random.default_rng(0)
+data = ad.AnnData(sparse.csr_matrix(rng.poisson(2, (240, 100)).astype(np.float32)),
+                  obs=pd.DataFrame({&quot;samples&quot;: [&quot;a&quot;] * 120 + [&quot;b&quot;] * 120},
+                                   index=[f&quot;test_{i}&quot; for i in range(240)]))
+sc.pp.normalize_total(data, target_sum=10000)
+sc.pp.log1p(data)
+sc.pp.highly_variable_genes(data, n_top_genes=60)
+sc.pp.pca(data, n_comps=20)
+sc.pp.neighbors(data, n_neighbors=10, n_pcs=15, random_state=0)
+sc.tl.umap(data, random_state=0)
+sc.tl.leiden(data, flavor=&quot;igraph&quot;, directed=False, n_iterations=-1, random_state=0)
+harmony = harmonypy.run_harmony(data.obsm[&quot;X_pca&quot;], data.obs, [&quot;samples&quot;],
+                                max_iter_harmony=3, random_state=0, verbose=False)
+if not np.isfinite(harmony.Z_corr).all():
+    raise RuntimeError(&quot;Harmony 测试出现非有限数值。&quot;)
+bbknn.bbknn(data, batch_key=&quot;samples&quot;, n_pcs=15, neighbors_within_batch=3, annoy_n_trees=5)
+assert data.obsp[&quot;connectivities&quot;].nnz &gt; 0
+assert np.isfinite(data.obsm[&quot;X_umap&quot;]).all()
+font_manager.fontManager.addfont(str(root / &quot;assets/NotoSansCJKsc-Regular.otf&quot;))
+plt.rcParams[&quot;font.family&quot;] = [&quot;Noto Sans CJK SC&quot;, &quot;DejaVu Sans&quot;]
+fig, axis = plt.subplots(figsize=(5, 3))
+axis.scatter(*data.obsm[&quot;X_umap&quot;].T, c=np.arange(240) // 120, s=8)
+axis.set(title=&quot;环境检查：合成数据&quot;, xlabel=&quot;UMAP 1&quot;, ylabel=&quot;UMAP 2&quot;)
+fig.savefig(output / &quot;smoke.png&quot;, dpi=100, bbox_inches=&quot;tight&quot;)
+plt.close(fig)
+data.write_h5ad(output / &quot;smoke.h5ad&quot;)
+assert sc.read_h5ad(output / &quot;smoke.h5ad&quot;).shape == (240, 100)
+summary = {&quot;python&quot;: sys.executable, &quot;samples&quot;: samples, &quot;synthetic_shape&quot;: list(data.shape),
+           &quot;bbknn_edges&quot;: data.obsp[&quot;connectivities&quot;].nnz,
+           &quot;leiden_clusters&quot;: int(data.obs[&quot;leiden&quot;].nunique()), &quot;harmony&quot;: &quot;passed&quot;,
+           &quot;umap&quot;: &quot;passed&quot;, &quot;h5ad_roundtrip&quot;: &quot;passed&quot;}
+if sys.argv[3] == &quot;scvi&quot;:
+    import scvi
+    import torch
+    assert torch.isfinite(torch.ones(2, 2) @ torch.ones(2, 2)).all()
+    summary[&quot;scvi&quot;] = {&quot;version&quot;: scvi.__version__, &quot;check&quot;: &quot;import and CPU tensor only; no training&quot;}
+(output / &quot;smoke.json&quot;).write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+print(json.dumps(summary, ensure_ascii=False, indent=2))
+</code></pre></main></body></html>

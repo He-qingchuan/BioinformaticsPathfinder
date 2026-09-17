@@ -1,0 +1,387 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/02_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>02_executed.ipynb</h1><section><small>单元格 0</small><h1>第 02 章 质量控制与双细胞检测</h1>
+<h2>学习目标</h2>
+<p>识别质量异常的细胞并了解双细胞检测，理解过滤阈值会影响后续分析。</p>
+<h2>为什么做与怎样做</h2>
+<p>按样本查看 QC 指标；默认保留至少检测到 100 个基因的细胞及至少在 3 个细胞中检测到的基因。Scrublet 按样本预测双细胞，默认先标记并保留。</p>
+<p>前置章节：01。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;02&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>02.1 预处理</h2>
+</section><section><small>单元格 3</small><pre><code># 功能说明：设置 Scanpy 的图形输出目录。
+# 运行目的：将生成的图片自动保存到指定文件夹，便于分类管理。
+# 详细代码解析：
+# 1. `sc.settings.figdir = ctx.figures`
+#    - `sc`: Scanpy 库的别名。
+#    - `.settings`: Scanpy 的全局设置对象。
+#    - `.figdir`: 属性，指定保存图形（figure）的默认目录。
+#    - `&quot;本章结果目录&quot;`: 相对路径字符串，指向当前目录下的 `figures` 文件夹内的 `1.预处理` 子文件夹。
+
+# 设置输出目录
+sc.settings.figdir = ctx.figures</code></pre></section><section><small>单元格 4</small><p>大多数后续分析任务假设数据集中的每个观察结果代表来自一个完整单细胞的测量值。
+在某些情况下，这种假设可能会被低质量细胞、无细胞 RNA 污染或双细胞违反。
+这里将指导你纠正和消除这些违规行为并获得高质量的数据集。
+单细胞 RNA-seq 数据集可能包含低质量细胞、无细胞 RNA 和双细胞。
+质量控制旨在去除和纠正这些问题，以获得高质量的数据集，其中每个观察结果都是一个完整的单细胞。</p>
+<p>在进行分析时，单细胞 RNA-seq 数据集有两个基本属性需要牢记。
+首先，scRNA-seq 数据包含 drop-outs，这意味着数据中存在过多的零。
+其次，校正数据和执行质量控制的潜力可能有限，因为数据可能与生物学混淆。
+因此，选择适合底层数据的预处理方法而不进行过度校正或消除生物学效应至关重要。</p>
+<p>在此过程中选择的算法会严重影响数据的下游分析和解释。
+例如，如果您在质量控制期间过滤掉太多细胞，您可能会丢失稀有的细胞亚群并错过对有趣细胞生物学的洞察。
+反之，如果您过于宽松，如果您没有在预处理流程中排除低质量细胞，您可能会很难注释您的细胞。
+在许多情况下，您仍然需要在稍后的时间点重新评估您的预处理分析，并更改例如过滤策略。</p>
+<p>数据被比对以获得分子计数矩阵，即所谓的计数矩阵。计数矩阵具有维度 <code>条形码数 x 转录本数</code>。重要的是要注意，这里使用术语“条形码”而不是“细胞”，因为条形码可能错误地标记了多个细胞（双细胞）或可能没有标记任何细胞（空液滴/孔）。
+下面的双细胞检测部分将进一步说明。</p>
+</section><section><small>单元格 5</small><h2>02.2 质控</h2>
+</section><section><small>单元格 6</small><h2>02.3 过滤低质量细胞</h2>
+<p>质量控制的第一步是从数据集中去除低质量细胞。
+当一个细胞检测到的基因数量少、计数深度低且线粒体计数比例高时，它可能具有破损的膜，这可能表明细胞正在死亡。
+由于这些细胞通常不是我们分析的主要目标，并且可能会扭曲我们的下游分析，因此我们在质量控制期间将其去除。
+为了识别它们，我们定义了细胞质量控制 (QC) 阈值。
+细胞 QC 通常在以下三个 QC 协变量上执行：</p>
+<p><strong>条形码：是指测序时为每个细胞所做的标记编码，即理想情况下每个条形码对应一个细胞</strong></p>
+<ol>
+<li>每个条形码的计数数（计数深度）</li>
+<li>每个条形码的基因数</li>
+<li>每个条形码来自线粒体基因的计数比例</li>
+</ol>
+<p>在细胞 QC 中，这些协变量通过阈值过滤，因为它们可能对应于死亡细胞。
+如前所述，它们可能反映了膜破损的细胞，其细胞质 mRNA 已经泄漏，因此只有线粒体中的 mRNA 仍然存在。
+这些细胞可能显示出低计数深度、检测到的基因少和线粒体读数比例高。
+然而，至关重要的是要联合考虑这三个 QC 协变量，否则可能会导致对细胞信号的误解。
+例如，具有相对较高比例线粒体计数的细胞可能参与呼吸过程，不应被过滤掉。
+而计数低或高的细胞可能对应于静止细胞群或尺寸较大的细胞。
+因此，在对单个协变量做出阈值决策时，首选考虑多个协变量。
+通常，建议排除较少的细胞并<strong>尽可能宽松</strong>，以避免过滤掉可行的细胞群或小的亚群。</p>
+<p>仅对少数或小型数据集进行的 QC 通常是通过手动查看不同 QC 协变量的分布并识别异常值来执行的，这些异常值随后将被过滤。
+然而，随着数据集规模的增长，这项任务变得越来越耗时，可能值得考虑通过 MAD（中位数绝对偏差）进行自动阈值处理。
+MAD 由 $MAD = median(|X_i - median(X)|)$ 给出，其中 $X_i$ 是观察值的相应 QC 指标，描述了指标变异性的稳健统计量。
+与 （参考文献：qc:germain_pipecomp_2020） 类似，如果细胞相差 5 个 MAD，我们将细胞标记为异常值，这是一种相对宽松的过滤策略。
+我们要强调的是，在细胞注释后重新评估过滤可能是合理的。</p>
+<p>假设你测了 10 个细胞的 线粒体基因比例（%），排序后如下（单位：%）：
+[2.1, 2.3, 2.5, 2.6, 2.7, 2.8, 3.0, 3.2, 4.5, 18.0]
+计算中位数：第5、6个数的平均 = (2.7+2.8)/2 = 2.75%
+计算每个值与中位数的绝对偏差：
+|2.1-2.75|=0.65, 0.45, 0.25, 0.15, 0.05, 0.05, 0.25, 0.45, 1.75, 15.25
+MAD = 这些绝对偏差的中位数 = 排序后 [0.05,0.05,0.15,0.25,0.25,0.45,0.45,0.65,1.75,15.25] → 中位数 = (0.25+0.45)/2 = 0.35%
+设置不同倍数：
+3 倍 MAD：阈值下限 = 2.75 - 3×0.35 = 1.70%，上限 = 2.75 + 3×0.35 = 3.80%
+异常值：低于 1.70%？没有；高于 3.80% 的有 4.5% 和 18% → 标记 2 个细胞（严格）
+5 倍 MAD：下限 = 2.75 - 5×0.35 = 1.00%，上限 = 2.75 + 1.75 = 4.50%
+异常值：&gt;4.50% 只有 18% → 标记 1 个细胞（宽松）
+8 倍 MAD：上限 = 2.75 + 2.80 = 5.55%，只有 18% 仍为异常（更宽松）
+结论：n=5 比 n=3 宽松，n=10 比 n=5 更宽松。</p>
+<p>在 QC 中，第一步是计算 QC 协变量或指标。
+我们使用 scanpy 函数 <code>sc.pp.calculate_qc_metrics</code> 计算这些指标，该函数还可以计算特定基因群体的计数比例。可以向 ~scanpy.pp.calculate_qc_metrics 传入特定基因集合，以计算这些集合在总计数中的占比。线粒体、核糖体与血红蛋白基因通常由特定前缀标识，如下所示。
+因此，我们定义线粒体、核糖体和血红蛋白基因。
+重要的是要注意，线粒体计数根据数据集中考虑的物种用前缀 &quot;mt-&quot; 或 &quot;MT-&quot; 注释。
+如前所述，这里使用的数据集是人类骨髓，因此线粒体计数用前缀 &quot;MT-&quot; 注释。
+对于小鼠数据集，前缀通常是小写的，即 &quot;mt-&quot;。</p>
+</section><section><small>单元格 7</small><pre><code># 功能说明：在基因注释表中标记线粒体、核糖体、血红蛋白相关基因。
+# 运行目的：为 QC 指标计算提供基因集合（如线粒体占比）。
+# 变量/函数/参数解析：
+# - adata.var_names.str.startswith(&quot;MT-&quot;)：判断基因名是否以 &quot;MT-&quot; 开头（人类线粒体基因前缀）。
+# - adata.var_names.str.startswith((&quot;RPS&quot;, &quot;RPL&quot;))：判断是否以核糖体蛋白家族前缀 RPS/RPL 开头。
+# - adata.var_names.str.contains(&quot;^HB[^(P)]&quot;)：使用正则匹配血红蛋白基因（排除 HBP 等）。
+# - 结果列：在 `adata.var` 添加布尔列 `mt`、`ribo`、`hb` 表示该基因是否属于对应集合。
+adata.var[&quot;mt&quot;] = adata.var_names.str.startswith(&quot;MT-&quot;)
+# 核糖体基因
+adata.var[&quot;ribo&quot;] = adata.var_names.str.startswith((&quot;RPS&quot;, &quot;RPL&quot;))
+# 血红蛋白基因
+adata.var[&quot;hb&quot;] = adata.var_names.str.contains(&quot;^HB[^(P)]&quot;)</code></pre></section><section><small>单元格 8</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：检查数据加载是否成功，查看细胞数（n_obs）、基因数（n_vars）及已有的注释信息。
+# 详细代码解析：
+# 1. `adata`
+#    - 在 Jupyter Notebook 中直接输入变量名，会调用其 `__repr__` 方法，打印对象的概览。
+#    - 输出通常包含：
+#      - `n_obs × n_vars`: 细胞数 × 基因数。
+#      - `obs`: 细胞的观测注释（如样本来源）。
+#      - `var`: 基因的特征注释（如基因名）。
+
+adata</code></pre></section><section><small>单元格 9</small><pre><code># 功能说明：查看基因注释表（var）。
+# 运行目的：检查基因层面的元数据，确认是否成功添加了线粒体（mt）、核糖体（ribo）等标记列。
+# 详细代码解析：
+# 1. `adata.var`
+#    - `adata`: AnnData 对象。
+#    - `.var`: 存储变量（variable/基因）注释的 DataFrame（表格）。
+#    - 行索引（index）通常是基因 ID 或基因名。
+#    - 列（columns）包含基因的属性，如是否为线粒体基因 (`mt`)。
+
+adata.var</code></pre></section><section><small>单元格 10</small><pre><code># 功能说明：查看细胞注释表（obs）。
+# 运行目的：检查细胞层面的元数据，如样本来源（samples）等。
+# 详细代码解析：
+# 1. `adata.obs`
+#    - `adata`: AnnData 对象。
+#    - `.obs`: 存储观测（observation/细胞）注释的 DataFrame。
+#    - 行索引（index）是细胞条形码（barcode）。
+#    - 列（columns）包含细胞的属性，如所属样本。
+
+adata.obs</code></pre></section><section><small>单元格 11</small><p>我们现在可以使用 scanpy 计算相应的 QC 指标。</p>
+</section><section><small>单元格 12</small><pre><code># 功能说明：计算常见 QC 指标并写入 AnnData。
+# 运行目的：获得每个细胞的线粒体/核糖体/血红蛋白占比、总计数、基因数等统计用于后续过滤与评估。
+# 变量/函数/参数解析：
+# - sc.pp.calculate_qc_metrics(adata, qc_vars=[&quot;mt&quot;, &quot;ribo&quot;, &quot;hb&quot;], inplace=True, log1p=True)：
+#   - adata(AnnData)：输入对象。
+#   - qc_vars(list[str])：在 `adata.var` 中定义的布尔列名，表示基因集合。
+#   - inplace(bool)：True 表示将结果直接写入 `adata.obs` 与 `adata.var`。
+#   - log1p(bool)：对总计数等进行 `log1p`（log(1+x)）变换，得到额外列如 `log1p_total_counts`。
+sc.pp.calculate_qc_metrics(adata, qc_vars=[&quot;mt&quot;, &quot;ribo&quot;, &quot;hb&quot;], inplace=True, log1p=True)</code></pre></section><section><small>单元格 13</small><p>sc.pp.calculate_qc_metrics函数向 <code>.var</code> 和 <code>.obs</code> 添加了几个额外的列。
+我们想在这里重点介绍其中几个：</p>
+<ul>
+<li><code>.obs</code> 中的 <code>n_genes_by_counts</code> 是细胞中具有正计数的基因数，</li>
+<li><code>total_counts</code> 是细胞的总计数数，这也可能被称为文库大小</li>
+<li><code>pct_counts_mt</code> 是细胞总计数中线粒体计数的比例。</li>
+</ul>
+<p>我们现在绘制每个样本的三个 QC 协变量 <code>n_genes_by_counts</code>、<code>total_counts</code> 和 <code>pct_counts_mt</code>，以评估相应细胞的捕获情况。</p>
+</section><section><small>单元格 14</small><p>现在可以用小提琴图检查部分 QC 指标：</p>
+<ul>
+<li>表达基因数（每个细胞在计数矩阵中非零的基因数量）</li>
+<li>每个细胞的总计数（UMI 总数）</li>
+<li>线粒体基因占比（<code>pct_counts_mt</code>）</li>
+</ul>
+</section><section><small>单元格 15</small><pre><code># 功能说明：查看细胞注释表（obs）。
+# 运行目的：检查细胞层面的元数据，如样本来源（samples）等。
+# 详细代码解析：
+# 1. `adata.obs`
+#    - `adata`: AnnData 对象。
+#    - `.obs`: 存储观测（observation/细胞）注释的 DataFrame。
+#    - 行索引（index）是细胞条形码（barcode）。
+#    - 列（columns）包含细胞的属性，如所属样本。
+
+adata.obs</code></pre></section><section><small>单元格 16</small><pre><code># 功能说明：绘制多个 QC 指标的小提琴图以观察分布。
+# 运行目的：直观比较细胞层面的质量控制指标，辅助设定过滤阈值。
+# 变量/函数/参数解析：
+# - sc.pl.violin(adata, [&quot;n_genes_by_counts&quot;, &quot;total_counts&quot;, &quot;pct_counts_mt&quot;], jitter=0.4, multi_panel=True)：
+#   - adata：AnnData 对象。
+#   - keys(list[str])：要绘制的 obs 列名。
+#   - jitter(float)：散点抖动强度，便于显示密集数据点。
+#   - multi_panel(bool)：True 表示多面板显示各指标。
+
+sc.pl.violin(
+    adata,
+    [&quot;n_genes_by_counts&quot;, &quot;total_counts&quot;, &quot;pct_counts_mt&quot;,&quot;pct_counts_ribo&quot;,&quot;pct_counts_hb&quot;],
+    jitter=0.4,
+    multi_panel=True,
+    groupby=&#x27;samples&#x27;,
+    save=&quot;_02_31.pdf&quot;,
+)</code></pre></section><section><small>单元格 17</small><pre><code># 功能说明：绘制多个 QC 指标的小提琴图以观察分布。
+# 运行目的：直观比较细胞层面的质量控制指标，辅助设定过滤阈值。
+# 变量/函数/参数解析：
+# - sc.pl.violin(adata, [&quot;n_genes_by_counts&quot;, &quot;total_counts&quot;, &quot;pct_counts_mt&quot;], jitter=0.4, multi_panel=True)：
+#   - adata：AnnData 对象。
+#   - keys(list[str])：要绘制的 obs 列名。
+#   - jitter(float)：散点抖动强度，便于显示密集数据点。
+#   - multi_panel(bool)：True 表示多面板显示各指标。
+
+sc.pl.violin(
+    adata,
+    [&quot;n_genes_by_counts&quot;, &quot;total_counts&quot;, &quot;pct_counts_mt&quot;,&quot;pct_counts_ribo&quot;,&quot;pct_counts_hb&quot;],
+    jitter=0.4,
+    multi_panel=True,
+    save=&quot;_02_32.pdf&quot;,
+)</code></pre></section><section><small>单元格 18</small><p>此外，联合查看 QC 指标也很有用，例如绘制按 <code>pct_counts_mt</code> 着色的散点图，便于同时理解总计数与基因数与线粒体占比之间的关系。</p>
+</section><section><small>单元格 19</small><pre><code># 功能说明：散点图联合展示总计数与基因数，并以线粒体占比着色。
+# 运行目的：评估高线粒体占比或异常总计数的细胞分布情况。
+# 变量/函数/参数解析：
+# - sc.pl.scatter(adata, &quot;total_counts&quot;, &quot;n_genes_by_counts&quot;, color=&quot;pct_counts_mt&quot;)：
+#   - x(str)：`obs` 中作为横轴的列，此处为总计数。
+#   - y(str)：`obs` 中作为纵轴的列，此处为基因数。
+#   - color(str/list)：着色列，此处为线粒体占比。
+sc.pl.scatter(adata, &quot;total_counts&quot;, &quot;n_genes_by_counts&quot;, color=&quot;pct_counts_mt&quot;,save=&quot;_02_34.pdf&quot;)</code></pre></section><section><small>单元格 20</small><p>联合查看各样本的总计数、检测基因数和线粒体占比，再评估过滤策略。默认仅移除检测基因数少于 100 的细胞，以及在少于 3 个细胞中出现的基因。</p>
+<p>下面同时保留线粒体阈值和 MAD 两种可选策略。是否应用由课程参数控制；本次实际过滤数量会保存到表格。阈值不是适用于所有组织的固定标准。</p>
+</section><section><small>单元格 21</small><h2>02.4 手动设置阈值</h2>
+</section><section><small>单元格 22</small><pre><code>qc_before = adata.obs.copy()
+# 功能说明：按细胞与基因的简单阈值进行初步过滤。
+# 运行目的：移除低质量细胞与低表达基因，减少噪音。
+# 变量/函数/参数解析：
+# - sc.pp.filter_cells(adata, min_genes=ctx.config[&quot;parameters&quot;][&quot;min_genes&quot;])：
+#   - min_genes(int)：每个细胞至少表达的基因数阈值；&lt;100 的细胞将被移除。
+# - sc.pp.filter_genes(adata, min_cells=ctx.config[&quot;parameters&quot;][&quot;min_cells&quot;])：
+#   - min_cells(int)：基因至少被多少细胞检测到；&lt;3 的基因将被移除。
+
+print(f&quot;总细胞数: {adata.n_obs}&quot;)
+sc.pp.filter_cells(adata, min_genes=ctx.config[&quot;parameters&quot;][&quot;min_genes&quot;])
+sc.pp.filter_genes(adata, min_cells=ctx.config[&quot;parameters&quot;][&quot;min_cells&quot;])
+print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)
+</code></pre></section><section><small>单元格 23</small><pre><code>if ctx.config[&quot;parameters&quot;][&quot;apply_mt_filter&quot;]:
+    # 功能说明：执行细胞过滤，移除线粒体基因标记为异常的细胞。
+    # 运行目的：生成一个只包含高质量细胞的数据集，用于后续分析。
+    # 详细代码解析：
+    # 1. `print(f&quot;总细胞数: {adata.n_obs}&quot;)`
+    #    - 打印过滤前的总细胞数。
+    # 2.  `adata[(adata.obs.pct_counts_mt &lt;= 20)]`:
+    #    使用布尔索引对AnnData对象进行切片操作：
+    #    - 只保留索引为True的细胞(行)
+    #    - 丢弃索引为False的细胞(行)
+    # 3. `print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)`
+    #    - 打印过滤后的细胞数，以评估过滤掉的比例。
+    
+    print(f&quot;总细胞数: {adata.n_obs}&quot;)
+    adata = adata[(adata.obs.pct_counts_mt&lt;=20)].copy()
+    
+    print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)
+</code></pre></section><section><small>单元格 24</small><h2>02.5 自动设置阈值</h2>
+</section><section><small>单元格 25</small><p>以下保留基于 MAD 的自动阈值策略。函数按样本分别计算中位数和 MAD；默认主线不应用该过滤。启用后应比较每个样本的保留情况。</p>
+</section><section><small>单元格 26</small><pre><code># 按样本计算中位数和 MAD，返回每个细胞的异常标记。
+def is_outlier(adata, metric: str, nmads: int):
+    values = adata.obs[metric]
+    group = adata.obs[&quot;samples&quot;]
+    center = values.groupby(group, observed=True).transform(&quot;median&quot;)
+    deviation = values.groupby(group, observed=True).transform(
+        lambda x: median_abs_deviation(x, nan_policy=&quot;omit&quot;)
+    )
+    # MAD 为 0 时不因浮点误差自动标记异常，交由联合 QC 检查。
+    return ((values - center).abs() &gt; nmads * deviation) &amp; (deviation &gt; 0)</code></pre></section><section><small>单元格 27</small><p>启用 MAD 策略时，联合检查 log1p_total_counts、log1p_n_genes_by_counts 和 pct_counts_in_top_50_genes，各使用 5 个 MAD。</p>
+</section><section><small>单元格 28</small><pre><code>if ctx.config[&quot;parameters&quot;][&quot;apply_mad_filter&quot;]:
+    # 功能说明：应用异常值检测函数，识别低质量细胞。
+    # 运行目的：基于多个指标（总计数、基因数、高表达基因占比）综合标记异常细胞。
+    # 详细代码解析：
+    # 1. `adata.obs[&quot;outlier&quot;] = (...)`
+    #    - 在 adata.obs 中创建一个名为 &quot;outlier&quot; 的新列。
+    # 2. `is_outlier(adata, &quot;log1p_total_counts&quot;, 5)`
+    #    - 检测 log1p 变换后的总计数是否偏离 5 个 MAD。
+    # 3. `| is_outlier(adata, &quot;log1p_n_genes_by_counts&quot;, 5)`
+    #    - 或者，检测 log1p 变换后的基因数是否偏离 5 个 MAD。
+    # 4. `| is_outlier(adata, &quot;pct_counts_in_top_20_genes&quot;, 5)`
+    #    - 或者，检测前 20 个基因的表达占比是否偏离 5 个 MAD。
+    # 5. `adata.obs.outlier.value_counts()`
+    #    - 统计 &quot;outlier&quot; 列中 True（异常）和 False（正常）的数量，查看有多少细胞被标记为异常。
+    
+    adata.obs[&quot;outlier&quot;] = (
+        is_outlier(adata, &quot;log1p_total_counts&quot;, 5)
+        | is_outlier(adata, &quot;log1p_n_genes_by_counts&quot;, 5)
+        | is_outlier(adata, &quot;pct_counts_in_top_50_genes&quot;, 5)
+    )
+    adata.obs.outlier.value_counts()
+</code></pre></section><section><small>单元格 29</small><p>启用 MAD 策略时，另以 3 个 MAD 与线粒体比例 20% 的阈值标记线粒体指标异常。阈值需结合组织和分布评估。</p>
+</section><section><small>单元格 30</small><pre><code>if ctx.config[&quot;parameters&quot;][&quot;apply_mad_filter&quot;]:
+    # 功能说明：专门检测线粒体比例异常的细胞。
+    # 运行目的：线粒体比例过高通常意味着细胞破损，需要单独严格过滤。
+    # 详细代码解析：
+    # 1. `adata.obs[&quot;mt_outlier&quot;] = ...`
+    #    - 创建 &quot;mt_outlier&quot; 列标记线粒体异常细胞。
+    # 2. `is_outlier(adata, &quot;pct_counts_mt&quot;, 3)`
+    #    - 基于 MAD 检测异常值（阈值为 3 MAD）。
+    # 3. `| (adata.obs[&quot;pct_counts_mt&quot;] &gt; 20)`
+    #    - 或者，硬性规定线粒体比例大于 20% 的也算异常。这是结合了自动检测和先验知识的策略。
+    # 4. `adata.obs.mt_outlier.value_counts()`
+    #    - 统计线粒体异常细胞的数量。
+    
+    adata.obs[&quot;mt_outlier&quot;] = is_outlier(adata, &quot;pct_counts_mt&quot;, 3) | (
+        adata.obs[&quot;pct_counts_mt&quot;] &gt; 20
+    )
+    adata.obs.mt_outlier.value_counts()
+</code></pre></section><section><small>单元格 31</small><p>启用 MAD 策略时，根据两个异常标记过滤细胞。默认主线保留这些细胞，供后续聚类和标记基因复核。</p>
+</section><section><small>单元格 32</small><pre><code>if ctx.config[&quot;parameters&quot;][&quot;apply_mad_filter&quot;]:
+    # 功能说明：执行细胞过滤，移除标记为异常的细胞。
+    # 运行目的：生成一个只包含高质量细胞的数据集，用于后续分析。
+    # 详细代码解析：
+    # 1. `print(f&quot;总细胞数: {adata.n_obs}&quot;)`
+    #    - 打印过滤前的总细胞数。
+    # 2. `adata = adata[(~adata.obs.outlier) &amp; (~adata.obs.mt_outlier)].copy()`
+    #    - `~adata.obs.outlier`: 取反，选择非通用异常值的细胞。
+    #    - `~adata.obs.mt_outlier`: 取反，选择非线粒体异常值的细胞。
+    #    - `&amp;`: 逻辑与，必须同时满足两个条件。
+    #    - `adata[...]`: 切片操作，保留满足条件的细胞。
+    #    - `.copy()`: 创建一个新的 AnnData 对象副本，断开与原对象的内存连接，释放空间。
+    # 3. `print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)`
+    #    - 打印过滤后的细胞数，以评估过滤掉的比例。
+    
+    
+    print(f&quot;总细胞数: {adata.n_obs}&quot;)
+    adata = adata[(~adata.obs.outlier) &amp; (~adata.obs.mt_outlier)].copy()
+    print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)
+</code></pre></section><section><small>单元格 33</small><pre><code># 功能说明：过滤后再次绘制散点图。
+# 运行目的：验证过滤效果，确保异常点（如高线粒体比例、极低/极高计数的细胞）已被移除。
+# 详细代码解析：
+# 1. `p1 = sc.pl.scatter(adata, &quot;total_counts&quot;, &quot;n_genes_by_counts&quot;, color=&quot;pct_counts_mt&quot;)`
+#    - 再次绘制总计数 vs 基因数的散点图，并用线粒体比例着色。
+#    - 预期结果：图中的点分布应更加集中，颜色（线粒体比例）应普遍较低。
+sc.pl.scatter(adata, &quot;total_counts&quot;, &quot;n_genes_by_counts&quot;, color=&quot;pct_counts_mt&quot;,save=&quot;_02_48.pdf&quot;)
+</code></pre></section><section><small>单元格 34</small><h2>02.6 双细胞（Doublet）检测</h2>
+<p>下一步运行双细胞检测算法。识别双细胞很重要，因为它们可能导致后续分析的误分类或偏差。Scanpy 提供 Scrublet 方法，其通过邻近分类器在观测转录组与模拟双细胞之间进行预测。scanpy.pp.scrublet 会在 <code>.obs</code> 添加 <code>doublet_score</code> 和 <code>predicted_doublet</code>。</p>
+<p>双细胞定义为在同一细胞条形码下测序的两个细胞，例如，如果它们被捕获在同一个液滴中。
+这就是为什么我们直到现在都使用术语“条形码”而不是“细胞”。
+如果双细胞由相同的细胞类型形成，则称为同型双细胞，否则称为异型双细胞。
+同型双细胞不一定能从计数矩阵中识别出来，仍可能影响计数和比例；细胞哈希或 SNP 在相应实验条件下可提供补充证据。
+因此，它们的识别不是双细胞检测方法的主要目标。</p>
+<p>由不同细胞类型或状态形成的双细胞称为异型双细胞。
+它们的识别至关重要，因为它们最有可能被错误分类，并可能导致下游分析步骤失真。
+因此，双细胞检测和去除通常是初始预处理步骤。
+双细胞可以通过其大量的读取和检测到的特征来识别，也可以通过创建人工双细胞并将其与数据集中存在的细胞进行比较的方法来识别。</p>
+<p>在 scverse 生态中，其他双细胞检测方法包括 <a href="https://github.com/JonathanShor/DoubletDetection">DoubletDetection</a> 与 <a href="https://docs.scvi-tools.org/en/stable/user_guide/models/solo.html">SOLO</a>。更多内容可参考 Single Cell Best Practices 的<a href="https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html#doublet-detection">双细胞检测章节</a>。</p>
+<p>我们可以通过两种方式去除双细胞：要么直接过滤掉被判定为双细胞的细胞，要么在完成一次聚类后，过滤掉双细胞分数高的簇。</p>
+<p><strong>之后可以直接根据 <code>predicted_doublet</code> 过滤，或在聚类后根据 <code>doublet_score</code> 去除双细胞比例较高的簇。</strong></p>
+<p>我建议暂时将识别出的双细胞保留在数据集中，并在后续可视化期间检查双细胞。</p>
+</section><section><small>单元格 35</small><pre><code># 功能说明：运行 Scrublet 双细胞检测并按批次处理。
+# 运行目的：为每个细胞计算双细胞分数并预测是否为双细胞。
+# 变量/函数/参数解析：
+# - sc.pp.scrublet(adata, batch_key=&quot;samples&quot;)：
+#   - batch_key(str)：按 `obs[&#x27;sample&#x27;]` 分批运行，避免批次差异影响检测。
+# 输出：在 `adata.obs` 增加 `doublet_score`（浮点分数）与 `predicted_doublet`（布尔预测）。
+sc.pp.scrublet(adata, batch_key=&quot;samples&quot;)</code></pre></section><section><small>单元格 36</small><pre><code># 功能说明：查看双细胞预测结果列。
+# 运行目的：检查 Scrublet 算法生成的双细胞预测标签（True/False）。
+# 详细代码解析：
+# 1. `adata.obs[&quot;predicted_doublet&quot;]`
+#    - `adata.obs`: 细胞注释 DataFrame。
+#    - `[&quot;predicted_doublet&quot;]`: 选择名为 &quot;predicted_doublet&quot; 的列。
+#    - 该列由 `sc.pp.scrublet` 生成，包含布尔值（True 表示预测为双细胞，False 表示单细胞）。
+
+adata.obs[&quot;predicted_doublet&quot;]</code></pre></section><section><small>单元格 37</small><pre><code>if ctx.config[&quot;parameters&quot;][&quot;remove_doublets&quot;]:
+    
+    # 功能说明：执行细胞过滤，在运行了 scrublet 之后，进行过滤
+    # 运行目的：生成一个只包含高质量细胞的数据集，用于后续分析。
+    # 详细代码解析：
+    # 1. `print(f&quot;Total number of cells: {adata.n_obs}&quot;)`
+    #    - 打印过滤前的总细胞数。
+    
+    # 2.  adata.obs[‘predicted_doublet’]：是布尔值序列。
+    # ~ 符号：代表逻辑“非”，即取反。~True 是 False，~False 是 True。
+    # 所以，~adata.obs[‘predicted_doublet’] 就选中了所有 不是 (False) 双细胞的细胞。
+    # adata = adata[筛选条件, :]：通过这个索引操作，只保留符合条件的细胞（即非双细胞）。
+    # .copy()：为了避免后续操作可能出现的警告，建议创建一个新的数据副本。
+    
+    # 3. `print(f&quot;Number of cells after filtering of low quality cells: {adata.n_obs}&quot;)`
+    #    - 打印过滤后的细胞数，以评估过滤掉的比例。
+    
+    print(f&quot;总细胞数: {adata.n_obs}&quot;)
+    adata = adata[~adata.obs.predicted_doublet].copy()
+    print(f&quot;过滤之后细胞数: {adata.n_obs}&quot;)
+</code></pre></section><section><small>单元格 38</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 39</small><pre><code>qc_metrics = [&quot;total_counts&quot;, &quot;n_genes_by_counts&quot;, &quot;pct_counts_mt&quot;, &quot;pct_counts_ribo&quot;, &quot;pct_counts_hb&quot;]
+ctx.table(&quot;cell_qc&quot;, adata.obs)
+qc_summary = adata.obs.groupby(&quot;samples&quot;, observed=True)[qc_metrics].agg([&quot;median&quot;, &quot;mean&quot;, &quot;min&quot;, &quot;max&quot;])
+ctx.table(&quot;qc_by_sample&quot;, qc_summary)
+retention = pd.DataFrame({&quot;before&quot;: qc_before[&quot;samples&quot;].value_counts(), &quot;after&quot;: adata.obs[&quot;samples&quot;].value_counts()}).fillna(0).astype(int)
+retention[&quot;removed&quot;] = retention[&quot;before&quot;] - retention[&quot;after&quot;]
+retention[&quot;retained_fraction&quot;] = retention[&quot;after&quot;] / retention[&quot;before&quot;]
+ctx.table(&quot;cell_retention&quot;, retention)
+doublets = adata.obs.groupby(&quot;samples&quot;, observed=True)[&quot;predicted_doublet&quot;].agg([&quot;sum&quot;, &quot;count&quot;, &quot;mean&quot;])
+ctx.table(&quot;doublets_by_sample&quot;, doublets)
+ctx.finish(adata, {&quot;retention&quot;: retention.to_dict(orient=&quot;index&quot;), &quot;predicted_doublets&quot;: int(adata.obs[&quot;predicted_doublet&quot;].sum()), &quot;qc_metrics_basis&quot;: &quot;过滤前的基因集合&quot;, &quot;doublets_removed&quot;: ctx.config[&quot;parameters&quot;][&quot;remove_doublets&quot;]})</code></pre></section><section><small>单元格 40</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：线粒体比例高，是否足以单独证明一个细胞必须被移除？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

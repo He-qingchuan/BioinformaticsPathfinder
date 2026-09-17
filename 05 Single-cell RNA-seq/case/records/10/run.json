@@ -1,0 +1,717 @@
+{
+  "id": "10",
+  "title": "差异表达与标记基因",
+  "attempt": "20260915T075105_46d0d8",
+  "status": "complete",
+  "directory": "results/10_differential_expression/20260915T075105_46d0d8",
+  "parents": {
+    "09": "20260915T074942_425323"
+  },
+  "source_sha256": "c4750aabca2cf2b63839653145ce3faaa58f86fa7e6615497742a290369faaea",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:51:08+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/10_differential_expression/20260915T075105_46d0d8/checkpoint.h5ad",
+  "checkpoint_sha256": "8176b3a576061ee248aec28192750bec438191f361a464ebb6cb1c9cf111cb3d",
+  "elapsed_seconds": 505.07,
+  "summary": {
+    "cluster_marker_rows": 374832,
+    "b_vs_t_nk_ilc_rows": 23427,
+    "broad_type_marker_rows": 93708,
+    "method": "wilcoxon",
+    "expression_layer": "log1p",
+    "comparison_scope": "描述性标记探索；不代表有独立生物学重复的条件效应检验",
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 241082729
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 18037167
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_02.png",
+      "kind": "png",
+      "bytes": 648683
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_05.png",
+      "kind": "png",
+      "bytes": 625452
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_08.png",
+      "kind": "png",
+      "bytes": 563684
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_11.png",
+      "kind": "png",
+      "bytes": 530432
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_14.png",
+      "kind": "png",
+      "bytes": 507789
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_17.png",
+      "kind": "png",
+      "bytes": 462527
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_20.png",
+      "kind": "png",
+      "bytes": 544961
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_23.png",
+      "kind": "png",
+      "bytes": 616986
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_26.png",
+      "kind": "png",
+      "bytes": 623167
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_29.png",
+      "kind": "png",
+      "bytes": 458493
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_32.png",
+      "kind": "png",
+      "bytes": 446920
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_35.png",
+      "kind": "png",
+      "bytes": 563176
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_38.png",
+      "kind": "png",
+      "bytes": 508809
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_41.png",
+      "kind": "png",
+      "bytes": 569886
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_44.png",
+      "kind": "png",
+      "bytes": 542015
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_008_47.png",
+      "kind": "png",
+      "bytes": 495046
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_010_02.png",
+      "kind": "png",
+      "bytes": 860413
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_023_01.png",
+      "kind": "png",
+      "bytes": 532613
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_025_01.png",
+      "kind": "png",
+      "bytes": 676616
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_028_02.png",
+      "kind": "png",
+      "bytes": 115116
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_029_02.png",
+      "kind": "png",
+      "bytes": 149223
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_031_02.png",
+      "kind": "png",
+      "bytes": 143501
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_033_01.png",
+      "kind": "png",
+      "bytes": 529565
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_035_01.png",
+      "kind": "png",
+      "bytes": 296697
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_037_01.png",
+      "kind": "png",
+      "bytes": 128040
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_02.png",
+      "kind": "png",
+      "bytes": 90107
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_05.png",
+      "kind": "png",
+      "bytes": 89000
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_08.png",
+      "kind": "png",
+      "bytes": 84142
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_11.png",
+      "kind": "png",
+      "bytes": 79378
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_14.png",
+      "kind": "png",
+      "bytes": 86015
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_17.png",
+      "kind": "png",
+      "bytes": 73070
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_20.png",
+      "kind": "png",
+      "bytes": 86817
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_23.png",
+      "kind": "png",
+      "bytes": 74235
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_26.png",
+      "kind": "png",
+      "bytes": 81795
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_29.png",
+      "kind": "png",
+      "bytes": 85266
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_32.png",
+      "kind": "png",
+      "bytes": 79719
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_35.png",
+      "kind": "png",
+      "bytes": 85030
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_38.png",
+      "kind": "png",
+      "bytes": 74922
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_41.png",
+      "kind": "png",
+      "bytes": 74801
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_44.png",
+      "kind": "png",
+      "bytes": 86774
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/cell_039_47.png",
+      "kind": "png",
+      "bytes": 79764
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_236.pdf",
+      "kind": "pdf",
+      "bytes": 248221
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_236.png",
+      "kind": "png",
+      "bytes": 743903
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_249.pdf",
+      "kind": "pdf",
+      "bytes": 235348
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_249.png",
+      "kind": "png",
+      "bytes": 460783
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_251.pdf",
+      "kind": "pdf",
+      "bytes": 235017
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_251.png",
+      "kind": "png",
+      "bytes": 581500
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_254.pdf",
+      "kind": "pdf",
+      "bytes": 46889
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_254.png",
+      "kind": "png",
+      "bytes": 101576
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_255.pdf",
+      "kind": "pdf",
+      "bytes": 48582
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/dotplot__10_255.png",
+      "kind": "png",
+      "bytes": 130848
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/heatmap_10_261.pdf",
+      "kind": "pdf",
+      "bytes": 94141
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/heatmap_10_261.png",
+      "kind": "png",
+      "bytes": 265034
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/heatmap_10_263.pdf",
+      "kind": "pdf",
+      "bytes": 53351
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/heatmap_10_263.png",
+      "kind": "png",
+      "bytes": 114859
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/matrixplot__10_257.pdf",
+      "kind": "pdf",
+      "bytes": 32321
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/matrixplot__10_257.png",
+      "kind": "png",
+      "bytes": 127739
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_0_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 1327218
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_0_10_265.png",
+      "kind": "png",
+      "bytes": 79517
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_10_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 394679
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_10_10_265.png",
+      "kind": "png",
+      "bytes": 70417
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_11_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 601998
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_11_10_265.png",
+      "kind": "png",
+      "bytes": 75293
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_12_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 532664
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_12_10_265.png",
+      "kind": "png",
+      "bytes": 65864
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_13_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 705013
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_13_10_265.png",
+      "kind": "png",
+      "bytes": 66054
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_14_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 807450
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_14_10_265.png",
+      "kind": "png",
+      "bytes": 76135
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_15_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 687450
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_15_10_265.png",
+      "kind": "png",
+      "bytes": 70310
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_1_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 1350717
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_1_10_265.png",
+      "kind": "png",
+      "bytes": 79658
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_2_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 795529
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_2_10_265.png",
+      "kind": "png",
+      "bytes": 73306
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_3_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 690738
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_3_10_265.png",
+      "kind": "png",
+      "bytes": 70556
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_4_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 621470
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_4_10_265.png",
+      "kind": "png",
+      "bytes": 76804
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_5_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 277563
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_5_10_265.png",
+      "kind": "png",
+      "bytes": 63807
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_6_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 637541
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_6_10_265.png",
+      "kind": "png",
+      "bytes": 76893
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_7_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 901498
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_7_10_265.png",
+      "kind": "png",
+      "bytes": 65221
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_8_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 1315325
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_8_10_265.png",
+      "kind": "png",
+      "bytes": 72792
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_9_10_265.pdf",
+      "kind": "pdf",
+      "bytes": 503268
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/rank_genes_groups_leiden_res_0_50_9_10_265.png",
+      "kind": "png",
+      "bytes": 75315
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/stacked_violin__10_259.pdf",
+      "kind": "pdf",
+      "bytes": 1242976
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/stacked_violin__10_259.png",
+      "kind": "png",
+      "bytes": 463813
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_0.pdf",
+      "kind": "pdf",
+      "bytes": 476795
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_0.png",
+      "kind": "png",
+      "bytes": 541295
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_1.pdf",
+      "kind": "pdf",
+      "bytes": 442033
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_1.png",
+      "kind": "png",
+      "bytes": 523562
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_10.pdf",
+      "kind": "pdf",
+      "bytes": 279487
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_10.png",
+      "kind": "png",
+      "bytes": 387901
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_11.pdf",
+      "kind": "pdf",
+      "bytes": 402949
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_11.png",
+      "kind": "png",
+      "bytes": 478911
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_12.pdf",
+      "kind": "pdf",
+      "bytes": 336710
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_12.png",
+      "kind": "png",
+      "bytes": 435481
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_13.pdf",
+      "kind": "pdf",
+      "bytes": 407274
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_13.png",
+      "kind": "png",
+      "bytes": 483189
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_14.pdf",
+      "kind": "pdf",
+      "bytes": 380498
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_14.png",
+      "kind": "png",
+      "bytes": 461868
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_15.pdf",
+      "kind": "pdf",
+      "bytes": 326326
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_15.png",
+      "kind": "png",
+      "bytes": 423755
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_2.pdf",
+      "kind": "pdf",
+      "bytes": 392224
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_2.png",
+      "kind": "png",
+      "bytes": 477406
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_3.pdf",
+      "kind": "pdf",
+      "bytes": 365348
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_3.png",
+      "kind": "png",
+      "bytes": 451661
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_4.pdf",
+      "kind": "pdf",
+      "bytes": 343657
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_4.png",
+      "kind": "png",
+      "bytes": 434603
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_5.pdf",
+      "kind": "pdf",
+      "bytes": 296961
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_5.png",
+      "kind": "png",
+      "bytes": 400380
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_6.pdf",
+      "kind": "pdf",
+      "bytes": 377452
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_6.png",
+      "kind": "png",
+      "bytes": 464442
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_7.pdf",
+      "kind": "pdf",
+      "bytes": 441338
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_7.png",
+      "kind": "png",
+      "bytes": 518647
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_8.pdf",
+      "kind": "pdf",
+      "bytes": 442566
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_8.png",
+      "kind": "png",
+      "bytes": 520990
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_9.pdf",
+      "kind": "pdf",
+      "bytes": 299780
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/figures/umap_10_234_9.png",
+      "kind": "png",
+      "bytes": 397161
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/tables/b_vs_t_nk_ilc.csv",
+      "kind": "csv",
+      "bytes": 1331880
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/tables/filtered_markers.csv",
+      "kind": "csv",
+      "bytes": 24289168
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/tables/markers_by_broad_type.csv",
+      "kind": "csv",
+      "bytes": 7380950
+    },
+    {
+      "path": "results/10_differential_expression/20260915T075105_46d0d8/tables/markers_by_cluster.csv",
+      "kind": "csv",
+      "bytes": 26774008
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 2729635840,
+    "wall_seconds": 508.49
+  },
+  "original_source_sha256": "4e1e38bade371255fe6a14506d26c105f809654f3d0e09aaf43c9509ad6c62e2",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

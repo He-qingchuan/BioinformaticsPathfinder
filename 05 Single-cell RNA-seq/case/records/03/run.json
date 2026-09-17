@@ -1,0 +1,122 @@
+{
+  "id": "03",
+  "title": "归一化与高变基因",
+  "attempt": "20260915T073055_538150",
+  "status": "complete",
+  "directory": "results/03_normalization_hvg/20260915T073055_538150",
+  "parents": {
+    "02": "20260915T072757_356d34"
+  },
+  "source_sha256": "8966fe35b3b4622b2a76d3058c1e1b72df0909122cd7e3f407b34902dffbfce2",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:30:59+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/03_normalization_hvg/20260915T073055_538150/checkpoint.h5ad",
+  "checkpoint_sha256": "08d49a7c56d23c01ed332dc2765be2b2901cfa224f128ed6c8e72921a53133f5",
+  "elapsed_seconds": 28.34,
+  "summary": {
+    "n_highly_variable": 2000,
+    "normalization_target": 5853.0,
+    "layers": [
+      "counts",
+      "log1p"
+    ],
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 199163777
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 205091
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/cell_014_00.png",
+      "kind": "png",
+      "bytes": 23144
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/cell_016_01.png",
+      "kind": "png",
+      "bytes": 103277
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/filter_genes_dispersion_03_68.pdf",
+      "kind": "pdf",
+      "bytes": 686741
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/filter_genes_dispersion_03_68.png",
+      "kind": "png",
+      "bytes": 92016
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/hvg_batch_counts.pdf",
+      "kind": "pdf",
+      "bytes": 8808
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/figures/hvg_batch_counts.png",
+      "kind": "png",
+      "bytes": 23368
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/tables/highly_variable_genes.csv",
+      "kind": "csv",
+      "bytes": 4049881
+    },
+    {
+      "path": "results/03_normalization_hvg/20260915T073055_538150/tables/normalization_totals.csv",
+      "kind": "csv",
+      "bytes": 531531
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1828573184,
+    "wall_seconds": 32.89
+  },
+  "original_source_sha256": "ebd1e9ecf02b4dba3efd3c5d84942d7bd8ad8530257bb60880dc8e969b7f4943",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

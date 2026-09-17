@@ -1,0 +1,143 @@
+{
+  "id": "05",
+  "title": "批次整合与方法比较",
+  "attempt": "20260915T073407_99a665",
+  "status": "complete",
+  "directory": "results/05_integration/20260915T073407_99a665",
+  "parents": {
+    "04": "20260915T073130_f556ae"
+  },
+  "source_sha256": "b5115cf3617fbc666ad2ffa15f497712feeca85bb5ff218f2f3a8222bee58933",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:34:12+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/05_integration/20260915T073407_99a665/checkpoint.h5ad",
+  "checkpoint_sha256": "44481aa7813584b444efe1c28118facf280fe2056cf26e81c9d89d9c69c04e0b",
+  "elapsed_seconds": 161.8,
+  "summary": {
+    "selected_integration": "uncorrected",
+    "neighbors_key": "neighbors",
+    "computed_methods": [
+      "uncorrected",
+      "harmony",
+      "bbknn"
+    ],
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/05_integration/20260915T073407_99a665/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 219502071
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 816017
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/cell_008_01.png",
+      "kind": "png",
+      "bytes": 187352
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/cell_018_01.png",
+      "kind": "png",
+      "bytes": 225442
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/cell_020_01.png",
+      "kind": "png",
+      "bytes": 180066
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_103.pdf",
+      "kind": "pdf",
+      "bytes": 129091
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_103.png",
+      "kind": "png",
+      "bytes": 154644
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_114.pdf",
+      "kind": "pdf",
+      "bytes": 149171
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_114.png",
+      "kind": "png",
+      "bytes": 186871
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_145.pdf",
+      "kind": "pdf",
+      "bytes": 120032
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/figures/umap_05_145.png",
+      "kind": "png",
+      "bytes": 151947
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/tables/umap_bbknn.csv",
+      "kind": "csv",
+      "bytes": 758839
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/tables/umap_harmony.csv",
+      "kind": "csv",
+      "bytes": 742032
+    },
+    {
+      "path": "results/05_integration/20260915T073407_99a665/tables/umap_uncorrected.csv",
+      "kind": "csv",
+      "bytes": 739786
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1638457344,
+    "wall_seconds": 166.74
+  },
+  "original_source_sha256": "0c375d92e71d0db1ac63d16e9c7fd60b156beffd286e7e4f9a2ddff7e6848a0f",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

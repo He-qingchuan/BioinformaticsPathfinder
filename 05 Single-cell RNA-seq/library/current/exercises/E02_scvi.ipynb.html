@@ -1,0 +1,179 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E02_scvi.ipynb</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/exercises/E02_scvi.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>E02_scvi.ipynb</h1><section><small>单元格 0</small><h1>第 E02 章 scVI 原理与训练扩展</h1>
+<h2>学习目标</h2>
+<p>理解 scVI 如何利用原始计数学习潜在表示。</p>
+<h2>为什么做与怎样做</h2>
+<p>在高变基因的 counts 层训练 scVI，将嵌入按细胞索引带回保留完整基因的对象。默认 10 epochs 为运行演示，不能视为收敛证明。</p>
+<p>前置章节：04。运行前请完成项目环境准备。</p>
+<p>本章在项目副本运行。遇到等待材料/确认，请按根目录 <strong>99_运行与AI协作指南.md</strong> 查看当前结果、与用户讨论并续跑；不能跳过待办直接进入下游。</p>
+</section><section><small>单元格 1</small><pre><code># 功能说明：查找公共环境和当前项目，读取有效上游检查点；模板副本之间不共享分析状态。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+from course_projects import resolve_project, input_path, read_sample
+from course_resources import qc_gene_sets, marker_resources, resolution_preview
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+INSTALL_ROOT = ROOT
+ROOT = resolve_project()
+ctx = start_chapter(&quot;E02&quot;)
+adata = ctx.load_input()
+
+</code></pre></section><section><small>单元格 2</small><h2>E02.1 scVI整合</h2>
+</section><section><small>单元格 3</small><p>将使用的一个整合方法是 scVI（单细胞变分推断），这是一种基于条件变分自动编码器 （参考文献：Lopez2018-au） 的方法，可在 scvi-tools 包 （参考文献：Gayoso2022-ar） 中找到。变分自动编码器 是一种试图降低数据集维度的人工神经网络。条件部分是指将此降维过程以特定协变量（在本例中为批次）为条件，使得协变量不影响低维表示。在基准测试研究中，scVI 已被证明在各种数据集上表现良好，在批次校正和保留生物学变异之间取得了良好的平衡 （参考文献：Luecken2021-jo）。scVI 直接对原始计数进行建模，因此重要的是我们为它提供<strong>计数矩阵而不是归一化的表达矩阵</strong>。</p>
+<p>首先，让我们复制一份数据集用于此整合。通常没有必要这样做，但由于我们将演示多种整合方法，复制一份可以更容易地显示每种方法添加了什么。</p>
+</section><section><small>单元格 4</small><p>我们将创建一个仅包含选定高变基因的新AnnData对象用于整合。</p>
+</section><section><small>单元格 5</small><pre><code># 功能说明：查看高变基因 AnnData 对象摘要。
+# 运行目的：确认用于 scVI 整合的输入数据（仅含高变基因）的状态。
+# 详细代码解析：
+# 1. `adata_hvg`
+#    - 打印对象概览。
+
+adata_hvg</code></pre></section><section><small>单元格 6</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata_hvg = adata[:, adata.var[&quot;highly_variable&quot;]].copy()
+# 功能说明：为scVI整合复制数据对象。
+# 运行目的：创建一个专门用于scVI分析的副本，以免影响其他分析流程。
+# 详细代码解析：
+# 1. `adata_scvi = adata_hvg.copy()`
+#    - 复制包含高变基因的`adata_hvg`对象，命名为`adata_scvi`。
+
+adata_scvi = adata_hvg.copy()
+</code></pre></section><section><small>单元格 7</small><h2>E02.2 数据准备</h2>
+<p>使用 scVI 的第一步是准备我们的 AnnData 对象。此步骤存储 scVI 所需的一些信息，例如使用哪个表达矩阵以及批次键是什么。</p>
+</section><section><small>单元格 8</small><pre><code># 功能说明：导入 scvi-tools 库。
+# 运行目的：加载用于深度学习整合分析（scVI）的工具包。
+# 详细代码解析：
+# 1. `import scvi`
+#    - 导入 scvi 模块。
+
+import scvi</code></pre></section><section><small>单元格 9</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+batch_key = &quot;samples&quot;
+scvi.settings.seed = 0
+# 功能说明：设置AnnData对象以供scVI使用。
+# 运行目的：注册scVI模型所需的关键信息，包括使用哪个层作为输入（计数数据）以及哪个列作为批次变量。
+# 详细代码解析：
+# 1. `scvi.model.SCVI.setup_anndata(...)`
+#    - `scvi.model.SCVI`: scVI模型类。
+#    - `.setup_anndata`: 静态方法，用于配置AnnData对象。
+#    - `adata_scvi`: 要配置的对象。
+#    - `layer=&quot;counts&quot;`: 指定模型输入数据所在的层。scVI需要原始计数数据（整数），而不是归一化后的数据。
+#    - `batch_key=batch_key`: 指定包含批次信息的列名。scVI将使用此信息来建模和消除批次效应。
+# 2. `adata_scvi`
+#    - 打印对象摘要，可以看到增加了一些以`_scvi`开头的内部字段。
+scvi.model.SCVI.setup_anndata(adata_scvi, layer=&quot;counts&quot;, batch_key=batch_key)
+adata_scvi
+</code></pre></section><section><small>单元格 10</small><p><strong>scVI</strong> 创建的字段以 <code>_scvi</code> 为前缀。这些是为内部使用而设计的，不应手动修改。<strong>scvi-tools</strong> 作者的一般建议是在模型训练完成之前不要对我们的对象进行任何更改。在其他数据集上，你可能会看到有关输入表达矩阵包含未归一化计数数据的警告。这通常意味着你应该检查提供给设置函数的层是否确实包含计数值，但也可能是因为你对来自全长方案的数据执行了基因长度校正，或者来自其他不产生整数计数的定量方法。</p>
+</section><section><small>单元格 11</small><h2>E02.3 构建模型</h2>
+</section><section><small>单元格 12</small><p>我们现在可以构建一个 <strong>scVI</strong> 模型对象。除了我们在这里使用的 <strong>scVI</strong> 模型外，<strong>scvi-tools</strong> 包还包含各种其他模型（我们将在下面使用 <strong>scANVI</strong> 模型）。</p>
+</section><section><small>单元格 13</small><pre><code># 功能说明：初始化scVI模型。
+# 运行目的：根据设置好的AnnData对象构建变分自编码器（VAE）模型结构。
+# 详细代码解析：
+# 1. `model_scvi = scvi.model.SCVI(adata_scvi)`
+#    - `scvi.model.SCVI(...)`: 创建SCVI模型实例。
+#    - `adata_scvi`: 传入已配置的AnnData对象。模型会自动读取之前setup的信息来构建网络结构（如输入维度、条件变量等）。
+# 2. `model_scvi`
+#    - 打印模型对象的摘要信息，显示模型结构和参数。
+
+model_scvi = scvi.model.SCVI(adata_scvi)
+model_scvi</code></pre></section><section><small>单元格 14</small><p><strong>scVI</strong> 模型对象包含提供的 AnnData 对象以及模型本身的神经网络。你可以看到目前模型尚未训练。如果我们想修改网络的结构，我们可以向模型构造函数提供额外的参数，但在这里我们只使用默认值。</p>
+<p>我们还可以打印模型的更详细描述，向我们展示相关 AnnData 对象中存储内容的位置。</p>
+</section><section><small>单元格 15</small><pre><code># 功能说明：查看scVI模型的数据设置详情。
+# 运行目的：验证模型是否正确识别了批次、标签和其他注册的数据字段。
+# 详细代码解析：
+# 1. `model_scvi.view_anndata_setup()`
+#    - 打印详细的设置报告，包括分类变量的映射（如哪个批次对应哪个整数编码）。
+
+model_scvi.view_anndata_setup()</code></pre></section><section><small>单元格 16</small><p>在这里我们可以确切地看到 <strong>scVI</strong> 分配了哪些信息，包括每个不同批次如何在模型中编码等细节。</p>
+</section><section><small>单元格 17</small><h2>E02.4 训练模型</h2>
+</section><section><small>单元格 18</small><p>模型将针对给定数量的 <em>epochs</em>（轮次）进行训练，这是一个训练迭代，其中每个细胞都通过网络传递。默认情况下，<strong>scVI</strong> 使用以下启发式方法来设置轮次数量。对于少于 20,000 个细胞的数据集，将使用 400 个轮次，随着细胞数量增加到 20,000 以上，轮次数量会不断减少。这背后的原因是，随着网络在每个轮次中看到更多细胞，它可以学习到与更多轮次但更少细胞相同数量的信息。</p>
+</section><section><small>单元格 19</small><pre><code># 功能说明：计算训练的轮次（epochs）数量。
+# 运行目的：根据数据集的大小动态调整训练时长。scVI使用一种启发式方法：细胞越少，需要的轮次越多，以确保模型充分学习。
+# 详细代码解析：
+# 1. `adata.n_obs`
+#    - 获取数据集中的细胞总数。
+# 2. `(20000 / adata.n_obs) * 400`
+#    - 这是一个缩放公式。基准是20000个细胞训练400轮。如果细胞更少，比率大于1，轮次增加；反之减少。
+# 3. `round(...)`
+#    - 四舍五入取整。
+# 4. `np.min([..., 400])`
+#    - 取计算值和400之间的较小值。这意味着最大轮次限制为400。
+# 5. `max_epochs_scvi`
+#    - 存储计算出的训练轮次。
+
+max_epochs_scvi = np.min([round((20000 / adata.n_obs) * 400), 400])
+max_epochs_scvi</code></pre></section><section><small>单元格 20</small><p>我们现在针对选定的轮次数量训练模型（这大约需要 20-40 分钟，具体取决于你使用的计算机）。</p>
+</section><section><small>单元格 21</small><pre><code># 功能说明：训练scVI模型。
+# 运行目的：通过优化变分下界（ELBO）来训练神经网络，使其学习数据的潜在分布并消除批次效应。
+# 详细代码解析：
+# 1. `model_scvi.train()`
+#    - 启动训练过程。默认使用GPU（如果可用）。
+#    - 训练过程中会显示进度条和损失函数（ELBO）的变化。
+#    - max_epochs=max_epochs_scvi 训练次数
+model_scvi.train(max_epochs=ctx.config[&quot;parameters&quot;][&quot;scvi_epochs&quot;], accelerator=&quot;cpu&quot;, devices=1)</code></pre></section><section><small>单元格 22</small><h2>E02.5 提取嵌入</h2>
+</section><section><small>单元格 23</small><p>我们要从训练好的模型中提取的主要结果是每个细胞的潜在表示。这是一个多维嵌入，其中批次效应已被消除，其使用方式类似于我们在分析单个数据集时使用 PCA 维度的方式。我们将此存储在 <code>obsm</code> 中，键为 <code>X_scvi</code>。</p>
+</section><section><small>单元格 24</small><pre><code># 功能说明：提取scVI学习到的潜在表示（Latent Representation）。
+# 运行目的：获取去除了批次效应的低维特征表示，用于后续的聚类和可视化。
+# 详细代码解析：
+# 1. `model_scvi.get_latent_representation()`
+#    - 从训练好的模型中获取每个细胞的潜在向量（embedding）。这是模型编码器部分的输出。
+# 2. `adata_scvi.obsm[&quot;X_scVI&quot;] = ...`
+#    - 将提取的潜在表示存储在AnnData对象的`obsm`槽中，命名为`&quot;X_scVI&quot;`。
+
+adata_scvi.obsm[&quot;X_scVI&quot;] = model_scvi.get_latent_representation()</code></pre></section><section><small>单元格 25</small><h2>E02.6 计算批次校正的 UMAP</h2>
+</section><section><small>单元格 26</small><p>我们现在将像整合前一样可视化数据。我们计算一个新的 UMAP 嵌入，但不是在 PCA 空间中寻找最近邻，而是从 <strong>scVI</strong> 的校正表示开始。</p>
+</section><section><small>单元格 27</small><pre><code># 功能说明：基于scVI的潜在表示计算邻居图和UMAP。
+# 运行目的：利用校正后的数据结构进行降维可视化，以评估整合效果。
+# 详细代码解析：
+# 1. `sc.pp.neighbors(adata_scvi, use_rep=&quot;X_scVI&quot;)`
+#    - `use_rep=&quot;X_scVI&quot;`: 指定使用刚才提取的scVI潜在表示（而不是默认的PCA）来计算细胞间的距离和构建邻居图。
+# 2. `sc.tl.umap(adata_scvi)`
+#    - 基于新的邻居图计算UMAP嵌入。
+# 3. `adata_scvi`
+#    - 打印对象摘要。
+
+sc.pp.neighbors(adata_scvi, use_rep=&quot;X_scVI&quot;)
+sc.tl.umap(adata_scvi)
+adata_scvi</code></pre></section><section><small>单元格 28</small><p>一旦我们有了新的 UMAP 表示，我们可以像以前一样按批次和身份标签对其进行着色绘制。</p>
+</section><section><small>单元格 29</small><pre><code># 功能说明：绘制scVI整合后的UMAP图。
+# 运行目的：可视化整合结果，检查不同批次的细胞是否混合在一起（批次校正）
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - 绘制UMAP。
+#    - `color=[batch_key]`: 批次分布。
+sc.pl.umap(adata_scvi, color=[batch_key],size=2,save=&quot;_E02_143.pdf&quot;)</code></pre></section><section><small>单元格 30</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 31</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata.obsm[&quot;X_scVI&quot;] = adata_scvi[adata.obs_names].obsm[&quot;X_scVI&quot;].copy()
+sc.pp.neighbors(adata, use_rep=&quot;X_scVI&quot;, key_added=&quot;scvi_neighbors&quot;, random_state=0)
+sc.tl.umap(adata, neighbors_key=&quot;scvi_neighbors&quot;, random_state=0)
+model_scvi.save(str(ctx.directory / &quot;scvi_model&quot;), overwrite=True)
+ctx.table(&quot;training_history&quot;, model_scvi.history[&quot;elbo_train&quot;])
+ctx.finish(adata, {&quot;epochs&quot;: ctx.config[&quot;parameters&quot;][&quot;scvi_epochs&quot;], &quot;interpretation&quot;: &quot;短训练演示，不证明模型收敛&quot;, &quot;n_training_genes&quot;: int(adata_scvi.n_vars)})
+</code></pre></section><section><small>单元格 32</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：为什么 scVI 使用原始计数，而常规 PCA 使用归一化后的表达量？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

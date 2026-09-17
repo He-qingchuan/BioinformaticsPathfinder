@@ -1,0 +1,173 @@
+{
+  "id": "02",
+  "title": "质量控制与双细胞检测",
+  "attempt": "20260915T072757_356d34",
+  "status": "complete",
+  "directory": "results/02_quality_control/20260915T072757_356d34",
+  "parents": {
+    "01": "20260915T072732_9b3fa3"
+  },
+  "source_sha256": "53d55922e1bb2410e567bc311800715d07c86d0a5111c9df31bb83b70bb1e381",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:28:01+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/02_quality_control/20260915T072757_356d34/checkpoint.h5ad",
+  "checkpoint_sha256": "06602485cedab99bed2bb51421b48bc230db58dd75ddd4a04559d998a5107cae",
+  "elapsed_seconds": 171.68,
+  "summary": {
+    "retention": {
+      "s1d1": {
+        "before": 8785,
+        "after": 8713,
+        "removed": 72,
+        "retained_fraction": 0.9918042117245305
+      },
+      "s1d3": {
+        "before": 8340,
+        "after": 8328,
+        "removed": 12,
+        "retained_fraction": 0.9985611510791367
+      }
+    },
+    "predicted_doublets": 213,
+    "qc_metrics_basis": "过滤前的基因集合",
+    "doublets_removed": false,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 67480852
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 2201925
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/cell_016_01.png",
+      "kind": "png",
+      "bytes": 607349
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/cell_017_01.png",
+      "kind": "png",
+      "bytes": 765125
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/cell_019_01.png",
+      "kind": "png",
+      "bytes": 112998
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/cell_033_01.png",
+      "kind": "png",
+      "bytes": 113211
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/scatter_02_34.pdf",
+      "kind": "pdf",
+      "bytes": 60739
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/scatter_02_34.png",
+      "kind": "png",
+      "bytes": 100436
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/scatter_02_48.pdf",
+      "kind": "pdf",
+      "bytes": 61120
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/scatter_02_48.png",
+      "kind": "png",
+      "bytes": 100687
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/violin_02_31.pdf",
+      "kind": "pdf",
+      "bytes": 1304377
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/violin_02_31.png",
+      "kind": "png",
+      "bytes": 569032
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/violin_02_32.pdf",
+      "kind": "pdf",
+      "bytes": 1330679
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/figures/violin_02_32.png",
+      "kind": "png",
+      "bytes": 701339
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/tables/cell_qc.csv",
+      "kind": "csv",
+      "bytes": 4080568
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/tables/cell_retention.csv",
+      "kind": "csv",
+      "bytes": 124
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/tables/doublets_by_sample.csv",
+      "kind": "csv",
+      "bytes": 94
+    },
+    {
+      "path": "results/02_quality_control/20260915T072757_356d34/tables/qc_by_sample.csv",
+      "kind": "csv",
+      "bytes": 807
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 5027049472,
+    "wall_seconds": 174.5
+  },
+  "original_source_sha256": "228e4b440a31d9ba6b0092b1b189dc035924718e0dc5f26815cca263cb76afbe",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

@@ -1,0 +1,230 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_projects.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_projects.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_projects.py</h1><pre><code>&quot;&quot;&quot;项目目录与输入材料。
+
+功能说明：将课程安装位置与每次研究的工作目录分开。
+运行目的：课件可以独立修改，输入、决定、检查点和报告不会串到另一项目。
+数据流程：公共模板 → 项目副本；用户材料 → 输入核查 → 当前章节。
+&quot;&quot;&quot;
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import uuid
+
+
+def installation():
+    &quot;&quot;&quot;返回软件、环境和模板所在位置；不使用当前研究项目来寻找 Conda。&quot;&quot;&quot;
+    return Path(__file__).resolve().parents[1]
+
+
+def resolve_project(name=None, required=True):
+    &quot;&quot;&quot;从显式编号或项目内工作目录确定项目；不设置共享的‘当前项目’指针。&quot;&quot;&quot;
+    course = installation()
+    name = name or os.environ.get(&quot;SC_COURSE_PROJECT&quot;)
+    if name:
+        if not re.fullmatch(r&quot;[A-Za-z0-9][A-Za-z0-9_-]{0,63}&quot;, name):
+            raise ValueError(&quot;项目编号须为 1–64 位字母、数字、下划线或短横线；中文名称另存 name。&quot;)
+        root = course / &quot;projects&quot; / name
+        if not (root / &quot;project.json&quot;).is_file():
+            raise ValueError(f&quot;项目不存在：{name}。先执行 course project create。&quot;)
+        return root
+    for root in [Path.cwd(), *Path.cwd().parents]:
+        if (root / &quot;project.json&quot;).is_file() and root.parent == course / &quot;projects&quot;:
+            return root
+    if required:
+        raise ValueError(&quot;请指定 --project 项目编号；可执行 course project list 查看。公共课件是模板，请运行项目内副本。&quot;)
+    return None
+
+
+def descriptor(root):
+    &quot;&quot;&quot;读取 AI 根据对话整理的项目说明；配置中的路径均相对于此项目。&quot;&quot;&quot;
+    return json.loads((Path(root) / &quot;project.json&quot;).read_text(encoding=&quot;utf-8&quot;))
+
+
+def input_path(root, value):
+    &quot;&quot;&quot;解析材料路径；允许引用随包示例，要求材料留在整个课程包内以便迁移。&quot;&quot;&quot;
+    path = (Path(root) / value).resolve()
+    if not path.is_relative_to(installation().resolve()):
+        raise ValueError(f&quot;请将材料放到本项目 inputs 再登记相对路径：{value}&quot;)
+    return path
+
+
+def config_digest(root, chapter):
+    &quot;&quot;&quot;只校验本章消费的配置；填写项目名称、模型信息不应使导入结果过期。&quot;&quot;&quot;
+    data = descriptor(root) if (root / &quot;project.json&quot;).exists() else json.loads((root / &quot;config/course.json&quot;).read_text())
+    keys = {
+        &quot;00&quot;: [&quot;id&quot;, &quot;uuid&quot;], &quot;01&quot;: [&quot;samples&quot;],
+        &quot;02&quot;: [&quot;species&quot;, &quot;assay&quot;, &quot;qc&quot;], &quot;03&quot;: [], &quot;04&quot;: [], &quot;05&quot;: [&quot;batch_key&quot;],
+        &quot;06&quot;: [], &quot;07&quot;: [&quot;markers&quot;], &quot;08&quot;: [&quot;annotation_extra_genes&quot;], &quot;09&quot;: [&quot;subcluster&quot;],
+        &quot;10&quot;: [&quot;comparison&quot;], &quot;11&quot;: [&quot;models&quot;, &quot;species&quot;, &quot;tissue&quot;, &quot;assay&quot;], &quot;12&quot;: [], &quot;E01&quot;: [&quot;exercise_mtx&quot;], &quot;E02&quot;: [],
+    }.get(chapter, [])
+    parameter_keys = {
+        &quot;02&quot;: [&quot;min_genes&quot;, &quot;min_cells&quot;], &quot;03&quot;: [&quot;n_top_genes&quot;], &quot;04&quot;: [&quot;n_pcs&quot;],
+        &quot;05&quot;: [&quot;n_pcs&quot;], &quot;06&quot;: [&quot;resolutions&quot;], &quot;E02&quot;: [&quot;scvi_epochs&quot;],
+    }.get(chapter, []) + [&quot;random_seed&quot;, &quot;threads&quot;]
+    value = {key: data.get(key) for key in keys}
+    value[&quot;parameters&quot;] = {key: data[&quot;parameters&quot;].get(key) for key in parameter_keys}
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def create_project(identifier, name, preset=&quot;custom&quot;):
+    &quot;&quot;&quot;创建轻量课件副本。tutorial 引用只读示例输入；custom 留空并等待真实资料。&quot;&quot;&quot;
+    from course_runtime import read_json, write_json
+    if not re.fullmatch(r&quot;[A-Za-z0-9][A-Za-z0-9_-]{0,63}&quot;, identifier):
+        raise ValueError(&quot;非法项目编号。&quot;)
+    root = installation() / &quot;projects&quot; / identifier
+    if root.exists():
+        raise FileExistsError(f&quot;项目已经存在，不覆盖：{root}&quot;)
+    config = copy.deepcopy(read_json(installation() / &quot;config/course.json&quot;))
+    data = {**config, &quot;schema&quot;: 3, &quot;id&quot;: identifier, &quot;uuid&quot;: uuid.uuid4().hex,
+            &quot;name&quot;: name, &quot;preset&quot;: preset, &quot;species&quot;: &quot;&quot;, &quot;tissue&quot;: &quot;&quot;, &quot;assay&quot;: &quot;&quot;,
+            &quot;samples&quot;: {}, &quot;markers&quot;: &quot;&quot;, &quot;models&quot;: [], &quot;batch_key&quot;: &quot;samples&quot;,
+            &quot;qc&quot;: {&quot;gene_sets&quot;: {}, &quot;mt_cutoff&quot;: 20, &quot;general_mads&quot;: 5, &quot;mt_mads&quot;: 3},
+            &quot;subcluster&quot;: {&quot;group&quot;: &quot;&quot;, &quot;resolution&quot;: 0.05},
+            &quot;comparison&quot;: {&quot;group&quot;: &quot;&quot;, &quot;reference&quot;: &quot;&quot;, &quot;question&quot;: &quot;&quot;, &quot;plot_clusters&quot;: []},
+            &quot;annotation_extra_genes&quot;: [],
+            &quot;adaptation&quot;: {&quot;confirmed&quot;: False, &quot;note&quot;: &quot;请按 99 指南核对物种、基因编号、质控和材料。&quot;}}
+    if preset == &quot;tutorial&quot;:
+        prefix = &quot;../tutorial_example/inputs/&quot;
+        data.update(species=&quot;Homo sapiens&quot;, tissue=&quot;骨髓&quot;, assay=&quot;10x scRNA UMI&quot;)
+        data[&quot;samples&quot;] = {sid: {&quot;path&quot;: prefix + &quot;data/h5/&quot; + filename,
+                                &quot;format&quot;: &quot;10x_h5&quot;, &quot;capture_library&quot;: sid, &quot;counts_confirmed&quot;: True}
+                           for sid, filename in config[&quot;samples&quot;].items()}
+        data[&quot;markers&quot;] = prefix + &quot;markers.json&quot;
+        data[&quot;annotation_extra_genes&quot;] = [&quot;CD34&quot;, &quot;CD3D&quot;, &quot;TRAC&quot;]
+        data[&quot;models&quot;] = [{&quot;name&quot;: role, &quot;path&quot;: prefix + &quot;models/&quot; + filename,
+                           &quot;species&quot;: &quot;Homo sapiens&quot;, &quot;tissue&quot;: &quot;跨组织免疫细胞&quot;, &quot;source&quot;: &quot;https://www.celltypist.org/models&quot;}
+                          for role, filename in [(&quot;coarse&quot;, &quot;Immune_All_High.pkl&quot;), (&quot;fine&quot;, &quot;Immune_All_Low.pkl&quot;)]]
+        data[&quot;qc&quot;][&quot;gene_sets&quot;] = {&quot;mt&quot;: {&quot;prefixes&quot;: [&quot;MT-&quot;]}, &quot;ribo&quot;: {&quot;prefixes&quot;: [&quot;RPS&quot;, &quot;RPL&quot;]},
+                                     &quot;hb&quot;: {&quot;regex&quot;: &quot;^HB[^(P)]&quot;}}
+        data[&quot;subcluster&quot;][&quot;group&quot;] = &quot;B_cells&quot;
+        data[&quot;comparison&quot;].update(group=&quot;B_cells&quot;, reference=&quot;T_NK_ILCs&quot;, question=&quot;比较 B 细胞与 T/NK/ILC 的描述性标记差异，供教学核对细胞类型。&quot;, plot_clusters=[&quot;2&quot;, &quot;11&quot;])
+        data[&quot;adaptation&quot;] = {&quot;confirmed&quot;: True, &quot;note&quot;: &quot;教程预设；运行中仍需确认 QC、整合、分辨率、注释和模型。&quot;}
+    root.mkdir(parents=True)
+    (root / &quot;inputs&quot;).mkdir()
+    (root / &quot;results&quot;).mkdir()
+    (root / &quot;reports/sections&quot;).mkdir(parents=True)
+    shutil.copytree(installation() / &quot;notebooks&quot;, root / &quot;notebooks&quot;, ignore=shutil.ignore_patterns(&quot;README.md&quot;))
+    shutil.copytree(installation() / &quot;exercises&quot;, root / &quot;notebooks/exercises&quot;, ignore=shutil.ignore_patterns(&quot;README.md&quot;))
+    for ch in data[&quot;chapters&quot;]:
+        if ch[&quot;notebook&quot;].startswith(&quot;exercises/&quot;):
+            ch[&quot;notebook&quot;] = &quot;notebooks/&quot; + ch[&quot;notebook&quot;]
+    data[&quot;exercise_mtx&quot;] = {sid: &quot;../tutorial_example/inputs/data/mtx/&quot; + sid for sid in [&quot;F30&quot;, &quot;M66&quot;]}
+    write_json(root / &quot;project.json&quot;, data)
+    write_json(root / &quot;results/state.json&quot;, {&quot;chapters&quot;: {}})
+    print(f&quot;已创建：{root}\n材料统一放入 inputs；请按 99 指南完成本项目输入核查。&quot;)
+    return root
+
+
+def input_issues(root, chapter=&quot;01&quot;):
+    &quot;&quot;&quot;按阶段列出缺失材料；缺模型仅阻塞模型步骤，缺计数则阻塞数据导入。&quot;&quot;&quot;
+    p = descriptor(root)
+    issues = []
+    if chapter == &quot;00&quot;:
+        return issues
+    if chapter == &quot;E01&quot;:
+        return [f&quot;练习材料缺失：{sid}&quot; for sid,path in p.get(&quot;exercise_mtx&quot;,{}).items() if not input_path(root,path).is_dir()]
+    if not p.get(&quot;samples&quot;):
+        issues.append(&quot;尚未登记 samples；请提供表达计数文件和样本对应关系。&quot;)
+    for sid, sample in p.get(&quot;samples&quot;, {}).items():
+        try:
+            path = input_path(root, sample[&quot;path&quot;])
+            if not path.exists():
+                issues.append(f&quot;样本 {sid} 文件不存在：{sample[&#x27;path&#x27;]}&quot;)
+        except (KeyError, ValueError) as exc:
+            issues.append(f&quot;样本 {sid} 路径需要补充：{exc}&quot;)
+        if not sample.get(&quot;counts_confirmed&quot;):
+            issues.append(f&quot;样本 {sid} 需确认原始计数来源；整数值本身不能证明未归一化。&quot;)
+        if sample.get(&quot;format&quot;) not in {&quot;10x_h5&quot;, &quot;10x_mtx&quot;, &quot;h5ad&quot;}:
+            issues.append(f&quot;样本 {sid} 需登记 format：10x_h5、10x_mtx 或 h5ad。&quot;)
+    if chapter not in {&quot;01&quot;, &quot;E01&quot;}:
+        for key in (&quot;species&quot;, &quot;tissue&quot;, &quot;assay&quot;):
+            if not p.get(key):
+                issues.append(f&quot;请补充 {key}。&quot;)
+        if not p.get(&quot;adaptation&quot;, {}).get(&quot;confirmed&quot;):
+            issues.append(&quot;请核对本项目课件与物种/组织/测序方式，完成 adaptation 记录后再继续。&quot;)
+    if chapter == &quot;02&quot;:
+        for sid, sample in p.get(&quot;samples&quot;, {}).items():
+            if not sample.get(&quot;capture_library&quot;):
+                issues.append(f&quot;样本 {sid} 缺 capture_library；请确认哪些细胞来自同一次捕获文库。&quot;)
+    if chapter == &quot;07&quot; and (not p.get(&quot;markers&quot;) or not input_path(root, p[&quot;markers&quot;]).is_file()):
+        issues.append(&quot;缺少适配的 markers 标记资源；请先检查基因编号、查找来源并与用户确认。&quot;)
+    if chapter == &quot;11&quot;:
+        if not p.get(&quot;models&quot;):
+            issues.append(&quot;尚未登记适配模型；先检索官方目录并建议下载/用户提供/跳过。&quot;)
+        for m in p.get(&quot;models&quot;, []):
+            if not m.get(&quot;path&quot;) or not input_path(root, m[&quot;path&quot;]).is_file():
+                issues.append(f&quot;缺少模型文件：{m.get(&#x27;name&#x27;, &#x27;&#x27;)}。先检索模型目录，再询问用户。&quot;)
+            if m.get(&quot;species&quot;) != p.get(&quot;species&quot;):
+                issues.append(f&quot;模型 {m.get(&#x27;name&#x27;)} 物种与项目不同；需要独立适配与证据，不能直接应用。&quot;)
+    return issues
+
+
+def read_sample(root, sample):
+    &quot;&quot;&quot;导入已确认的原始 RNA 计数，保留基因编号；不根据文件扩展名猜测归一化状态。&quot;&quot;&quot;
+    import anndata as ad
+    import numpy as np
+    import pandas as pd
+    import scanpy as sc
+    from scipy import sparse
+    path = input_path(root, sample[&quot;path&quot;])
+    fmt = sample[&quot;format&quot;]
+    if fmt == &quot;10x_h5&quot;:
+        data = sc.read_10x_h5(path, genome=sample.get(&quot;genome&quot;), gex_only=True)
+    elif fmt == &quot;10x_mtx&quot;:
+        # Scanpy 1.11.5 的 v3 读取器要求 gzip；未压缩矩阵直接由 SciPy 读取，避免改动原材料。
+        if (path / &quot;matrix.mtx.gz&quot;).exists() or (path / &quot;genes.tsv&quot;).exists():
+            data = sc.read_10x_mtx(path, var_names=sample.get(&quot;gene_index&quot;, &quot;gene_symbols&quot;), cache=False)
+        else:
+            from scipy.io import mmread
+            genes = pd.read_csv(path / &quot;features.tsv&quot;, sep=&quot;\t&quot;, header=None, dtype=str)
+            cells = pd.read_csv(path / &quot;barcodes.tsv&quot;, sep=&quot;\t&quot;, header=None, dtype=str)
+            data = ad.AnnData(sparse.csr_matrix(mmread(path / &quot;matrix.mtx&quot;).T),
+                              obs=pd.DataFrame(index=cells[0].to_numpy()),
+                              var=pd.DataFrame({&quot;gene_ids&quot;: genes[0].values, &quot;gene_symbols&quot;: genes[1].values}, index=genes[1].to_numpy()))
+            if genes.shape[1] &gt; 2:
+                data = data[:, (genes[2] == &quot;Gene Expression&quot;).values].copy()
+    elif fmt == &quot;h5ad&quot;:
+        data = ad.read_h5ad(path)
+        layer = sample.get(&quot;counts_layer&quot;)
+        if not layer:
+            raise ValueError(&quot;H5AD 必须指定 counts_layer：X、raw 或具体 layers 名称。&quot;)
+        if layer == &quot;raw&quot;:
+            if data.raw is None:
+                raise ValueError(&quot;H5AD 没有 raw；请确认真实计数保存位置。&quot;)
+            data = data.raw.to_adata()
+        elif layer != &quot;X&quot;:
+            data.X = data.layers[layer].copy()
+        data.uns.clear(); data.obsm.clear(); data.obsp.clear(); data.layers.clear(); data.raw = None
+    else:
+        raise ValueError(&quot;不支持的输入格式；请先转换到计数矩阵并登记。&quot;)
+    data.X = sparse.csr_matrix(data.X)
+    values = data.X.data
+    if not data.n_obs or not data.n_vars or not np.isfinite(values).all() or (values &lt; 0).any():
+        raise ValueError(&quot;表达矩阵为空，或包含负数/非有限值。&quot;)
+    if not np.allclose(values, np.rint(values), rtol=0, atol=1e-6):
+        raise ValueError(&quot;本课程从原始计数开始；检测到非整数，请先核查计数来源。&quot;)
+    data.var_names = data.var_names.astype(str)
+    data.var_names_make_unique()
+    return data
+
+
+def external_files(root, chapter):
+    &quot;&quot;&quot;列出本章真正读取的材料，用内容校验绑定输入，而非扫描整个共享数据目录。&quot;&quot;&quot;
+    p = descriptor(root); paths = []
+    if chapter == &quot;01&quot;:
+        paths = [input_path(root, s[&quot;path&quot;]) for s in p.get(&quot;samples&quot;,{}).values() if s.get(&quot;path&quot;)]
+    elif chapter == &quot;07&quot; and p.get(&quot;markers&quot;):
+        paths = [input_path(root, p[&quot;markers&quot;])]
+    elif chapter == &quot;11&quot;:
+        paths = [input_path(root, m[&quot;path&quot;]) for m in p.get(&quot;models&quot;, []) if m.get(&quot;path&quot;)]
+    elif chapter == &quot;02&quot;:
+        paths = [input_path(root, v[&quot;file&quot;]) for v in p.get(&quot;qc&quot;, {}).get(&quot;gene_sets&quot;, {}).values() if isinstance(v, dict) and v.get(&quot;file&quot;)]
+    elif chapter == &quot;E01&quot;:
+        paths = [input_path(root, v) for v in p.get(&quot;exercise_mtx&quot;, {}).values()]
+    return sorted({f for path in paths for f in (path.rglob(&#x27;*&#x27;) if path.is_dir() else [path]) if f.is_file()})
+</code></pre></main></body></html>

@@ -1,0 +1,17 @@
+﻿cluster,level1,level2,support,n_cells,evidence
+0,T_NK_ILCs,Naive_memory_T,高,3946,CD3D/TRAC 阳性且 LEF1、CCR7、TCF7、IL7R 支持初始/记忆 T 状态；不进一步硬分 CD4/CD8。
+1,Uncertain,Low_quality_lymphoid_like,低,3101,检测基因中位数 606、线粒体比例中位数 27.78%；T/NK 标记较弱，不据共享标记直接定为 ILC。
+2,T_NK_ILCs,CD8_cytotoxic_T,高,1260,CD3D/TRAC 与 CD8A/CD8B、NKG7 联合表达，支持细胞毒性 T 细胞。
+3,Myeloid,CD14_Mono,高,1511,FCN1、CD14、LYZ 联合表达；FCGR3A 相对较弱。
+4,B_cells,Naive_B,较高,977,MS4A1、IGHD、IGHM、PAX5 支持 B 细胞，IGHD/IGHM 支持初始样状态。
+5,Myeloid,pDC,高,84,GZMB、IL3RA、TCF4 的表达比例均至少 95%，COBLL1 也支持；MZB1/JCHAIN 不能单独说明浆细胞。
+6,Progenitor_uncertain,Progenitor_like,中,502,CD34 约 49%、MKI67 约 38%；有部分 B 相关表达，暂不指定成熟谱系或浆母细胞。
+7,Erythroid,Erythroid,高,1695,HBA1/HBB 高强度表达、HBM 阳性，血红蛋白计数占比中位数 92.20%。
+8,Myeloid,Myeloid_like_low_quality,中,298,FCN1、LYZ 支持髓系；线粒体比例中位数 39.95%，不强行细分亚型。
+9,B_cells,B_cell,较高,382,PAX5、IGHM、IGHD 支持 B 系，PRDM1 很弱；不凭 MZB1 判定抗体分泌细胞。
+10,T_NK_ILCs,NK,高,458,GNLY、NKG7、FCER1G、TYROBP、FCGR3A 联合表达，CD3D/TRAC 较弱。
+11,Erythroid,Cycling_erythroid,高,1057,红系标记 HBA1/HBB/HBM/GYPA 与 MKI67（约 93%）联合表达，支持增殖红系状态。
+12,B_cells,Antibody_secreting_cell,较高,106,MZB1、PRDM1、IRF4、JCHAIN 联合支持抗体分泌程序，暂不严格区分浆母/浆细胞。
+13,B_cells,Naive_B,较高,914,MS4A1、IGHD、IGHM 与 PAX5 支持初始样 B 细胞。
+14,Erythroid,Erythroid,高,685,红系标记强，血红蛋白占比中位数 74.30%；不仅凭少量增殖标记区分发育阶段。
+15,Erythroid,Erythroid,较高,65,HBA1/HBB/HBM 支持红系；只有 65 个细胞，细分结论保持谨慎。

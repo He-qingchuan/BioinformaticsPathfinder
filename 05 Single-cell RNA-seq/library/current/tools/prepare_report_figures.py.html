@@ -1,0 +1,56 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>prepare_report_figures.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/prepare_report_figures.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>prepare_report_figures.py</h1><pre><code>&quot;&quot;&quot;Create a readable report figure from already computed chapter evidence.&quot;&quot;&quot;
+from pathlib import Path
+import os
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path(__file__).resolve().parents[1]))
+os.environ.setdefault(&quot;MPLCONFIGDIR&quot;, str(ROOT / &quot;.runtime/matplotlib&quot;))
+import matplotlib
+matplotlib.use(&quot;Agg&quot;)
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+import pandas as pd
+
+
+def main():
+    # 功能说明：只读取已确认检查点中的 UMAP、标签和分数，不重新拟合模型。
+    # 输入参数：--checkpoint 指定 H5AD；--output 由 course redraw 指向暂存图目录。
+    # 运行目的：学生可复制本脚本并修改字号/布局，再由 AI 看图、更新本章解读和 Word。
+    import argparse
+    import scanpy as sc
+    parser=argparse.ArgumentParser()
+    parser.add_argument(&#x27;--checkpoint&#x27;,required=True);parser.add_argument(&#x27;--output&#x27;,required=True)
+    args=parser.parse_args()
+    data=sc.read_h5ad(args.checkpoint)
+    output=Path(args.output);output.mkdir(parents=True,exist_ok=True)
+    merged=data.obs.copy()
+    merged[[&#x27;UMAP1&#x27;,&#x27;UMAP2&#x27;]]=data.obsm[&#x27;X_umap&#x27;]
+    fine_key=str(data.uns[&#x27;annotation_keys&#x27;][&#x27;fine&#x27;])
+    if &#x27;celltypist_conf_score_fine&#x27; not in merged:
+        raise ValueError(&#x27;该检查点没有精细模型分数；请为实际存在的手工标签或粗模型改写绘图脚本。&#x27;)
+    # 支持 course redraw 保存到项目后的脚本副本；字体来自环境登记的课程安装位置。
+    install=Path(os.environ[&#x27;SC_COURSE_ROOT&#x27;])
+    font_manager.fontManager.addfont(str(install / &quot;assets/NotoSansCJKsc-Regular.otf&quot;))
+    plt.rcParams.update({&quot;font.family&quot;: &quot;Noto Sans CJK SC&quot;, &quot;font.size&quot;: 10, &quot;axes.unicode_minus&quot;: False})
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.8), constrained_layout=True,
+                             gridspec_kw={&quot;width_ratios&quot;: [1.25, 1]})
+    score = merged[&quot;celltypist_conf_score_fine&quot;]
+    pts = axes[0].scatter(merged.UMAP1, merged.UMAP2, c=score, s=2, cmap=&quot;viridis&quot;, vmin=0, vmax=1,
+                          rasterized=True, linewidths=0)
+    axes[0].set(title=&quot;精细模型：多数投票标签的置信度&quot;, xlabel=&quot;UMAP1&quot;, ylabel=&quot;UMAP2&quot;)
+    axes[0].set_xticks([]); axes[0].set_yticks([])
+    fig.colorbar(pts, ax=axes[0], label=&quot;标签置信度&quot;, shrink=0.7)
+    medians = merged.groupby(fine_key, observed=True)[&quot;celltypist_conf_score_fine&quot;].median().sort_values()
+    axes[1].barh([str(x) for x in medians.index], medians, color=&quot;#337B9B&quot;)
+    for i, value in enumerate(medians):
+        axes[1].text(value + 0.015, i, f&quot;{value:.2f}&quot;, va=&quot;center&quot;, fontsize=8)
+    axes[1].set(xlim=(0, 1.17), xlabel=&quot;置信度中位数&quot;, ylabel=&quot;Leiden 簇编号&quot;, title=&quot;按簇复核预测可靠程度&quot;)
+    axes[1].set_xticks([0, 0.25, 0.5, 0.75, 1])
+    axes[1].spines[[&quot;top&quot;, &quot;right&quot;]].set_visible(False)
+    for suffix in (&quot;png&quot;, &quot;pdf&quot;):
+        fig.savefig(output / (&quot;report_confidence.&quot; + suffix), dpi=180, bbox_inches=&quot;tight&quot;)
+    plt.close(fig)
+    print(output / &quot;report_confidence.png&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></main></body></html>

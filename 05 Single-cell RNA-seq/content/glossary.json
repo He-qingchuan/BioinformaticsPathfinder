@@ -1,0 +1,2040 @@
+{
+  "schema_version": 2,
+  "version": "单细胞 V4",
+  "updated": "2026-09-17",
+  "reading_page": "02_完整教案_阅读与打印.html",
+  "categories": [
+    "细胞与实验",
+    "矩阵与表达",
+    "质量与特征",
+    "降维与聚类",
+    "注释与统计",
+    "文件与协作"
+  ],
+  "entries": [
+    {
+      "id": "t1",
+      "zh": "单细胞转录组",
+      "en": "single-cell RNA sequencing",
+      "abbr": "",
+      "aliases": [
+        "单细胞转录组",
+        "single-cell RNA sequencing"
+      ],
+      "category": "细胞与实验",
+      "summary": "分别记录不同细胞中检测到的 RNA 信号，用于观察细胞间差异。",
+      "example": "本例把骨髓中不同细胞排为矩阵的不同记录。",
+      "in_course": "连接计数、聚类和类型注释。",
+      "pitfall": "观测不到某 RNA 不等于该细胞绝不会表达。",
+      "related": [
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "sources": [],
+      "anchor": "glossary-1"
+    },
+    {
+      "id": "t2",
+      "zh": "基因",
+      "en": "gene",
+      "abbr": "",
+      "aliases": [
+        "基因",
+        "gene"
+      ],
+      "category": "细胞与实验",
+      "summary": "具有生物学功能的一段遗传信息，可产生 RNA 等产物。",
+      "example": "MS4A1 是本课检查 B 系线索的一个基因。",
+      "in_course": "作为表达矩阵的特征。",
+      "pitfall": "一个基因不只服务一种细胞或一种功能。",
+      "related": [
+        "t1",
+        "t3",
+        "t4"
+      ],
+      "sources": [],
+      "anchor": "glossary-2"
+    },
+    {
+      "id": "t3",
+      "zh": "转录本",
+      "en": "transcript",
+      "abbr": "",
+      "aliases": [
+        "转录本",
+        "transcript"
+      ],
+      "category": "细胞与实验",
+      "summary": "由转录产生的 RNA 形式，同一基因可能对应多个转录本。",
+      "example": "基因表达汇总可包含来自不同转录本的信号。",
+      "in_course": "理解测序信号与基因计数的关系。",
+      "pitfall": "基因计数通常不等于已经分清所有异构体。",
+      "related": [
+        "t1",
+        "t2",
+        "t4"
+      ],
+      "sources": [],
+      "anchor": "glossary-3"
+    },
+    {
+      "id": "t4",
+      "zh": "RNA",
+      "en": "ribonucleic acid",
+      "abbr": "RNA",
+      "aliases": [
+        "RNA",
+        "ribonucleic acid"
+      ],
+      "category": "细胞与实验",
+      "summary": "由转录产生并参与多种生物过程的核酸，丰度由生成和降解共同决定。",
+      "example": "相同细胞类型在不同状态可有不同 RNA 丰度。",
+      "in_course": "本课测量对象的分子基础。",
+      "pitfall": "RNA 丰度不能直接当蛋白量或瞬时转录速率。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-4"
+    },
+    {
+      "id": "t5",
+      "zh": "DNA",
+      "en": "deoxyribonucleic acid",
+      "abbr": "DNA",
+      "aliases": [
+        "DNA",
+        "deoxyribonucleic acid"
+      ],
+      "category": "细胞与实验",
+      "summary": "保存遗传信息的核酸，为许多 RNA 的产生提供模板。",
+      "example": "barcode 插画中的细胞包含遗传信息，但本课输入不是 DNA 变异表。",
+      "in_course": "理解转录与测序的起点。",
+      "pitfall": "scRNA 计数不是 DNA 拷贝数测量。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-5"
+    },
+    {
+      "id": "t6",
+      "zh": "样本",
+      "en": "sample",
+      "abbr": "",
+      "aliases": [
+        "样本",
+        "sample"
+      ],
+      "category": "细胞与实验",
+      "summary": "按实验设计取得并记录身份的一份材料。",
+      "example": "s1d1 与 s1d3 是两个输入样本标签。",
+      "in_course": "核对来源、分组和组成。",
+      "pitfall": "样本名不能自动透露疾病、处理或供体关系。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-6"
+    },
+    {
+      "id": "t7",
+      "zh": "生物学重复",
+      "en": "biological replicate",
+      "abbr": "",
+      "aliases": [
+        "生物学重复",
+        "biological replicate"
+      ],
+      "category": "细胞与实验",
+      "summary": "能够代表目标生物变异的独立实验单位，具体独立性由设计决定。",
+      "example": "不同独立供体可为条件比较提供重复。",
+      "in_course": "限制条件效应推断范围。",
+      "pitfall": "同一供体的一万枚细胞不是一万个独立供体。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-7"
+    },
+    {
+      "id": "t8",
+      "zh": "技术批次",
+      "en": "technical batch",
+      "abbr": "",
+      "aliases": [
+        "技术批次",
+        "technical batch"
+      ],
+      "category": "细胞与实验",
+      "summary": "由建库、平台或处理时间等技术条件形成的分组。",
+      "example": "不同捕获批次可能改变表达测量。",
+      "in_course": "判断是否需要整合。",
+      "pitfall": "不能把任何样本差别都称为技术批次。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-8"
+    },
+    {
+      "id": "t9",
+      "zh": "捕获文库",
+      "en": "capture library",
+      "abbr": "",
+      "aliases": [
+        "捕获文库",
+        "capture library"
+      ],
+      "category": "细胞与实验",
+      "summary": "一次细胞捕获及相应建库单位，需要用实验记录确认。",
+      "example": "Scrublet 应按真实 capture_library 核对。",
+      "in_course": "定义双细胞检测的运行范围。",
+      "pitfall": "拆分的测序 lane 不一定是不同捕获。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-9"
+    },
+    {
+      "id": "t10",
+      "zh": "barcode",
+      "en": "cell barcode",
+      "abbr": "barcode",
+      "aliases": [
+        "barcode",
+        "cell barcode"
+      ],
+      "category": "细胞与实验",
+      "summary": "用于把测序信号归到捕获单位的序列标签。",
+      "example": "来自不同文库的同一条码字符串可能重复。",
+      "in_course": "标记矩阵行来源。",
+      "pitfall": "条码不是天然跨样本唯一身份，也不保证一个条码只有一个细胞。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-10"
+    },
+    {
+      "id": "t11",
+      "zh": "UMI",
+      "en": "unique molecular identifier",
+      "abbr": "UMI",
+      "aliases": [
+        "UMI",
+        "unique molecular identifier"
+      ],
+      "category": "细胞与实验",
+      "summary": "分子标签，用于区分原始分子与扩增产生的重复信号。",
+      "example": "同一个分子的多次 PCR 扩增不应简单数成多个原始分子。",
+      "in_course": "理解原始 counts 的计数口径。",
+      "pitfall": "UMI 数不是细胞内全部真实 RNA 的绝对数量。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-11"
+    },
+    {
+      "id": "t12",
+      "zh": "PCR",
+      "en": "polymerase chain reaction",
+      "abbr": "PCR",
+      "aliases": [
+        "PCR",
+        "polymerase chain reaction"
+      ],
+      "category": "细胞与实验",
+      "summary": "扩增核酸的方法，可以让少量分子产生许多拷贝供测序。",
+      "example": "同一 RNA 对应 cDNA 扩增后有许多 reads。",
+      "in_course": "理解 UMI 去重的必要性。",
+      "pitfall": "reads 数不能无条件等同于原始分子数。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-12"
+    },
+    {
+      "id": "t13",
+      "zh": "reads",
+      "en": "sequencing reads",
+      "abbr": "reads",
+      "aliases": [
+        "reads",
+        "sequencing reads"
+      ],
+      "category": "细胞与实验",
+      "summary": "测序仪读出的序列片段观测，需经上游处理才得到表达计数。",
+      "example": "本课从 counts 起步，没有重新进行 FASTQ 比对。",
+      "in_course": "说明分析输入的上游来源。",
+      "pitfall": "一个 read 不等于一个完整转录本或一个细胞。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-13"
+    },
+    {
+      "id": "t14",
+      "zh": "红系",
+      "en": "erythroid lineage",
+      "abbr": "",
+      "aliases": [
+        "红系",
+        "erythroid lineage"
+      ],
+      "category": "细胞与实验",
+      "summary": "与红细胞生成相关的细胞谱系及阶段。",
+      "example": "骨髓中 HBA1/HBB 等信号可来自真实红系群体。",
+      "in_course": "解释组织特异的 marker 与 QC。",
+      "pitfall": "高血红蛋白比例不能一律当污染。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-14"
+    },
+    {
+      "id": "t15",
+      "zh": "髓系",
+      "en": "myeloid lineage",
+      "abbr": "",
+      "aliases": [
+        "髓系",
+        "myeloid lineage"
+      ],
+      "category": "细胞与实验",
+      "summary": "造血系统中一组包含单核等类型的谱系范畴，需结合具体定义。",
+      "example": "LYZ、FCN1 等可支持本例某些髓系群体线索。",
+      "in_course": "辅助粗谱系注释。",
+      "pitfall": "一个髓系 marker 阳性不保证准确细类型。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-15"
+    },
+    {
+      "id": "t16",
+      "zh": "淋巴系",
+      "en": "lymphoid lineage",
+      "abbr": "",
+      "aliases": [
+        "淋巴系",
+        "lymphoid lineage"
+      ],
+      "category": "细胞与实验",
+      "summary": "包含 B、T、NK 等相关群体的谱系范畴。",
+      "example": "粗粒度免疫群可能混合多个淋巴类型。",
+      "in_course": "理解粗细标签差别。",
+      "pitfall": "共享细胞毒程序不等于完全相同细胞身份。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-16"
+    },
+    {
+      "id": "t17",
+      "zh": "细胞状态",
+      "en": "cell state",
+      "abbr": "",
+      "aliases": [
+        "细胞状态",
+        "cell state"
+      ],
+      "category": "细胞与实验",
+      "summary": "细胞在激活、增殖、应激等方面的动态特征。",
+      "example": "MKI67 相关信号可提示增殖状态。",
+      "in_course": "避免把所有细分群都当新类型。",
+      "pitfall": "状态变化与类型差异可能同时存在。",
+      "related": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "sources": [],
+      "anchor": "glossary-17"
+    },
+    {
+      "id": "t18",
+      "zh": "AnnData",
+      "en": "annotated data matrix",
+      "abbr": "AnnData",
+      "aliases": [
+        "AnnData",
+        "annotated data matrix"
+      ],
+      "category": "矩阵与表达",
+      "summary": "把表达矩阵、细胞和基因注释及分析结果一起组织的对象。",
+      "example": "X 配 obs、var，另存 layers 与低维坐标。",
+      "in_course": "贯穿本课检查点。",
+      "pitfall": "对象名字不保证内部数值来自同一处理阶段。",
+      "related": [
+        "t19",
+        "t20",
+        "t21"
+      ],
+      "sources": [],
+      "anchor": "glossary-18"
+    },
+    {
+      "id": "t19",
+      "zh": "counts",
+      "en": "count matrix",
+      "abbr": "counts",
+      "aliases": [
+        "counts",
+        "count matrix"
+      ],
+      "category": "矩阵与表达",
+      "summary": "明确来源的计数矩阵，本例主要是 UMI 观测计数。",
+      "example": "counts 层保留用于需计数输入的方法。",
+      "in_course": "追溯原始数值。",
+      "pitfall": "整数数值本身不足以证明是未经处理的原始计数。",
+      "related": [
+        "t18",
+        "t20",
+        "t21"
+      ],
+      "sources": [],
+      "anchor": "glossary-19"
+    },
+    {
+      "id": "t20",
+      "zh": "X",
+      "en": "AnnData.X",
+      "abbr": "X",
+      "aliases": [
+        "X",
+        "AnnData.X"
+      ],
+      "category": "矩阵与表达",
+      "summary": "AnnData 当前主表达矩阵，通常行细胞、列基因。",
+      "example": "归一化前后 X 的数值含义可能改变。",
+      "in_course": "理解方法默认读取哪里。",
+      "pitfall": "X 不是固定等于原始 counts。",
+      "related": [
+        "t18",
+        "t19",
+        "t21"
+      ],
+      "sources": [],
+      "anchor": "glossary-20"
+    },
+    {
+      "id": "t21",
+      "zh": "obs",
+      "en": "observation annotations",
+      "abbr": "obs",
+      "aliases": [
+        "obs",
+        "observation annotations"
+      ],
+      "category": "矩阵与表达",
+      "summary": "与每个细胞一一对齐的注释表。",
+      "example": "samples、QC、Leiden 和 cell_type 列存于 obs。",
+      "in_course": "记录细胞身份与结果。",
+      "pitfall": "不能把 obs 行当基因。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-21"
+    },
+    {
+      "id": "t22",
+      "zh": "var",
+      "en": "variable annotations",
+      "abbr": "var",
+      "aliases": [
+        "var",
+        "variable annotations"
+      ],
+      "category": "矩阵与表达",
+      "summary": "与每个基因或特征对齐的注释表。",
+      "example": "highly_variable 和 mt 标记在 var 中。",
+      "in_course": "标记特征属性。",
+      "pitfall": "基因符号与稳定 ID 不能随意混用。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-22"
+    },
+    {
+      "id": "t23",
+      "zh": "layers",
+      "en": "expression layers",
+      "abbr": "layers",
+      "aliases": [
+        "layers",
+        "expression layers"
+      ],
+      "category": "矩阵与表达",
+      "summary": "保存与 X 同形状的不同表达矩阵。",
+      "example": "counts、log1p、scaled 表示不同数值口径。",
+      "in_course": "按方法选择正确输入。",
+      "pitfall": "层名是约定，仍需核对实际内容。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-23"
+    },
+    {
+      "id": "t24",
+      "zh": "raw",
+      "en": "AnnData.raw",
+      "abbr": "raw",
+      "aliases": [
+        "raw",
+        "AnnData.raw"
+      ],
+      "category": "矩阵与表达",
+      "summary": "保存表达与特征的一份快照容器。",
+      "example": "别人给的 H5AD 的 raw 可能已经 log1p。",
+      "in_course": "追溯数据处理。",
+      "pitfall": "名字 raw 不保证原始计数。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-24"
+    },
+    {
+      "id": "t25",
+      "zh": "obsm",
+      "en": "multidimensional observation arrays",
+      "abbr": "obsm",
+      "aliases": [
+        "obsm",
+        "multidimensional observation arrays"
+      ],
+      "category": "矩阵与表达",
+      "summary": "每个细胞的多维表示。",
+      "example": "X_pca 和 X_umap 存储低维坐标。",
+      "in_course": "绘图与邻居计算。",
+      "pitfall": "其列不再是原始基因。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-25"
+    },
+    {
+      "id": "t26",
+      "zh": "obsp",
+      "en": "pairwise observation arrays",
+      "abbr": "obsp",
+      "aliases": [
+        "obsp",
+        "pairwise observation arrays"
+      ],
+      "category": "矩阵与表达",
+      "summary": "记录细胞之间成对关系的矩阵容器。",
+      "example": "distances 和 connectivities 可表示邻居图。",
+      "in_course": "把局部关系交给聚类与 UMAP。",
+      "pitfall": "图权重不是原始表达量。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-26"
+    },
+    {
+      "id": "t27",
+      "zh": "uns",
+      "en": "unstructured annotations",
+      "abbr": "uns",
+      "aliases": [
+        "uns",
+        "unstructured annotations"
+      ],
+      "category": "矩阵与表达",
+      "summary": "存放不必逐细胞或逐基因对齐的结果。",
+      "example": "颜色、参数、dendrogram 等信息可保存在 uns。",
+      "in_course": "追溯绘图和分析设置。",
+      "pitfall": "不是所有数据都能根据 uns 名称直接解释。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-27"
+    },
+    {
+      "id": "t28",
+      "zh": "稀疏矩阵",
+      "en": "sparse matrix",
+      "abbr": "",
+      "aliases": [
+        "稀疏矩阵",
+        "sparse matrix"
+      ],
+      "category": "矩阵与表达",
+      "summary": "主要存储非零元素及其位置，减少大量零的存储成本。",
+      "example": "单细胞计数常以稀疏格式保存。",
+      "in_course": "理解数据规模与切片。",
+      "pitfall": "稀疏存储并非删除零对应的细胞或基因。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-28"
+    },
+    {
+      "id": "t29",
+      "zh": "H5AD",
+      "en": "AnnData HDF5 file",
+      "abbr": "H5AD",
+      "aliases": [
+        "H5AD",
+        "AnnData HDF5 file"
+      ],
+      "category": "矩阵与表达",
+      "summary": "保存 AnnData 的文件格式。",
+      "example": "checkpoint.h5ad 保存某章对象。",
+      "in_course": "恢复分析阶段。",
+      "pitfall": "后缀不保证对象已质控或有原始 counts。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-29"
+    },
+    {
+      "id": "t30",
+      "zh": "MTX",
+      "en": "Matrix Market format",
+      "abbr": "MTX",
+      "aliases": [
+        "MTX",
+        "Matrix Market format"
+      ],
+      "category": "矩阵与表达",
+      "summary": "以坐标或矩阵形式记录数值的交换格式，10x 输入需搭配基因与条码文件。",
+      "example": "E01 导入 matrix/features/barcodes。",
+      "in_course": "练习另一种导入方式。",
+      "pitfall": "格式相同不代表数据来自同一样本。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-30"
+    },
+    {
+      "id": "t31",
+      "zh": "归一化",
+      "en": "normalization",
+      "abbr": "",
+      "aliases": [
+        "归一化",
+        "normalization"
+      ],
+      "category": "矩阵与表达",
+      "summary": "按明确规则调整数值尺度，让某些规模因素更可比。",
+      "example": "本例每细胞缩放到总 counts 中位数 5853。",
+      "in_course": "处理细胞规模差异。",
+      "pitfall": "不等于恢复绝对 RNA 数量或消除所有技术误差。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-31"
+    },
+    {
+      "id": "t32",
+      "zh": "log1p",
+      "en": "natural logarithm of one plus x",
+      "abbr": "log1p",
+      "aliases": [
+        "log1p",
+        "natural logarithm of one plus x"
+      ],
+      "category": "矩阵与表达",
+      "summary": "计算自然对数 log(1+x)，允许零值并压缩大数跨度。",
+      "example": "缩放后的 58.53 变成约 4.086。",
+      "in_course": "本课表达探索与检验层。",
+      "pitfall": "log1p 不保证数据服从正态分布，也不是默认 log2。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-32"
+    },
+    {
+      "id": "t33",
+      "zh": "z-score",
+      "en": "standard score",
+      "abbr": "z-score",
+      "aliases": [
+        "z-score",
+        "standard score"
+      ],
+      "category": "矩阵与表达",
+      "summary": "某个值减去该变量均值，再除以标准差。",
+      "example": "scaled 层可在红蓝热图中出现负值。",
+      "in_course": "比较同一基因的相对偏离。",
+      "pitfall": "负值不是负 counts；不同基因的 z-score 不表示同样绝对表达。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-33"
+    },
+    {
+      "id": "t34",
+      "zh": "表达比例",
+      "en": "fraction expressing",
+      "abbr": "",
+      "aliases": [
+        "表达比例",
+        "fraction expressing"
+      ],
+      "category": "矩阵与表达",
+      "summary": "一个群内超过给定检出阈值的细胞所占比例。",
+      "example": "marker_fraction 表的 0.2 表示 20%。",
+      "in_course": "解释点图大小与特异性。",
+      "pitfall": "比例与均值不同；点大不一定颜色深。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-34"
+    },
+    {
+      "id": "t35",
+      "zh": "基因 ID",
+      "en": "gene identifier",
+      "abbr": "",
+      "aliases": [
+        "基因 ID",
+        "gene identifier"
+      ],
+      "category": "矩阵与表达",
+      "summary": "用于匹配特征的标识，可能是稳定编号或符号。",
+      "example": "输入 Ensembl ID 与 marker 符号可能需要可靠映射。",
+      "in_course": "保证数据、marker 和模型匹配。",
+      "pitfall": "不能凭相似拼写或编号位置随意映射。",
+      "related": [
+        "t18",
+        "t19",
+        "t20"
+      ],
+      "sources": [],
+      "anchor": "glossary-35"
+    },
+    {
+      "id": "t36",
+      "zh": "QC",
+      "en": "quality control",
+      "abbr": "QC",
+      "aliases": [
+        "QC",
+        "quality control"
+      ],
+      "category": "质量与特征",
+      "summary": "检查和处理与数据质量有关的问题，同时记录取舍。",
+      "example": "比较 counts、基因数和 mt 分布后选择路线。",
+      "in_course": "建立可信的下游起点。",
+      "pitfall": "过滤更多不是质量必然更好。",
+      "related": [
+        "t37",
+        "t38",
+        "t39"
+      ],
+      "sources": [],
+      "anchor": "glossary-36"
+    },
+    {
+      "id": "t37",
+      "zh": "total_counts",
+      "en": "total counts per cell",
+      "abbr": "total_counts",
+      "aliases": [
+        "total_counts",
+        "total counts per cell"
+      ],
+      "category": "质量与特征",
+      "summary": "当前计数口径下每细胞所有基因计数之和。",
+      "example": "QC 散点图横轴。",
+      "in_course": "观察测序规模与复杂度。",
+      "pitfall": "高值可能来自大细胞，也可能来自双细胞。",
+      "related": [
+        "t36",
+        "t38",
+        "t39"
+      ],
+      "sources": [],
+      "anchor": "glossary-37"
+    },
+    {
+      "id": "t38",
+      "zh": "n_genes_by_counts",
+      "en": "detected genes per cell",
+      "abbr": "n_genes_by_counts",
+      "aliases": [
+        "n_genes_by_counts",
+        "detected genes per cell"
+      ],
+      "category": "质量与特征",
+      "summary": "每个细胞中检出计数的基因数量。",
+      "example": "QC 散点图纵轴。",
+      "in_course": "观察表达复杂度。",
+      "pitfall": "不等于测序 reads 数或该细胞理论全部基因数。",
+      "related": [
+        "t36",
+        "t37",
+        "t39"
+      ],
+      "sources": [],
+      "anchor": "glossary-38"
+    },
+    {
+      "id": "t39",
+      "zh": "pct_counts_mt",
+      "en": "mitochondrial count percentage",
+      "abbr": "pct_counts_mt",
+      "aliases": [
+        "pct_counts_mt",
+        "mitochondrial count percentage"
+      ],
+      "category": "质量与特征",
+      "summary": "线粒体基因计数占总计数的百分数。",
+      "example": "20 表示 20%，不是 0.2%。",
+      "in_course": "与其他 QC 指标联合观察。",
+      "pitfall": "基因规则需匹配物种，高值不能孤立当细胞死亡证明。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-39"
+    },
+    {
+      "id": "t40",
+      "zh": "pct_counts_ribo",
+      "en": "ribosomal gene count percentage",
+      "abbr": "pct_counts_ribo",
+      "aliases": [
+        "pct_counts_ribo",
+        "ribosomal gene count percentage"
+      ],
+      "category": "质量与特征",
+      "summary": "指定核糖体相关基因集合计数的百分比。",
+      "example": "QC 五联小提琴图的一个面板。",
+      "in_course": "观察 RNA 组成。",
+      "pitfall": "它不是直接测量核糖体颗粒数量。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-40"
+    },
+    {
+      "id": "t41",
+      "zh": "pct_counts_hb",
+      "en": "hemoglobin gene count percentage",
+      "abbr": "pct_counts_hb",
+      "aliases": [
+        "pct_counts_hb",
+        "hemoglobin gene count percentage"
+      ],
+      "category": "质量与特征",
+      "summary": "所用血红蛋白相关基因集合占总计数的百分比。",
+      "example": "骨髓红系群可有较高值。",
+      "in_course": "结合组织与谱系解释 QC。",
+      "pitfall": "不能把所有高值细胞当作污染。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-41"
+    },
+    {
+      "id": "t42",
+      "zh": "中位数",
+      "en": "median",
+      "abbr": "",
+      "aliases": [
+        "中位数",
+        "median"
+      ],
+      "category": "质量与特征",
+      "summary": "排序后位于中间位置的统计量，较少受极端值影响。",
+      "example": "历史归一化目标为总 counts 中位数。",
+      "in_course": "定义归一化或稳健中心。",
+      "pitfall": "中位数不同于平均数。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-42"
+    },
+    {
+      "id": "t43",
+      "zh": "MAD",
+      "en": "median absolute deviation",
+      "abbr": "MAD",
+      "aliases": [
+        "MAD",
+        "median absolute deviation"
+      ],
+      "category": "质量与特征",
+      "summary": "到中位数距离的中位数，描述稳健分散程度。",
+      "example": "QC 按若干倍 MAD 标记偏离细胞。",
+      "in_course": "在分样本背景下识别异常。",
+      "pitfall": "MAD=0 需要明确处理；规则不是所有数据通用真值。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-43"
+    },
+    {
+      "id": "t44",
+      "zh": "双细胞",
+      "en": "doublet",
+      "abbr": "",
+      "aliases": [
+        "双细胞",
+        "doublet"
+      ],
+      "category": "质量与特征",
+      "summary": "一个捕获条码中混合两个细胞信号的情形。",
+      "example": "两个谱系 marker 同时突出可成为核查线索。",
+      "in_course": "避免误解混合表达。",
+      "pitfall": "共表达不自动证明双细胞，预测有误判。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-44"
+    },
+    {
+      "id": "t45",
+      "zh": "Scrublet",
+      "en": "Scrublet doublet detection",
+      "abbr": "Scrublet",
+      "aliases": [
+        "Scrublet",
+        "Scrublet doublet detection"
+      ],
+      "category": "质量与特征",
+      "summary": "通过模拟混合表达和邻域比较预测双细胞的方法。",
+      "example": "本历史主线给出 213 个预测并保留标记。",
+      "in_course": "生成双细胞证据。",
+      "pitfall": "不是直接观察到两枚细胞。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-45"
+    },
+    {
+      "id": "t46",
+      "zh": "doublet_score",
+      "en": "doublet score",
+      "abbr": "doublet_score",
+      "aliases": [
+        "doublet_score",
+        "doublet score"
+      ],
+      "category": "质量与特征",
+      "summary": "Scrublet 输出的连续预测分数。",
+      "example": "UMAP 连续色条展示分数高低。",
+      "in_course": "定位需要核对的区域。",
+      "pitfall": "不应直接当实验正确概率。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-46"
+    },
+    {
+      "id": "t47",
+      "zh": "predicted_doublet",
+      "en": "predicted doublet label",
+      "abbr": "predicted_doublet",
+      "aliases": [
+        "predicted_doublet",
+        "predicted doublet label"
+      ],
+      "category": "质量与特征",
+      "summary": "按算法与阈值产生的 True/False 预测。",
+      "example": "历史细胞表保留该布尔列。",
+      "in_course": "比较保留与删除影响。",
+      "pitfall": "True 不是实验确认，False 也不保证无混合。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-47"
+    },
+    {
+      "id": "t48",
+      "zh": "高变基因",
+      "en": "highly variable genes",
+      "abbr": "",
+      "aliases": [
+        "高变基因",
+        "highly variable genes"
+      ],
+      "category": "质量与特征",
+      "summary": "相对于表达背景具有较多变异的候选特征。",
+      "example": "本例最终选择 2000 个用于结构分析。",
+      "in_course": "降维特征选择。",
+      "pitfall": "不是显著差异基因或已验证 marker 的同义词。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-48"
+    },
+    {
+      "id": "t49",
+      "zh": "离散度",
+      "en": "dispersion",
+      "abbr": "",
+      "aliases": [
+        "离散度",
+        "dispersion"
+      ],
+      "category": "质量与特征",
+      "summary": "描述表达相对于平均水平的变异程度的方法统计量。",
+      "example": "HVG 图右侧是 dispersions。",
+      "in_course": "控制表达丰度与变异的关系。",
+      "pitfall": "不同方法的离散度定义可能不同。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-49"
+    },
+    {
+      "id": "t50",
+      "zh": "highly_variable_nbatches",
+      "en": "number of batches selecting a gene",
+      "abbr": "highly_variable_nbatches",
+      "aliases": [
+        "highly_variable_nbatches",
+        "number of batches selecting a gene"
+      ],
+      "category": "质量与特征",
+      "summary": "一个基因在几个批次或样本中入选高变集合。",
+      "example": "本例只有两个样本，可能取 0、1、2。",
+      "in_course": "解释跨样本高变信号。",
+      "pitfall": "所有非零值合计不等于最终 2000 基因。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-50"
+    },
+    {
+      "id": "t51",
+      "zh": "阈值",
+      "en": "threshold",
+      "abbr": "",
+      "aliases": [
+        "阈值",
+        "threshold"
+      ],
+      "category": "质量与特征",
+      "summary": "按规则区分候选的界限，需要说明单位与比较方向。",
+      "example": "mt 百分比上限与最少检出基因数。",
+      "in_course": "控制过滤或展示范围。",
+      "pitfall": "阈值不是自然界普适分界，也不能脱离数据照搬。",
+      "related": [
+        "t36",
+        "t37",
+        "t38"
+      ],
+      "sources": [],
+      "anchor": "glossary-51"
+    },
+    {
+      "id": "t52",
+      "zh": "PCA",
+      "en": "principal component analysis",
+      "abbr": "PCA",
+      "aliases": [
+        "PCA",
+        "principal component analysis"
+      ],
+      "category": "降维与聚类",
+      "summary": "找出按解释变异排序的线性组合方向。",
+      "example": "PC1 本例解释约 19.58% 变异。",
+      "in_course": "构建低维表示。",
+      "pitfall": "坐标不是某个基因的表达量。",
+      "related": [
+        "t53",
+        "t54",
+        "t55"
+      ],
+      "sources": [],
+      "anchor": "glossary-52"
+    },
+    {
+      "id": "t53",
+      "zh": "主成分",
+      "en": "principal component",
+      "abbr": "",
+      "aliases": [
+        "主成分",
+        "principal component"
+      ],
+      "category": "降维与聚类",
+      "summary": "多个输入特征的加权组合，可作为观察数据的方向。",
+      "example": "PC1/PC2 与 PC3/PC4 展示不同方向。",
+      "in_course": "理解 PCA 坐标和选择。",
+      "pitfall": "方向正负没有固定生物学意义。",
+      "related": [
+        "t52",
+        "t54",
+        "t55"
+      ],
+      "sources": [],
+      "anchor": "glossary-53"
+    },
+    {
+      "id": "t54",
+      "zh": "variance_ratio",
+      "en": "explained variance ratio",
+      "abbr": "variance_ratio",
+      "aliases": [
+        "variance_ratio",
+        "explained variance ratio"
+      ],
+      "category": "降维与聚类",
+      "summary": "某主成分解释的总体变异份额。",
+      "example": "前十 PC 在本例合计约 48.60%。",
+      "in_course": "评估降维保留信息。",
+      "pitfall": "log=True 图中的负刻度不是负比例。",
+      "related": [
+        "t52",
+        "t53",
+        "t55"
+      ],
+      "sources": [],
+      "anchor": "glossary-54"
+    },
+    {
+      "id": "t55",
+      "zh": "邻居图",
+      "en": "nearest-neighbor graph",
+      "abbr": "",
+      "aliases": [
+        "邻居图",
+        "nearest-neighbor graph"
+      ],
+      "category": "降维与聚类",
+      "summary": "以细胞为节点，用局部相似关系连接节点的图。",
+      "example": "聚类与 UMAP 都依赖所选图。",
+      "in_course": "连接降维与分群。",
+      "pitfall": "邻居关系不是实验细胞相互作用证据。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-55"
+    },
+    {
+      "id": "t56",
+      "zh": "UMAP",
+      "en": "uniform manifold approximation and projection",
+      "abbr": "UMAP",
+      "aliases": [
+        "UMAP",
+        "uniform manifold approximation and projection"
+      ],
+      "category": "降维与聚类",
+      "summary": "将局部关系映射到低维的可视化与表示方法。",
+      "example": "UMAP1/2 每个点是一枚细胞。",
+      "in_course": "探索群体结构。",
+      "pitfall": "岛间距离和方向不直接是发育距离或时间。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-56"
+    },
+    {
+      "id": "t57",
+      "zh": "t-SNE",
+      "en": "t-distributed stochastic neighbor embedding",
+      "abbr": "t-SNE",
+      "aliases": [
+        "t-SNE",
+        "t-distributed stochastic neighbor embedding"
+      ],
+      "category": "降维与聚类",
+      "summary": "强调局部关系的非线性低维嵌入方法。",
+      "example": "与 UMAP 的布局轮廓可能不同。",
+      "in_course": "提供另一种观察窗口。",
+      "pitfall": "团面积与团间距离不能直接量化群体大小和差异。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-57"
+    },
+    {
+      "id": "t58",
+      "zh": "Harmony",
+      "en": "Harmony integration",
+      "abbr": "Harmony",
+      "aliases": [
+        "Harmony",
+        "Harmony integration"
+      ],
+      "category": "降维与聚类",
+      "summary": "在表示空间处理批次相关结构的方法。",
+      "example": "本例调整 PCA 表示后建立候选图。",
+      "in_course": "比较整合路线。",
+      "pitfall": "不等于生成校正后的真实原始 counts。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-58"
+    },
+    {
+      "id": "t59",
+      "zh": "BBKNN",
+      "en": "batch-balanced k-nearest neighbors",
+      "abbr": "BBKNN",
+      "aliases": [
+        "BBKNN",
+        "batch-balanced k-nearest neighbors"
+      ],
+      "category": "降维与聚类",
+      "summary": "按批次平衡邻居选择来构建图的方法。",
+      "example": "本例与 Harmony、未整合并列。",
+      "in_course": "检查批次平衡图。",
+      "pitfall": "图混合均匀不保证生物结构保留。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-59"
+    },
+    {
+      "id": "t60",
+      "zh": "Leiden",
+      "en": "Leiden community detection",
+      "abbr": "Leiden",
+      "aliases": [
+        "Leiden",
+        "Leiden community detection"
+      ],
+      "category": "降维与聚类",
+      "summary": "在图结构上寻找连接更紧密社区的算法。",
+      "example": "四个分辨率得到 5、16、25、37 簇。",
+      "in_course": "生成待解释的分组。",
+      "pitfall": "社区不是已经命名的细胞类型。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-60"
+    },
+    {
+      "id": "t61",
+      "zh": "分辨率",
+      "en": "clustering resolution",
+      "abbr": "",
+      "aliases": [
+        "分辨率",
+        "clustering resolution"
+      ],
+      "category": "降维与聚类",
+      "summary": "影响聚类粒度的参数，具体作用取决于算法和数据。",
+      "example": "0.02 为粗粒度，0.50 更细。",
+      "in_course": "比较可解释尺度。",
+      "pitfall": "不是数值越大越好，也不是直接指定簇数。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-61"
+    },
+    {
+      "id": "t62",
+      "zh": "簇",
+      "en": "cluster",
+      "abbr": "",
+      "aliases": [
+        "簇",
+        "cluster"
+      ],
+      "category": "降维与聚类",
+      "summary": "算法在当前参数下划出的一个细胞集合。",
+      "example": "leiden_res_0_50 的 0 簇有其实际成员。",
+      "in_course": "组织 marker 和注释证据。",
+      "pitfall": "编号跨运行、分辨率不可直接对应。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-62"
+    },
+    {
+      "id": "t63",
+      "zh": "子群分析",
+      "en": "subclustering",
+      "abbr": "",
+      "aliases": [
+        "子群分析",
+        "subclustering"
+      ],
+      "category": "降维与聚类",
+      "summary": "在选定细胞群内部进一步研究结构。",
+      "example": "粗级 B_cells 提取 2268 枚细胞。",
+      "in_course": "研究局部异质性。",
+      "pitfall": "细群不是自动发现的新细胞类型。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-63"
+    },
+    {
+      "id": "t64",
+      "zh": "树状图",
+      "en": "dendrogram",
+      "abbr": "",
+      "aliases": [
+        "树状图",
+        "dendrogram"
+      ],
+      "category": "降维与聚类",
+      "summary": "用分枝展示对象逐步合并的相似性层级。",
+      "example": "本例叶端为细粒度标签。",
+      "in_course": "观察类别平均表示相似性。",
+      "pitfall": "不是谱系树或发育时间轴。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-64"
+    },
+    {
+      "id": "t65",
+      "zh": "相关系数",
+      "en": "correlation coefficient",
+      "abbr": "",
+      "aliases": [
+        "相关系数",
+        "correlation coefficient"
+      ],
+      "category": "降维与聚类",
+      "summary": "衡量两个向量共同变化程度的统计量，需明确使用哪种表示。",
+      "example": "类别矩阵色条从 -1 到 1。",
+      "in_course": "比较平均表示模式。",
+      "pitfall": "相关不证明因果，也不必然来自原始全基因 counts。",
+      "related": [
+        "t52",
+        "t53",
+        "t54"
+      ],
+      "sources": [],
+      "anchor": "glossary-65"
+    },
+    {
+      "id": "t66",
+      "zh": "marker",
+      "en": "marker gene",
+      "abbr": "marker",
+      "aliases": [
+        "marker",
+        "marker gene"
+      ],
+      "category": "注释与统计",
+      "summary": "能为细胞类型或状态提供识别线索的基因。",
+      "example": "CD3D/TRAC 支持 T 相关线索。",
+      "in_course": "组合注释证据。",
+      "pitfall": "通常没有一个单基因在所有背景下绝对专一。",
+      "related": [
+        "t67",
+        "t68",
+        "t69"
+      ],
+      "sources": [],
+      "anchor": "glossary-66"
+    },
+    {
+      "id": "t67",
+      "zh": "dotplot",
+      "en": "dot plot",
+      "abbr": "dotplot",
+      "aliases": [
+        "dotplot",
+        "dot plot"
+      ],
+      "category": "注释与统计",
+      "summary": "用圆点大小与颜色同时编码比例和均值的图。",
+      "example": "本课大小看表达比例，颜色可能按基因缩放。",
+      "in_course": "快速比较群体的 marker 模式。",
+      "pitfall": "必须核对实际 standard_scale 与图例。",
+      "related": [
+        "t66",
+        "t68",
+        "t69"
+      ],
+      "sources": [],
+      "anchor": "glossary-67"
+    },
+    {
+      "id": "t68",
+      "zh": "matrixplot",
+      "en": "matrix plot",
+      "abbr": "matrixplot",
+      "aliases": [
+        "matrixplot",
+        "matrix plot"
+      ],
+      "category": "注释与统计",
+      "summary": "用色块展示分组后的基因均值。",
+      "example": "蓝色按基因缩放图与红蓝 z-score 图不同。",
+      "in_course": "比较群体平均模式。",
+      "pitfall": "每个格子不是一个细胞。",
+      "related": [
+        "t66",
+        "t67",
+        "t69"
+      ],
+      "sources": [],
+      "anchor": "glossary-68"
+    },
+    {
+      "id": "t69",
+      "zh": "热图",
+      "en": "heatmap",
+      "abbr": "",
+      "aliases": [
+        "热图",
+        "heatmap"
+      ],
+      "category": "注释与统计",
+      "summary": "用颜色在二维表格中表达数值。",
+      "example": "第 07 章常为行细胞列基因，第 10 章交换过方向。",
+      "in_course": "展开表达模式。",
+      "pitfall": "不能一律假设行是基因；颜色单位由表达层决定。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-69"
+    },
+    {
+      "id": "t70",
+      "zh": "小提琴图",
+      "en": "violin plot",
+      "abbr": "",
+      "aliases": [
+        "小提琴图",
+        "violin plot"
+      ],
+      "category": "注释与统计",
+      "summary": "用宽度表示数值分布的密度。",
+      "example": "按样本的 QC 小提琴。",
+      "in_course": "看典型范围、长尾和零附近聚集。",
+      "pitfall": "图宽不直接等于该组细胞总数。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-70"
+    },
+    {
+      "id": "t71",
+      "zh": "standard_scale",
+      "en": "display range scaling",
+      "abbr": "standard_scale",
+      "aliases": [
+        "standard_scale",
+        "display range scaling"
+      ],
+      "category": "注释与统计",
+      "summary": "绘图时将数值按变量或观察单位缩放显示。",
+      "example": "var 在本课点图表示按基因在组间缩放到 0–1。",
+      "in_course": "解释颜色相对含义。",
+      "pitfall": "不是 z-score，也不是改变原始 counts。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-71"
+    },
+    {
+      "id": "t72",
+      "zh": "细胞注释",
+      "en": "cell-type annotation",
+      "abbr": "",
+      "aliases": [
+        "细胞注释",
+        "cell-type annotation"
+      ],
+      "category": "注释与统计",
+      "summary": "结合表达与背景为细胞群赋予生物学标签。",
+      "example": "先粗谱系，再谨慎细类型。",
+      "in_course": "把计算分组转成可解释结果。",
+      "pitfall": "簇编号不能直接查固定答案表。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-72"
+    },
+    {
+      "id": "t73",
+      "zh": "Uncertain",
+      "en": "uncertain identity",
+      "abbr": "Uncertain",
+      "aliases": [
+        "Uncertain",
+        "uncertain identity"
+      ],
+      "category": "注释与统计",
+      "summary": "明确保留证据不足或冲突的标签状态。",
+      "example": "低质量混合群可以暂不强判。",
+      "in_course": "诚实记录解释边界。",
+      "pitfall": "它不是程序失败，也不应为凑齐标签而消除。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-73"
+    },
+    {
+      "id": "t74",
+      "zh": "Wilcoxon",
+      "en": "Wilcoxon rank-sum test",
+      "abbr": "Wilcoxon",
+      "aliases": [
+        "Wilcoxon",
+        "Wilcoxon rank-sum test"
+      ],
+      "category": "注释与统计",
+      "summary": "依据两组数值的秩来评估分布差异的非参数方法。",
+      "example": "本课在 log1p 上做 marker 排名。",
+      "in_course": "生成描述性群间基因线索。",
+      "pitfall": "不需要正态不等于没有独立性等假设。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-74"
+    },
+    {
+      "id": "t75",
+      "zh": "one-versus-rest",
+      "en": "one group versus all remaining groups",
+      "abbr": "one-versus-rest",
+      "aliases": [
+        "one-versus-rest",
+        "one group versus all remaining groups"
+      ],
+      "category": "注释与统计",
+      "summary": "将某群与其余群体合并作为参照比较。",
+      "example": "每簇 marker 排名。",
+      "in_course": "明确背景定义。",
+      "pitfall": "它不同于指定 B 对 T/NK/ILC。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-75"
+    },
+    {
+      "id": "t76",
+      "zh": "logfoldchanges",
+      "en": "approximate log2 fold change",
+      "abbr": "logfoldchanges",
+      "aliases": [
+        "logfoldchanges",
+        "approximate log2 fold change"
+      ],
+      "category": "注释与统计",
+      "summary": "当前实现根据表达口径给出的近似对数倍数变化。",
+      "example": "B 对 T/NK/ILC 的 CD74 约 5.025。",
+      "in_course": "描述差异方向与幅度。",
+      "pitfall": "不是 p 值，也不表示每个细胞都有相同倍数。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-76"
+    },
+    {
+      "id": "t77",
+      "zh": "p 值",
+      "en": "p-value",
+      "abbr": "",
+      "aliases": [
+        "p 值",
+        "p-value"
+      ],
+      "category": "注释与统计",
+      "summary": "在检验假设和模型成立时，观察到相同或更极端统计量的概率度量。",
+      "example": "pvals 列用于描述统计证据。",
+      "in_course": "与幅度、比例共同阅读。",
+      "pitfall": "不是假设为真的概率，也不是效应大小。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-77"
+    },
+    {
+      "id": "t78",
+      "zh": "多重检验",
+      "en": "multiple testing",
+      "abbr": "",
+      "aliases": [
+        "多重检验",
+        "multiple testing"
+      ],
+      "category": "注释与统计",
+      "summary": "同时检验许多基因带来的错误发现问题，需要相应控制。",
+      "example": "pvals_adj 是校正后的值。",
+      "in_course": "避免只按最小原始 p 值挑结论。",
+      "pitfall": "校正不能弥补错误实验设计或伪重复。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-78"
+    },
+    {
+      "id": "t79",
+      "zh": "scores",
+      "en": "ranking statistic",
+      "abbr": "scores",
+      "aliases": [
+        "scores",
+        "ranking statistic"
+      ],
+      "category": "注释与统计",
+      "summary": "排名检验输出的分数，具体定义与方法有关。",
+      "example": "markers_by_cluster 的 Wilcoxon scores。",
+      "in_course": "排序与比较检验证据。",
+      "pitfall": "不能解释为表达量或准确率。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-79"
+    },
+    {
+      "id": "t80",
+      "zh": "CellTypist",
+      "en": "CellTypist annotation",
+      "abbr": "CellTypist",
+      "aliases": [
+        "CellTypist",
+        "CellTypist annotation"
+      ],
+      "category": "注释与统计",
+      "summary": "利用训练模型为细胞提出类型标签的工具。",
+      "example": "本例保存粗、细模型标签。",
+      "in_course": "提供独立于手工命名的对照意见。",
+      "pitfall": "模型必须核对物种、组织和标签范围。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-80"
+    },
+    {
+      "id": "t81",
+      "zh": "模型分数",
+      "en": "model confidence score",
+      "abbr": "",
+      "aliases": [
+        "模型分数",
+        "model confidence score"
+      ],
+      "category": "注释与统计",
+      "summary": "模型对其输出标签的支持量，含义取决于实现。",
+      "example": "conf_score 在 UMAP 连续着色。",
+      "in_course": "定位需要进一步核对的细胞。",
+      "pitfall": "不是校准后的正确概率，域外数据也可能高分。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-81"
+    },
+    {
+      "id": "t82",
+      "zh": "交叉表",
+      "en": "contingency table",
+      "abbr": "",
+      "aliases": [
+        "交叉表",
+        "contingency table"
+      ],
+      "category": "注释与统计",
+      "summary": "同时按两套标签统计共同成员数量。",
+      "example": "手工 B_cells 与模型 B cells 的交集。",
+      "in_course": "定位一致与不一致群体。",
+      "pitfall": "非对角线不必然全是错误，标签粒度可能不同。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-82"
+    },
+    {
+      "id": "t83",
+      "zh": "scVI",
+      "en": "single-cell variational inference",
+      "abbr": "scVI",
+      "aliases": [
+        "scVI",
+        "single-cell variational inference"
+      ],
+      "category": "注释与统计",
+      "summary": "用概率生成模型学习单细胞表示的方法框架。",
+      "example": "本课作为选修代码入口。",
+      "in_course": "理解其他建模路线。",
+      "pitfall": "此历史主线没有运行结果，不能编造性能比较。",
+      "related": [
+        "t66",
+        "t67",
+        "t68"
+      ],
+      "sources": [],
+      "anchor": "glossary-83"
+    },
+    {
+      "id": "t84",
+      "zh": "检查点",
+      "en": "checkpoint",
+      "abbr": "",
+      "aliases": [
+        "检查点",
+        "checkpoint"
+      ],
+      "category": "文件与协作",
+      "summary": "某个明确分析阶段保存的对象，用于恢复与下游读取。",
+      "example": "每章 checkpoint.h5ad。",
+      "in_course": "保证阶段衔接。",
+      "pitfall": "文件存在不意味着它仍与当前参数一致。",
+      "related": [
+        "t85",
+        "t86",
+        "t87"
+      ],
+      "sources": [],
+      "anchor": "glossary-84"
+    },
+    {
+      "id": "t85",
+      "zh": "尝试",
+      "en": "analysis attempt",
+      "abbr": "",
+      "aliases": [
+        "尝试",
+        "analysis attempt"
+      ],
+      "category": "文件与协作",
+      "summary": "某章一次有独立身份的运行及其候选、参数和记录。",
+      "example": "fresh 会产生新尝试目录。",
+      "in_course": "区分当前、历史和重跑。",
+      "pitfall": "按文件夹日期猜最新版可能选错，应读 state。",
+      "related": [
+        "t84",
+        "t86",
+        "t87"
+      ],
+      "sources": [],
+      "anchor": "glossary-85"
+    },
+    {
+      "id": "t86",
+      "zh": "候选路线",
+      "en": "candidate route",
+      "abbr": "",
+      "aliases": [
+        "候选路线",
+        "candidate route"
+      ],
+      "category": "文件与协作",
+      "summary": "在共同起点计算、尚待比较选择的一种方法结果。",
+      "example": "basic、mt、mad 分别保存。",
+      "in_course": "先看结果再做判断。",
+      "pitfall": "候选存在不表示已被确认成为下游主对象。",
+      "related": [
+        "t84",
+        "t85",
+        "t87"
+      ],
+      "sources": [],
+      "anchor": "glossary-86"
+    },
+    {
+      "id": "t87",
+      "zh": "stale",
+      "en": "stale result",
+      "abbr": "stale",
+      "aliases": [
+        "stale",
+        "stale result"
+      ],
+      "category": "文件与协作",
+      "summary": "输入、代码、参数或上游变化后，旧结果不再代表当前分析。",
+      "example": "改聚类后旧注释需要更新。",
+      "in_course": "提醒重新计算与解读。",
+      "pitfall": "旧文件仍能打开不等于有效。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-87"
+    },
+    {
+      "id": "t88",
+      "zh": "SHA256",
+      "en": "SHA-256 content digest",
+      "abbr": "SHA256",
+      "aliases": [
+        "SHA256",
+        "SHA-256 content digest"
+      ],
+      "category": "文件与协作",
+      "summary": "根据文件字节计算的摘要，用于检查内容是否变化。",
+      "example": "复制原图前后摘要一致。",
+      "in_course": "追溯素材和检测更新。",
+      "pitfall": "摘要一致不能证明科学结论正确。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-88"
+    },
+    {
+      "id": "t89",
+      "zh": "Conda",
+      "en": "Conda environment manager",
+      "abbr": "Conda",
+      "aliases": [
+        "Conda",
+        "Conda environment manager"
+      ],
+      "category": "文件与协作",
+      "summary": "创建并管理软件环境及依赖的工具。",
+      "example": "项目环境首次在最终路径初始化。",
+      "in_course": "提高运行可复现性。",
+      "pitfall": "拷贝已初始化环境目录不保证跨系统可用。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-89"
+    },
+    {
+      "id": "t90",
+      "zh": "Notebook",
+      "en": "Jupyter Notebook",
+      "abbr": "Notebook",
+      "aliases": [
+        "Notebook",
+        "Jupyter Notebook"
+      ],
+      "category": "文件与协作",
+      "summary": "包含代码、说明与可保存输出的课件文档。",
+      "example": "00–12 逐章课件。",
+      "in_course": "同时学习目的和实现。",
+      "pitfall": "打开网页阅读源码不会执行单元格。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-90"
+    },
+    {
+      "id": "t91",
+      "zh": "重绘",
+      "en": "figure redraw",
+      "abbr": "",
+      "aliases": [
+        "重绘",
+        "figure redraw"
+      ],
+      "category": "文件与协作",
+      "summary": "在明确检查点上调整展示并重新导出图片。",
+      "example": "修改字号和图例位置。",
+      "in_course": "改善阅读与报告排版。",
+      "pitfall": "修改过滤阈值或注释不只是重绘。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-91"
+    },
+    {
+      "id": "t92",
+      "zh": "伪重复",
+      "en": "pseudoreplication",
+      "abbr": "",
+      "aliases": [
+        "伪重复",
+        "pseudoreplication"
+      ],
+      "category": "文件与协作",
+      "summary": "把有依赖的观察当作独立重复而夸大证据的做法。",
+      "example": "把同供体细胞当作独立供体。",
+      "in_course": "检查条件效应推断。",
+      "pitfall": "细胞数多不能自动解决重复单位错误。",
+      "related": [
+        "t84",
+        "t85",
+        "t86"
+      ],
+      "sources": [],
+      "anchor": "glossary-92"
+    }
+  ]
+}

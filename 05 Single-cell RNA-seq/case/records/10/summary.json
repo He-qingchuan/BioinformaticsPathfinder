@@ -1,0 +1,10 @@
+{
+  "cluster_marker_rows": 374832,
+  "b_vs_t_nk_ilc_rows": 23427,
+  "broad_type_marker_rows": 93708,
+  "method": "wilcoxon",
+  "expression_layer": "log1p",
+  "comparison_scope": "描述性标记探索；不代表有独立生物学重复的条件效应检验",
+  "n_cells": 17041,
+  "n_genes": 23427
+}

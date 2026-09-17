@@ -1,0 +1,186 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/04_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>04_executed.ipynb</h1><section><small>单元格 0</small><h1>第 04 章 降维与邻居图</h1>
+<h2>学习目标</h2>
+<p>理解高维表达数据如何转化为用于展示和聚类的表示。</p>
+<h2>为什么做与怎样做</h2>
+<p>在高变基因上计算 50 个主成分，用 PCA 构建邻居图，并生成 t-SNE 与 UMAP。非线性图上的距离需要谨慎解释。</p>
+<p>前置章节：03。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;04&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>04.1 降维（Dimensionality Reduction）</h2>
+<p>通过主成分分析（PCA）降低数据维度，揭示主要变化轴并对数据去噪。</p>
+</section><section><small>单元格 3</small><pre><code># 功能说明：在当前 `adata` 上计算 PCA 表达空间。
+# 运行目的：提取主成分用于构建邻近图与后续聚类/可视化。
+# 变量/函数/参数解析：
+# - sc.tl.pca(adata)：
+#   - 使用 `adata.X`（或 `.layers` 指定层）计算主成分并写入 `adata.obsm[&#x27;X_pca&#x27;]`。
+# - use_highly_variable,bool | None (default: None),是否仅使用存储在.var[&#x27;highly_variable&#x27;]中的高变基因。默认情况下，如果事先已确定这些基因，则使用它们。
+# - n_comps 要计算的主成分数量。默认值为50，
+sc.tl.pca(adata, n_comps=ctx.config[&quot;parameters&quot;][&quot;n_pcs&quot;], mask_var=&quot;highly_variable&quot;, random_state=0)</code></pre></section><section><small>单元格 4</small><pre><code># 功能说明：查看 PCA 结果。
+# 运行目的：检查 PCA 计算是否成功，并查看主成分矩阵的结构。
+# 详细代码解析：
+# 1. `adata.obsm`
+#    - 查看 AnnData 对象的多维观测注释（observation matrices）。
+#    - 应包含 `X_pca`。
+# 2. `adata.obsm[&#x27;X_pca&#x27;]`
+#    - 访问 PCA 坐标矩阵。
+#    - 形状通常为 (n_obs, n_comps)，即每个细胞在 50 个主成分上的坐标。
+
+adata.obsm
+adata.obsm[&#x27;X_pca&#x27;]</code></pre></section><section><small>单元格 5</small><p>让我们查看各主成分对总方差的贡献。这有助于确定用于构建细胞邻近关系（如 ~scanpy.tl.leiden 或 ~scanpy.tl.tsne）的主成分数量。经验上，适度高估主成分数量通常问题不大。</p>
+</section><section><small>单元格 6</small><pre><code># 功能说明：绘制 PCA 方差占比图，观察前若干主成分的贡献。
+# 运行目的：辅助选择用于邻近图与聚类的主成分数量。
+# 变量/函数/参数解析：
+# - sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True)：
+#   - n_pcs(int)：显示的主成分数量。
+#   - log(bool)：对方差占比取对数显示，便于观察差异。
+
+sc.pl.pca_variance_ratio(adata, n_pcs=50, log=True, save=&quot;_04_75.pdf&quot;)</code></pre></section><section><small>单元格 7</small><p>也可直接绘制主成分空间，检查是否存在潜在的不期望因素（例如批次、QC 指标）驱动显著变化。本数据集中目前未见明显异常，但建议进行探索。
+要判断PCA图中是否存在由批次、线粒体占比（pct_counts_mt）等不期望的技术因素驱动的“显著变化”，你需要观察点的分布与颜色之间的对应关系。
+核心判断原则是：如果颜色（代表样本或QC指标）与点的聚集模式高度一致，则说明该因素对数据变异产生了主导性影响，这可能掩盖真实的生物学信号。
+理想情况（无强批次效应）：不同样本（颜色）的点均匀混合在一起，像一盘五彩沙画，没有哪个颜色独自聚成一团。这意味着样本来源不同导致的变异很小。</p>
+</section><section><small>单元格 8</small><pre><code># 功能说明：绘制 PCA 散点图并按样本着色。
+# 运行目的：在主成分空间中观察样本分布，初步评估是否存在批次效应。
+# 详细代码解析：
+# 1. `sc.pl.pca(...)`
+#    - `adata`: AnnData 对象。
+#    - `color=&#x27;samples&#x27;`: 根据 `obs` 中的 `samples` 列对点进行着色。
+#    - `save=&quot;...&quot;`: 保存图像到文件。
+
+sc.pl.pca(adata,color=&#x27;samples&#x27;,save=&quot;_04_77.pdf&quot;)</code></pre></section><section><small>单元格 9</small><pre><code># 功能说明：在不同主成分维度上着色可视化，检查批次与 QC 影响。
+# 运行目的：确认 PCA 空间中是否出现由样本或线粒体占比驱动的结构。
+# 变量/函数/参数解析：
+# - sc.pl.pca(adata, color=[...], dimensions=[...], ncols=2, size=2)：
+#   - color(list)：按 `obs` 列着色，此处为样本与线粒体占比的重复组合。
+#   - dimensions(list[tuple])：指定要绘制的主成分轴对。
+#   - ncols(int)：每行图像面板数量。
+#   - size(float)：点大小。
+sc.pl.pca(
+    adata,
+    color=[&quot;samples&quot;, &quot;samples&quot;, &quot;pct_counts_mt&quot;, &quot;pct_counts_mt&quot;],
+    dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
+    ncols=2,
+    size=2,
+    save=&quot;_04_78.pdf&quot;,
+)</code></pre></section><section><small>单元格 10</small><h2>04.2 t-SNE与UMAP</h2>
+</section><section><small>单元格 11</small><pre><code># # 使用当前环境的 pip，而不是系统默认的 pip
+# import sys
+# !{sys.executable} -m pip install ipywidgets</code></pre></section><section><small>单元格 12</small><h2>04.3 t-SNE</h2>
+</section><section><small>单元格 13</small><p>t-SNE
+t-SNE 是一种基于图的非线性降维技术，它将高维数据投影到 2D 或 3D 分量上。
+该方法基于数据点之间的高维欧几里得距离定义高斯概率分布。
+随后，使用 t-分布在低维空间中重建概率分布，其中嵌入使用梯度下降进行优化。</p>
+</section><section><small>单元格 14</small><pre><code># 功能说明：执行 t-SNE 降维
+# 运行目的：使用 t-SNE（t-Distributed Stochastic Neighbor Embedding）进行非线性降维，以便在二维平面上可视化高维数据的局部结构。
+# 详细代码解析：
+# 1. sc.tl.tsne(adata, use_rep=&quot;X_pca&quot;, random_state=0):
+#    - 计算 t-SNE 嵌入。
+#    - use_rep=&quot;X_pca&quot;: 使用之前计算的 PCA 结果（`adata.obsm[&#x27;X_pca&#x27;]`）作为输入，而不是原始表达矩阵。这样做可以减少噪声并显著加快计算速度。
+#    - 结果将存储在 `adata.obsm[&#x27;X_tsne&#x27;]` 中。
+
+sc.tl.tsne(adata, use_rep=&quot;X_pca&quot;, random_state=0)</code></pre></section><section><small>单元格 15</small><pre><code># 功能说明：绘制 t-SNE 散点图
+# 运行目的：可视化 t-SNE 结果，观察细胞的聚类模式。
+# 详细代码解析：
+# 1. sc.pl.tsne(adata, color=&quot;total_counts&quot;):
+#    - 绘制 t-SNE 图。
+#    - color=&quot;total_counts&quot;: 同样根据总计数着色，以检查技术协变量的影响。
+
+sc.pl.tsne(adata, color=&quot;samples&quot;,size=2,save=&quot;_04_84.pdf&quot;,)</code></pre></section><section><small>单元格 16</small><h2>04.4 UMAP</h2>
+</section><section><small>单元格 17</small><p>UMAP绘制
+UMAP 是一种基于图的非线性降维技术，在原理上与 t-SNE 相似。
+它构建数据集的高维图表示，并优化低维图表示，使其在结构上尽可能与原始图相似。
+我们首先计算 PCA，随后基于我们的数据创建邻域图。</p>
+</section><section><small>单元格 18</small><pre><code># 功能说明：构建 K 邻近图以表征细胞间相似性。
+# 运行目的：为后续 UMAP 可视化与 Leiden 聚类建立图结构基础。
+# 变量/函数/参数解析：
+# - sc.pp.neighbors(adata)：
+#   - 默认在 `obsm[&#x27;X_pca&#x27;]` 空间中构建邻近图并存入 `adata.obsp`。
+sc.pp.neighbors(adata,use_rep=&quot;X_pca&quot;,n_pcs=ctx.config[&quot;parameters&quot;][&quot;n_pcs&quot;], random_state=0)</code></pre></section><section><small>单元格 19</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：确认邻近图构建后，`uns` 和 `obsp` 中是否添加了相关信息。
+# 详细代码解析：
+# 1. `adata`
+#    - 打印概览。
+#    - `uns` 应包含 `neighbors`（邻居计算参数）。
+#    - `obsp` 应包含 `distances`（距离矩阵）和 `connectivities`（连接矩阵）。
+
+adata</code></pre></section><section><small>单元格 20</small><pre><code># 功能说明：打印邻近图的连接矩阵。
+# 运行目的：查看稀疏矩阵的结构，了解细胞间的连接情况。
+# 详细代码解析：
+# 1. `adata.obsp[&quot;connectivities&quot;]`
+#    - 获取细胞间的加权邻接矩阵（稀疏矩阵格式）。
+#    - 非零元素表示两个细胞是邻居，值表示连接强度。
+
+print(adata.obsp[&quot;connectivities&quot;])</code></pre></section><section><small>单元格 21</small><p>随后可使用 UMAP {cite:p}<code>McInnes2018</code> 将该图嵌入到二维空间以便可视化：</p>
+</section><section><small>单元格 22</small><pre><code># UMAP 的核心思想是：在低维空间中保持高维空间中邻居关系的拓扑结构，直接使用邻居图（sc.pp.neighbors()结果）作为输入，而不是原始矩阵
+# 运行时间相对较久
+# 功能说明：计算 UMAP 嵌入以获得二维可视化坐标。
+# 运行目的：在二维平面展示细胞间的结构关系。
+# 变量/函数/参数解析：
+# - sc.tl.umap(adata)：
+#   - 使用已构建的邻近图进行低维嵌入，结果写入 `obsm[&#x27;X_umap&#x27;]`。
+sc.tl.umap(adata,neighbors_key=&quot;neighbors&quot;, random_state=0)</code></pre></section><section><small>单元格 23</small><p>现在可以按 <code>samples</code> 对 UMAP 进行着色可视化。</p>
+<p>t-SNE	强调保留局部结构。它会让高维空间里临近的点在2D图上依然紧挨，但会大幅拉开不同簇群之间的距离。</p>
+<p>特点：簇间距离无意义。同一个簇在两次运行中形状可能完全不同。</p>
+<p>图例：坐标轴（t-SNE1/2）没有单位，不能比较距离绝对值。</p>
+<p>UMAP更好地平衡局部与全局结构。既能保持相邻细胞的接近，也在一定程度上保留了簇群间的相对位置和大小关系。</p>
+<p>特点：运行更快，全局结构保持更好，是目前的主流选择。</p>
+<p>图例：坐标轴（UMAP1/2）同样没有实际单位，但相对布局更具参考性。</p>
+</section><section><small>单元格 24</small><pre><code># 功能说明：绘制 UMAP 并按样本着色。
+# 运行目的：评估批次/样本间的分离程度与混合情况。
+# 变量/函数/参数解析：
+# - sc.pl.umap(adata, color=&quot;samples&quot;, size=2)：
+#   - color(str/list)：着色列，此处为样本标签。
+#   - size(float)：点大小，设小以减少重叠。
+
+sc.pl.umap(
+    adata,
+    color=&quot;samples&quot;,
+    # 设置较小点大小以减少重叠
+    size=2,
+    save=&quot;_04_93.pdf&quot;
+)
+</code></pre></section><section><small>单元格 25</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：确认 UMAP 计算后，`obsm` 中是否添加了 `X_umap`。
+# 详细代码解析：
+# 1. `adata`
+#    - 打印概览。
+#    - `obsm` 应包含 `X_umap`。
+
+adata</code></pre></section><section><small>单元格 26</small><pre><code># 功能说明：查看 UMAP 坐标矩阵。
+# 运行目的：检查 UMAP 嵌入结果的数据结构。
+# 详细代码解析：
+# 1. `adata.obsm[&#x27;X_umap&#x27;]`
+#    - 获取每个细胞的 2D UMAP 坐标。
+#    - 形状为 (n_obs, 2)。
+
+adata.obsm[&#x27;X_umap&#x27;]</code></pre></section><section><small>单元格 27</small><p>尽管本教程数据包含两个不同样本，我们仅观察到较轻的批次效应，可以继续进行聚类与细胞类型注释。</p>
+<p>若在 UMAP 中观察到明显的批次效应，建议在样本之间进行整合与批次校正。可参考 <a href="https://github.com/brianhie/scanorama"><code>scanorama</code></a> 与 <a href="https://scvi-tools.org"><code>scvi-tools</code></a>。</p>
+</section><section><small>单元格 28</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 29</small><pre><code>ctx.table(&quot;pca_variance&quot;, pd.DataFrame({&quot;PC&quot;: np.arange(1, len(adata.uns[&quot;pca&quot;][&quot;variance_ratio&quot;]) + 1), &quot;variance_ratio&quot;: adata.uns[&quot;pca&quot;][&quot;variance_ratio&quot;]}), index=False)
+ctx.table(&quot;embedding&quot;, pd.DataFrame(adata.obsm[&quot;X_umap&quot;], index=adata.obs_names, columns=[&quot;UMAP1&quot;, &quot;UMAP2&quot;]).join(adata.obs[[&quot;samples&quot;]]))
+ctx.finish(adata, {&quot;n_pcs&quot;: adata.obsm[&quot;X_pca&quot;].shape[1], &quot;variance_ratio_first_10&quot;: float(adata.uns[&quot;pca&quot;][&quot;variance_ratio&quot;][:10].sum())})</code></pre></section><section><small>单元格 30</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：UMAP 上两个群体相距较远，能否直接解释为发育关系较远？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

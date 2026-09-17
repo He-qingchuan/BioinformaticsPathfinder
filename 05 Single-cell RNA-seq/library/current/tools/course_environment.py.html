@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_environment.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_environment.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_environment.py</h1><pre><code>&quot;&quot;&quot;Validate this machine before a lesson can create or replace analysis results.&quot;&quot;&quot;
+from __future__ import annotations
+
+import argparse
+import fcntl
+import importlib
+import importlib.metadata
+import json
+import os
+from pathlib import Path
+import platform
+import subprocess
+import sys
+import time
+import uuid
+import xml.etree.ElementTree as ET
+import zipfile
+
+from course_runtime import digest, read_json, settings, write_json
+from course_projects import installation as root_dir
+
+SCHEMA = 1
+MODULES = (&quot;scanpy&quot;, &quot;anndata&quot;, &quot;numpy&quot;, &quot;scipy&quot;, &quot;pandas&quot;, &quot;matplotlib&quot;, &quot;h5py&quot;,
+           &quot;celltypist&quot;, &quot;harmonypy&quot;, &quot;bbknn&quot;, &quot;igraph&quot;, &quot;leidenalg&quot;, &quot;skimage&quot;,
+           &quot;nbclient&quot;, &quot;nbformat&quot;, &quot;ipykernel&quot;, &quot;psutil&quot;)
+
+
+def receipt_path(root, name=&quot;sc_rna&quot;):
+    return root / &quot;.runtime&quot; / (&quot;preflight.json&quot; if name == &quot;sc_rna&quot; else &quot;preflight-scvi.json&quot;)
+
+
+def _file_identity(path):
+    stat = path.stat()
+    return {&quot;bytes&quot;: stat.st_size, &quot;mtime_ns&quot;: stat.st_mtime_ns}
+
+
+def environment_identity(root, name=&quot;sc_rna&quot;):
+    &quot;&quot;&quot;Cheap recheck: location, host, executables, installed metadata and inputs.&quot;&quot;&quot;
+    root = root.resolve()
+    prefix = root / &quot;.envs&quot; / name
+    libraries = list((prefix / &quot;lib&quot;).glob(&quot;python*/site-packages&quot;))
+    if not libraries:
+        raise RuntimeError(f&quot;找不到 {name} 的项目依赖目录。&quot;)
+    distributions = {}
+    for dist in importlib.metadata.distributions(path=[str(p) for p in libraries]):
+        package = dist.metadata.get(&quot;Name&quot;)
+        if package:
+            distributions[package.lower().replace(&#x27;_&#x27;, &#x27;-&#x27;)] = dist.version
+    files = [prefix / &quot;bin/python&quot;, root / &quot;.envs/sc_rna/bin/node&quot;]
+    files += list((prefix / &quot;conda-meta&quot;).glob(&quot;*.json&quot;))
+    files += [p for library in libraries for p in library.glob(&quot;*.dist-info/METADATA&quot;)]
+    files += [p for library in libraries for p in library.glob(&quot;*.dist-info/RECORD&quot;)]
+    sources = [&quot;tools/course_environment.py&quot;, &quot;tools/environment_smoke.py&quot;, &quot;tools/build_report.cjs&quot;,
+               &quot;tools/package-lock.json&quot;, &quot;tools/node_modules/docx/package.json&quot;,
+               &quot;tools/node_modules/markdown-it/package.json&quot;]
+    return {
+        &quot;schema&quot;: SCHEMA, &quot;root&quot;: str(root), &quot;prefix&quot;: str(prefix),
+        &quot;host&quot;: platform.node(), &quot;os&quot;: platform.system(), &quot;machine&quot;: platform.machine(),
+        &quot;libc&quot;: list(platform.libc_ver()), &quot;packages&quot;: dict(sorted(distributions.items())),
+        &quot;files&quot;: {str(p.relative_to(root)): _file_identity(p) for p in sorted(set(files))},
+        &quot;checks&quot;: {p: digest(root / p) for p in sources},
+    }
+
+
+def assert_interpreter(root, name=&quot;sc_rna&quot;):
+    prefix = (root / &quot;.envs&quot; / name).resolve()
+    if Path(sys.prefix).resolve() != prefix or not Path(sys.executable).resolve().is_relative_to(prefix):
+        raise RuntimeError(f&quot;当前 Python 不是项目的 {name} 环境。请选择 {prefix}/bin/python，再执行环境检查。&quot;)
+
+
+def require_ready(root, name=&quot;sc_rna&quot;, *, active=True):
+    &quot;&quot;&quot;Refuse early, before creating an attempt or changing results/state.json.&quot;&quot;&quot;
+    command = &quot;bash setup.sh --scvi&quot; if name == &quot;scvi&quot; else &quot;bash setup.sh 或 ./course check&quot;
+    if active:
+        assert_interpreter(root, name)
+    valid = False
+    try:
+        record = read_json(receipt_path(root, name), {})
+        current = environment_identity(root, name)
+        valid = record.get(&quot;status&quot;) == &quot;ready&quot; and record.get(&quot;identity&quot;) == current
+    except (OSError, ValueError, RuntimeError):
+        pass
+    if not valid:
+        raise RuntimeError(f&quot;本机 {name} 环境尚未通过检查，或目录/依赖已经变化。请先执行 {command}。参考结果的完成状态不能代替环境检查。&quot;)
+    if active:
+        for module_name in MODULES:
+            module = sys.modules.get(module_name)
+            if module is not None and getattr(module, &quot;__file__&quot;, None):
+                if not Path(module.__file__).resolve().is_relative_to(root / &quot;.envs&quot; / name):
+                    raise RuntimeError(f&quot;已加载的 {module_name} 来自项目环境以外。请重新选择项目内核并检查环境。&quot;)
+    return record
+
+
+def _kernel_smoke(root, directory, name):
+    import nbformat
+    from nbclient import NotebookClient
+    from jupyter_client import KernelManager
+    from jupyter_client.kernelspec import KernelSpec, KernelSpecManager
+
+    executable = root / &quot;.envs&quot; / name / &quot;bin/python&quot;
+
+    class ProjectKernelSpecManager(KernelSpecManager):
+        def get_kernel_spec(self, kernel_name):
+            return KernelSpec(argv=[str(executable), &quot;-m&quot;, &quot;ipykernel_launcher&quot;, &quot;-f&quot;, &quot;{connection_file}&quot;],
+                              display_name=&quot;course environment check&quot;, language=&quot;python&quot;)
+
+    script = str(root / &quot;tools/environment_smoke.py&quot;)
+    source = f&quot;import runpy, sys\nsys.argv = {[script, str(root), str(directory), name]!r}\nrunpy.run_path({script!r}, run_name=&#x27;__main__&#x27;)\n&quot;
+    nb = nbformat.v4.new_notebook(cells=[nbformat.v4.new_code_cell(source)])
+    manager = KernelManager(kernel_name=&quot;course-check&quot;, kernel_spec_manager=ProjectKernelSpecManager())
+    env = os.environ.copy()
+    env.pop(&quot;PYTHONPATH&quot;, None)
+    env.pop(&quot;PYTHONHOME&quot;, None)
+    env.update(SC_COURSE_ROOT=str(root), PYTHONNOUSERSITE=&quot;1&quot;, PYTHONHASHSEED=&quot;0&quot;,
+               OMP_NUM_THREADS=&quot;2&quot;, OPENBLAS_NUM_THREADS=&quot;2&quot;, MKL_NUM_THREADS=&quot;2&quot;, NUMBA_NUM_THREADS=&quot;2&quot;,
+               MPLCONFIGDIR=str(root / &quot;.runtime/matplotlib&quot;), IPYTHONDIR=str(root / &quot;.runtime/ipython&quot;),
+               JUPYTER_RUNTIME_DIR=str(root / &quot;.runtime/jupyter&quot;))
+    client = NotebookClient(nb, km=manager, timeout=600, allow_errors=False,
+                            resources={&quot;metadata&quot;: {&quot;path&quot;: str(directory)}})
+    try:
+        client.execute(env=env)
+    finally:
+        if manager.has_kernel:
+            manager.shutdown_kernel(now=True)
+        if client.kc is not None:
+            client.kc.stop_channels()
+        nbformat.write(nb, directory / &quot;smoke.executed.ipynb&quot;)
+        log = []
+        for cell in nb.cells:
+            for output in cell.get(&quot;outputs&quot;, []):
+                if output.output_type == &quot;stream&quot;:
+                    log.append(output.text)
+                elif output.output_type == &quot;error&quot;:
+                    log.append(&quot;\n&quot;.join(output.traceback))
+        (directory / &quot;kernel.log&quot;).write_text(&quot;\n&quot;.join(log), encoding=&quot;utf-8&quot;)
+    return read_json(directory / &quot;smoke.json&quot;)
+
+
+def _word_smoke(root, directory):
+    target = str((directory / &quot;smoke.png&quot;).relative_to(root))
+    payload = {
+        &quot;title&quot;: &quot;环境检查：测试报告（非生物学分析）&quot;, &quot;created&quot;: time.strftime(&quot;%Y-%m-%d %H:%M&quot;),
+        &quot;root&quot;: str(root), &quot;pending&quot;: [], &quot;appendix&quot;: [], &quot;notes&quot;: [],
+        &quot;chapters&quot;: [{&quot;id&quot;: &quot;TEST&quot;, &quot;title&quot;: &quot;环境运行测试&quot;, &quot;markdown&quot;:
+                      &quot;## 目的\n验证中文、图片和表格可以写入 Word。\n\n&quot;
+                      &quot;## 方法\n使用合成矩阵进行小规模计算，不产生课程分析结论。\n\n&quot;
+                      f&quot;## 结果\n![合成数据，仅用于环境测试]({target})\n\n&quot;
+                      &quot;| 检查 | 结果 |\n|---|---|\n| 新内核与绘图 | 通过 |\n\n&quot;
+                      &quot;## 解释\n此文档保存在环境检查目录，不加入正式课程报告。&quot;}],
+    }
+    write_json(directory / &quot;word_input.json&quot;, payload)
+    node = root / &quot;.envs/sc_rna/bin/node&quot;
+    subprocess.run([str(node), str(root / &quot;tools/build_report.cjs&quot;), str(directory / &quot;word_input.json&quot;),
+                    str(directory / &quot;smoke.docx&quot;)], check=True, capture_output=True, text=True, timeout=120)
+    with zipfile.ZipFile(directory / &quot;smoke.docx&quot;) as archive:
+        if archive.testzip() is not None:
+            raise RuntimeError(&quot;测试 Word 压缩结构损坏。&quot;)
+        document = ET.fromstring(archive.read(&quot;word/document.xml&quot;))
+        if not any(n.startswith(&quot;word/media/&quot;) for n in archive.namelist()):
+            raise RuntimeError(&quot;测试 Word 缺少图片。&quot;)
+        if &quot;环境运行测试&quot; not in &quot;&quot;.join(document.itertext()):
+            raise RuntimeError(&quot;测试 Word 缺少中文正文。&quot;)
+
+
+def check(root, name=&quot;sc_rna&quot;):
+    root = root.resolve()
+    runtime = root / &quot;.runtime&quot;
+    runtime.mkdir(exist_ok=True)
+    with (runtime / f&quot;preflight-{name}.lock&quot;).open(&quot;w&quot;) as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError(&quot;这个环境已有检查正在运行，请等待它完成。&quot;)
+        receipt = receipt_path(root, name)
+        receipt.unlink(missing_ok=True)
+        stamp = time.strftime(&quot;%Y%m%dT%H%M%S&quot;) + &quot;_&quot; + uuid.uuid4().hex[:6]
+        directory = runtime / &quot;preflight&quot; / name / stamp
+        directory.mkdir(parents=True)
+        result = {&quot;status&quot;: &quot;checking&quot;, &quot;checked_at&quot;: time.strftime(&quot;%Y-%m-%dT%H:%M:%S%z&quot;),
+                  &quot;directory&quot;: str(directory.relative_to(root))}
+        try:
+            assert_interpreter(root, name)
+            if name == &quot;scvi&quot;:
+                require_ready(root, active=False)
+            if platform.system() != &quot;Linux&quot; or platform.machine() != &quot;x86_64&quot;:
+                raise RuntimeError(&quot;正式支持 Linux x86_64；请先阅读环境准备与迁移说明。&quot;)
+            for marker in (f&quot;{name}.prepared-prefix&quot;, f&quot;{name}.install-prefix&quot;):
+                path = runtime / marker
+                if path.exists() and path.read_text().strip() != str(root / &quot;.envs&quot; / name):
+                    raise RuntimeError(&quot;环境已被移动。请从原包重新解压，或运行 bash setup.sh --rebuild（scVI 加 --scvi）。&quot;)
+            modules = MODULES + ((&quot;scvi&quot;, &quot;torch&quot;) if name == &quot;scvi&quot; else ())
+            locations = {}
+            for module_name in modules:
+                module = importlib.import_module(module_name)
+                path = Path(module.__file__).resolve()
+                if not path.is_relative_to(root / &quot;.envs&quot; / name):
+                    raise RuntimeError(f&quot;依赖 {module_name} 来自项目外部：{path}&quot;)
+                locations[module_name] = str(path.relative_to(root))
+            result[&quot;imports&quot;] = locations
+            print(&quot;启动独立内核：测试 PCA、UMAP、聚类、Harmony、BBKNN 和绘图；真实输入按项目核查。&quot;, flush=True)
+            result[&quot;smoke&quot;] = _kernel_smoke(root, directory, name)
+            _word_smoke(root, directory)
+            result[&quot;word&quot;] = &quot;passed: ZIP/XML, Chinese text, embedded PNG&quot;
+            result.update(status=&quot;ready&quot;, identity=environment_identity(root, name))
+            write_json(directory / &quot;result.json&quot;, result)
+            write_json(receipt, result)
+            (runtime / f&quot;{name}.prepared-prefix&quot;).write_text(str(root / &quot;.envs&quot; / name) + &quot;\n&quot;)
+            print(f&quot;环境检查通过：{name}。检查记录：{directory.relative_to(root)}&quot;, flush=True)
+            return result
+        except Exception as exc:
+            result.update(status=&quot;failed&quot;, error=f&quot;{type(exc).__name__}: {exc}&quot;)
+            write_json(directory / &quot;result.json&quot;, result)
+            receipt.unlink(missing_ok=True)
+            print(f&quot;环境未就绪，不能开始分析。诊断：{directory.relative_to(root)}&quot;, file=sys.stderr)
+            raise
+
+
+if __name__ == &quot;__main__&quot;:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;--scvi&quot;, action=&quot;store_true&quot;)
+    args = parser.parse_args()
+    check(root_dir(), &quot;scvi&quot; if args.scvi else &quot;sc_rna&quot;)
+</code></pre></main></body></html>

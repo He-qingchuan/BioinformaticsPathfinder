@@ -1,0 +1,283 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_decisions.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_decisions.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_decisions.py</h1><pre><code>&quot;&quot;&quot;候选结果与人工决定。
+
+功能说明：让 Notebook 能正常停在等待信息/确认的位置，而不伪造计算失败。
+运行目的：只有当前项目、当前输入、当前候选获确认后才形成正式输出。
+数据流程：章节保存候选 → AI 读图表并提问 → choose/approve 登记真实回复 → 再运行本章。
+&quot;&quot;&quot;
+from __future__ import annotations
+import hashlib
+import json
+from pathlib import Path
+import time
+
+
+class AwaitingDecision(RuntimeError):
+    &quot;&quot;&quot;正常教学暂停；CLI 根据运行记录识别此状态，Notebook 会显示具体待办。&quot;&quot;&quot;
+
+
+def token(value):
+    &quot;&quot;&quot;为结构化的输入身份生成稳定校验值，避免字典顺序影响确认记录。&quot;&quot;&quot;
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
+
+
+def validate_files(root, files):
+    &quot;&quot;&quot;核对候选/证据在用户确认后仍未改变；只检查当前项目内的产物。&quot;&quot;&quot;
+    from course_runtime import digest
+    for filename, expected in files.items():
+        path = (root / filename).resolve()
+        if not path.is_relative_to(root.resolve()) or not path.is_file() or digest(path) != expected:
+            raise ValueError(f&quot;候选或证据已经改变，请重新准备并确认：{filename}&quot;)
+
+
+def annotation_rows(root, request):
+    &quot;&quot;&quot;验证逐簇建议表；每个真实簇恰好一行，人数正确，标签和证据不能缺失。&quot;&quot;&quot;
+    import pandas as pd
+    details = request[&quot;annotation&quot;]
+    frame = pd.read_csv(root / details[&quot;proposal&quot;], dtype=str, keep_default_na=False)
+    required = {&quot;cluster_key&quot;, &quot;cluster&quot;, &quot;n_cells&quot;, &quot;level1&quot;, &quot;level2&quot;, &quot;support&quot;, &quot;supporting_markers&quot;,
+                &quot;opposing_markers&quot;, &quot;evidence_refs&quot;, &quot;rationale&quot;, &quot;uncertainty&quot;}
+    if not required.issubset(frame.columns):
+        raise ValueError(f&quot;注释表缺列：{sorted(required-set(frame.columns))}&quot;)
+    expected = {(r[&#x27;cluster_key&#x27;], r[&#x27;cluster&#x27;]): r for r in details[&#x27;clusters&#x27;]}
+    actual = list(zip(frame.cluster_key, frame.cluster))
+    if len(set(actual)) != len(actual) or set(actual) != set(expected):
+        raise ValueError(&quot;注释表的簇重复、缺失或多余；不能套用其他项目/分辨率的映射。&quot;)
+    for row in frame.to_dict(&#x27;records&#x27;):
+        original = expected[(row[&#x27;cluster_key&#x27;],row[&#x27;cluster&#x27;])]
+        if int(row[&#x27;n_cells&#x27;]) != original[&#x27;n_cells&#x27;]:
+            raise ValueError(&quot;n_cells 应由程序生成，不能手动改变。&quot;)
+        if not row[&#x27;level1&#x27;].strip() or (row[&#x27;cluster_key&#x27;]==details[&#x27;fine_key&#x27;] and not row[&#x27;level2&#x27;].strip()):
+            raise ValueError(&quot;标签未填完整；不能确定时请明确填写 Uncertain 并解释。&quot;)
+        if row[&#x27;support&#x27;] not in (&#x27;高&#x27;,&#x27;较高&#x27;,&#x27;中&#x27;,&#x27;低&#x27;,&#x27;未定&#x27;) or not row[&#x27;rationale&#x27;].strip() or not row[&#x27;evidence_refs&#x27;].strip():
+            raise ValueError(&quot;请填写定性支持程度、证据引用和理由，再向用户汇报。&quot;)
+        # 引用可以附 # 行定位；文件必须属于本次程序生成的证据。
+        for ref in row[&#x27;evidence_refs&#x27;].split(&#x27;;&#x27;):
+            if ref.strip().split(&#x27;#&#x27;)[0] not in request[&#x27;files&#x27;]:
+                raise ValueError(f&quot;证据引用不属于本次输入：{ref}&quot;)
+    return frame
+
+
+def confirm(root, chapter, stage, candidate, confirmation, test_only=False):
+    &quot;&quot;&quot;记录操作人提供的确认原文。AI 必须先获得用户回复；本函数不生成回复。&quot;&quot;&quot;
+    from course_runtime import chapter_status, digest, read_json, state, write_json
+    from course_projects import descriptor
+    record = state(root)[&#x27;chapters&#x27;].get(chapter, {})
+    if chapter_status(chapter, root) not in (&#x27;awaiting_confirmation&#x27;,&#x27;awaiting_input&#x27;):
+        raise ValueError(&quot;本章没有当前有效的待确认请求，请先运行该章生成候选。&quot;)
+    if record.get(&#x27;pending_stage&#x27;) != stage:
+        raise ValueError(f&quot;本次正在等待 {record.get(&#x27;pending_stage&#x27;)}，不能确认其他阶段。&quot;)
+    request = read_json(root / record[&#x27;request&#x27;])
+    if request[&#x27;binding&#x27;] != record[&#x27;binding&#x27;] or request[&#x27;project_uuid&#x27;] != descriptor(root)[&#x27;uuid&#x27;]:
+        raise ValueError(&quot;请求属于其他输入或其他项目。&quot;)
+    if not confirmation.strip():
+        raise ValueError(&quot;必须记录用户的真实确认原文。&quot;)
+    if test_only and not descriptor(root).get(&#x27;test_only&#x27;):
+        raise ValueError(&quot;测试确认只允许在显式标记 test_only 的验收项目使用。&quot;)
+    validate_files(root, request[&#x27;files&#x27;])
+    if candidate not in request[&#x27;options&#x27;]:
+        raise ValueError(f&quot;候选不存在：{candidate}；可选 {list(request[&#x27;options&#x27;])}&quot;)
+    decision = {**request, &#x27;candidate&#x27;: candidate, &#x27;confirmation&#x27;: confirmation, &#x27;test_only&#x27;: test_only,
+                &#x27;confirmed_at&#x27;: time.strftime(&#x27;%Y-%m-%dT%H:%M:%S%z&#x27;)}
+    if &#x27;annotation&#x27; in request:
+        annotation_rows(root, request)
+        proposal = request[&#x27;annotation&#x27;][&#x27;proposal&#x27;]
+        decision[&#x27;proposal_sha256&#x27;] = digest(root / proposal)
+    path = root / record[&#x27;directory&#x27;] / (&#x27;decision_&#x27; + stage + &#x27;.json&#x27;)
+    if path.exists():
+        previous = read_json(path)
+        write_json(path.parent / &#x27;.history&#x27; / (stage + &#x27;_&#x27; + str(time.time_ns()) + &#x27;.json&#x27;), previous)
+    write_json(path, decision)
+    print(f&quot;已登记 {stage} → {candidate}。再次运行第 {chapter} 章，程序将复核并继续。&quot;)
+    return decision
+
+
+class DecisionMixin:
+    &quot;&quot;&quot;给原 Chapter 增加少量保存/等待方法；具体分析仍在学生代码单元格中。&quot;&quot;&quot;
+
+    def wait_input(self, stage, message):
+        &quot;&quot;&quot;缺少真实材料时保存待办；不会自行填入样本、标记或模型答案。&quot;&quot;&quot;
+        from course_runtime import relative, write_json
+        request = self.directory / (&#x27;request_&#x27; + stage + &#x27;.json&#x27;)
+        write_json(request, {&#x27;project_uuid&#x27;:self.config[&#x27;uuid&#x27;], &#x27;binding&#x27;:self.record[&#x27;binding&#x27;],
+                             &#x27;stage&#x27;:stage, &#x27;message&#x27;:message, &#x27;options&#x27;:{}, &#x27;files&#x27;:{}})
+        self.record.update(status=&#x27;awaiting_input&#x27;,pending_stage=stage,request=relative(request,self.root), message=message)
+        self._publish()
+        raise AwaitingDecision(message)
+
+    def candidate(self, stage, name, adata=None, **details):
+        &quot;&quot;&quot;独立保存候选对象；续跑时复用同一候选，防止覆盖用户看过的文件。&quot;&quot;&quot;
+        from course_runtime import digest, read_json, relative, write_json
+        directory = self.directory / &#x27;candidates&#x27; / stage / name
+        receipt = directory / &#x27;candidate.json&#x27;
+        existing = read_json(receipt, {})
+        binding = token({&#x27;chapter&#x27;:self.record[&#x27;binding&#x27;], &#x27;prior_choices&#x27;:{k:(v[&#x27;request_id&#x27;],v[&#x27;candidate&#x27;]) for k,v in self.record.get(&#x27;decisions&#x27;,{}).items()}})
+        if existing and existing.get(&#x27;binding&#x27;) != binding:
+            raise ValueError(&#x27;本次尝试已有不同上游选择的候选；请使用 run --fresh 新建尝试，保留旧证据。&#x27;)
+        if existing and existing.get(&#x27;binding&#x27;) == binding:
+            validate_files(self.root, existing.get(&#x27;files&#x27;, {}))
+            return existing
+        directory.mkdir(parents=True, exist_ok=True)
+        item = {&#x27;id&#x27;:name, &#x27;binding&#x27;:binding, &#x27;files&#x27;:{}, **details}
+        if adata is not None:
+            path = directory / &#x27;candidate.h5ad&#x27;
+            adata.write_h5ad(path, compression=&#x27;gzip&#x27;)
+            item.update(checkpoint=relative(path,self.root),n_cells=adata.n_obs,n_genes=adata.n_vars)
+            item[&#x27;files&#x27;][relative(path,self.root)] = digest(path)
+        write_json(receipt,item)
+        return item
+
+    def choose(self, stage, options, message, files=(), annotation=None):
+        &quot;&quot;&quot;先输出可比较证据，后确认；确认校验包括项目、上游、代码、文件内容。&quot;&quot;&quot;
+        from course_runtime import digest, read_json, relative, write_json
+        hashes = {relative(p,self.root):digest(p) for p in files}
+        for option in options.values():
+            hashes.update(option.get(&#x27;files&#x27;,{}))
+        request = {&#x27;project_uuid&#x27;:self.config[&#x27;uuid&#x27;], &#x27;chapter&#x27;:self.id,&#x27;stage&#x27;:stage,
+                   &#x27;binding&#x27;:self.record[&#x27;binding&#x27;],&#x27;options&#x27;:options,&#x27;message&#x27;:message,&#x27;files&#x27;:hashes}
+        if annotation:
+            request[&#x27;annotation&#x27;]=annotation
+        request[&#x27;request_id&#x27;] = token(request)
+        decision = read_json(self.directory / (&#x27;decision_&#x27; + stage + &#x27;.json&#x27;), {})
+        if decision.get(&#x27;request_id&#x27;) == request[&#x27;request_id&#x27;]:
+            validate_files(self.root, hashes)
+            if annotation and digest(self.root / annotation[&#x27;proposal&#x27;]) != decision.get(&#x27;proposal_sha256&#x27;):
+                decision = {}
+            else:
+                selected = decision[&#x27;candidate&#x27;]
+                self.record.setdefault(&#x27;decisions&#x27;,{})[stage] = decision
+                print(f&quot;采用已确认的 {stage}：{selected}；确认原文：{decision[&#x27;confirmation&#x27;]}&quot;)
+                return selected
+        path = self.directory / (&#x27;request_&#x27; + stage + &#x27;.json&#x27;)
+        write_json(path, request)
+        self.record.update(status=&#x27;awaiting_confirmation&#x27;,pending_stage=stage,request=relative(path,self.root),message=message)
+        self._publish()
+        print(json.dumps({k:{a:b for a,b in v.items() if a!=&#x27;files&#x27;} for k,v in options.items()},ensure_ascii=False,indent=2))
+        raise AwaitingDecision(message + &#x27;\n请先读图表并询问用户，登记 choose/approve 后再次运行本章。&#x27;)
+
+    def choose_data(self, stage, candidates, message):
+        &quot;&quot;&quot;比较各候选细胞数、保留率、指标分布和交集，再接受明确选择。
+
+        basic 是三个 QC 候选共同的基础输入；双细胞比较以 keep 为共同输入。
+        所有表、图只生成一次，续跑复核内容校验，避免覆盖用户已经看过的证据。
+        &quot;&quot;&quot;
+        import numpy as np
+        import pandas as pd
+        import scanpy as sc
+        import matplotlib.pyplot as plt
+        table=self.tables/(stage+&#x27;_candidate_comparison.csv&#x27;)
+        overlap=self.tables/(stage+&#x27;_candidate_overlap.csv&#x27;)
+        distribution=self.tables/(stage+&#x27;_cell_metrics.csv&#x27;)
+        figure=self.figures/(stage+&#x27;_comparison.png&#x27;)
+        if not table.exists():
+            rows=[];sets={};observations=[]
+            baseline=candidates[&#x27;basic&#x27; if stage==&#x27;qc&#x27; else &#x27;keep&#x27;]
+            base=sc.read_h5ad(self.root/baseline[&#x27;checkpoint&#x27;])
+            base_sizes=base.obs[&#x27;samples&#x27;].value_counts()
+            metric_names=[x for x in base.obs if x in (&#x27;total_counts&#x27;,&#x27;n_genes_by_counts&#x27;,&#x27;doublet_score&#x27;,&#x27;predicted_doublet&#x27;) or x.startswith(&#x27;pct_counts_&#x27;)]
+            for name,item in candidates.items():
+                data=sc.read_h5ad(self.root/item[&#x27;checkpoint&#x27;]);sets[name]=set(data.obs_names)
+                obs=data.obs[[&#x27;samples&#x27;,&#x27;capture_library&#x27;]+metric_names].copy()
+                obs.insert(0,&#x27;candidate&#x27;,name);obs.insert(1,&#x27;cell&#x27;,data.obs_names)
+                observations.append(obs)
+                for (sample,library),base_group in base.obs.groupby([&#x27;samples&#x27;,&#x27;capture_library&#x27;],observed=True):
+                    group=obs[(obs.samples==sample)&amp;(obs.capture_library==library)]
+                    n_base=len(base_group)
+                    row={&#x27;candidate&#x27;:name,&#x27;sample&#x27;:str(sample),&#x27;capture_library&#x27;:str(library),
+                         &#x27;n_cells&#x27;:len(group),&#x27;n_genes&#x27;:data.n_vars,&#x27;baseline_cells&#x27;:n_base,
+                         &#x27;retained_fraction&#x27;:len(group)/n_base if n_base else np.nan}
+                    for metric in metric_names:
+                        row[&#x27;median_&#x27;+metric]=group[metric].median()
+                    if &#x27;predicted_doublet&#x27; in group:
+                        row[&#x27;predicted_doublets&#x27;]=int(group.predicted_doublet.sum())
+                        row[&#x27;predicted_doublet_fraction&#x27;]=float(group.predicted_doublet.mean())
+                    rows.append(row)
+                del data
+            frame=pd.DataFrame(rows)
+            self.table(stage+&#x27;_candidate_comparison&#x27;,frame,index=False)
+            comparisons=[]
+            for left in sets:
+                for right in sets:
+                    comparisons.append({&#x27;candidate_a&#x27;:left,&#x27;candidate_b&#x27;:right,
+                        &#x27;intersection&#x27;:len(sets[left]&amp;sets[right]),&#x27;a_only&#x27;:len(sets[left]-sets[right]),
+                        &#x27;b_only&#x27;:len(sets[right]-sets[left]),&#x27;jaccard&#x27;:len(sets[left]&amp;sets[right])/max(1,len(sets[left]|sets[right]))})
+            self.table(stage+&#x27;_candidate_overlap&#x27;,pd.DataFrame(comparisons),index=False)
+            combined=pd.concat(observations,ignore_index=True)
+            self.table(stage+&#x27;_cell_metrics&#x27;,combined,index=False)
+            # 上排数量/保留率，下排同一批指标的分布。缺失的物种指标不补零。
+            metrics=[m for m in (&#x27;total_counts&#x27;,&#x27;n_genes_by_counts&#x27;,&#x27;pct_counts_mt&#x27;,&#x27;pct_counts_cp&#x27;,&#x27;doublet_score&#x27;) if m in combined]
+            fig,axes=plt.subplots(2,max(2,len(metrics)),figsize=(4*max(2,len(metrics)),7),squeeze=False)
+            for axis,metric in zip(axes[0],[&#x27;n_cells&#x27;,&#x27;retained_fraction&#x27;,&#x27;predicted_doublet_fraction&#x27;]):
+                if metric in frame:
+                    frame.pivot_table(index=&#x27;sample&#x27;,columns=&#x27;candidate&#x27;,values=metric,aggfunc=&#x27;sum&#x27; if metric==&#x27;n_cells&#x27; else &#x27;mean&#x27;).plot.bar(ax=axis,title=metric,rot=20)
+            for axis,metric in zip(axes[1],metrics):
+                axis.boxplot([combined.loc[combined.candidate==name,metric].to_numpy() for name in candidates],tick_labels=list(candidates),showfliers=False)
+                axis.set_title(metric)
+                if metric in (&#x27;total_counts&#x27;,&#x27;n_genes_by_counts&#x27;):axis.set_yscale(&#x27;log&#x27;)
+            for axis in axes.ravel():
+                if not axis.has_data():axis.set_visible(False)
+            fig.tight_layout();fig.savefig(figure,dpi=130,bbox_inches=&#x27;tight&#x27;);plt.close(fig)
+        eligible={k:v for k,v in candidates.items() if v[&#x27;n_cells&#x27;] &gt; 0}
+        if not eligible:self.wait_input(stage, &#x27;所有候选均无细胞，请核对输入与过滤规则。&#x27;)
+        choice=self.choose(stage,eligible,message,files=[table,overlap,distribution,figure])
+        return sc.read_h5ad(self.root/candidates[choice][&#x27;checkpoint&#x27;])
+
+    def prepare_annotation(self, adata):
+        &quot;&quot;&quot;从当前对象计算表达和 QC 证据，生成空白建议表；AI 只能填写解释和标签。&quot;&quot;&quot;
+        import numpy as np
+        import pandas as pd
+        from course_runtime import cluster_digest, digest, read_json, relative, write_json
+        keys=adata.uns[&#x27;annotation_keys&#x27;]; coarse=str(keys[&#x27;coarse&#x27;]);fine=str(keys[&#x27;fine&#x27;])
+        manifest=self.directory/&#x27;annotation_inputs.json&#x27;
+        proposal=self.tables/&#x27;annotation_proposal.csv&#x27;
+        if not manifest.exists():
+            groups=adata.uns[&#x27;course_markers&#x27;]
+            genes=list(dict.fromkeys([str(g) for sets in groups.values() for gs in sets.values() for g in gs]
+                                    +self.config.get(&#x27;annotation_extra_genes&#x27;,[])))
+            genes=[g for g in genes if g in adata.var_names]
+            X=adata.layers[&#x27;log1p&#x27;][:,adata.var_names.get_indexer(genes)]
+            rows=[];clusters=[];qc=[]
+            for key in dict.fromkeys([coarse,fine]):
+                labels=adata.obs[key].astype(str)
+                for cluster in sorted(labels.unique()):
+                    mask=(labels==cluster).to_numpy(); n=int(mask.sum())
+                    counts={&#x27;cluster_key&#x27;:key,&#x27;cluster&#x27;:cluster,&#x27;n_cells&#x27;:n};clusters.append(counts)
+                    inside=np.asarray(X[mask].mean(axis=0)).ravel(); fractions=np.asarray((X[mask]&gt;0).mean(axis=0)).ravel()
+                    outside=np.asarray(X[~mask].mean(axis=0)).ravel() if (~mask).any() else np.full(len(genes),np.nan)
+                    outside_fraction=np.asarray((X[~mask]&gt;0).mean(axis=0)).ravel() if (~mask).any() else np.full(len(genes),np.nan)
+                    for j,g in enumerate(genes):
+                        rows.append({**counts,&#x27;gene&#x27;:g,&#x27;mean_log1p&#x27;:inside[j],&#x27;fraction_expressing&#x27;:fractions[j],
+                                     &#x27;mean_log1p_other&#x27;:outside[j],&#x27;fraction_expressing_other&#x27;:outside_fraction[j]})
+                    metrics={m:float(adata.obs.loc[mask,m].median()) for m in adata.obs if m.startswith(&#x27;pct_counts_&#x27;) or m in (&#x27;total_counts&#x27;,&#x27;n_genes_by_counts&#x27;,&#x27;doublet_score&#x27;)}
+                    qc.append({**counts,**metrics})
+            evidence=self.table(&#x27;marker_evidence&#x27;,pd.DataFrame(rows),index=False)
+            quality=self.table(&#x27;cluster_qc_evidence&#x27;,pd.DataFrame(qc),index=False)
+            draft=pd.DataFrame(clusters)
+            for column in (&#x27;level1&#x27;,&#x27;level2&#x27;,&#x27;support&#x27;,&#x27;supporting_markers&#x27;,&#x27;opposing_markers&#x27;,&#x27;evidence_refs&#x27;,&#x27;rationale&#x27;,&#x27;uncertainty&#x27;):
+                draft[column]=&#x27;&#x27;
+            draft[&#x27;evidence_refs&#x27;]=relative(evidence,self.root)+&#x27;;&#x27;+relative(quality,self.root)
+            draft.to_csv(proposal,index=False,encoding=&#x27;utf-8-sig&#x27;)
+            write_json(manifest,{&#x27;coarse_key&#x27;:coarse,&#x27;fine_key&#x27;:fine,&#x27;clusters&#x27;:clusters,
+                                &#x27;cluster_sha256&#x27;:{k:cluster_digest(adata,k) for k in dict.fromkeys([coarse,fine])},
+                                &#x27;proposal&#x27;:relative(proposal,self.root),
+                                &#x27;evidence&#x27;:[relative(evidence,self.root),relative(quality,self.root)]})
+        details=read_json(manifest)
+        for key,expected in details[&#x27;cluster_sha256&#x27;].items():
+            if cluster_digest(adata,key)!=expected: raise ValueError(&#x27;聚类成员变化，请重新开始本章证据准备。&#x27;)
+        self.choose(&#x27;annotation&#x27;,{&#x27;apply&#x27;:{&#x27;label&#x27;:&#x27;应用用户审阅后的逐簇建议&#x27;}},
+                    &#x27;请 AI 阅读 marker_evidence、cluster_qc_evidence 和第 07 章图片，填写 annotation_proposal.csv，解释逐簇理由，再等待用户明确确认。&#x27;,
+                    files=[self.root/f for f in details[&#x27;evidence&#x27;]]+[manifest],annotation=details)
+        request=read_json(self.directory/&#x27;decision_annotation.json&#x27;)
+        frame=annotation_rows(self.root,request)
+        maps={}
+        for key,group in frame.groupby(&#x27;cluster_key&#x27;):
+            maps[key]={&#x27;level1&#x27;:dict(zip(group.cluster,group.level1)), &#x27;level2&#x27;:dict(zip(group.cluster,group.level2))}
+        write_json(self.tables/&#x27;annotation_map.json&#x27;,maps)
+        self._annotation_maps=maps
+        return maps
+
+    def annotation_map(self, adata, key, level):
+        &quot;&quot;&quot;读取经过本次确认的映射；不再从公共 config 读取教程答案。&quot;&quot;&quot;
+        if not hasattr(self,&#x27;_annotation_maps&#x27;):
+            self.prepare_annotation(adata)
+        return self._annotation_maps[key][level]
+</code></pre></main></body></html>

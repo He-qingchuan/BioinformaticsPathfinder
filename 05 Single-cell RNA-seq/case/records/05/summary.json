@@ -1,0 +1,11 @@
+{
+  "selected_integration": "uncorrected",
+  "neighbors_key": "neighbors",
+  "computed_methods": [
+    "uncorrected",
+    "harmony",
+    "bbknn"
+  ],
+  "n_cells": 17041,
+  "n_genes": 23427
+}

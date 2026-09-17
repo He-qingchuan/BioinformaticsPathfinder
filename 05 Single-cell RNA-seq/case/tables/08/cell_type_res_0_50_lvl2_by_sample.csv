@@ -1,0 +1,14 @@
+﻿cell_type_res_0.50_lvl2,s1d1,s1d3
+Antibody_secreting_cell,80,26
+B_cell,107,275
+CD14_Mono,1019,492
+CD8_cytotoxic_T,454,806
+Cycling_erythroid,642,415
+Erythroid,1110,1335
+Low_quality_lymphoid_like,1851,1250
+Myeloid_like_low_quality,260,38
+NK,161,297
+Naive_B,1219,672
+Naive_memory_T,1474,2472
+Progenitor_like,274,228
+pDC,62,22
