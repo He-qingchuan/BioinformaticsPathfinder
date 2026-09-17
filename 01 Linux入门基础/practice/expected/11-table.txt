@@ -1,0 +1,13 @@
+date	site	species	count
+lake	12
+wood	3
+lake	8
+wood	5
+lake	2
+wood	7
+2
+3
+5
+7
+8
+12
