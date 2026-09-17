@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "03 Bulk RNA-seq/**"
+      - "04 Bulk RNA-seq/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -33,7 +33,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp -a "03 Bulk RNA-seq/." _site/
+          cp -a "04 Bulk RNA-seq/." _site/
           cp "_site/01_海岛探险教案.html" "_site/index.html"
 
       - name: Configure Pages
