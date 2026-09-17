@@ -1,0 +1,339 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_runtime.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_runtime.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_runtime.py</h1><pre><code>&quot;&quot;&quot;Shared file handling for the notebooks; analysis stays in the lesson cells.&quot;&quot;&quot;
+from __future__ import annotations
+
+import ast
+import hashlib
+import importlib.metadata
+import json
+import os
+from pathlib import Path
+import platform
+import time
+import uuid
+from course_decisions import DecisionMixin, token
+from course_projects import installation, resolve_project, descriptor, config_digest, external_files, input_issues
+
+
+def root_dir():
+    &quot;&quot;&quot;返回明确选择的研究项目；公共软件环境通过 installation() 单独定位。&quot;&quot;&quot;
+    return resolve_project()
+
+
+def read_json(path, default=None):
+    return json.loads(Path(path).read_text(encoding=&quot;utf-8&quot;)) if Path(path).exists() else default
+
+
+def json_default(value):
+    if hasattr(value, &quot;item&quot;):
+        return value.item()
+    if hasattr(value, &quot;tolist&quot;):
+        return value.tolist()
+    if isinstance(value, Path):
+        return str(value)
+    raise TypeError(type(value).__name__)
+
+
+def write_json(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + &quot;.tmp&quot;)
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2, default=json_default), encoding=&quot;utf-8&quot;)
+    temporary.replace(path)
+
+
+def digest(path):
+    h = hashlib.sha256()
+    with Path(path).open(&quot;rb&quot;) as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b&quot;&quot;):
+            h.update(block)
+    return h.hexdigest()
+
+
+def source_digest(path):
+    content = []
+    for c in read_json(path)[&quot;cells&quot;]:
+        if c[&quot;cell_type&quot;] != &quot;code&quot;:
+            continue
+        source = &quot;&quot;.join(c[&quot;source&quot;])
+        try:
+            content.append(ast.dump(ast.parse(source), include_attributes=False))
+        except SyntaxError:
+            content.append(source)  # Preserve IPython magic cells verbatim.
+    return hashlib.sha256(json.dumps(content, ensure_ascii=False).encode()).hexdigest()
+
+
+def legacy_code_digest(path):
+    notebook = read_json(path)
+    content = [&quot;&quot;.join(c[&quot;source&quot;]) for c in notebook[&quot;cells&quot;] if c[&quot;cell_type&quot;] == &quot;code&quot;]
+    return hashlib.sha256(json.dumps(content, ensure_ascii=False).encode()).hexdigest()
+
+
+def full_source_digest(path):
+    content = [(c[&quot;cell_type&quot;], &quot;&quot;.join(c[&quot;source&quot;])) for c in read_json(path)[&quot;cells&quot;]]
+    return hashlib.sha256(json.dumps(content, ensure_ascii=False).encode()).hexdigest()
+
+
+def settings(root=None):
+    root = root or root_dir()
+    return descriptor(root) if (root / &quot;project.json&quot;).exists() else read_json(root / &quot;config/course.json&quot;)
+
+
+def chapter_info(chapter, root=None):
+    return next(c for c in settings(root)[&quot;chapters&quot;] if c[&quot;id&quot;] == chapter)
+
+
+def relative(path, root=None):
+    return os.path.relpath(Path(path).resolve(), (root or root_dir()).resolve())
+
+
+def environment_versions():
+    result = {&quot;python&quot;: platform.python_version(), &quot;platform&quot;: platform.platform(), &quot;machine&quot;: platform.machine()}
+    for name in (&quot;scanpy&quot;, &quot;anndata&quot;, &quot;numpy&quot;, &quot;scipy&quot;, &quot;pandas&quot;, &quot;matplotlib&quot;, &quot;scikit-learn&quot;,
+                 &quot;harmonypy&quot;, &quot;bbknn&quot;, &quot;igraph&quot;, &quot;leidenalg&quot;, &quot;celltypist&quot;, &quot;nbclient&quot;):
+        try:
+            result[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            result[name] = None
+    return result
+
+
+def state(root=None):
+    return read_json((root or root_dir()) / &quot;results/state.json&quot;, {&quot;chapters&quot;: {}})
+
+
+def chapter_status(chapter, root=None, visited=None):
+    root = root or root_dir()
+    record = state(root)[&quot;chapters&quot;].get(chapter)
+    if not record:
+        return &quot;not_run&quot;
+    if (root / &quot;project.json&quot;).exists() and descriptor(root).get(&quot;read_only&quot;):
+        return &quot;reference&quot;
+    if record[&quot;status&quot;] not in (&quot;complete&quot;, &quot;skipped&quot;, &quot;awaiting_input&quot;, &quot;awaiting_confirmation&quot;):
+        return record[&quot;status&quot;]
+    spec = chapter_info(chapter, root)
+    if record.get(&quot;source_sha256&quot;) != source_digest(root / spec[&quot;notebook&quot;]):
+        executed = root / record[&quot;directory&quot;] / &quot;executed.ipynb&quot;
+        # Earlier receipts also hashed prose. Verified identical executable cells
+        # remain valid when only a lesson explanation is edited.
+        if not (executed.exists() and record.get(&quot;source_sha256&quot;) in
+                (full_source_digest(executed), legacy_code_digest(executed))
+                and source_digest(executed) == source_digest(root / spec[&quot;notebook&quot;])):
+            return &quot;stale&quot;
+    if record.get(&quot;config_sha256&quot;) != config_digest(root, chapter):
+        return &quot;stale&quot;
+    for filename, checksum in record.get(&quot;external_inputs&quot;, {}).items():
+        if not (root / filename).is_file() or digest(root / filename) != checksum:
+            return &quot;stale&quot;
+    for parent, attempt in record.get(&quot;parents&quot;, {}).items():
+        current = state(root)[&quot;chapters&quot;].get(parent)
+        if not current or current[&quot;attempt&quot;] != attempt or chapter_status(parent, root) not in (&quot;complete&quot;, &quot;skipped&quot;):
+            return &quot;stale&quot;
+    if record.get(&quot;helpers_sha256&quot;) != helpers_digest():
+        return &quot;stale&quot;
+    checkpoint = record.get(&quot;checkpoint&quot;)
+    if checkpoint and (not (root / checkpoint).is_file() or digest(root / checkpoint) != record.get(&quot;checkpoint_sha256&quot;)):
+        return &quot;stale&quot;
+    return record[&quot;status&quot;]
+
+
+def helpers_digest():
+    &quot;&quot;&quot;辅助层也参与科学身份校验；修改规则后不能继续使用旧确认。&quot;&quot;&quot;
+    return token({p: digest(installation() / &quot;tools&quot; / p) for p in
+                  (&quot;course_runtime.py&quot;, &quot;course_projects.py&quot;, &quot;course_decisions.py&quot;, &quot;course_resources.py&quot;)})
+
+
+def cluster_digest(adata, key):
+    text = &quot;\n&quot;.join(str(cell) + &quot;\t&quot; + str(label) for cell, label in zip(adata.obs_names, adata.obs[key]))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+class Chapter(DecisionMixin):
+    def __init__(self, chapter, allow_missing=False):
+        import fcntl
+        from course_environment import require_ready
+        self.root = root_dir()
+        self.installation = installation()
+        if descriptor(self.root).get(&quot;read_only&quot;):
+            raise RuntimeError(&quot;教程示例是历史参考，请先创建自己的练习项目。&quot;)
+        if chapter == &quot;E02&quot;:
+            require_ready(self.installation, active=False)
+            require_ready(self.installation, &quot;scvi&quot;)
+        else:
+            require_ready(self.installation)
+        self.config = settings(self.root)
+        os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(self.root / &quot;.runtime/celltypist&quot;)
+        self.spec = chapter_info(chapter, self.root)
+        self.id = chapter
+        (self.root / &quot;.runtime&quot;).mkdir(exist_ok=True)
+        self.lock = (self.root / &quot;.runtime/course.lock&quot;).open(&quot;w&quot;)
+        try:
+            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError(&quot;当前项目已有章节正在运行，请等待它完成；其他项目使用独立锁。&quot;)
+        # 每个项目有排他锁；公共环境为共享读锁，setup.sh 需要排他锁才能替换环境。
+        self.environment_lock = (self.installation / &quot;.runtime/course.lock&quot;).open(&quot;r&quot;)
+        fcntl.flock(self.environment_lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+        self.parents = {}
+        for parent in self.spec.get(&quot;depends&quot;, []):
+            status = chapter_status(parent, self.root)
+            if status not in (&quot;complete&quot;, &quot;skipped&quot;):
+                raise RuntimeError(f&quot;第 {parent} 章状态为 {status}，请先完成有效的上游运行。&quot;)
+            self.parents[parent] = state(self.root)[&quot;chapters&quot;][parent][&quot;attempt&quot;]
+        self.started = time.time()
+        self.attempt = os.environ.get(&quot;SC_COURSE_ATTEMPT&quot;) or time.strftime(&quot;%Y%m%dT%H%M%S&quot;) + &quot;_&quot; + uuid.uuid4().hex[:6]
+        self.directory = self.root / &quot;results&quot; / self.spec[&quot;slug&quot;] / self.attempt
+        self.directory.mkdir(parents=True, exist_ok=True)
+        self.figures = self.directory / &quot;figures&quot;
+        self.tables = self.directory / &quot;tables&quot;
+        self.figures.mkdir(exist_ok=True)
+        self.tables.mkdir(exist_ok=True)
+        external = {}
+        paths = external_files(self.root, chapter)
+        for path in paths:
+            if not path.exists():
+                raise FileNotFoundError(path)
+            external[relative(path, self.root)] = digest(path)
+        self.record = {
+            &quot;id&quot;: chapter, &quot;title&quot;: self.spec[&quot;title&quot;], &quot;attempt&quot;: self.attempt, &quot;status&quot;: &quot;running&quot;,
+            &quot;directory&quot;: relative(self.directory, self.root), &quot;parents&quot;: self.parents,
+            &quot;source_sha256&quot;: source_digest(self.root / self.spec[&quot;notebook&quot;]),
+            &quot;config_sha256&quot;: config_digest(self.root, chapter),
+            &quot;helpers_sha256&quot;: helpers_digest(), &quot;external_inputs&quot;: external, &quot;started_at&quot;: time.strftime(&quot;%Y-%m-%dT%H:%M:%S%z&quot;),
+            &quot;environment&quot;: environment_versions(), &quot;parameters&quot;: self.config[&quot;parameters&quot;],
+        }
+        self.record[&quot;binding&quot;] = token({&quot;project&quot;: self.config[&quot;uuid&quot;],
+            **{k:self.record[k] for k in (&quot;source_sha256&quot;,&quot;config_sha256&quot;,&quot;helpers_sha256&quot;,&quot;external_inputs&quot;,&quot;parents&quot;,&quot;environment&quot;)}})
+        self._publish()
+        self._configure_plots()
+        issues = input_issues(self.root, chapter) if not allow_missing else []
+        if issues:
+            self.wait_input(&quot;inputs&quot;, &quot;\n&quot;.join(issues))
+        print(f&quot;第 {chapter} 章：{self.spec[&#x27;title&#x27;]}\n结果目录：{relative(self.directory, self.root)}&quot;)
+
+    def _publish(self):
+        write_json(self.directory / &quot;run.json&quot;, self.record)
+        current = state(self.root)
+        current[&quot;chapters&quot;][self.id] = self.record
+        write_json(self.root / &quot;results/state.json&quot;, current)
+
+    def _configure_plots(self):
+        import matplotlib
+        import matplotlib.pyplot as plt
+        from matplotlib.figure import Figure
+        import scanpy as sc
+        import numpy as np
+        import random
+        seed = self.config[&quot;parameters&quot;][&quot;random_seed&quot;]
+        np.random.seed(seed)
+        random.seed(seed)
+        sc.settings.n_jobs = self.config[&quot;parameters&quot;][&quot;threads&quot;]
+        sc.settings.verbosity = 1
+        sc.settings.figdir = self.figures
+        sc.set_figure_params(dpi=90, dpi_save=160, facecolor=&quot;white&quot;, color_map=&quot;viridis_r&quot;)
+        plt.rcParams[&quot;figure.max_open_warning&quot;] = 40
+        font = self.installation / &quot;assets/NotoSansCJKsc-Regular.otf&quot;
+        if font.exists():
+            from matplotlib import font_manager
+            font_manager.fontManager.addfont(str(font))
+            plt.rcParams[&quot;font.family&quot;] = [&quot;Noto Sans CJK SC&quot;, &quot;DejaVu Sans&quot;]
+        plt.rcParams[&quot;axes.unicode_minus&quot;] = False
+        original = getattr(Figure.savefig, &quot;_course_original&quot;, Figure.savefig)
+        figures = self.figures
+
+        def save_and_mirror(figure, filename, *args, **kwargs):
+            result = original(figure, filename, *args, **kwargs)
+            if isinstance(filename, (str, Path)):
+                path = Path(filename).resolve()
+                if path.suffix.lower() == &quot;.pdf&quot; and path.is_relative_to(figures):
+                    original(figure, path.with_suffix(&quot;.png&quot;), dpi=160, bbox_inches=&quot;tight&quot;)
+            return result
+
+        save_and_mirror._course_original = original
+        Figure.savefig = save_and_mirror
+
+    def load_input(self):
+        import scanpy as sc
+        parent = self.spec.get(&quot;input&quot;)
+        if not parent:
+            return None
+        record = state(self.root)[&quot;chapters&quot;][parent]
+        path = self.root / record[&quot;checkpoint&quot;]
+        if digest(path) != record[&quot;checkpoint_sha256&quot;]:
+            raise RuntimeError(&quot;上游检查点内容已经变化，请重新运行对应章节。&quot;)
+        adata = sc.read_h5ad(path)
+        print(f&quot;读取检查点：{record[&#x27;checkpoint&#x27;]}\n{adata.n_obs:,} 个细胞 × {adata.n_vars:,} 个基因&quot;)
+        return adata
+
+    def table(self, name, frame, index=True):
+        path = self.tables / (name if name.endswith(&quot;.csv&quot;) else name + &quot;.csv&quot;)
+        frame.to_csv(path, index=index, encoding=&quot;utf-8-sig&quot;)
+        return path
+
+    def capture(self, name):
+        import matplotlib.pyplot as plt
+        for i, number in enumerate(plt.get_fignums()):
+            plt.figure(number).savefig(self.figures / f&quot;{name}_{i + 1}.pdf&quot;, bbox_inches=&quot;tight&quot;)
+
+    def annotation_map(self, adata, key, level):
+        &quot;&quot;&quot;先导出当前证据、等待真实确认，再读取映射；不使用固定的教程答案。&quot;&quot;&quot;
+        return super().annotation_map(adata, key, level)
+
+    def finish(self, adata=None, summary=None, save=True, status=&quot;complete&quot;):
+        import fcntl
+        summary = dict(summary or {})
+        if adata is not None:
+            if not adata.obs_names.is_unique or not adata.var_names.is_unique:
+                raise ValueError(&quot;细胞和基因索引必须唯一。&quot;)
+            summary.update(n_cells=int(adata.n_obs), n_genes=int(adata.n_vars))
+        if adata is not None and save:
+            path = self.directory / &quot;checkpoint.h5ad&quot;
+            temporary = self.directory / &quot;checkpoint.pending.h5ad&quot;
+            adata.write_h5ad(temporary, compression=&quot;gzip&quot;)
+            temporary.replace(path)
+            self.record.update(checkpoint=relative(path, self.root), checkpoint_sha256=digest(path))
+        elif self.spec.get(&quot;input&quot;):
+            parent = state(self.root)[&quot;chapters&quot;][self.spec[&quot;input&quot;]]
+            self.record.update(checkpoint=parent[&quot;checkpoint&quot;], checkpoint_sha256=parent[&quot;checkpoint_sha256&quot;])
+        self.record.update(status=status, elapsed_seconds=round(time.time() - self.started, 2), summary=summary)
+        write_json(self.directory / &quot;summary.json&quot;, summary)
+        self.record[&quot;artifacts&quot;] = inventory(self.directory, self.root)
+        self._publish()
+        fcntl.flock(self.lock, fcntl.LOCK_UN)
+        self.lock.close()
+        fcntl.flock(self.environment_lock, fcntl.LOCK_UN)
+        self.environment_lock.close()
+        print(&quot;本章计算完成。请阅读本次图表和表格，再更新本章解读。&quot;)
+
+
+def inventory(directory, root=None):
+    return [
+        {&quot;path&quot;: relative(path, root), &quot;kind&quot;: path.suffix.lstrip(&quot;.&quot;), &quot;bytes&quot;: path.stat().st_size}
+        for path in sorted(Path(directory).rglob(&quot;*&quot;))
+        if path.is_file() and path.suffix in (&quot;.png&quot;, &quot;.pdf&quot;, &quot;.csv&quot;, &quot;.h5ad&quot;, &quot;.ipynb&quot;)
+        and &quot;.pending.&quot; not in path.name and &quot;.history&quot; not in path.parts
+    ]
+
+
+def start_chapter(chapter):
+    return Chapter(chapter)
+
+
+def marker_sets(adata):
+    return {
+        level: {key: list(value) for key, value in groups.items()}
+        for level, groups in adata.uns[&quot;course_markers&quot;].items()
+    }
+
+
+def scaled_view(adata, genes):
+    import scanpy as sc
+    genes = list(dict.fromkeys(g for g in genes if g in adata.var_names))
+    if not genes:
+        raise ValueError(&quot;没有可用于缩放绘图的基因。&quot;)
+    view = adata[:, genes].copy()
+    view.X = view.layers[&quot;log1p&quot;].copy()
+    sc.pp.scale(view)
+    view.layers[&quot;scaled&quot;] = view.X.copy()
+    view.X = view.layers[&quot;log1p&quot;].copy()
+    return view
+</code></pre></main></body></html>

@@ -1,0 +1,177 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06_clustering.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/06_clustering.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>06_clustering.ipynb</h1><section><small>单元格 0</small><h1>第 06 章 聚类与质量复核</h1>
+<h2>学习目标</h2>
+<p>比较聚类分辨率，并结合双细胞分数及 QC 指标检查群体结构。</p>
+<h2>为什么做与怎样做</h2>
+<p>在所选邻居图上运行分辨率 0.02、0.50、1.00、2.00 的 Leiden 聚类。以指标和标记基因为依据解释簇，不把簇编号当作细胞类型。</p>
+<p>前置章节：05。运行前请完成项目环境准备。</p>
+<p>本章在项目副本运行。遇到等待材料/确认，请按根目录 <strong>99_运行与AI协作指南.md</strong> 查看当前结果、与用户讨论并续跑；不能跳过待办直接进入下游。</p>
+</section><section><small>单元格 1</small><pre><code># 功能说明：查找公共环境和当前项目，读取有效上游检查点；模板副本之间不共享分析状态。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+from course_projects import resolve_project, input_path, read_sample
+from course_resources import qc_gene_sets, marker_resources, resolution_preview
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+INSTALL_ROOT = ROOT
+ROOT = resolve_project()
+ctx = start_chapter(&quot;06&quot;)
+adata = ctx.load_input()
+
+</code></pre></section><section><small>单元格 2</small><h2>06.1 聚类</h2>
+<p>与 Seurat 等框架类似，推荐使用 Leiden 图聚类方法（基于优化模块度的社区发现）（参考文献：Traag2019）。注意 Leiden 聚类直接对上一节计算的细胞邻近图进行聚类。</p>
+<p>Louvain	通过不断尝试将节点移到邻居社区，来最大化整个网络的“模块度”（衡量社区内连接紧密、社区间连接稀疏的指标）。	sc.tl.louvain(adata, resolution=0.8)	在 adata.obs 中生成新列（如 'louvain'），值为 '0', '1', '2'...，代表每个细胞的聚类标签。</p>
+<p>Leiden	Louvain的改进版。能保证分出更连通、更稳定的社群，速度更快，是现代单细胞分析的首选。	sc.tl.leiden(adata, resolution=0.8)	同上，生成列如 'leiden'。关键参数 resolution：值越大（如1.5），分出的簇越多、越细；值越小（如0.3），簇越少、越粗。现在让我们生成一组不同分辨率的聚类结果，用于随后用于细胞类型注释。这里使用 Leiden 算法。</p>
+</section><section><small>单元格 3</small><h2>06.2 使用leiden聚类</h2>
+</section><section><small>单元格 4</small><pre><code># 功能说明：更新图形输出目录。
+# 运行目的：将聚类分析相关的图片保存到 `figures/3. 聚类` 文件夹。
+# 详细代码解析：
+# 1. `sc.settings.figdir = ...`
+#    - 设置新的输出路径。
+
+# 设置输出目录
+sc.settings.figdir = ctx.figures</code></pre></section><section><small>单元格 5</small><pre><code># 功能说明：以不同分辨率生成多套 Leiden 聚类标签。
+# 运行目的：提供粗到细的多粒度簇划分，用于后续手动注释。
+# 变量/函数/参数解析：
+# - for res in ：遍历分辨率列表。
+# sc.tl.leiden: scanpy的Leiden聚类函数，基于igraph实现
+    # adata: AnnData对象，包含单细胞数据
+    # key_added=f&quot;leiden_res_{res:4.2f}&quot;: 指定聚类结果保存的列名
+    #   f-string格式化：res:4.2f 表示总宽度4，保留2位小数
+    #   res=0.02 -&gt; &quot;leiden_res_0_02&quot;
+    #   res=0.5  -&gt; &quot;leiden_res_0_50&quot; (自动补0)
+    #   res=1    -&gt; &quot;leiden_res_1_00&quot;
+    #   res=2.0  -&gt; list(k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;))[-1]
+    # resolution=res: Leiden聚类的分辨率参数
+    #   值越大，聚类结果越多（细胞被分为更多cluster）
+    #   值越小，聚类结果越少（细胞被分为更少cluster）
+    # flavor=&quot;igraph&quot;: 使用igraph库的Leiden算法实现
+resolution_list = ctx.config[&quot;parameters&quot;][&quot;resolutions&quot;]
+for res in resolution_list:
+    column_name = f&quot;leiden_res_{res:4.2f}&quot;.replace(&#x27;.&#x27;, &#x27;_&#x27;)
+    sc.tl.leiden(adata, key_added=column_name, resolution=res, flavor=&quot;igraph&quot;, n_iterations=-1, directed=False, random_state=0, neighbors_key=adata.uns[&quot;course_neighbors_key&quot;])</code></pre></section><section><small>单元格 6</small><p>需要注意，簇的数量在很大程度上是任意的，<code>resolution</code> 参数仅用于调节它。最终合理的簇数应以稳定且有生物学意义的群体为准，通常由领域专家或基于专家整理的标记知识来判定。</p>
+</section><section><small>单元格 7</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：确认 Leiden 聚类后，`obs` 中是否添加了不同分辨率的聚类标签列（如 `leiden_res_0_02`）。
+# 详细代码解析：
+# 1. `adata`
+#    - 打印概览。
+#    - `obs` 应包含多个 `leiden_res_...` 列。
+
+adata</code></pre></section><section><small>单元格 8</small><pre><code># 功能说明：在 UMAP 上按 Leiden 聚类标签着色。
+# 运行目的：直观查看聚类结果与空间结构。
+sc.pl.umap(
+    adata,
+    color=[k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;)],
+    legend_loc=&quot;on data&quot;,
+    save=&quot;_06_152.pdf&quot;,
+)</code></pre></section><section><small>单元格 9</small><pre><code># 功能说明：统计不同分辨率下的聚类细胞数量。
+# 运行目的：观察不同分辨率下簇的数量和大小分布，评估聚类的粒度。
+# 详细代码解析：
+# 1. `resolution_list = [...]`
+#    - 定义要检查的分辨率列表。
+# 2. `for res in resolution_list:`
+#    - 遍历每个分辨率。
+# 3. `column_name = ...`
+#    - 构造对应的列名（如 `leiden_res_0_50`）。
+# 4. `print(adata.obs[column_name].value_counts())`
+#    - `adata.obs[column_name]`: 获取聚类标签列。
+#    - `.value_counts()`: 统计每个簇的细胞数量。
+#    - `print(...)`: 打印统计结果。
+
+# 查看每个类群细胞数量
+resolution_list = ctx.config[&quot;parameters&quot;][&quot;resolutions&quot;]
+for res in resolution_list:
+    column_name = f&quot;leiden_res_{res:4.2f}&quot;.replace(&#x27;.&#x27;, &#x27;_&#x27;)
+    print(adata.obs[column_name].value_counts())</code></pre></section><section><small>单元格 10</small><h2>06.3 重新评估质量控制与细胞过滤</h2>
+<p>如前所述，我们将通过 UMAP 可视化不同 QC 指标来重新评估过滤策略。</p>
+</section><section><small>单元格 11</small><pre><code># 功能说明：将聚类标签与双细胞预测结果在 UMAP 上联合展示。
+# 运行目的：辅助判断是否需要根据双细胞分数或预测进行进一步过滤。
+# 变量/函数/参数解析：
+# - sc.pl.umap(adata, color=[&quot;leiden&quot;, &quot;predicted_doublet&quot;, &quot;doublet_score&quot;], wspace=0.5, size=3)：
+#   - color(list)：依次绘制聚类标签、双细胞布尔标记、双细胞分数。
+#   - wspace(float)：面板间水平间距。
+#   - size(float)：点大小。
+sc.pl.umap(
+    adata,
+    color=[list(k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;))[-1], &quot;predicted_doublet&quot;, &quot;doublet_score&quot;],
+    # 增加面板间的水平间距
+    wspace=0.8,
+    size=3,
+    save=&quot;_06_155.pdf&quot;,
+)
+</code></pre></section><section><small>单元格 12</small><pre><code># 功能说明：在 UMAP 上查看关键 QC 指标的空间分布。
+# 运行目的：直观评估是否存在由计数或基因数驱动的结构性偏差。
+# 变量/函数/参数解析：
+# - color=[&quot;leiden&quot;, &quot;log1p_total_counts&quot;, &quot;pct_counts_mt&quot;, &quot;&quot;]：
+#   - 显示聚类标签、对数化总计数、线粒体占比、对数化基因数。
+# - wspace=0.5, ncols=2：
+sc.pl.umap(
+    adata,
+    color=[list(k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;))[-1]] + [m for m in [&quot;log1p_total_counts&quot;, &quot;pct_counts_mt&quot;, &quot;pct_counts_cp&quot;, &quot;log1p_n_genes_by_counts&quot;] if m in adata.obs],
+    wspace=0.5,
+    ncols=2,
+    save=&quot;_06_156.pdf&quot;,
+)</code></pre></section><section><small>单元格 13</small><p>结合聚类与 QC 指标重新评估质量</p>
+</section><section><small>单元格 14</small><h2>06.4 进一步过滤的考虑</h2>
+<p>如果某个群体同时表现出异常 QC 和不合理的标记基因组合，可以提出过滤方案。不要因某个固定簇编号或单一指标直接删除细胞。决定调整过滤时，从第 02 章修改有依据的策略并重新运行后续章节。</p>
+</section><section><small>单元格 15</small><pre><code># 功能说明：在 小提琴图上查看关键 QC 指标的空间分布。
+
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    sc.pl.violin(
+        adata,
+        keys = [m for m in [&quot;log1p_total_counts&quot;, &quot;pct_counts_mt&quot;, &quot;pct_counts_cp&quot;, &quot;log1p_n_genes_by_counts&quot;] if m in adata.obs],
+        groupby=list(k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;))[min(1,len(resolution_list)-1)],
+        stripplot=False,  # 移除内部的点
+        inner=&quot;box&quot;,  # 在小提琴内部添加箱线图
+        save=&quot;_06_159.pdf&quot;,
+    )</code></pre></section><section><small>单元格 16</small><h2>06.5 细胞类型注释</h2>
+</section><section><small>单元格 17</small><p>:::{note}
+本节在 scverse 教程中有更详细的扩展内容（如自动分配与基因富集），详见<a href="https://scverse-tutorials.readthedocs.io/en/latest/notebooks/basic-scrna-tutorial.html#cell-type-annotation">这里</a>。
+:::</p>
+</section><section><small>单元格 18</small><p>细胞类型注释是一项繁琐而重复的工作，通常需要多轮聚类与重新注释。</p>
+</section><section><small>单元格 19</small><p>我们现在已获得质量尚可的一组细胞，可以继续注释其对应的已知细胞类型。通常使用仅在某类细胞中表达的基因（即标记基因）来区分数据中的异质性群体。已有工作收集并整理了标记基因资源，如 <a href="http://bio-bigdata.hrbmu.edu.cn/CellMarker/">CellMarker</a>、<a href="http://bio.liclab.net/TF-Marker/">TF-Marker</a> 与 <a href="https://panglaodb.se/">PanglaoDB</a>。此外，<a href="https://cellxgene.cziscience.com/gene-expression">cellxgene 基因表达工具</a>也能帮助查看某基因在多个数据集中的细胞类型表达情况。</p>
+</section><section><small>单元格 20</small><p>标记通常表达稀疏，即通常只有在细胞类型的一部分细胞中检测到标记。这是由于 scRNA-seq 数据的性质：我们只对细胞中 RNA 分子总量的一小部分进行测序，由于这种二次采样，我们有时不会从细胞中的特定基因采样转录本，即使它们在该细胞中表达。因此，我们不会基于例如一组标记的最小表达阈值来注释单个细胞。相反，我们首先通过聚类将数据细分为相似细胞组（即“划分”数据），从而解决单个基因的“缺失转录本”问题，而是基于整体转录组相似性进行分组。然后我们可以根据其整体标记表达模式注释这些聚类。</p>
+</section><section><small>单元格 21</small><p>常见做法是在完成细胞聚类后再使用标记基因进行注释。且需要结合数据情况选择合适的分辨率</p>
+</section><section><small>单元格 22</small><pre><code># 功能说明：在 UMAP 上比较不同分辨率的聚类方案。
+# 运行目的：选择更适合后续注释的簇粒度。
+# 变量/函数/参数解析：
+# - legend_loc=&quot;on data&quot;：在图中直接显示图例标签。
+sc.pl.umap(
+    adata,
+    color=[k for k in adata.obs if k.startswith(&quot;leiden_res_&quot;)],
+    legend_loc=&quot;on data&quot;,
+)</code></pre></section><section><small>单元格 23</small><p>虽然不应过度解读 UMAP，但此处可以看到在最高分辨率下数据可能被过度聚类，而最低分辨率可能将不同细胞身份合并到同一簇中。我们可以暂且选择0.5做注释,但在此之前，我们可以先尝试做一下低分辨率的注释，以提前熟悉数据和流程</p>
+</section><section><small>单元格 24</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 25</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from course_runtime import cluster_digest
+for key in [c for c in adata.obs if c.startswith(&quot;leiden_res_&quot;)]:
+    ctx.table(key + &quot;_by_sample&quot;, pd.crosstab(adata.obs[key], adata.obs[&quot;samples&quot;]))
+    ctx.table(key + &quot;_qc&quot;, adata.obs.groupby(key, observed=True)[[m for m in [&quot;pct_counts_mt&quot;, &quot;pct_counts_cp&quot;, &quot;total_counts&quot;, &quot;doublet_score&quot;, &quot;predicted_doublet&quot;] if m in adata.obs]].mean())
+ctx.table(&quot;clusters&quot;, adata.obs)
+ctx.finish(adata, {&quot;clusters&quot;: {k: int(adata.obs[k].nunique()) for k in adata.obs if k.startswith(&quot;leiden_res_&quot;)}, &quot;cluster_fingerprints&quot;: {k: cluster_digest(adata, k) for k in [c for c in adata.obs if c.startswith(&quot;leiden_res_&quot;)]}})
+</code></pre></section><section><small>单元格 26</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：如何区分细分群体与受低质量细胞驱动的聚类？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

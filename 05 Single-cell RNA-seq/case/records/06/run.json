@@ -1,0 +1,196 @@
+{
+  "id": "06",
+  "title": "聚类与质量复核",
+  "attempt": "20260915T073923_fe681c",
+  "status": "complete",
+  "directory": "results/06_clustering/20260915T073923_fe681c",
+  "parents": {
+    "05": "20260915T073407_99a665"
+  },
+  "source_sha256": "5d19c7bc918a3871979405b39fb51596c33c0625b9ab6ce35f860c4477686f1d",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:39:29+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/06_clustering/20260915T073923_fe681c/checkpoint.h5ad",
+  "checkpoint_sha256": "a9f46ffafea68f7dd704ae6fd7d42182aac106df8108e0c5a2ba336de80aec1c",
+  "elapsed_seconds": 50.31,
+  "summary": {
+    "clusters": {
+      "leiden_res_0_02": 5,
+      "leiden_res_0_50": 16,
+      "leiden_res_1_00": 25,
+      "leiden_res_2_00": 37
+    },
+    "cluster_fingerprints": {
+      "leiden_res_0_02": "7d4b9fa0573565c1a3af1080d2ec9ca41349a1bc85bd90889e7a57167a31ab70",
+      "leiden_res_0_50": "4cb5ef9aaae350ea060d985f18463b91a58191623b396c598f81750664766470"
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 219593338
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 4227556
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/cell_008_01.png",
+      "kind": "png",
+      "bytes": 542627
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/cell_011_01.png",
+      "kind": "png",
+      "bytes": 668036
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/cell_012_01.png",
+      "kind": "png",
+      "bytes": 812121
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/cell_015_01.png",
+      "kind": "png",
+      "bytes": 585512
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/cell_022_00.png",
+      "kind": "png",
+      "bytes": 542627
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_152.pdf",
+      "kind": "pdf",
+      "bytes": 225294
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_152.png",
+      "kind": "png",
+      "bytes": 464183
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_155.pdf",
+      "kind": "pdf",
+      "bytes": 318791
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_155.png",
+      "kind": "png",
+      "bytes": 557678
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_156.pdf",
+      "kind": "pdf",
+      "bytes": 501393
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/umap_06_156.png",
+      "kind": "png",
+      "bytes": 685012
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/violin_06_159.pdf",
+      "kind": "pdf",
+      "bytes": 104451
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/figures/violin_06_159.png",
+      "kind": "png",
+      "bytes": 515204
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/clusters.csv",
+      "kind": "csv",
+      "bytes": 4235797
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_02_by_sample.csv",
+      "kind": "csv",
+      "bytes": 85
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_02_qc.csv",
+      "kind": "csv",
+      "bytes": 393
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_50_by_sample.csv",
+      "kind": "csv",
+      "bytes": 193
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_50_qc.csv",
+      "kind": "csv",
+      "bytes": 1018
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_1_00_by_sample.csv",
+      "kind": "csv",
+      "bytes": 278
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_1_00_qc.csv",
+      "kind": "csv",
+      "bytes": 1550
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_2_00_by_sample.csv",
+      "kind": "csv",
+      "bytes": 399
+    },
+    {
+      "path": "results/06_clustering/20260915T073923_fe681c/tables/leiden_res_2_00_qc.csv",
+      "kind": "csv",
+      "bytes": 2169
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1214447616,
+    "wall_seconds": 56.84
+  },
+  "original_source_sha256": "aabd22f44e4aa5bf2f24ac2d68be998a44ce93ca35346e0c6168f1e2b0c7b371",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

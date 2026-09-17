@@ -1,0 +1,40 @@
+{
+  "marker_groups": [
+    "CD14+ Mono",
+    "CD16+ Mono",
+    "cDC2",
+    "Erythroblast",
+    "Proerythroblast",
+    "NK",
+    "ILC",
+    "Naive CD20+ B",
+    "B cells",
+    "Plasma cells",
+    "Plasmablast",
+    "CD4+ T",
+    "CD8+ T",
+    "T naive",
+    "pDC",
+    "platelet"
+  ],
+  "missing_markers": {
+    "CD14+ Mono": [],
+    "CD16+ Mono": [],
+    "cDC2": [],
+    "Erythroblast": [],
+    "Proerythroblast": [],
+    "NK": [],
+    "ILC": [],
+    "Naive CD20+ B": [],
+    "B cells": [],
+    "Plasma cells": [],
+    "Plasmablast": [],
+    "CD4+ T": [],
+    "CD8+ T": [],
+    "T naive": [],
+    "pDC": [],
+    "platelet": []
+  },
+  "n_cells": 17041,
+  "n_genes": 23427
+}

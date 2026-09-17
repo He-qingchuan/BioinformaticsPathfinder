@@ -1,0 +1,23 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>REFERENCES.md</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/REFERENCES.md" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>REFERENCES.md</h1><h1>数据与方法来源</h1>
+<ul>
+<li>主数据：<a href="https://figshare.com/articles/dataset/NeurIPS_2021_Benchmark_dataset/22716739">NeurIPS 2021 Benchmark dataset</a>。</li>
+<li>主流程参考：<a href="https://scanpy.scverse.org/en/stable/tutorials/basics/clustering.html">Scanpy preprocessing and clustering</a>。</li>
+<li>方法背景与注释讨论：<a href="https://www.sc-best-practices.org/">Single-cell Best Practices</a>；课件中以作者键标出的教材参考文献可在相应章节文献列表查阅。</li>
+<li>数据结构：<a href="https://anndata.scverse.org/en/stable/">AnnData 文档</a>。</li>
+<li>双细胞检测：<a href="https://scanpy.scverse.org/en/stable/generated/scanpy.pp.scrublet.html">Scanpy Scrublet</a>。</li>
+<li>整合：<a href="https://github.com/slowkow/harmonypy">Harmony</a>、<a href="https://bbknn.readthedocs.io/en/latest/bbknn.bbknn.html">BBKNN</a>、<a href="https://docs.scvi-tools.org/en/stable/">scVI</a>。</li>
+<li>自动注释：<a href="https://www.celltypist.org/">CellTypist</a>、<a href="https://github.com/Teichlab/celltypist">软件与模型使用说明</a>。</li>
+<li>程序化运行：<a href="https://nbclient.readthedocs.io/en/latest/">NBClient</a>。</li>
+<li>环境迁移：<a href="https://conda.github.io/conda-pack/">conda-pack</a>。</li>
+<li>中文字体：Noto Sans CJK SC；许可随 assets/FONT_LICENSE.txt 提供。</li>
+</ul>
+<p>本课程的教学代码和说明基于项目已有课件整理；数据和第三方软件、字体分别遵循其原许可。</p>
+<h2>项目交互与资源核查补充</h2>
+<ul>
+<li><a href="https://www.celltypist.org/models">CellTypist 官方模型目录</a> 与 <a href="https://celltypist.cog.sanger.ac.uk/models/models.json">结构化清单</a>：运行前实际查询适配候选，名单会更新。</li>
+<li><a href="https://celltypist.readthedocs.io/en/latest/celltypist.models.Model.html">CellTypist 模型元信息</a>：检查模型说明、特征和标签范围。</li>
+<li><a href="https://www.sc-best-practices.org/preprocessing-visualization/quality-control/">单细胞最佳实践：QC</a>：结合分布与实验背景判断阈值。</li>
+<li><a href="https://scanpy.scverse.org/en/stable/generated/scanpy.read_10x_h5.html">Scanpy 10x H5 读取</a>、<a href="https://scanpy.scverse.org/en/stable/generated/scanpy.read_10x_mtx.html">10x MTX 读取</a>：格式与计数矩阵读取。课程固定版本与在线最新版可能有接口差别，辅助读取器已按随包版本验证。</li>
+</ul>
+<p>这些资料帮助核对方法与资源，不代替当前数据的真实图表、研究设计或用户决定。</p>
+</main></body></html>

@@ -1,0 +1,14 @@
+﻿cell_type_res_0.50_lvl2,CD16+ NK cells,Classical monocytes,DC2,HSC/MPP,Large pre-B cells,Late erythroid,MAIT cells,Memory B cells,Mid erythroid,Naive B cells,Non-classical monocytes,Plasma cells,Pro-B cells,Regulatory T cells,Small pre-B cells,Tcm/Naive cytotoxic T cells,Tcm/Naive helper T cells,Tem/Effector helper T cells,Tem/Temra cytotoxic T cells,Tem/Trm cytotoxic T cells,pDC
+Antibody_secreting_cell,0,0,0,0,0,0,0,0,0,0,0,106,0,0,0,0,0,0,0,0,0
+B_cell,0,0,0,0,1,0,0,0,0,69,0,0,0,0,312,0,0,0,0,0,0
+CD14_Mono,0,1328,112,0,0,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0
+CD8_cytotoxic_T,4,0,0,0,0,0,198,0,0,0,0,0,0,0,0,0,3,99,382,574,0
+Cycling_erythroid,0,0,0,0,0,2,0,0,1055,0,0,0,0,0,0,0,0,0,0,0,0
+Erythroid,0,61,0,0,0,2342,0,0,1,41,0,0,0,0,0,0,0,0,0,0,0
+Low_quality_lymphoid_like,504,11,0,0,0,0,0,0,1,3,0,1,9,2,6,4,2384,0,10,166,0
+Myeloid_like_low_quality,0,298,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+NK,450,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0
+Naive_B,0,0,0,0,0,0,0,179,0,1706,0,0,0,0,6,0,0,0,0,0,0
+Naive_memory_T,0,0,0,1,0,0,0,0,0,0,0,1,0,187,0,1007,2229,493,1,27,0
+Progenitor_like,0,21,0,190,126,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,27
+pDC,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,84

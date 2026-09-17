@@ -1,0 +1,72 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>12_summary.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/12_summary.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>12_summary.ipynb</h1><section><small>单元格 0</small><h1>第 12 章 结果汇总与分析报告</h1>
+<h2>学习目标</h2>
+<p>整理可复用的分析对象，并形成有证据支持的综合报告。</p>
+<h2>为什么做与怎样做</h2>
+<p>保存完整 AnnData、细胞注释表与样本组成表；按当前有效运行整理目的、方法、结果和解释，以及完整附件索引。</p>
+<p>前置章节：11。运行前请完成项目环境准备。</p>
+<p>本章在项目副本运行。遇到等待材料/确认，请按根目录 <strong>99_运行与AI协作指南.md</strong> 查看当前结果、与用户讨论并续跑；不能跳过待办直接进入下游。</p>
+</section><section><small>单元格 1</small><pre><code># 功能说明：查找公共环境和当前项目，读取有效上游检查点；模板副本之间不共享分析状态。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+from course_projects import resolve_project, input_path, read_sample
+from course_resources import qc_gene_sets, marker_resources, resolution_preview
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+INSTALL_ROOT = ROOT
+ROOT = resolve_project()
+ctx = start_chapter(&quot;12&quot;)
+adata = ctx.load_input()
+coarse_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;coarse&quot;])
+fine_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;fine&quot;])
+
+
+</code></pre></section><section><small>单元格 2</small><h2>12.1 保存数据</h2>
+</section><section><small>单元格 3</small><pre><code># # 功能说明：保存最终的 AnnData 对象。
+# # 运行目的：将包含所有分析结果（QC、聚类、手动注释、自动注释、差异基因等）的数据保存到磁盘，以便后续使用。
+# # 变量/函数/参数解析：
+# # - adata.write(...)：
+# #   - 保存为 `.h5ad` 格式（HDF5 AnnData）。
+# #   - 这是 Scanpy 的标准存储格式，读写速度快，支持压缩。
+
+adata.write_h5ad(ctx.directory / &quot;annotation_adata_out.h5ad&quot;, compression=&quot;gzip&quot;)
+</code></pre></section><section><small>单元格 4</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+print(adata.X)
+</code></pre></section><section><small>单元格 5</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata
+
+</code></pre></section><section><small>单元格 6</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 7</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+ctx.table(&quot;final_cell_metadata&quot;, adata.obs)
+ctx.table(&quot;sample_celltype_counts&quot;, pd.crosstab(adata.obs[&quot;samples&quot;], adata.obs[adata.uns.get(&quot;report_label_column&quot;, &quot;manual_level2&quot;)]))
+ctx.finish(adata, {&quot;final_data&quot;: str((ctx.directory / &quot;annotation_adata_out.h5ad&quot;).relative_to(ROOT)), &quot;available_layers&quot;: list(adata.layers)}, save=False)
+</code></pre></section><section><small>单元格 8</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：怎样让他人从报告追溯到具体图表与运行参数？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

@@ -1,0 +1,10 @@
+{
+  "n_highly_variable": 2000,
+  "normalization_target": 5853.0,
+  "layers": [
+    "counts",
+    "log1p"
+  ],
+  "n_cells": 17041,
+  "n_genes": 23427
+}

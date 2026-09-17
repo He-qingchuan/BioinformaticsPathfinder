@@ -1,0 +1,85 @@
+{
+  "id": "E01",
+  "title": "MTX 格式导入练习",
+  "attempt": "20260915T080308_5087b8",
+  "status": "complete",
+  "directory": "results/E01_mtx_import/20260915T080308_5087b8",
+  "parents": {},
+  "source_sha256": "e13d2e471746b5d630cd9490716219b5ff46fc90969857f895c8d424e187542f",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {
+    "data/mtx/F30/barcodes.tsv.gz": "a3dc89588604f352545a76ae88e4afe2b5eaa613fc5d7bceabc5492f47b3473c",
+    "data/mtx/F30/features.tsv.gz": "fda2b0f759573e7b0cbcee7db01347ecf2a8ad65a4e525f30efe7f78d6cf4913",
+    "data/mtx/F30/matrix.mtx.gz": "ae088cd332a9b9f499c6bd9711b58cf54c80cd1f837ef43f8ca8f7e3efeef41d",
+    "data/mtx/M66/barcodes.tsv.gz": "56a6b3bdc5e47a75537c3403bc89d3186bcce21e72a8412b62db654b58f403d9",
+    "data/mtx/M66/features.tsv.gz": "8e5a2855a8d2429543815875cae143444fcf135fcabd0656d475e3e1a22a59a0",
+    "data/mtx/M66/matrix.mtx.gz": "e88bd07e3646852aa0ef41ca7131182a0ea84c8863facdcfc34b38e994a681c7"
+  },
+  "started_at": "2026-09-15T08:03:17+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/E01_mtx_import/20260915T080308_5087b8/checkpoint.h5ad",
+  "checkpoint_sha256": "a59a368b04aefa9669d5aed55e7bb8d9afc95b7d77414c7f39d454c7c58bc44c",
+  "elapsed_seconds": 21.78,
+  "summary": {
+    "purpose": "MTX 导入练习，不进入 H5 分析主线",
+    "n_cells": 16102,
+    "n_genes": 33538
+  },
+  "artifacts": [
+    {
+      "path": "results/E01_mtx_import/20260915T080308_5087b8/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 55831146
+    },
+    {
+      "path": "results/E01_mtx_import/20260915T080308_5087b8/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 11534
+    },
+    {
+      "path": "results/E01_mtx_import/20260915T080308_5087b8/tables/mtx_sample_counts.csv",
+      "kind": "csv",
+      "bytes": 37
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1394143232,
+    "wall_seconds": 26.45
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "00": {
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+      "machine": "x86_64",
+      "scanpy": "1.11.5",
+      "anndata": "0.12.19",
+      "numpy": "2.3.5",
+      "scipy": "1.16.3",
+      "pandas": "2.3.3",
+      "matplotlib": "3.10.9",
+      "scikit-learn": "1.9.1",
+      "harmonypy": "0.0.10",
+      "bbknn": "1.6.0",
+      "igraph": "0.11.9",
+      "leidenalg": "0.10.2",
+      "celltypist": "1.7.1",
+      "nbclient": "0.10.4"
+    },
+    "main_samples": [
+      "s1d1",
+      "s1d3"
+    ]
+  },
+  "01": {
+    "samples": {
+      "s1d1": 8785,
+      "s1d3": 8340
+    },
+    "n_cells": 17125,
+    "n_genes": 36601
+  },
+  "02": {
+    "retention": {
+      "s1d1": {
+        "before": 8785,
+        "after": 8713,
+        "removed": 72,
+        "retained_fraction": 0.9918042117245305
+      },
+      "s1d3": {
+        "before": 8340,
+        "after": 8328,
+        "removed": 12,
+        "retained_fraction": 0.9985611510791367
+      }
+    },
+    "predicted_doublets": 213,
+    "qc_metrics_basis": "过滤前的基因集合",
+    "doublets_removed": false,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "03": {
+    "n_highly_variable": 2000,
+    "normalization_target": 5853.0,
+    "layers": [
+      "counts",
+      "log1p"
+    ],
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "04": {
+    "n_pcs": 50,
+    "variance_ratio_first_10": 0.48599860072135925,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "05": {
+    "selected_integration": "uncorrected",
+    "neighbors_key": "neighbors",
+    "computed_methods": [
+      "uncorrected",
+      "harmony",
+      "bbknn"
+    ],
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "06": {
+    "clusters": {
+      "leiden_res_0_02": 5,
+      "leiden_res_0_50": 16,
+      "leiden_res_1_00": 25,
+      "leiden_res_2_00": 37
+    },
+    "cluster_fingerprints": {
+      "leiden_res_0_02": "7d4b9fa0573565c1a3af1080d2ec9ca41349a1bc85bd90889e7a57167a31ab70",
+      "leiden_res_0_50": "4cb5ef9aaae350ea060d985f18463b91a58191623b396c598f81750664766470"
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "07": {
+    "marker_groups": [
+      "CD14+ Mono",
+      "CD16+ Mono",
+      "cDC2",
+      "Erythroblast",
+      "Proerythroblast",
+      "NK",
+      "ILC",
+      "Naive CD20+ B",
+      "B cells",
+      "Plasma cells",
+      "Plasmablast",
+      "CD4+ T",
+      "CD8+ T",
+      "T naive",
+      "pDC",
+      "platelet"
+    ],
+    "missing_markers": {
+      "CD14+ Mono": [],
+      "CD16+ Mono": [],
+      "cDC2": [],
+      "Erythroblast": [],
+      "Proerythroblast": [],
+      "NK": [],
+      "ILC": [],
+      "Naive CD20+ B": [],
+      "B cells": [],
+      "Plasma cells": [],
+      "Plasmablast": [],
+      "CD4+ T": [],
+      "CD8+ T": [],
+      "T naive": [],
+      "pDC": [],
+      "platelet": []
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "08": {
+    "fine_cell_types": {
+      "Naive_memory_T": 3946,
+      "Low_quality_lymphoid_like": 3101,
+      "Erythroid": 2445,
+      "Naive_B": 1891,
+      "CD14_Mono": 1511,
+      "CD8_cytotoxic_T": 1260,
+      "Cycling_erythroid": 1057,
+      "Progenitor_like": 502,
+      "NK": 458,
+      "B_cell": 382,
+      "Myeloid_like_low_quality": 298,
+      "Antibody_secreting_cell": 106,
+      "pDC": 84
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "09": {
+    "b_cells": 2268,
+    "subset_clusters": 2,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "10": {
+    "cluster_marker_rows": 374832,
+    "b_vs_t_nk_ilc_rows": 23427,
+    "broad_type_marker_rows": 93708,
+    "method": "wilcoxon",
+    "expression_layer": "log1p",
+    "comparison_scope": "描述性标记探索；不代表有独立生物学重复的条件效应检验",
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "11": {
+    "coarse_labels": {
+      "T cells": 7774,
+      "Erythroid": 3401,
+      "B cells": 2032,
+      "Monocytes": 1790,
+      "ILC": 958,
+      "B-cell lineage": 564,
+      "HSC/MPP": 191,
+      "DC": 112,
+      "pDC": 111,
+      "Plasma cells": 108
+    },
+    "fine_labels": {
+      "Tcm/Naive helper T cells": 4616,
+      "Late erythroid": 2344,
+      "Naive B cells": 1819,
+      "Classical monocytes": 1719,
+      "Mid erythroid": 1057,
+      "Tcm/Naive cytotoxic T cells": 1011,
+      "CD16+ NK cells": 958,
+      "Tem/Trm cytotoxic T cells": 767,
+      "Tem/Effector helper T cells": 592,
+      "Tem/Temra cytotoxic T cells": 401,
+      "Small pre-B cells": 324,
+      "MAIT cells": 198,
+      "HSC/MPP": 191,
+      "Regulatory T cells": 189,
+      "Memory B cells": 179,
+      "Pro-B cells": 147,
+      "Large pre-B cells": 127,
+      "DC2": 112,
+      "pDC": 111,
+      "Plasma cells": 108,
+      "Non-classical monocytes": 71
+    },
+    "median_confidence_coarse": 0.9998584586190687,
+    "median_confidence_fine": 0.9753447678038406,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "12": {
+    "final_data": "results/12_summary/20260915T080103_6b30ff/annotation_adata_out.h5ad",
+    "available_layers": [
+      "counts",
+      "log1p"
+    ],
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "E01": {
+    "purpose": "MTX 导入练习，不进入 H5 分析主线",
+    "n_cells": 16102,
+    "n_genes": 33538
+  }
+}

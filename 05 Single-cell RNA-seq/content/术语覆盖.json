@@ -1,0 +1,4732 @@
+{
+  "terms": 92,
+  "marked_occurrences": 544,
+  "first_occurrence_rule": "Each prose h2/h3 subsection; each independent figure has its own scope. Headings, controls, SVG and protected strings are excluded.",
+  "station_coverage": {
+    "start": [
+      "t1",
+      "t10",
+      "t11",
+      "t12",
+      "t14",
+      "t15",
+      "t16",
+      "t19",
+      "t2",
+      "t3",
+      "t35",
+      "t4",
+      "t56",
+      "t6",
+      "t66",
+      "t7",
+      "t85",
+      "t9"
+    ],
+    "matrix": [
+      "t18",
+      "t19",
+      "t2",
+      "t20",
+      "t21",
+      "t22",
+      "t23",
+      "t24",
+      "t25",
+      "t26",
+      "t27",
+      "t29",
+      "t30",
+      "t31",
+      "t32",
+      "t33",
+      "t36",
+      "t4",
+      "t48",
+      "t52",
+      "t56",
+      "t6"
+    ],
+    "qc": [
+      "t11",
+      "t14",
+      "t17",
+      "t19",
+      "t2",
+      "t31",
+      "t36",
+      "t37",
+      "t38",
+      "t39",
+      "t4",
+      "t42",
+      "t43",
+      "t44",
+      "t51",
+      "t53",
+      "t6",
+      "t66"
+    ],
+    "doublets": [
+      "t19",
+      "t2",
+      "t36",
+      "t4",
+      "t44",
+      "t45",
+      "t46",
+      "t47",
+      "t51",
+      "t53",
+      "t56",
+      "t6",
+      "t62",
+      "t66",
+      "t9"
+    ],
+    "normalize": [
+      "t19",
+      "t2",
+      "t31",
+      "t32",
+      "t33",
+      "t4",
+      "t42",
+      "t66"
+    ],
+    "hvg": [
+      "t19",
+      "t2",
+      "t20",
+      "t31",
+      "t32",
+      "t36",
+      "t48",
+      "t49",
+      "t50",
+      "t52",
+      "t53",
+      "t6",
+      "t66"
+    ],
+    "embedding": [
+      "t11",
+      "t2",
+      "t36",
+      "t39",
+      "t48",
+      "t52",
+      "t53",
+      "t54",
+      "t55",
+      "t56",
+      "t57",
+      "t6",
+      "t66",
+      "t8",
+      "t85"
+    ],
+    "integration": [
+      "t19",
+      "t2",
+      "t36",
+      "t52",
+      "t53",
+      "t55",
+      "t56",
+      "t58",
+      "t59",
+      "t6",
+      "t66",
+      "t8"
+    ],
+    "clustering": [
+      "t2",
+      "t36",
+      "t53",
+      "t55",
+      "t6",
+      "t60",
+      "t61",
+      "t62",
+      "t66"
+    ],
+    "markers": [
+      "t11",
+      "t14",
+      "t19",
+      "t2",
+      "t22",
+      "t32",
+      "t33",
+      "t35",
+      "t36",
+      "t53",
+      "t56",
+      "t6",
+      "t61",
+      "t64",
+      "t66",
+      "t67",
+      "t68",
+      "t69",
+      "t71"
+    ],
+    "annotation": [
+      "t19",
+      "t2",
+      "t22",
+      "t32",
+      "t33",
+      "t36",
+      "t53",
+      "t55",
+      "t56",
+      "t60",
+      "t62",
+      "t66",
+      "t71",
+      "t72",
+      "t73"
+    ],
+    "subgroup": [
+      "t11",
+      "t14",
+      "t15",
+      "t19",
+      "t2",
+      "t22",
+      "t27",
+      "t31",
+      "t32",
+      "t33",
+      "t36",
+      "t52",
+      "t53",
+      "t55",
+      "t56",
+      "t62",
+      "t64",
+      "t65",
+      "t66",
+      "t71"
+    ],
+    "de": [
+      "t2",
+      "t22",
+      "t32",
+      "t33",
+      "t51",
+      "t53",
+      "t6",
+      "t62",
+      "t64",
+      "t66",
+      "t69",
+      "t7",
+      "t71",
+      "t74",
+      "t75",
+      "t76",
+      "t77",
+      "t78",
+      "t79"
+    ],
+    "models": [
+      "t11",
+      "t2",
+      "t35",
+      "t36",
+      "t53",
+      "t55",
+      "t56",
+      "t66",
+      "t80",
+      "t81",
+      "t82"
+    ],
+    "report": [
+      "t19",
+      "t2",
+      "t32",
+      "t6",
+      "t84",
+      "t85",
+      "t91"
+    ],
+    "exercises": [
+      "t10",
+      "t18",
+      "t19",
+      "t2",
+      "t20",
+      "t21",
+      "t22",
+      "t23",
+      "t25",
+      "t26",
+      "t27",
+      "t29",
+      "t30",
+      "t6",
+      "t83",
+      "t85"
+    ]
+  },
+  "entries": [
+    {
+      "id": "t1",
+      "zh": "单细胞转录组",
+      "en": "single-cell RNA sequencing",
+      "anchor": "glossary-1",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t2",
+      "zh": "基因",
+      "en": "gene",
+      "anchor": "glossary-2",
+      "marked_occurrences": 63
+    },
+    {
+      "id": "t3",
+      "zh": "转录本",
+      "en": "transcript",
+      "anchor": "glossary-3",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t4",
+      "zh": "RNA",
+      "en": "ribonucleic acid",
+      "anchor": "glossary-4",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t5",
+      "zh": "DNA",
+      "en": "deoxyribonucleic acid",
+      "anchor": "glossary-5",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t6",
+      "zh": "样本",
+      "en": "sample",
+      "anchor": "glossary-6",
+      "marked_occurrences": 35
+    },
+    {
+      "id": "t7",
+      "zh": "生物学重复",
+      "en": "biological replicate",
+      "anchor": "glossary-7",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t8",
+      "zh": "技术批次",
+      "en": "technical batch",
+      "anchor": "glossary-8",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t9",
+      "zh": "捕获文库",
+      "en": "capture library",
+      "anchor": "glossary-9",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t10",
+      "zh": "barcode",
+      "en": "cell barcode",
+      "anchor": "glossary-10",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t11",
+      "zh": "UMI",
+      "en": "unique molecular identifier",
+      "anchor": "glossary-11",
+      "marked_occurrences": 8
+    },
+    {
+      "id": "t12",
+      "zh": "PCR",
+      "en": "polymerase chain reaction",
+      "anchor": "glossary-12",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t13",
+      "zh": "reads",
+      "en": "sequencing reads",
+      "anchor": "glossary-13",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t14",
+      "zh": "红系",
+      "en": "erythroid lineage",
+      "anchor": "glossary-14",
+      "marked_occurrences": 7
+    },
+    {
+      "id": "t15",
+      "zh": "髓系",
+      "en": "myeloid lineage",
+      "anchor": "glossary-15",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t16",
+      "zh": "淋巴系",
+      "en": "lymphoid lineage",
+      "anchor": "glossary-16",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t17",
+      "zh": "细胞状态",
+      "en": "cell state",
+      "anchor": "glossary-17",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t18",
+      "zh": "AnnData",
+      "en": "annotated data matrix",
+      "anchor": "glossary-18",
+      "marked_occurrences": 4
+    },
+    {
+      "id": "t19",
+      "zh": "counts",
+      "en": "count matrix",
+      "anchor": "glossary-19",
+      "marked_occurrences": 28
+    },
+    {
+      "id": "t20",
+      "zh": "X",
+      "en": "AnnData.X",
+      "anchor": "glossary-20",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t21",
+      "zh": "obs",
+      "en": "observation annotations",
+      "anchor": "glossary-21",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t22",
+      "zh": "var",
+      "en": "variable annotations",
+      "anchor": "glossary-22",
+      "marked_occurrences": 10
+    },
+    {
+      "id": "t23",
+      "zh": "layers",
+      "en": "expression layers",
+      "anchor": "glossary-23",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t24",
+      "zh": "raw",
+      "en": "AnnData.raw",
+      "anchor": "glossary-24",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t25",
+      "zh": "obsm",
+      "en": "multidimensional observation arrays",
+      "anchor": "glossary-25",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t26",
+      "zh": "obsp",
+      "en": "pairwise observation arrays",
+      "anchor": "glossary-26",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t27",
+      "zh": "uns",
+      "en": "unstructured annotations",
+      "anchor": "glossary-27",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t28",
+      "zh": "稀疏矩阵",
+      "en": "sparse matrix",
+      "anchor": "glossary-28",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t29",
+      "zh": "H5AD",
+      "en": "AnnData HDF5 file",
+      "anchor": "glossary-29",
+      "marked_occurrences": 4
+    },
+    {
+      "id": "t30",
+      "zh": "MTX",
+      "en": "Matrix Market format",
+      "anchor": "glossary-30",
+      "marked_occurrences": 4
+    },
+    {
+      "id": "t31",
+      "zh": "归一化",
+      "en": "normalization",
+      "anchor": "glossary-31",
+      "marked_occurrences": 14
+    },
+    {
+      "id": "t32",
+      "zh": "log1p",
+      "en": "natural logarithm of one plus x",
+      "anchor": "glossary-32",
+      "marked_occurrences": 16
+    },
+    {
+      "id": "t33",
+      "zh": "z-score",
+      "en": "standard score",
+      "anchor": "glossary-33",
+      "marked_occurrences": 8
+    },
+    {
+      "id": "t34",
+      "zh": "表达比例",
+      "en": "fraction expressing",
+      "anchor": "glossary-34",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t35",
+      "zh": "基因 ID",
+      "en": "gene identifier",
+      "anchor": "glossary-35",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t36",
+      "zh": "QC",
+      "en": "quality control",
+      "anchor": "glossary-36",
+      "marked_occurrences": 26
+    },
+    {
+      "id": "t37",
+      "zh": "total_counts",
+      "en": "total counts per cell",
+      "anchor": "glossary-37",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t38",
+      "zh": "n_genes_by_counts",
+      "en": "detected genes per cell",
+      "anchor": "glossary-38",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t39",
+      "zh": "pct_counts_mt",
+      "en": "mitochondrial count percentage",
+      "anchor": "glossary-39",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t40",
+      "zh": "pct_counts_ribo",
+      "en": "ribosomal gene count percentage",
+      "anchor": "glossary-40",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t41",
+      "zh": "pct_counts_hb",
+      "en": "hemoglobin gene count percentage",
+      "anchor": "glossary-41",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t42",
+      "zh": "中位数",
+      "en": "median",
+      "anchor": "glossary-42",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t43",
+      "zh": "MAD",
+      "en": "median absolute deviation",
+      "anchor": "glossary-43",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t44",
+      "zh": "双细胞",
+      "en": "doublet",
+      "anchor": "glossary-44",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t45",
+      "zh": "Scrublet",
+      "en": "Scrublet doublet detection",
+      "anchor": "glossary-45",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t46",
+      "zh": "doublet_score",
+      "en": "doublet score",
+      "anchor": "glossary-46",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t47",
+      "zh": "predicted_doublet",
+      "en": "predicted doublet label",
+      "anchor": "glossary-47",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t48",
+      "zh": "高变基因",
+      "en": "highly variable genes",
+      "anchor": "glossary-48",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t49",
+      "zh": "离散度",
+      "en": "dispersion",
+      "anchor": "glossary-49",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t50",
+      "zh": "highly_variable_nbatches",
+      "en": "number of batches selecting a gene",
+      "anchor": "glossary-50",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t51",
+      "zh": "阈值",
+      "en": "threshold",
+      "anchor": "glossary-51",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t52",
+      "zh": "PCA",
+      "en": "principal component analysis",
+      "anchor": "glossary-52",
+      "marked_occurrences": 11
+    },
+    {
+      "id": "t53",
+      "zh": "主成分",
+      "en": "principal component",
+      "anchor": "glossary-53",
+      "marked_occurrences": 30
+    },
+    {
+      "id": "t54",
+      "zh": "variance_ratio",
+      "en": "explained variance ratio",
+      "anchor": "glossary-54",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t55",
+      "zh": "邻居图",
+      "en": "nearest-neighbor graph",
+      "anchor": "glossary-55",
+      "marked_occurrences": 18
+    },
+    {
+      "id": "t56",
+      "zh": "UMAP",
+      "en": "uniform manifold approximation and projection",
+      "anchor": "glossary-56",
+      "marked_occurrences": 22
+    },
+    {
+      "id": "t57",
+      "zh": "t-SNE",
+      "en": "t-distributed stochastic neighbor embedding",
+      "anchor": "glossary-57",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t58",
+      "zh": "Harmony",
+      "en": "Harmony integration",
+      "anchor": "glossary-58",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t59",
+      "zh": "BBKNN",
+      "en": "batch-balanced k-nearest neighbors",
+      "anchor": "glossary-59",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t60",
+      "zh": "Leiden",
+      "en": "Leiden community detection",
+      "anchor": "glossary-60",
+      "marked_occurrences": 4
+    },
+    {
+      "id": "t61",
+      "zh": "分辨率",
+      "en": "clustering resolution",
+      "anchor": "glossary-61",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t62",
+      "zh": "簇",
+      "en": "cluster",
+      "anchor": "glossary-62",
+      "marked_occurrences": 16
+    },
+    {
+      "id": "t63",
+      "zh": "子群分析",
+      "en": "subclustering",
+      "anchor": "glossary-63",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t64",
+      "zh": "树状图",
+      "en": "dendrogram",
+      "anchor": "glossary-64",
+      "marked_occurrences": 6
+    },
+    {
+      "id": "t65",
+      "zh": "相关系数",
+      "en": "correlation coefficient",
+      "anchor": "glossary-65",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t66",
+      "zh": "marker",
+      "en": "marker gene",
+      "anchor": "glossary-66",
+      "marked_occurrences": 55
+    },
+    {
+      "id": "t67",
+      "zh": "dotplot",
+      "en": "dot plot",
+      "anchor": "glossary-67",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t68",
+      "zh": "matrixplot",
+      "en": "matrix plot",
+      "anchor": "glossary-68",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t69",
+      "zh": "热图",
+      "en": "heatmap",
+      "anchor": "glossary-69",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t70",
+      "zh": "小提琴图",
+      "en": "violin plot",
+      "anchor": "glossary-70",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t71",
+      "zh": "standard_scale",
+      "en": "display range scaling",
+      "anchor": "glossary-71",
+      "marked_occurrences": 7
+    },
+    {
+      "id": "t72",
+      "zh": "细胞注释",
+      "en": "cell-type annotation",
+      "anchor": "glossary-72",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t73",
+      "zh": "Uncertain",
+      "en": "uncertain identity",
+      "anchor": "glossary-73",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t74",
+      "zh": "Wilcoxon",
+      "en": "Wilcoxon rank-sum test",
+      "anchor": "glossary-74",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t75",
+      "zh": "one-versus-rest",
+      "en": "one group versus all remaining groups",
+      "anchor": "glossary-75",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t76",
+      "zh": "logfoldchanges",
+      "en": "approximate log2 fold change",
+      "anchor": "glossary-76",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t77",
+      "zh": "p 值",
+      "en": "p-value",
+      "anchor": "glossary-77",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t78",
+      "zh": "多重检验",
+      "en": "multiple testing",
+      "anchor": "glossary-78",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t79",
+      "zh": "scores",
+      "en": "ranking statistic",
+      "anchor": "glossary-79",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t80",
+      "zh": "CellTypist",
+      "en": "CellTypist annotation",
+      "anchor": "glossary-80",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t81",
+      "zh": "模型分数",
+      "en": "model confidence score",
+      "anchor": "glossary-81",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t82",
+      "zh": "交叉表",
+      "en": "contingency table",
+      "anchor": "glossary-82",
+      "marked_occurrences": 3
+    },
+    {
+      "id": "t83",
+      "zh": "scVI",
+      "en": "single-cell variational inference",
+      "anchor": "glossary-83",
+      "marked_occurrences": 2
+    },
+    {
+      "id": "t84",
+      "zh": "检查点",
+      "en": "checkpoint",
+      "anchor": "glossary-84",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t85",
+      "zh": "尝试",
+      "en": "analysis attempt",
+      "anchor": "glossary-85",
+      "marked_occurrences": 5
+    },
+    {
+      "id": "t86",
+      "zh": "候选路线",
+      "en": "candidate route",
+      "anchor": "glossary-86",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t87",
+      "zh": "stale",
+      "en": "stale result",
+      "anchor": "glossary-87",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t88",
+      "zh": "SHA256",
+      "en": "SHA-256 content digest",
+      "anchor": "glossary-88",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t89",
+      "zh": "Conda",
+      "en": "Conda environment manager",
+      "anchor": "glossary-89",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t90",
+      "zh": "Notebook",
+      "en": "Jupyter Notebook",
+      "anchor": "glossary-90",
+      "marked_occurrences": 0
+    },
+    {
+      "id": "t91",
+      "zh": "重绘",
+      "en": "figure redraw",
+      "anchor": "glossary-91",
+      "marked_occurrences": 1
+    },
+    {
+      "id": "t92",
+      "zh": "伪重复",
+      "en": "pseudoreplication",
+      "anchor": "glossary-92",
+      "marked_occurrences": 0
+    }
+  ],
+  "occurrences": [
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t14",
+      "surface": "红系",
+      "context": "骨髓包含红系、髓系、淋巴系和不同状态的细胞。把整个组织平均成一列，可以看到整体表达，却可能掩盖少数群体"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t15",
+      "surface": "髓系",
+      "context": "骨髓包含红系、髓系、淋巴系和不同状态的细胞。把整个组织平均成一列，可以看到整体表达，却可能掩盖少数群体。单细"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t16",
+      "surface": "淋巴系",
+      "context": "骨髓包含红系、髓系、淋巴系和不同状态的细胞。把整个组织平均成一列，可以看到整体表达，却可能掩盖少数群体。单细胞转录组"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t1",
+      "surface": "单细胞转录组",
+      "context": "个组织平均成一列，可以看到整体表达，却可能掩盖少数群体。单细胞转录组尝试把来自不同条码的 RNA 计数分开，让我们观察群体组成和细胞之间的差异。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t85",
+      "surface": "尝试",
+      "context": "一列，可以看到整体表达，却可能掩盖少数群体。单细胞转录组尝试把来自不同条码的 RNA 计数分开，让我们观察群体组成和细胞之间的差异。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "，却可能掩盖少数群体。单细胞转录组尝试把来自不同条码的 RNA 计数分开，让我们观察群体组成和细胞之间的差异。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "背景。原始导入为 17,125 个细胞、36,601 个基因，基础过滤后主线为 17,041 个细胞、23,427 个基因。"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "→ 单细胞计数：每行一个细胞 → 计算与证据：从结构到 marker → 解释与报告：保留不确定性。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-barcode",
+      "term": "t2",
+      "surface": "基因",
+      "context": "从混合细胞到细胞×基因矩阵，中间需要区分细胞身份、分子身份与基因来源。"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-barcode",
+      "term": "t10",
+      "surface": "barcode",
+      "context": "左边不同颜色代表不同细胞；中间条带中的 barcode 标识捕获来源，UMI 帮助减少 PCR 重复造成的重复计数，基因片段用于确定基因。右边的"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-barcode",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "表不同细胞；中间条带中的 barcode 标识捕获来源，UMI 帮助减少 PCR 重复造成的重复计数，基因片段用于确定基因。右边的矩阵才是本课输入。图中"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-barcode",
+      "term": "t12",
+      "surface": "PCR",
+      "context": "带中的 barcode 标识捕获来源，UMI 帮助减少 PCR 重复造成的重复计数，基因片段用于确定基因。右边的矩阵才是本课输入。图中条码和分子数量为示"
+    },
+    {
+      "station": "start",
+      "scope": "start/figure-barcode",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "码和分子数量为示意，UMI 计数也不等于细胞内真实全部 RNA 数量。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t6",
+      "surface": "样本",
+      "context": "一个样本内有许多细胞。同一样本的细胞共享供体、取材和处理等因素，它们不是等量增加的独立生物学重复。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t7",
+      "surface": "生物学重复",
+      "context": "的细胞共享供体、取材和处理等因素，它们不是等量增加的独立生物学重复。UMAP 上点很多，有助于看到细胞异质性，却不能自动增强一个只有少数供体的条件比较。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "体、取材和处理等因素，它们不是等量增加的独立生物学重复。UMAP 上点很多，有助于看到细胞异质性，却不能自动增强一个只有少数供体的条件比较。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "我们从已经生成的 counts 开始，并没有在这里重新做 FASTQ 比对和细胞识别。基因表达是转录本丰度的观测，不能直"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": " 开始，并没有在这里重新做 FASTQ 比对和细胞识别。基因表达是转录本丰度的观测，不能直接当蛋白量、细胞活性或瞬时转录速度。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-2",
+      "term": "t3",
+      "surface": "转录本",
+      "context": "没有在这里重新做 FASTQ 比对和细胞识别。基因表达是转录本丰度的观测，不能直接当蛋白量、细胞活性或瞬时转录速度。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-3",
+      "term": "t6",
+      "surface": "样本",
+      "context": "让 AI 按 99 指南检查环境、项目身份、物种、组织、样本、捕获文库和原始计数来源。使用自己的数据时还要核对基因 ID、marker 和模型范围。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-3",
+      "term": "t9",
+      "surface": "捕获文库",
+      "context": "I 按 99 指南检查环境、项目身份、物种、组织、样本、捕获文库和原始计数来源。使用自己的数据时还要核对基因 ID、marker 和模型范围。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-3",
+      "term": "t35",
+      "surface": "基因 ID",
+      "context": "、样本、捕获文库和原始计数来源。使用自己的数据时还要核对基因 ID、marker 和模型范围。"
+    },
+    {
+      "station": "start",
+      "scope": "start/start-part-3",
+      "term": "t66",
+      "surface": "marker",
+      "context": "文库和原始计数来源。使用自己的数据时还要核对基因 ID、marker 和模型范围。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t18",
+      "surface": "AnnData",
+      "context": "AnnData 的 X 通常按“行是细胞、列是基因”排列。每个格子记录该细胞该基因的数值，数值的含义取决"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t20",
+      "surface": "X",
+      "context": "AnnData 的 X 通常按“行是细胞、列是基因”排列。每个格子记录该细胞该基因的数值，数值的含义取决于当前处"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "AnnData 的 X 通常按“行是细胞、列是基因”排列。每个格子记录该细胞该基因的数值，数值的含义取决于当前处理阶段。原始 counts、"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "该细胞该基因的数值，数值的含义取决于当前处理阶段。原始 counts、总量归一化值、log1p 和 z-score 都可以是数值矩阵，但不能互相冒充。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "，数值的含义取决于当前处理阶段。原始 counts、总量归一化值、log1p 和 z-score 都可以是数值矩阵，但不能互相冒充。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "义取决于当前处理阶段。原始 counts、总量归一化值、log1p 和 z-score 都可以是数值矩阵，但不能互相冒充。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-1",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "阶段。原始 counts、总量归一化值、log1p 和 z-score 都可以是数值矩阵，但不能互相冒充。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t30",
+      "surface": "MTX",
+      "context": "输入文件：10x H5 / MTX / H5AD → 身份核对：样本与原始 counts → 基因对齐：共同特征与唯一 ID"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t29",
+      "surface": "H5AD",
+      "context": "输入文件：10x H5 / MTX / H5AD → 身份核对：样本与原始 counts → 基因对齐：共同特征与唯一 ID → AnnD"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t6",
+      "surface": "样本",
+      "context": "：10x H5 / MTX / H5AD → 身份核对：样本与原始 counts → 基因对齐：共同特征与唯一 ID → AnnData：矩阵与注释一"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "5 / MTX / H5AD → 身份核对：样本与原始 counts → 基因对齐：共同特征与唯一 ID → AnnData：矩阵与注释一起保存。箭头说明信息"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": " H5AD → 身份核对：样本与原始 counts → 基因对齐：共同特征与唯一 ID → AnnData：矩阵与注释一起保存。箭头说明信息依赖，示意"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-1",
+      "term": "t18",
+      "surface": "AnnData",
+      "context": " counts → 基因对齐：共同特征与唯一 ID → AnnData：矩阵与注释一起保存。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t20",
+      "surface": "X",
+      "context": "X 与 layers 保存表达口径，obs/var 保存身份，低维坐标与邻居关系另存。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t23",
+      "surface": "layers",
+      "context": "X 与 layers 保存表达口径，obs/var 保存身份，低维坐标与邻居关系另存。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t21",
+      "surface": "obs",
+      "context": "X 与 layers 保存表达口径，obs/var 保存身份，低维坐标与邻居关系另存。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t22",
+      "surface": "var",
+      "context": "X 与 layers 保存表达口径，obs/var 保存身份，低维坐标与邻居关系另存。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t25",
+      "surface": "obsm",
+      "context": "中心矩阵的每一行都对应同一枚细胞，所以 obs 和 obsm 必须与行对齐；每列对应一个基因，所以 var 必须与列对齐。layers 是相同细胞×基"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t2",
+      "surface": "基因",
+      "context": "，所以 obs 和 obsm 必须与行对齐；每列对应一个基因，所以 var 必须与列对齐。layers 是相同细胞×基因维度的不同数值层。raw 是快"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t24",
+      "surface": "raw",
+      "context": "列对齐。layers 是相同细胞×基因维度的不同数值层。raw 是快照的名字，不是“必然原始 counts”的保证。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/figure-anndata",
+      "term": "t19",
+      "surface": "counts",
+      "context": "维度的不同数值层。raw 是快照的名字，不是“必然原始 counts”的保证。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t21",
+      "surface": "obs",
+      "context": "obs 保存与细胞逐行对应的信息，例如样本、QC、聚类和注释；var 保存基因属性，例如基因名、"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t6",
+      "surface": "样本",
+      "context": "obs 保存与细胞逐行对应的信息，例如样本、QC、聚类和注释；var 保存基因属性，例如基因名、线粒体标记和高变基因。layers "
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t36",
+      "surface": "QC",
+      "context": "obs 保存与细胞逐行对应的信息，例如样本、QC、聚类和注释；var 保存基因属性，例如基因名、线粒体标记和高变基因。layers 保存与"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t22",
+      "surface": "var",
+      "context": " 保存与细胞逐行对应的信息，例如样本、QC、聚类和注释；var 保存基因属性，例如基因名、线粒体标记和高变基因。layers 保存与 X 同形状的另一种"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": "逐行对应的信息，例如样本、QC、聚类和注释；var 保存基因属性，例如基因名、线粒体标记和高变基因。layers 保存与 X 同形状的另一种表达层。o"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "类和注释；var 保存基因属性，例如基因名、线粒体标记和高变基因。layers 保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t23",
+      "surface": "layers",
+      "context": "var 保存基因属性，例如基因名、线粒体标记和高变基因。layers 保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个细胞的低维坐标"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t20",
+      "surface": "X",
+      "context": "例如基因名、线粒体标记和高变基因。layers 保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个细胞的低维坐标，obsp "
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t25",
+      "surface": "obsm",
+      "context": "变基因。layers 保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个细胞的低维坐标，obsp 放细胞之间的图关系，uns 放参"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "ers 保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个细胞的低维坐标，obsp 放细胞之间的图关系，uns 放参数、颜色和不"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "保存与 X 同形状的另一种表达层。obsm 放 PCA/UMAP 这类每个细胞的低维坐标，obsp 放细胞之间的图关系，uns 放参数、颜色和不规则结果。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t26",
+      "surface": "obsp",
+      "context": "obsm 放 PCA/UMAP 这类每个细胞的低维坐标，obsp 放细胞之间的图关系，uns 放参数、颜色和不规则结果。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t27",
+      "surface": "uns",
+      "context": " 这类每个细胞的低维坐标，obsp 放细胞之间的图关系，uns 放参数、颜色和不规则结果。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t24",
+      "surface": "raw",
+      "context": "raw 是一个快照容器，名字不保证其中一定是原始计数。导入 H5AD 时，AI 必须核实原始 c"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t29",
+      "surface": "H5AD",
+      "context": "w 是一个快照容器，名字不保证其中一定是原始计数。导入 H5AD 时，AI 必须核实原始 counts 来自 X、raw 还是明确层，并记录来源，而非仅凭"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "一定是原始计数。导入 H5AD 时，AI 必须核实原始 counts 来自 X、raw 还是明确层，并记录来源，而非仅凭整数值作结论。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-3",
+      "term": "t6",
+      "surface": "样本",
+      "context": "5 枚细胞，s1d3 有 8,340 枚细胞。合并时保留样本来源，核对细胞 ID 唯一性和基因对应关系；同一个条码在不同文库可能重复，条码字符串本身不"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-3",
+      "term": "t2",
+      "surface": "基因",
+      "context": "0 枚细胞。合并时保留样本来源，核对细胞 ID 唯一性和基因对应关系；同一个条码在不同文库可能重复，条码字符串本身不是跨样本唯一身份。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-3",
+      "term": "t36",
+      "surface": "QC",
+      "context": "查 n_obs、n_vars、样本计数与计数层，再进入 QC。"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-4",
+      "term": "t2",
+      "surface": "基因",
+      "context": "零表示在这个观测中没有记录到该基因的分子，不足以证明该细胞在生物学上绝不表达。RNA 数量、捕获效率、测序深度与技术过程都会"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-4",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "记录到该基因的分子，不足以证明该细胞在生物学上绝不表达。RNA 数量、捕获效率、测序深度与技术过程都会影响是否检出。稀疏存储只省略零元素的存储，不能理解"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-5",
+      "term": "t6",
+      "surface": "样本",
+      "context": "如果输入缺失、物种不明、样本关系不明，或 counts 无法追溯，先说明检查了哪些文件以及缺少的确切信息。数据导入成功"
+    },
+    {
+      "station": "matrix",
+      "scope": "matrix/matrix-part-5",
+      "term": "t19",
+      "surface": "counts",
+      "context": "如果输入缺失、物种不明、样本关系不明，或 counts 无法追溯，先说明检查了哪些文件以及缺少的确切信息。数据导入成功不等于科学信息核验完成。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-1",
+      "term": "t36",
+      "surface": "QC",
+      "context": "基础 QC 关注每个细胞的总 counts、检出基因数，以及特定基因集合的计数比例。它们帮助发现需要"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "基础 QC 关注每个细胞的总 counts、检出基因数，以及特定基因集合的计数比例。它们帮助发现需要检查的细胞，但没有哪个指标单独等"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "基础 QC 关注每个细胞的总 counts、检出基因数，以及特定基因集合的计数比例。它们帮助发现需要检查的细胞，但没有哪个指标单独等价于“好细"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-1",
+      "term": "t14",
+      "surface": "红系",
+      "context": "但没有哪个指标单独等价于“好细胞”或“坏细胞”。骨髓中的红系信号尤其不能简单当污染。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "过滤前指标：counts / genes / mt → 共同基础过滤：同一起点 → 独立候选：basic / mt"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-1",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "过滤：同一起点 → 独立候选：basic / mt / MAD → 查看真实证据：再确认路线。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t51",
+      "surface": "阈值",
+      "context": "把分布、稳健阈值与真实组织背景放在一起判断。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t42",
+      "surface": "中位数",
+      "context": "左图示意中位数与 MAD：先求中心，再看偏差有多大。右边两个细胞都可能有较高某项比例，但细胞状态、谱系和"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "左图示意中位数与 MAD：先求中心，再看偏差有多大。右边两个细胞都可能有较高某项比例，但细胞状态、谱系和 RNA "
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t17",
+      "surface": "细胞状态",
+      "context": "心，再看偏差有多大。右边两个细胞都可能有较高某项比例，但细胞状态、谱系和 RNA 组成不同。实际比较必须从同一基础对象生成候选，以分样本表核对过滤代价；图"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "。右边两个细胞都可能有较高某项比例，但细胞状态、谱系和 RNA 组成不同。实际比较必须从同一基础对象生成候选，以分样本表核对过滤代价；图中波形不是真实分"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc",
+      "term": "t6",
+      "surface": "样本",
+      "context": "NA 组成不同。实际比较必须从同一基础对象生成候选，以分样本表核对过滤代价；图中波形不是真实分布。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t6",
+      "surface": "样本",
+      "context": "两个样本原始合并后共 17,125 个细胞。先比较各面板的量纲；骨髓中红系群体可使血红蛋白比例具有"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t14",
+      "surface": "红系",
+      "context": "并后共 17,125 个细胞。先比较各面板的量纲；骨髓中红系群体可使血红蛋白比例具有生物学意义。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t36",
+      "surface": "QC",
+      "context": "sc.pl.violin；当前图是在基础过滤之前计算的 QC 指标。 每个小提琴对应一个样本内某项细胞 QC 指标的分布，细散点是一枚细胞；同一细胞参"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t2",
+      "surface": "基因",
+      "context": "amples（s1d1、s1d3）；各面板纵轴分别是检出基因数、总 counts、线粒体/核糖体/血红蛋白基因计数百分比。后面三项单位是 %，不能与 "
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t19",
+      "surface": "counts",
+      "context": "（s1d1、s1d3）；各面板纵轴分别是检出基因数、总 counts、线粒体/核糖体/血红蛋白基因计数百分比。后面三项单位是 %，不能与 counts 共用刻"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_sample",
+      "term": "t51",
+      "surface": "阈值",
+      "context": "能来自真实红系细胞。各样本图形不同也不等于一个必须删除；阈值需结合组织和建库信息。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t2",
+      "surface": "基因",
+      "context": "左下角聚集许多计数与基因数较低的细胞，少数细胞形成高 counts 尾部；需要与线粒体色条一起读。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t19",
+      "surface": "counts",
+      "context": "左下角聚集许多计数与基因数较低的细胞，少数细胞形成高 counts 尾部；需要与线粒体色条一起读。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t36",
+      "surface": "QC",
+      "context": "sc.pl.scatter 使用同一套过滤前 QC 指标；过滤只改变所选细胞/基因对象。 一个点是一枚细胞，所有点来自同一阶段的合并对象。图"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t37",
+      "surface": "total_counts",
+      "context": "横轴 total_counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "横轴 total_counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因数。横纵轴都不是"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t38",
+      "surface": "n_genes_by_counts",
+      "context": "counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t6",
+      "surface": "样本",
+      "context": "enes_by_counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t39",
+      "surface": "pct_counts_mt",
+      "context": "颜色由 pct_counts_mt 控制，数值单位 %；必须按本图色条读高低。本案例使用的颜色方向与常见默认 viridis"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "高 counts 可能来自大细胞，也可能是双细胞；高线粒体比例不能孤立诊断。历史主线仅做基础过滤，后图不意味着已经执行 mt 和 MAD "
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_before",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "。历史主线仅做基础过滤，后图不意味着已经执行 mt 和 MAD 分支。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-3",
+      "term": "t2",
+      "surface": "基因",
+      "context": "基础规则移除检出基因少于 100 的细胞，以及少于 3 个细胞检出的基因。本次记录显示减少 84 个细胞；最终"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-3",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "终主线仍保留高线粒体比例的部分细胞。课件展示 mt 与 MAD 方法，并不代表历史运行开启了它们，图注必须以参数和实际结果为准。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t36",
+      "surface": "QC",
+      "context": "sc.pl.scatter 使用同一套过滤前 QC 指标；过滤只改变所选细胞/基因对象。 一个点是一枚细胞，所有点来自同一阶段的合并对象。图"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t2",
+      "surface": "基因",
+      "context": "er 使用同一套过滤前 QC 指标；过滤只改变所选细胞/基因对象。 一个点是一枚细胞，所有点来自同一阶段的合并对象。图将两个测序复杂度指标与线粒体比例"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t37",
+      "surface": "total_counts",
+      "context": "横轴 total_counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "横轴 total_counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因数。横纵轴都不是"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t19",
+      "surface": "counts",
+      "context": "横轴 total_counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因数。横纵轴都不是样本编号，也不"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t38",
+      "surface": "n_genes_by_counts",
+      "context": "counts 是原始 UMI counts 总量；纵轴 n_genes_by_counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t6",
+      "surface": "样本",
+      "context": "enes_by_counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "counts 是检出基因数。横纵轴都不是样本编号，也不是归一化后的表达。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t39",
+      "surface": "pct_counts_mt",
+      "context": "颜色由 pct_counts_mt 控制，数值单位 %；必须按本图色条读高低。本案例使用的颜色方向与常见默认 viridis"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "高 counts 可能来自大细胞，也可能是双细胞；高线粒体比例不能孤立诊断。历史主线仅做基础过滤，后图不意味着已经执行 mt 和 MAD "
+    },
+    {
+      "station": "qc",
+      "scope": "qc/figure-qc_after",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "。历史主线仅做基础过滤，后图不意味着已经执行 mt 和 MAD 分支。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-4",
+      "term": "t6",
+      "surface": "样本",
+      "context": "新版从相同基础对象建立独立候选，比较分样本保留比例、指标分布和候选交集，再由用户确认。MAD 以中位数为中心，用绝对偏差的中位数衡量"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-4",
+      "term": "t43",
+      "surface": "MAD",
+      "context": "，比较分样本保留比例、指标分布和候选交集，再由用户确认。MAD 以中位数为中心，用绝对偏差的中位数衡量稳健分散程度；本课程的 MAD 候选在有 mt 指"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-4",
+      "term": "t42",
+      "surface": "中位数",
+      "context": "本保留比例、指标分布和候选交集，再由用户确认。MAD 以中位数为中心，用绝对偏差的中位数衡量稳健分散程度；本课程的 MAD 候选在有 mt 指标时还包含"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-4",
+      "term": "t51",
+      "surface": "阈值",
+      "context": "，规则需要明确处理，不能让微小浮点差异决定所有细胞去留。阈值也不能跨物种照抄：人类 MT- 前缀不是任何物种的通用规则。"
+    },
+    {
+      "station": "qc",
+      "scope": "qc/qc-part-5",
+      "term": "t6",
+      "surface": "样本",
+      "context": "展示每条候选保留多少、哪些样本受影响、被排除细胞有什么共同特征，以及为何推荐某条。不能先问“用哪种算法”再让学生盲选。选"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-1",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "若两枚细胞共享一个捕获单位，它们的 RNA 信号可能合并到一个条码里。来自不同谱系的混合可能更容易识别；同类细胞混合通常更难区分。高"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "谱系的混合可能更容易识别；同类细胞混合通常更难区分。高 counts 是线索，不是足够的判定条件。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-1",
+      "term": "t45",
+      "surface": "Scrublet",
+      "context": "同次捕获：确认文库单位 → 模拟混合：Scrublet 评分 → 预测与对照：分数 / 比例 / marker → 保留或删除：用户看证据后确认"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "rublet 评分 → 预测与对照：分数 / 比例 / marker → 保留或删除：用户看证据后确认。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublets",
+      "term": "t19",
+      "surface": "counts",
+      "context": "两套表达颜色。真实算法通过模拟与邻域比较评分，并非只找 counts 翻倍。同类型双细胞可能较难识别；预测标签不等于实验观察。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublets",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "模拟与邻域比较评分，并非只找 counts 翻倍。同类型双细胞可能较难识别；预测标签不等于实验观察。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-2",
+      "term": "t46",
+      "surface": "doublet_score",
+      "context": "它通过模拟混合表达并比较邻域关系，为真实条码计算 doublet_score，随后按规则产生 predicted_doublet。模拟分布、预期双细胞率、细胞组成与测"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-2",
+      "term": "t47",
+      "surface": "predicted_doublet",
+      "context": "实条码计算 doublet_score，随后按规则产生 predicted_doublet。模拟分布、预期双细胞率、细胞组成与测序质量会影响结果。不能把模拟混合简单理解成肉眼数两倍"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-2",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "产生 predicted_doublet。模拟分布、预期双细胞率、细胞组成与测序质量会影响结果。不能把模拟混合简单理解成肉眼数两倍 counts。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "测序质量会影响结果。不能把模拟混合简单理解成肉眼数两倍 counts。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-3",
+      "term": "t9",
+      "surface": "捕获文库",
+      "context": "同一次捕获文库才是关键单位。一个样本拆成两个测序 lane 不等于两次捕获；不同捕获混在一起也不应随便共"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-3",
+      "term": "t6",
+      "surface": "样本",
+      "context": "同一次捕获文库才是关键单位。一个样本拆成两个测序 lane 不等于两次捕获；不同捕获混在一起也不应随便共用预测模型。历史教程按"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-4",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "章的复核图，明确它是后续视角，不假装第 02 章已经有 UMAP。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t36",
+      "surface": "QC",
+      "context": "历史 QC 检出 213 个预测双细胞，主线没有删除；在后续 UMAP 中仍可查看其分布。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "历史 QC 检出 213 个预测双细胞，主线没有删除；在后续 UMAP 中仍可查看其分布。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "QC 检出 213 个预测双细胞，主线没有删除；在后续 UMAP 中仍可查看其分布。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t45",
+      "surface": "Scrublet",
+      "context": "Scrublet 按 samples 运行的历史案例；新数据必须按真实 capture_library 核"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t47",
+      "surface": "predicted_doublet",
+      "context": "y 核对捕获关系。 左图为较细聚类；中图将同一批细胞的 predicted_doublet 布尔标签上色；右图是对应连续 doublet_score。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t46",
+      "surface": "doublet_score",
+      "context": "cted_doublet 布尔标签上色；右图是对应连续 doublet_score。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t51",
+      "surface": "阈值",
+      "context": "e/False 是预测类别，右侧连续分数与分类标签不同，阈值把连续值分成预测类别。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t62",
+      "surface": "簇",
+      "context": "先找预测点集中在哪些簇，再结合计数、marker 共表达及每个捕获文库的预测比例，检查是否由某类真实细胞主导。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/figure-doublet",
+      "term": "t9",
+      "surface": "捕获文库",
+      "context": "测点集中在哪些簇，再结合计数、marker 共表达及每个捕获文库的预测比例，检查是否由某类真实细胞主导。"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-5",
+      "term": "t36",
+      "surface": "QC",
+      "context": "新版在所选 QC 对象上比较保留标记与删除预测的数量影响，向用户报告后确认。若决定保留，应在解释特定混合群"
+    },
+    {
+      "station": "doublets",
+      "scope": "doublets/doublets-part-5",
+      "term": "t44",
+      "surface": "双细胞",
+      "context": "释特定混合群体时继续核对；若删除，也不能说剩余对象必然无双细胞。算法标签不替代实验真值。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "两个细胞总 counts 不同，可能来自 RNA 含量、捕获效率或测序深度。总量归一化将每个细胞按自身总量缩放到共"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-1",
+      "term": "t4",
+      "surface": "RNA",
+      "context": "两个细胞总 counts 不同，可能来自 RNA 含量、捕获效率或测序深度。总量归一化将每个细胞按自身总量缩放到共同目标，减少规模差异；它"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-1",
+      "term": "t31",
+      "surface": "归一化",
+      "context": " 不同，可能来自 RNA 含量、捕获效率或测序深度。总量归一化将每个细胞按自身总量缩放到共同目标，减少规模差异；它不能辨别所有差异究竟是技术还是生物学，"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/figure-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "原始 counts：留存在独立层 → 每细胞总量：估计技术规模 → 总量归一化：本例目标 5853 → lo"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/figure-1",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "s：留存在独立层 → 每细胞总量：估计技术规模 → 总量归一化：本例目标 5853 → log1p：压缩跨度。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/figure-1",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "：估计技术规模 → 总量归一化：本例目标 5853 → log1p：压缩跨度。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/figure-normalize",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "归一化调整规模；log1p 压缩跨度；两步都不能恢复绝对分子数。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/figure-normalize",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "归一化调整规模；log1p 压缩跨度；两步都不能恢复绝对分子数。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "(target_sum=None)，目标为处理时细胞总 counts 中位数，历史摘要记录 5,853。某些原注释提到 10,000，是常见可选设置，不是本次"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-2",
+      "term": "t42",
+      "surface": "中位数",
+      "context": "_sum=None)，目标为处理时细胞总 counts 中位数，历史摘要记录 5,853。某些原注释提到 10,000，是常见可选设置，不是本次执行值。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-2",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "注释提到 10,000，是常见可选设置，不是本次执行值。归一化后再做 log1p，也就是自然对数 log(1+x)。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-2",
+      "term": "t32",
+      "surface": "log1p",
+      "context": ",000，是常见可选设置，不是本次执行值。归一化后再做 log1p，也就是自然对数 log(1+x)。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": "总量相同时，一个基因占比更高就会影响其他基因的相对份额。因此相对表达下降不能自动翻译成绝对分子数下降。生物学整"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-3",
+      "term": "t19",
+      "surface": "counts",
+      "context": "counts 层留给需要原始计数的方法，log1p 层供本课多种探索和 marker 检验使用。sca"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-3",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "counts 层留给需要原始计数的方法，log1p 层供本课多种探索和 marker 检验使用。scaled 层用于特定绘图或处理，是另外的"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-3",
+      "term": "t66",
+      "surface": "marker",
+      "context": "留给需要原始计数的方法，log1p 层供本课多种探索和 marker 检验使用。scaled 层用于特定绘图或处理，是另外的数值口径；不能将负 z-score"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-3",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "ed 层用于特定绘图或处理，是另外的数值口径；不能将负 z-score 写回 counts。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-4",
+      "term": "t2",
+      "surface": "基因",
+      "context": "假设某基因计数为 10，细胞总计数为 1,000，目标为 5,853：缩放值为 58.53，log1"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-4",
+      "term": "t32",
+      "surface": "log1p",
+      "context": " 1,000，目标为 5,853：缩放值为 58.53，log1p 后约为 4.086。这个演算只是示意，不是某个真实细胞的测量。另一个细胞即使相同原始基因"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-4",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "量。另一个细胞即使相同原始基因计数，总量不同也会得到不同归一化值。"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-5",
+      "term": "t2",
+      "surface": "基因",
+      "context": "检查细胞、基因维度没有意外改变，counts 与 log1p 都存在，并核对归一化目标和原始总量分布。l"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-5",
+      "term": "t19",
+      "surface": "counts",
+      "context": "检查细胞、基因维度没有意外改变，counts 与 log1p 都存在，并核对归一化目标和原始总量分布。log1p 不保证数据变成正态分"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-5",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "检查细胞、基因维度没有意外改变，counts 与 log1p 都存在，并核对归一化目标和原始总量分布。log1p 不保证数据变成正态分布，后续方法仍需"
+    },
+    {
+      "station": "normalize",
+      "scope": "normalize/normalize-part-5",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "有意外改变，counts 与 log1p 都存在，并核对归一化目标和原始总量分布。log1p 不保证数据变成正态分布，后续方法仍需遵循自身假设。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "有的基因在所有细胞中接近，有的随细胞类型或状态明显改变。高变基因筛选寻找相对于表达丰度更有变化的特"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-1",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "有的基因在所有细胞中接近，有的随细胞类型或状态明显改变。高变基因筛选寻找相对于表达丰度更有变化的特征，让降维聚焦于有信息的方向。技术噪声也可能高变，因此“"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "表达矩阵：保留完整基因 → 均值与变异：控制丰度关系 → 分样本评估：合并高变排名 → 特征子集：2000 基因"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-1",
+      "term": "t6",
+      "surface": "样本",
+      "context": "矩阵：保留完整基因 → 均值与变异：控制丰度关系 → 分样本评估：合并高变排名 → 特征子集：2000 基因参与结构。箭头说明信息依赖，示意框不代表重"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t2",
+      "surface": "基因",
+      "context": "每个示意点是基因，横轴均值、纵轴变异；竖向分箱提醒我们将相近均值的基因比较。标橙色的点示意相对高变，不代表"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t6",
+      "surface": "样本",
+      "context": "高变，不代表真实入选基因。最终 2000 基因由方法和跨样本排名决定，不是拿图上最高的点手动划线。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "最终选择 2,000 个高变基因，但完整对象保留 23,427 个基因，方便后续检查未入选的 marker。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t2",
+      "surface": "基因",
+      "context": "2,000 个高变基因，但完整对象保留 23,427 个基因，方便后续检查未入选的 marker。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t66",
+      "surface": "marker",
+      "context": "整对象保留 23,427 个基因，方便后续检查未入选的 marker。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "s=2000，batch_key=samples；输入 log1p。 一个点是一个基因，左右图展示同一批基因；深色标记是按当前规则选中的高变基因。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "ariable genes 与 other genes；归一化离散度可为负，含义是在表达分箱内低于参照水平，不是负 counts。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t49",
+      "surface": "离散度",
+      "context": "able genes 与 other genes；归一化离散度可为负，含义是在表达分箱内低于参照水平，不是负 counts。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t19",
+      "surface": "counts",
+      "context": "化离散度可为负，含义是在表达分箱内低于参照水平，不是负 counts。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg",
+      "term": "t6",
+      "surface": "样本",
+      "context": "ch_key 会影响合并排名，不能把方法简单说成只取两个样本的交集。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-3",
+      "term": "t2",
+      "surface": "基因",
+      "context": " flavor 的规则合并排名，最终选择 2,000 个基因。它不是一句“两个样本取交集”就能准确概括；需要看 highly_variable、hig"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-3",
+      "term": "t6",
+      "surface": "样本",
+      "context": "合并排名，最终选择 2,000 个基因。它不是一句“两个样本取交集”就能准确概括；需要看 highly_variable、highly_variabl"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-3",
+      "term": "t50",
+      "surface": "highly_variable_nbatches",
+      "context": "”就能准确概括；需要看 highly_variable、highly_variable_nbatches 等实际列。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t6",
+      "surface": "样本",
+      "context": "本案例只有 s1d1、s1d3 两个样本，因此横轴最多为 2；具体频数可在 highly_variable_genes 表复算。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t50",
+      "surface": "highly_variable_nbatches",
+      "context": "value_counts 汇总 highly_variable_nbatches，保持完整基因表。 一根柱统计具有相应 highly_variable_nbatches "
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t2",
+      "surface": "基因",
+      "context": "ighly_variable_nbatches，保持完整基因表。 一根柱统计具有相应 highly_variable_nbatches 值的基因数量。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/figure-hvg_batches",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "不能把所有非零 nbatches 加起来当作最终高变基因数。最终选择还受排序和 n_top_genes 限制。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-4",
+      "term": "t2",
+      "surface": "基因",
+      "context": "主对象仍保留 23,427 个基因。某个经典 marker 没进入高变集合，不妨碍后面检查其表达。把 X 直接裁成高变子集而"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-4",
+      "term": "t66",
+      "surface": "marker",
+      "context": "主对象仍保留 23,427 个基因。某个经典 marker 没进入高变集合，不妨碍后面检查其表达。把 X 直接裁成高变子集而又没有保留完整层，会让后"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-4",
+      "term": "t20",
+      "surface": "X",
+      "context": "marker 没进入高变集合，不妨碍后面检查其表达。把 X 直接裁成高变子集而又没有保留完整层，会让后面的注释证据缺失；本课维持完整基因对象，并用高"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-5",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "接下来 PCA 使用这些特征寻找主要变化方向；图形分开是否代表真实类型，还要用不依赖单个高变选择的 ma"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-5",
+      "term": "t66",
+      "surface": "marker",
+      "context": "；图形分开是否代表真实类型，还要用不依赖单个高变选择的 marker 和 QC 继续验证。"
+    },
+    {
+      "station": "hvg",
+      "scope": "hvg/hvg-part-5",
+      "term": "t36",
+      "surface": "QC",
+      "context": "真实类型，还要用不依赖单个高变选择的 marker 和 QC 继续验证。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "每个细胞原本有成千上万个基因维度。PCA 寻找线性组合，按解释变异从大到小排列；邻居图用选定表示定义局部相似关系，UM"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "每个细胞原本有成千上万个基因维度。PCA 寻找线性组合，按解释变异从大到小排列；邻居图用选定表示定义局部相似关系，UMAP 再尝试"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "基因维度。PCA 寻找线性组合，按解释变异从大到小排列；邻居图用选定表示定义局部相似关系，UMAP 再尝试把局部结构放到二维。t-SNE 提供另一种非线"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "解释变异从大到小排列；邻居图用选定表示定义局部相似关系，UMAP 再尝试把局部结构放到二维。t-SNE 提供另一种非线性观察窗口。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t85",
+      "surface": "尝试",
+      "context": "到小排列；邻居图用选定表示定义局部相似关系，UMAP 再尝试把局部结构放到二维。t-SNE 提供另一种非线性观察窗口。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-1",
+      "term": "t57",
+      "surface": "t-SNE",
+      "context": "示定义局部相似关系，UMAP 再尝试把局部结构放到二维。t-SNE 提供另一种非线性观察窗口。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-1",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "高变基因：多维表达 → PCA：保留主要方向 → 邻居图：局部相似关系 → UMAP / t-SN"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-1",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "高变基因：多维表达 → PCA：保留主要方向 → 邻居图：局部相似关系 → UMAP / t-SNE：可视化窗口。箭头说"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-1",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "高变基因：多维表达 → PCA：保留主要方向 → 邻居图：局部相似关系 → UMAP / t-SNE：可视化窗口。箭头说明信息依赖，示意框不代表重"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-1",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "→ PCA：保留主要方向 → 邻居图：局部相似关系 → UMAP / t-SNE：可视化窗口。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-1",
+      "term": "t57",
+      "surface": "t-SNE",
+      "context": "留主要方向 → 邻居图：局部相似关系 → UMAP / t-SNE：可视化窗口。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-embedding",
+      "term": "t2",
+      "surface": "基因",
+      "context": "左边每行多基因表达变成 PCA 的少数方向，再构建邻居图。二维布局保留部分关系并丢失其他信息，远处两团的"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-embedding",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "左边每行多基因表达变成 PCA 的少数方向，再构建邻居图。二维布局保留部分关系并丢失其他信息，远处两团的距离、旋转方向和"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-embedding",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "左边每行多基因表达变成 PCA 的少数方向，再构建邻居图。二维布局保留部分关系并丢失其他信息，远处两团的距离、旋转方向和面积不能直接翻译为时间、数"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-variance",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "s=50, log=True)。 每个带编号的点对应一个主成分，按解释变异由大到小排列。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-variance",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-variance",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-variance",
+      "term": "t54",
+      "surface": "variance_ratio",
+      "context": "前几个点下降最快的部分，再看后部趋缓；使用原表累加真实 variance_ratio，不能把图上的负数直接相加。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "上排分别展示两对主成分，下排用相同坐标查看 pct_counts_mt。将样本颜色与 QC 分布对照，而不是把 "
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t39",
+      "surface": "pct_counts_mt",
+      "context": "上排分别展示两对主成分，下排用相同坐标查看 pct_counts_mt。将样本颜色与 QC 分布对照，而不是把 PC1 高直接称为表达更高。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t6",
+      "surface": "样本",
+      "context": "成分，下排用相同坐标查看 pct_counts_mt。将样本颜色与 QC 分布对照，而不是把 PC1 高直接称为表达更高。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t36",
+      "surface": "QC",
+      "context": "相同坐标查看 pct_counts_mt。将样本颜色与 QC 分布对照，而不是把 PC1 高直接称为表达更高。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t48",
+      "surface": "高变基因",
+      "context": "高变基因参与 PCA，图对应当前历史表达处理；保留 50 个主成分。 每个点是一枚细胞，而不是一个"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "高变基因参与 PCA，图对应当前历史表达处理；保留 50 个主成分。 每个点是一枚细胞，而不是一个样本；两种样"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t11",
+      "surface": "UMI",
+      "context": " PC3/PC4；它们是多基因表达组合的投影分数，没有 UMI 单位。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-pca",
+      "term": "t8",
+      "surface": "技术批次",
+      "context": "按样本分离可能混合技术批次、组织组成和真实差异；需要实验设计证据才能解释为批次效应。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t6",
+      "surface": "样本",
+      "context": "本例 17,041 个细胞用两个样本色展示。此时还没有依据这张图直接给每团命名。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-umap",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t6",
+      "surface": "样本",
+      "context": "两种样本色在多个团块共存，也有比例不同的区域。其轮廓与 UMAP 不同，是不同嵌入方法的表现。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "两种样本色在多个团块共存，也有比例不同的区域。其轮廓与 UMAP 不同，是不同嵌入方法的表现。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "史第 04 章。 一个点是一枚细胞，颜色为来源样本；与 PCA、UMAP 展示相同对象但使用另一种布局方法。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/figure-tsne",
+      "term": "t57",
+      "surface": "t-SNE",
+      "context": "团块面积和团块间距离不适合直接推断细胞数量与发育关系。t-SNE 图分开不等于检验显著。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-5",
+      "term": "t6",
+      "surface": "样本",
+      "context": "；图中一团更大也不一定细胞更多。对一处特殊结构，应询问其样本组成、QC、marker 和邻居参数。每次改变 PC、邻居图或随机设置后，图形也可能变化。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-5",
+      "term": "t36",
+      "surface": "QC",
+      "context": "更大也不一定细胞更多。对一处特殊结构，应询问其样本组成、QC、marker 和邻居参数。每次改变 PC、邻居图或随机设置后，图形也可能变化。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-5",
+      "term": "t66",
+      "surface": "marker",
+      "context": "不一定细胞更多。对一处特殊结构，应询问其样本组成、QC、marker 和邻居参数。每次改变 PC、邻居图或随机设置后，图形也可能变化。"
+    },
+    {
+      "station": "embedding",
+      "scope": "embedding/embedding-part-5",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "本组成、QC、marker 和邻居参数。每次改变 PC、邻居图或随机设置后，图形也可能变化。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-1",
+      "term": "t8",
+      "surface": "技术批次",
+      "context": "技术批次与生物学差异都可能使样本分开。如果处理条件与批次完全重合，仅凭计算难以拆分二者。样本编号是"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-1",
+      "term": "t6",
+      "surface": "样本",
+      "context": "技术批次与生物学差异都可能使样本分开。如果处理条件与批次完全重合，仅凭计算难以拆分二者。样本编号是身份列，不自动证明存在需"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-1",
+      "term": "t58",
+      "surface": "Harmony",
+      "context": "实验设计：技术与生物差异 → 三条候选：原图 / Harmony / BBKNN → 同口径对照：混合与结构保留 → 确认邻居图：下游统一读取。箭头说明信"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-1",
+      "term": "t59",
+      "surface": "BBKNN",
+      "context": "与生物差异 → 三条候选：原图 / Harmony / BBKNN → 同口径对照：混合与结构保留 → 确认邻居图：下游统一读取。箭头说明信息依赖，示意框不"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-1",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "/ BBKNN → 同口径对照：混合与结构保留 → 确认邻居图：下游统一读取。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-integration",
+      "term": "t58",
+      "surface": "Harmony",
+      "context": "未整合、Harmony 和 BBKNN 的改变位置不同。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-integration",
+      "term": "t59",
+      "surface": "BBKNN",
+      "context": "未整合、Harmony 和 BBKNN 的改变位置不同。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-integration",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "顶部三块分别说明不调整图、调整 PCA 表示、按批次平衡邻居。底部再汇合为一个明确选定的下游图；不能在不说明的情况下用某路线的 "
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-integration",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "为一个明确选定的下游图；不能在不说明的情况下用某路线的 UMAP 配另一条路线的聚类。箭头不是三条路线都被采用。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-2",
+      "term": "t58",
+      "surface": "Harmony",
+      "context": "未整合保留原邻居关系；Harmony 在表示空间调整批次相关结构，再重建邻居图；BBKNN 在选邻居时平衡批次来源。它们不会因"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-2",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "关系；Harmony 在表示空间调整批次相关结构，再重建邻居图；BBKNN 在选邻居时平衡批次来源。它们不会因此给我们一个“去批次后的真实原始 coun"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-2",
+      "term": "t59",
+      "surface": "BBKNN",
+      "context": "armony 在表示空间调整批次相关结构，再重建邻居图；BBKNN 在选邻居时平衡批次来源。它们不会因此给我们一个“去批次后的真实原始 counts”。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "衡批次来源。它们不会因此给我们一个“去批次后的真实原始 counts”。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t58",
+      "surface": "Harmony",
+      "context": "ed，summary 中也记录该路线。不要因教程展示了 Harmony/BBKNN 就误以为最终使用它们。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t59",
+      "surface": "BBKNN",
+      "context": "ry 中也记录该路线。不要因教程展示了 Harmony/BBKNN 就误以为最终使用它们。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_raw",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t58",
+      "surface": "Harmony",
+      "context": "该图来自 Harmony 的 PCA 表示重建邻居图，再计算 UMAP；比较两种样本在同一局部群内的混合，而非只看"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "该图来自 Harmony 的 PCA 表示重建邻居图，再计算 UMAP；比较两种样本在同一局部群内的混合，而非只看整张图像变圆"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "该图来自 Harmony 的 PCA 表示重建邻居图，再计算 UMAP；比较两种样本在同一局部群内的混合，而非只看整张图像变圆。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "自 Harmony 的 PCA 表示重建邻居图，再计算 UMAP；比较两种样本在同一局部群内的混合，而非只看整张图像变圆。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t6",
+      "surface": "样本",
+      "context": " 的 PCA 表示重建邻居图，再计算 UMAP；比较两种样本在同一局部群内的混合，而非只看整张图像变圆。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_harmony",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t59",
+      "surface": "BBKNN",
+      "context": "BBKNN 改变邻居选择方式；不能解释成把原始 counts 的批次差异减掉。该路线已计算，但历史主"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t19",
+      "surface": "counts",
+      "context": "BBKNN 改变邻居选择方式；不能解释成把原始 counts 的批次差异减掉。该路线已计算，但历史主线没有选作下游图。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/figure-int_bbknn",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-3",
+      "term": "t6",
+      "surface": "样本",
+      "context": "先对照同类细胞内的样本混合，再看稀有群和已知 marker 结构是否保留。过强混合可能把生物差异一起抹掉；混合不"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-3",
+      "term": "t66",
+      "surface": "marker",
+      "context": "先对照同类细胞内的样本混合，再看稀有群和已知 marker 结构是否保留。过强混合可能把生物差异一起抹掉；混合不足也可能让后面聚类受技术结构主导。坐"
+    },
+    {
+      "station": "integration",
+      "scope": "integration/integration-part-4",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "应呈现三条真实候选，给出理由，再记录用户选择。决定选哪张邻居图会影响后续聚类与解释，不能把三张图随意混用。若实验设计无需整合，也应记录依据。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-1",
+      "term": "t60",
+      "surface": "Leiden",
+      "context": "Leiden 根据邻居图寻找联系更紧密的群体。分辨率控制粒度，但并不直接指定生物学细胞类型数。同一数据"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-1",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "Leiden 根据邻居图寻找联系更紧密的群体。分辨率控制粒度，但并不直接指定生物学细胞类型数。同一数据可以存在多种"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-1",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "Leiden 根据邻居图寻找联系更紧密的群体。分辨率控制粒度，但并不直接指定生物学细胞类型数。同一数据可以存在多种有用尺度：粗尺度看谱系，细尺"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "选定邻居图：固定上游路线 → 多种分辨率：5 / 16 / 25 / 37 簇 → QC 与样本组成"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "选定邻居图：固定上游路线 → 多种分辨率：5 / 16 / 25 / 37 簇 → QC 与样本组成：检查异常群 → marker"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t62",
+      "surface": "簇",
+      "context": "路线 → 多种分辨率：5 / 16 / 25 / 37 簇 → QC 与样本组成：检查异常群 → marker 复核：下一站比较粒度。箭头说明信息依"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t36",
+      "surface": "QC",
+      "context": " 多种分辨率：5 / 16 / 25 / 37 簇 → QC 与样本组成：检查异常群 → marker 复核：下一站比较粒度。箭头说明信息依赖，示意框"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t6",
+      "surface": "样本",
+      "context": "辨率：5 / 16 / 25 / 37 簇 → QC 与样本组成：检查异常群 → marker 复核：下一站比较粒度。箭头说明信息依赖，示意框不代表重"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "5 / 37 簇 → QC 与样本组成：检查异常群 → marker 复核：下一站比较粒度。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-graph",
+      "term": "t60",
+      "surface": "Leiden",
+      "context": "边表示局部相似，Leiden 按图结构分群，编号没有跨运行身份。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-graph",
+      "term": "t66",
+      "surface": "marker",
+      "context": "大社区描述，右侧在同一批点上划出更细社区。细分后要核对 marker、QC、人数和样本组成，不能用社区数量替代生物学解释。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-graph",
+      "term": "t36",
+      "surface": "QC",
+      "context": "侧在同一批点上划出更细社区。细分后要核对 marker、QC、人数和样本组成，不能用社区数量替代生物学解释。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-graph",
+      "term": "t6",
+      "surface": "样本",
+      "context": "上划出更细社区。细分后要核对 marker、QC、人数和样本组成，不能用社区数量替代生物学解释。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t62",
+      "surface": "簇",
+      "context": "5、16、25、37 簇分别对应四个分辨率。低分辨率会把免疫细胞合并为较混杂大群，细分后仍需 marker 验证。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "5、16、25、37 簇分别对应四个分辨率。低分辨率会把免疫细胞合并为较混杂大群，细分后仍需 marker 验证。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t66",
+      "surface": "marker",
+      "context": "辨率。低分辨率会把免疫细胞合并为较混杂大群，细分后仍需 marker 验证。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t60",
+      "surface": "Leiden",
+      "context": "5/16/25/37 簇。 四个面板是同一批细胞的四种 Leiden 分辨率结果，细胞坐标保持一致，颜色与数字是各自聚类号。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/figure-clusters",
+      "term": "t6",
+      "surface": "样本",
+      "context": "2 的粗团块追踪到 0.50、1.00、2.00，结合分样本簇数量和 marker 证据判断哪些拆分有可解释依据。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-2",
+      "term": "t62",
+      "surface": "簇",
+      "context": "看每个簇的样本组成、人数与 QC。某簇如果几乎全来自单一样本，先查实验设计和批次；某簇若线粒体高、"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-2",
+      "term": "t6",
+      "surface": "样本",
+      "context": "看每个簇的样本组成、人数与 QC。某簇如果几乎全来自单一样本，先查实验设计和批次；某簇若线粒体高、检出基"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-2",
+      "term": "t36",
+      "surface": "QC",
+      "context": "看每个簇的样本组成、人数与 QC。某簇如果几乎全来自单一样本，先查实验设计和批次；某簇若线粒体高、检出基因低，可能是质量相"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": "全来自单一样本，先查实验设计和批次；某簇若线粒体高、检出基因低，可能是质量相关结构。但不能只因某项高就删除整簇。"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-3",
+      "term": "t62",
+      "surface": "簇",
+      "context": "0.02 的 0 簇与 0.50 的 0 簇不是同一个标签定义。跨分辨率比较要看细胞成员、marker 与组成"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-3",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "的 0 簇与 0.50 的 0 簇不是同一个标签定义。跨分辨率比较要看细胞成员、marker 与组成。历史粗粒度出现 Immune_mixed，是提醒这"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-3",
+      "term": "t66",
+      "surface": "marker",
+      "context": "的 0 簇不是同一个标签定义。跨分辨率比较要看细胞成员、marker 与组成。历史粗粒度出现 Immune_mixed，是提醒这个群混杂，而非一种正式独立细胞"
+    },
+    {
+      "station": "clustering",
+      "scope": "clustering/clustering-part-4",
+      "term": "t66",
+      "surface": "marker",
+      "context": "先让第 06 章保留所有候选，再由第 07 章用同一套 marker 比较，确认粗、细两种聚类列。这样学生知道每种粒度解释了什么，不必在看到证据前盲选一个 r"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-1",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "UMAP 表达图问“信号在哪里”，小提琴问“群内分布怎样”，点图同时问“多少细胞检出、均值多高”，"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-1",
+      "term": "t69",
+      "surface": "热图",
+      "context": "，点图同时问“多少细胞检出、均值多高”，矩阵图看群均值，热图展开单细胞差异。切换图形不等于重复证明同一个结论，它们提供互补视角。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "适用 marker：先核对物种与组织 → 真实表达：均值 / 比例 / 分布 → 多种图形：点图 / 热图 "
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-1",
+      "term": "t69",
+      "surface": "热图",
+      "context": "表达：均值 / 比例 / 分布 → 多种图形：点图 / 热图 / UMAP → 证据组合：支持与反证。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-1",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": " / 比例 / 分布 → 多种图形：点图 / 热图 / UMAP → 证据组合：支持与反证。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-dotplot",
+      "term": "t2",
+      "surface": "基因",
+      "context": "色不同，表示比例相同但均值显示值不同。真实缩放点图按每个基因在所示群体之间缩放颜色，不是每基因的绝对 UMI 数。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-dotplot",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "点图按每个基因在所示群体之间缩放颜色，不是每基因的绝对 UMI 数。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_feature",
+      "term": "t66",
+      "surface": "marker",
+      "context": "r=False；遮挡也会影响视觉。 每个小面板显示一个 marker 在全部细胞上的表达，最后的分类面板用于对照聚类。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_feature",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_feature",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_feature",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "横纵轴为 UMAP 坐标；每个基因旁色条为该基因本图表达范围。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_violin",
+      "term": "t66",
+      "surface": "marker",
+      "context": "查看 HBA1/HBB 与增殖相关 marker 的分布，可区分普遍的红系信号和只出现在一部分细胞的增殖状态。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_violin",
+      "term": "t14",
+      "surface": "红系",
+      "context": "/HBB 与增殖相关 marker 的分布，可区分普遍的红系信号和只出现在一部分细胞的增殖状态。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_violin",
+      "term": "t2",
+      "surface": "基因",
+      "context": "y 为实际聚类列，inner=box。 每个面板对应一个基因，各小提琴对应一个聚类内所有细胞的表达分布。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_violin",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_violin",
+      "term": "t67",
+      "surface": "dotplot",
+      "context": "再比较中位与长尾。均值高可能由少数高表达细胞拉动，配合 dotplot 的检出比例更清楚。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "这是粗分辨率的群体展示，先辨认 5 个分组，再查看红系与免疫 marker 的不同分布。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t14",
+      "surface": "红系",
+      "context": "这是粗分辨率的群体展示，先辨认 5 个分组，再查看红系与免疫 marker 的不同分布。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t66",
+      "surface": "marker",
+      "context": "分辨率的群体展示，先辨认 5 个分组，再查看红系与免疫 marker 的不同分布。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t64",
+      "surface": "dendrogram",
+      "context": "sc.pl.stacked_violin，dendrogram=True。 紧凑排列的小提琴分别描述一个群内一个基因的分布；它没有把每个小提琴简化为单个"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t2",
+      "surface": "基因",
+      "context": "ram=True。 紧凑排列的小提琴分别描述一个群内一个基因的分布；它没有把每个小提琴简化为单个均值。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "standard_scale=var 是显示用按基因缩放；树状图辅助排列群体，不是发育顺序。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t22",
+      "surface": "var",
+      "context": "standard_scale=var 是显示用按基因缩放；树状图辅助排列群体，不是发育顺序。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t68",
+      "surface": "matrixplot",
+      "context": "个群的一组 marker，再沿相同基因跨群观察分布，与 matrixplot 的均值和 dotplot 的比例互补。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-stacked",
+      "term": "t67",
+      "surface": "dotplot",
+      "context": "同基因跨群观察分布，与 matrixplot 的均值和 dotplot 的比例互补。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "lor 表保存显示颜色，marker_mean 保存原 log1p 均值，不能互换。 一个圆点对应一个细胞群与一个基因的组合；分组通常在纵轴，基因在横轴，遇"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t2",
+      "surface": "基因",
+      "context": "og1p 均值，不能互换。 一个圆点对应一个细胞群与一个基因的组合；分组通常在纵轴，基因在横轴，遇到 swap_axes 则按真实标签读。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 cou"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t22",
+      "surface": "var",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-marker_dot",
+      "term": "t19",
+      "surface": "counts",
+      "context": "在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t66",
+      "surface": "marker",
+      "context": "蓝色高值分布在不同 marker 模块：展示的是组均值的相对模式；从这里不能直接读出检出百分比。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t68",
+      "surface": "matrixplot",
+      "context": "sc.pl.matrixplot，standard_scale=var，cmap=Blues。 一个色块对应一个分组内一个"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "sc.pl.matrixplot，standard_scale=var，cmap=Blues。 一个色块对应一个分组内一个基因的平均表达，不是单个细胞。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t22",
+      "surface": "var",
+      "context": "l.matrixplot，standard_scale=var，cmap=Blues。 一个色块对应一个分组内一个基因的平均表达，不是单个细胞。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t2",
+      "surface": "基因",
+      "context": "ar，cmap=Blues。 一个色块对应一个分组内一个基因的平均表达，不是单个细胞。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-matrix",
+      "term": "t64",
+      "surface": "树状图",
+      "context": "横轴是基因，纵轴是分组；树状图可能改变显示顺序，但没有改变分组成员。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "aled_view 在单独对象的 scaled 层计算 z-score，原 counts/log1p 保留。 一个色块是分组内基因 z-score 的均值，用来"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t19",
+      "surface": "counts",
+      "context": "在单独对象的 scaled 层计算 z-score，原 counts/log1p 保留。 一个色块是分组内基因 z-score 的均值，用来强调基因相对于自身"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "scaled 层计算 z-score，原 counts/log1p 保留。 一个色块是分组内基因 z-score 的均值，用来强调基因相对于自身整体水平的高"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t2",
+      "surface": "基因",
+      "context": "，原 counts/log1p 保留。 一个色块是分组内基因 z-score 的均值，用来强调基因相对于自身整体水平的高低。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zmatrix",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t69",
+      "surface": "heatmap",
+      "context": "sc.pl.heatmap，默认方向，cmap=viridis。 每条细胞行对应一枚细胞，每列对应一个 marker"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t66",
+      "surface": "marker",
+      "context": "viridis。 每条细胞行对应一枚细胞，每列对应一个 marker；旁侧色条标出所属聚类。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "standard_scale=var 对基因显示范围缩放到 0–1；树状图是群体排序信息。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t22",
+      "surface": "var",
+      "context": "standard_scale=var 对基因显示范围缩放到 0–1；树状图是群体排序信息。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t64",
+      "surface": "树状图",
+      "context": "rd_scale=var 对基因显示范围缩放到 0–1；树状图是群体排序信息。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-heat",
+      "term": "t61",
+      "surface": "分辨率",
+      "context": "看起来大片同色也可能受渲染分辨率影响。放大原图并结合点图，不能仅用热图估计准确检出率。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zheat",
+      "term": "t2",
+      "surface": "基因",
+      "context": "=scaled；cmap=RdBu_r。 每一条细胞行与基因列交叉处表示该细胞该基因的 z-score。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zheat",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "u_r。 每一条细胞行与基因列交叉处表示该细胞该基因的 z-score。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zheat",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zheat",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/figure-zheat",
+      "term": "t69",
+      "surface": "热图",
+      "context": "ore 看见负数不代表表达为负；此图不能与 0–1 缩放热图共用同一色条解释。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-6",
+      "term": "t35",
+      "surface": "基因 ID",
+      "context": "使用前核对物种、组织和基因 ID。骨髓中的 HBA1/HBB、MS4A1、CD3D/TRAC、LYZ 等提供不同谱系线索，"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-6",
+      "term": "t2",
+      "surface": "基因",
+      "context": "、CD3D/TRAC、LYZ 等提供不同谱系线索，但每个基因都不是无条件专一。证据应包含多个支持 marker、反证、检出比例、QC 和样本组成。不存"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-6",
+      "term": "t66",
+      "surface": "marker",
+      "context": "系线索，但每个基因都不是无条件专一。证据应包含多个支持 marker、反证、检出比例、QC 和样本组成。不存在的数据列或未检测基因要明确说明，不能把缺失当阴性"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-6",
+      "term": "t36",
+      "surface": "QC",
+      "context": "专一。证据应包含多个支持 marker、反证、检出比例、QC 和样本组成。不存在的数据列或未检测基因要明确说明，不能把缺失当阴性。"
+    },
+    {
+      "station": "markers",
+      "scope": "markers/markers-part-6",
+      "term": "t6",
+      "surface": "样本",
+      "context": "据应包含多个支持 marker、反证、检出比例、QC 和样本组成。不存在的数据列或未检测基因要明确说明，不能把缺失当阴性。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/annotation-part-1",
+      "term": "t72",
+      "surface": "细胞注释",
+      "context": "聚类只提供计算分组。细胞注释把本次分组与生物学知识联系起来，必须同时考虑 marker、群内异质性、质量和组织背景。粗"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/annotation-part-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "。细胞注释把本次分组与生物学知识联系起来，必须同时考虑 marker、群内异质性、质量和组织背景。粗标签便于概括，细标签表达更具体判断，但需要更强支持。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-1",
+      "term": "t62",
+      "surface": "簇",
+      "context": "当前簇与 marker：程序导出证据 → AI 建议表：支持 / 反证 / 不确定 → 用户核对"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "当前簇与 marker：程序导出证据 → AI 建议表：支持 / 反证 / 不确定 → 用户核对：接受或修改 →"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-annotation",
+      "term": "t66",
+      "surface": "marker",
+      "context": "支持 marker、反证、QC 与不确定性共同约束一个建议。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-annotation",
+      "term": "t36",
+      "surface": "QC",
+      "context": "支持 marker、反证、QC 与不确定性共同约束一个建议。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-annotation",
+      "term": "t62",
+      "surface": "簇",
+      "context": "类成员变化，旧标签映射和旧确认都需要重新核对。程序导出的簇号与人数不是 AI 可以自由编造的内容。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t62",
+      "surface": "簇",
+      "context": "16 个细粒度簇可比 5 个粗簇展示更多差异，但细分标签仍需支持 marker、反证、QC 和不确定性共同"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t66",
+      "surface": "marker",
+      "context": "粒度簇可比 5 个粗簇展示更多差异，但细分标签仍需支持 marker、反证、QC 和不确定性共同决定。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t36",
+      "surface": "QC",
+      "context": "簇展示更多差异，但细分标签仍需支持 marker、反证、QC 和不确定性共同决定。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "lor 表保存显示颜色，marker_mean 保存原 log1p 均值，不能互换。 一个圆点对应一个细胞群与一个基因的组合；分组通常在纵轴，基因在横轴，遇"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t2",
+      "surface": "基因",
+      "context": "og1p 均值，不能互换。 一个圆点对应一个细胞群与一个基因的组合；分组通常在纵轴，基因在横轴，遇到 swap_axes 则按真实标签读。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 cou"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t22",
+      "surface": "var",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-fine_dot",
+      "term": "t19",
+      "surface": "counts",
+      "context": "在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t60",
+      "surface": "Leiden",
+      "context": "并排展示 Leiden、一级与二级标签；Low_quality_lymphoid_like 等名称保留不确定性，"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/figure-manual",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/annotation-part-2",
+      "term": "t62",
+      "surface": "簇",
+      "context": "标签。它不是新数据的答案。换数据、聚类或成员后，相同数字簇号可能对应完全不同群体。"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/annotation-part-3",
+      "term": "t62",
+      "surface": "簇",
+      "context": "AI 逐簇说明拟注释成什么、有哪些支持、反证是否存在、哪里不确定，并给出本次证据路径。用户可以接受或"
+    },
+    {
+      "station": "annotation",
+      "scope": "annotation/annotation-part-3",
+      "term": "t73",
+      "surface": "Uncertain",
+      "context": "，并给出本次证据路径。用户可以接受或修改。证据不足时用 Uncertain 或谨慎描述，不能为了把表填满而硬判一种类型。support 是定性支持程度，不是正确概率"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/subgroup-part-1",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "深入 B 群，可以在原图上限制划分，也可以提取该群后重新归一化、选特征、降维与建图。两条路线回答的局部问题接近，但计算参照不同。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": " → 提取后重建：重新选择特征与邻居 → 比较两条路线：marker 与粒度。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-subgroup",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "保留原邻居图限制聚类，或提取细胞重新建立局部表示。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-subgroup",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "居关系和特征参照不同。原图路线保留全体背景；子集路线重新归一化、选特征、PCA 和邻居图。两图之间靠细胞 ID 对应，不能直接比较横纵坐标值。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-subgroup",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "不同。原图路线保留全体背景；子集路线重新归一化、选特征、PCA 和邻居图。两图之间靠细胞 ID 对应，不能直接比较横纵坐标值。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "全体对象仍在，B 群在原邻居图内细分；其他群保留作背景，不能把全图点数当作 B 子集点数。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-restricted",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t62",
+      "surface": "簇",
+      "context": "级 B_cells 共 2,268 枚细胞，并得到两个子簇。重建后坐标与全图不可逐点按数值比较。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低维嵌入中相近；"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "图只看粗级 B_cells 的 2,268 枚细胞；重新归一化与建图后，参照范围和坐标均不同于全体对象。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t66",
+      "surface": "marker",
+      "context": "查点代表的对象和标题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_umap",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t2",
+      "surface": "基因",
+      "context": "在本次子集范围内按基因缩放，颜色参照范围已经改变；不要把这里的深红与全体对象点图直接作绝对量比较。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "lor 表保存显示颜色，marker_mean 保存原 log1p 均值，不能互换。 一个圆点对应一个细胞群与一个基因的组合；分组通常在纵轴，基因在横轴，遇"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t31",
+      "surface": "归一化",
+      "context": "图只看粗级 B_cells 的 2,268 枚细胞；重新归一化与建图后，参照范围和坐标均不同于全体对象。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 cou"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t22",
+      "surface": "var",
+      "context": "颜色是分组平均表达；本图 standard_scale=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "=var 将每个基因的组均值在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t19",
+      "surface": "counts",
+      "context": "在组间缩放到 0–1，不是 z-score，也不是原始 counts。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-sub_dot",
+      "term": "t66",
+      "surface": "marker",
+      "context": "按同一基因纵向比较各群，再沿同一群横向看一组相互支持的 marker。大而浅与小而深表达不同情形，要同时读大小和颜色。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t14",
+      "surface": "红系",
+      "context": "本图使用细粒度手工注释列，叶端包括红系、淋巴和髓系等标签；它不是 B 子群的发育轨迹。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t15",
+      "surface": "髓系",
+      "context": "本图使用细粒度手工注释列，叶端包括红系、淋巴和髓系等标签；它不是 B 子群的发育轨迹。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t64",
+      "surface": "dendrogram",
+      "context": "sc.tl.dendrogram 默认在可用 PCA 表示上聚合类别并计算相关性；以实际 uns 记录为准。 每个叶端是一"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t52",
+      "surface": "PCA",
+      "context": "sc.tl.dendrogram 默认在可用 PCA 表示上聚合类别并计算相关性；以实际 uns 记录为准。 每个叶端是一个注释群体，分枝根据"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t27",
+      "surface": "uns",
+      "context": "默认在可用 PCA 表示上聚合类别并计算相关性；以实际 uns 记录为准。 每个叶端是一个注释群体，分枝根据其表示向量相似性连接。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-tree",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t14",
+      "surface": "红系",
+      "context": "红系相关群之间和部分淋巴群之间可见局部相似性；应结合表示空间与 marker，而不能宣称负相关"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t66",
+      "surface": "marker",
+      "context": "群之间和部分淋巴群之间可见局部相似性；应结合表示空间与 marker，而不能宣称负相关说明互相抑制。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t64",
+      "surface": "dendrogram",
+      "context": "sc.pl.correlation_matrix 读取 dendrogram 的相关性结果。 一个格子比较一对注释类别的平均表示；行列都列出同一组类别，对角线是自身比"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t65",
+      "surface": "相关系数",
+      "context": "两轴是细胞类别名称；色条为相关系数，范围 -1 到 1，无 UMI 单位。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "是细胞类别名称；色条为相关系数，范围 -1 到 1，无 UMI 单位。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/figure-correlation",
+      "term": "t36",
+      "surface": "QC",
+      "context": "状结构，定位一对具体类别，再核对共享 marker 和 QC 是否影响相似性。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/subgroup-part-4",
+      "term": "t66",
+      "surface": "marker",
+      "context": "用户结合 marker 与目标问题确认使用哪条子群路线。重建后的 UMAP 不能按坐标值直接对回全图；应依靠细胞"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/subgroup-part-4",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "marker 与目标问题确认使用哪条子群路线。重建后的 UMAP 不能按坐标值直接对回全图；应依靠细胞 ID。更多子簇仍需证据，不自动等于发现新类型。"
+    },
+    {
+      "station": "subgroup",
+      "scope": "subgroup/subgroup-part-4",
+      "term": "t62",
+      "surface": "簇",
+      "context": "AP 不能按坐标值直接对回全图；应依靠细胞 ID。更多子簇仍需证据，不自动等于发现新类型。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-1",
+      "term": "t62",
+      "surface": "簇",
+      "context": "本例既做每簇对其他簇的 one-versus-rest，也比较细粒度一级标签 B_cells 与 T_"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-1",
+      "term": "t75",
+      "surface": "one-versus-rest",
+      "context": "本例既做每簇对其他簇的 one-versus-rest，也比较细粒度一级标签 B_cells 与 T_NK_ILCs。比较目标不同，背景也不同。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-1",
+      "term": "t77",
+      "surface": "p 值",
+      "context": "T_NK_ILCs。比较目标不同，背景也不同。必须在看 p 值前确定问题，不能挑完显著基因再倒推最有利的问题。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-1",
+      "term": "t2",
+      "surface": "基因",
+      "context": "同，背景也不同。必须在看 p 值前确定问题，不能挑完显著基因再倒推最有利的问题。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-1",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "先明确问题：目标群与参考群 → log1p 表达：Wilcoxon 排名 → 候选表与图：分数 / 幅度 / 校正 p → 边界与验"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-1",
+      "term": "t74",
+      "surface": "Wilcoxon",
+      "context": "先明确问题：目标群与参考群 → log1p 表达：Wilcoxon 排名 → 候选表与图：分数 / 幅度 / 校正 p → 边界与验证：细胞不等于生物重复。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-replicates",
+      "term": "t6",
+      "surface": "样本",
+      "context": "左边每个大框代表一个样本，里面小圆是细胞。细胞级比较适合本课探索 marker；处理或疾病条件效应需要独立样本设计"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-replicates",
+      "term": "t66",
+      "surface": "marker",
+      "context": "框代表一个样本，里面小圆是细胞。细胞级比较适合本课探索 marker；处理或疾病条件效应需要独立样本设计。右边的提示把研究问题、效应幅度、校正 p 值和重复单"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-replicates",
+      "term": "t77",
+      "surface": "p 值",
+      "context": "需要独立样本设计。右边的提示把研究问题、效应幅度、校正 p 值和重复单位放回同一判断中。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-2",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "本课使用 log1p 层，输出 names、scores、logfoldchanges、pvals、pvals"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-2",
+      "term": "t79",
+      "surface": "scores",
+      "context": "本课使用 log1p 层，输出 names、scores、logfoldchanges、pvals、pvals_adj。scores 是排序检验统"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-2",
+      "term": "t76",
+      "surface": "logfoldchanges",
+      "context": "课使用 log1p 层，输出 names、scores、logfoldchanges、pvals、pvals_adj。scores 是排序检验统计量，logfoldchang"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-2",
+      "term": "t78",
+      "surface": "多重检验",
+      "context": "现给出的近似 log2 倍数变化，pvals_adj 是多重检验校正后的值。三者含义不同；p 值不能当效应大小。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-2",
+      "term": "t77",
+      "surface": "p 值",
+      "context": "pvals_adj 是多重检验校正后的值。三者含义不同；p 值不能当效应大小。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t62",
+      "surface": "簇",
+      "context": "每簇前 3 个候选展示在多个群体中；同一基因可能在不止一个群体检出，因此需要结合特异性过滤表。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t2",
+      "surface": "基因",
+      "context": "每簇前 3 个候选展示在多个群体中；同一基因可能在不止一个群体检出，因此需要结合特异性过滤表。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "k_genes_groups_dotplot，检验使用 log1p 与 Wilcoxon。 圆点表示某个分组与所选排名基因的组合；基因来自 Wilcoxon"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t74",
+      "surface": "Wilcoxon",
+      "context": "groups_dotplot，检验使用 log1p 与 Wilcoxon。 圆点表示某个分组与所选排名基因的组合；基因来自 Wilcoxon 结果，展示与检验不是"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t71",
+      "surface": "standard_scale",
+      "context": "颜色按本图图例为 mean expression。没有 standard_scale=var 的图不能套用 0–1 缩放解释。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t22",
+      "surface": "var",
+      "context": "xpression。没有 standard_scale=var 的图不能套用 0–1 缩放解释。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t64",
+      "surface": "树状图",
+      "context": "颜色显示当前 log1p 均值，圆面积反映检出比例；树状图决定组的显示顺序。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t77",
+      "surface": "p 值",
+      "context": "arkers_by_cluster 的分数、幅度与校正 p 值。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_dot",
+      "term": "t51",
+      "surface": "阈值",
+      "context": "进入 Top 名单不等于达到显著阈值或具有足够特异性。细胞级检验不能代替生物重复支持的条件比较。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t2",
+      "surface": "基因",
+      "context": "基因名称在纵轴、细胞沿横向排列；它与第 07 章细胞纵向排列的图读法不同。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t62",
+      "surface": "簇",
+      "context": "e。 本图每行是排名基因，每列是一枚细胞，顶部类别条标记簇。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t69",
+      "surface": "热图",
+      "context": "swap_axes=True 后方向与第 07 章热图相反；两轴为基因和细胞类别顺序，非时间。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t33",
+      "surface": "z-score",
+      "context": "bwr 色条显示 scaled 层 z-score，-3 到 3 截断；基因是每簇前 3 名，重复基因可再次出现。"
+    },
+    {
+      "station": "de",
+      "scope": "de/figure-de_heat",
+      "term": "t77",
+      "surface": "p 值",
+      "context": "在同一数据中发现并展示，不能当作独立验证；热图颜色不是 p 值。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-3",
+      "term": "t62",
+      "surface": "簇",
+      "context": "filter_rank_genes_groups 按簇内/簇外检出比例等规则过滤，不符合规则的候选可在对应导出位置留下空 names。它不等于原"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-3",
+      "term": "t2",
+      "surface": "基因",
+      "context": "在对应导出位置留下空 names。它不等于原数据缺少那个基因，也不意味着应随意填一个新名字。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-4",
+      "term": "t74",
+      "surface": "Wilcoxon",
+      "context": "本课细胞级 Wilcoxon 作为描述性 marker 探索。要回答疾病或处理条件效应，需要独立生物学重复和匹配的设计"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-4",
+      "term": "t66",
+      "surface": "marker",
+      "context": "本课细胞级 Wilcoxon 作为描述性 marker 探索。要回答疾病或处理条件效应，需要独立生物学重复和匹配的设计，可考虑按样本与细胞类型汇"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-4",
+      "term": "t7",
+      "surface": "生物学重复",
+      "context": " marker 探索。要回答疾病或处理条件效应，需要独立生物学重复和匹配的设计，可考虑按样本与细胞类型汇总等方法，但本次教程不额外增加未运行的正式分析结果。"
+    },
+    {
+      "station": "de",
+      "scope": "de/de-part-4",
+      "term": "t6",
+      "surface": "样本",
+      "context": "或处理条件效应，需要独立生物学重复和匹配的设计，可考虑按样本与细胞类型汇总等方法，但本次教程不额外增加未运行的正式分析结果。"
+    },
+    {
+      "station": "models",
+      "scope": "models/models-part-1",
+      "term": "t80",
+      "surface": "CellTypist",
+      "context": "CellTypist 将细胞表达与训练得到的类型模式比较。可用模型受物种、组织、发育阶段、疾病背景、基因 ID"
+    },
+    {
+      "station": "models",
+      "scope": "models/models-part-1",
+      "term": "t35",
+      "surface": "基因 ID",
+      "context": "类型模式比较。可用模型受物种、组织、发育阶段、疾病背景、基因 ID 和标签粒度限制。一个名字含 Immune 的模型并不因此适合任何物种的免疫相关数据。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-1",
+      "term": "t66",
+      "surface": "marker",
+      "context": "预测：粗细标签与评分 → 交叉核对：手工 / 模型 / marker → 主标签确认：进入最终报告。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-models",
+      "term": "t2",
+      "surface": "基因",
+      "context": "左侧是经过物种、组织和基因匹配检查的模型；中央将本次细胞映射到已有标签。右侧保留手工证据与模型意见的对照，不用某个高"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t80",
+      "surface": "CellTypist",
+      "context": "分别保留，用真实列名区分，不凭文件名推断适配。 左图是 CellTypist 标签，右图是同一细胞的模型评分；一个点仍是一枚细胞。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "两轴为当前 UMAP 坐标，右色条是模型输出的 conf_score，通常在 0–1；它没有 UMI 单位。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "型输出的 conf_score，通常在 0–1；它没有 UMI 单位。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_coarse",
+      "term": "t82",
+      "surface": "交叉表",
+      "context": "先检查模型物种/组织和标签粒度，再看低分区域及手工/自动交叉表，定位不一致群体的 marker。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t66",
+      "surface": "marker",
+      "context": "出更多名称；标签更细不意味着证据更强。对低分区域应回看 marker 和模型训练范围。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t80",
+      "surface": "CellTypist",
+      "context": "分别保留，用真实列名区分，不凭文件名推断适配。 左图是 CellTypist 标签，右图是同一细胞的模型评分；一个点仍是一枚细胞。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "两轴为当前 UMAP 坐标，右色条是模型输出的 conf_score，通常在 0–1；它没有 UMI 单位。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t11",
+      "surface": "UMI",
+      "context": "型输出的 conf_score，通常在 0–1；它没有 UMI 单位。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_fine",
+      "term": "t82",
+      "surface": "交叉表",
+      "context": "先检查模型物种/组织和标签粒度，再看低分区域及手工/自动交叉表，定位不一致群体的 marker。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t56",
+      "surface": "UMAP",
+      "context": "三种标签共享同一 UMAP 布局，适合定位意见不一致的群体；最终报告采用哪一列需基于实际证据与用户确认。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t55",
+      "surface": "邻居图",
+      "context": "从当前邻居图计算 UMAP；随机种子、PC 与邻居设置都影响布局。 每个点是一枚细胞，相近表示在本次低"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t2",
+      "surface": "基因",
+      "context": "例。主线对象保留 17,041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t66",
+      "surface": "marker",
+      "context": ",041 枚细胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t53",
+      "surface": "主成分",
+      "context": "胞、23,427 个基因；图中只展示指定 marker、主成分或群体汇总，不能据展示元素数反推完整对象维度。"
+    },
+    {
+      "station": "models",
+      "scope": "models/figure-auto_compare",
+      "term": "t36",
+      "surface": "QC",
+      "context": "题，再看群体内部混合及边缘，最后回到 marker 和 QC 表检验看似分开的群体。"
+    },
+    {
+      "station": "models",
+      "scope": "models/models-part-3",
+      "term": "t82",
+      "surface": "交叉表",
+      "context": "交叉表每格是同时获得对应手工与自动标签的细胞数。粗细名称不完全对应，不能直接将非对角线都算错误。"
+    },
+    {
+      "station": "models",
+      "scope": "models/models-part-3",
+      "term": "t66",
+      "surface": "marker",
+      "context": " 与 B cells 之间可能存在模型粒度差别，应回到 marker 与训练标签说明检查。"
+    },
+    {
+      "station": "models",
+      "scope": "models/models-part-4",
+      "term": "t81",
+      "surface": "模型分数",
+      "context": "模型分数不等于校准正确率；低分提示需要核对，高分也可能是模型面对域外数据的自信错误。手工与模型列都"
+    },
+    {
+      "station": "report",
+      "scope": "report/figure-1",
+      "term": "t6",
+      "surface": "样本",
+      "context": "确认主标签：真实选择记录 → 汇总组成：样本与细胞类型 → 逐章解释：目的 / 方法 / 结果 / 局限 → 同步交付：Word / "
+    },
+    {
+      "station": "report",
+      "scope": "report/figure-report",
+      "term": "t85",
+      "surface": "尝试",
+      "context": "每段解读绑定当前尝试和图表，更新后要检查是否仍有效。"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": "历史汇总保留 17,041 个细胞、23,427 个基因以及 counts/log1p 层。sample_celltype_counts 按样本与"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-2",
+      "term": "t19",
+      "surface": "counts",
+      "context": "总保留 17,041 个细胞、23,427 个基因以及 counts/log1p 层。sample_celltype_counts 按样本与最终标签汇总；总数"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-2",
+      "term": "t32",
+      "surface": "log1p",
+      "context": "041 个细胞、23,427 个基因以及 counts/log1p 层。sample_celltype_counts 按样本与最终标签汇总；总数应与对象一致"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-2",
+      "term": "t6",
+      "surface": "样本",
+      "context": "p 层。sample_celltype_counts 按样本与最终标签汇总；总数应与对象一致。细胞组成比例是当前捕获和过滤范围的描述，不自动等于原组织"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-3",
+      "term": "t85",
+      "surface": "尝试",
+      "context": " 合成 Word 与 Markdown。旧解释如果对应旧尝试、旧图或旧科学表格，不能继续当新结果；网页也要显示它需要更新。"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-4",
+      "term": "t84",
+      "surface": "检查点",
+      "context": "字号、边距、图例位置属于展示调整，可从检查点重绘，保留脚本与旧图。过滤、基因集合、聚类和注释变化影响科学内容，应按依赖顺序重新运行。即"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-4",
+      "term": "t91",
+      "surface": "重绘",
+      "context": "字号、边距、图例位置属于展示调整，可从检查点重绘，保留脚本与旧图。过滤、基因集合、聚类和注释变化影响科学内容，应按依赖顺序重新运行。即使只"
+    },
+    {
+      "station": "report",
+      "scope": "report/report-part-4",
+      "term": "t2",
+      "surface": "基因",
+      "context": "位置属于展示调整，可从检查点重绘，保留脚本与旧图。过滤、基因集合、聚类和注释变化影响科学内容，应按依赖顺序重新运行。即使只重绘，也要实际打开图片确认没"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-1",
+      "term": "t10",
+      "surface": "barcode",
+      "context": "10x H5 将矩阵与 feature/barcode 信息装进一个容器；MTX 常以 matrix、features、barcodes 多文件"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-1",
+      "term": "t30",
+      "surface": "MTX",
+      "context": "阵与 feature/barcode 信息装进一个容器；MTX 常以 matrix、features、barcodes 多文件配合；H5AD 是 Ann"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-1",
+      "term": "t29",
+      "surface": "H5AD",
+      "context": "rix、features、barcodes 多文件配合；H5AD 是 AnnData 对象，可能已经处理。格式只是封装方式，不能证明内部数值是原始 cou"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-1",
+      "term": "t18",
+      "surface": "AnnData",
+      "context": "tures、barcodes 多文件配合；H5AD 是 AnnData 对象，可能已经处理。格式只是封装方式，不能证明内部数值是原始 counts。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-1",
+      "term": "t19",
+      "surface": "counts",
+      "context": "可能已经处理。格式只是封装方式，不能证明内部数值是原始 counts。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-1",
+      "term": "t30",
+      "surface": "MTX",
+      "context": "另一输入格式：MTX 与 H5 → 同类对象：AnnData 结构 → 可选方法：scVI 学习入口 → 明确"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-1",
+      "term": "t18",
+      "surface": "AnnData",
+      "context": "另一输入格式：MTX 与 H5 → 同类对象：AnnData 结构 → 可选方法：scVI 学习入口 → 明确边界：不混入主线报告。箭头说明信息依赖，"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-1",
+      "term": "t83",
+      "surface": "scVI",
+      "context": "H5 → 同类对象：AnnData 结构 → 可选方法：scVI 学习入口 → 明确边界：不混入主线报告。箭头说明信息依赖，示意框不代表重新计算。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-formats",
+      "term": "t30",
+      "surface": "MTX",
+      "context": "H5、MTX 和 H5AD 都能进入分析，但内部对象和处理程度要检查。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-formats",
+      "term": "t29",
+      "surface": "H5AD",
+      "context": "H5、MTX 和 H5AD 都能进入分析，但内部对象和处理程度要检查。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/figure-formats",
+      "term": "t6",
+      "surface": "样本",
+      "context": "D 还可保存完整分析对象；三者的后缀不保证它们来自同一个样本，也不保证已经保存原始计数。本课 MTX 只演示导入，不作为主线复算。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-2",
+      "term": "t2",
+      "surface": "基因",
+      "context": "E01 导入后为 16,102 个细胞、33,538 个基因，与 H5 主线不同。这里演示导入与对象检查，不重复跑完整分析，也不拿它冒充主线的另一格式"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t20",
+      "surface": "X",
+      "context": "在资料馆打开对象说明与课件，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t21",
+      "surface": "obs",
+      "context": "在资料馆打开对象说明与课件，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t22",
+      "surface": "var",
+      "context": "在资料馆打开对象说明与课件，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t23",
+      "surface": "layers",
+      "context": "资料馆打开对象说明与课件，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片；切片后 co"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t25",
+      "surface": "obsm",
+      "context": "说明与课件，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片；切片后 copy 与原"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t26",
+      "surface": "obsp",
+      "context": "，练习指出 X、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片；切片后 copy 与原对象的关系"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t27",
+      "surface": "uns",
+      "context": "、obs、var、layers、obsm、obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片；切片后 copy 与原对象的关系也要分清。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-3",
+      "term": "t85",
+      "surface": "尝试",
+      "context": "obsp 和 uns 各自承担什么。先查看维度和来源，再尝试切片；切片后 copy 与原对象的关系也要分清。"
+    },
+    {
+      "station": "exercises",
+      "scope": "exercises/exercises-part-4",
+      "term": "t83",
+      "surface": "scVI",
+      "context": "scVI 使用概率模型学习低维表示，需要核对输入计数、批次设计、模型假设和额外环境。现有选修代码可"
+    }
+  ]
+}

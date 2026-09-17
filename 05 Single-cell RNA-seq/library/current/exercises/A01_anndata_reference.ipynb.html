@@ -1,0 +1,138 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A01_anndata_reference.ipynb</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/exercises/A01_anndata_reference.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>A01_anndata_reference.ipynb</h1><section><small>单元格 0</small><h1><strong>AnnData 数据结构详解</strong></h1>
+<p>AnnData（Annotated Data）是单细胞RNA测序分析的核心数据结构，专门为高维注释数据设计。以下是完整的组成部分详解：</p>
+<h2><strong>核心组成部分</strong></h2>
+<h3><strong>1. X：核心表达矩阵</strong></h3>
+<pre><code class="language-python">adata.X  # 主数据矩阵
+</code></pre>
+<ul>
+<li><strong>类型</strong>：通常是<code>scipy.sparse.csr_matrix</code>（稀疏矩阵）或<code>numpy.ndarray</code></li>
+<li><strong>形状</strong>：<code>(n_obs × n_var)</code> - （细胞数 × 基因数）</li>
+<li><strong>内容</strong>：基因表达值（原始计数、归一化值等）</li>
+<li><strong>特点</strong>：<pre><code class="language-python">print(type(adata.X))        # &lt;class 'scipy.sparse.csr_matrix'&gt;
+print(adata.X.shape)        # (5000, 20000) - 5000个细胞，20000个基因
+print(adata.X.nnz)          # 非零元素数量
+</code></pre>
+</li>
+</ul>
+<h3><strong>2. obs：细胞注释数据</strong></h3>
+<pre><code class="language-python">adata.obs  # 观测（细胞）的注释信息
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>pandas.DataFrame</code></li>
+<li><strong>形状</strong>：<code>(n_obs, n_obs_columns)</code></li>
+<li><strong>索引</strong>：细胞barcode（必须唯一）</li>
+<li><strong>常见列</strong>：<pre><code class="language-python">adata.obs.columns
+# ['sample', 'batch', 'n_genes', 'total_counts', 
+#  'pct_counts_mt', 'doublet_score', 'leiden', 'cell_type']
+</code></pre>
+</li>
+</ul>
+<h3><strong>3. var：基因注释数据</strong></h3>
+<pre><code class="language-python">adata.var  # 变量（基因）的注释信息
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>pandas.DataFrame</code></li>
+<li><strong>形状</strong>：<code>(n_var, n_var_columns)</code></li>
+<li><strong>索引</strong>：基因标识符（必须唯一）</li>
+<li><strong>常见列</strong>：<pre><code class="language-python">adata.var.columns
+# ['gene_ids', 'gene_symbol', 'gene_name', 'feature_type',
+#  'n_cells', 'mean_counts', 'highly_variable']
+</code></pre>
+</li>
+</ul>
+<h2><strong>扩展数据结构</strong></h2>
+<h3><strong>4. uns：非结构化注释</strong></h3>
+<pre><code class="language-python">adata.uns  # 无结构化存储
+</code></pre>
+<ul>
+<li><strong>类型</strong>：嵌套的Python字典</li>
+<li><strong>用途</strong>：存储不适合放在obs/var中的任意数据</li>
+<li><strong>常见内容</strong>：<pre><code class="language-python">adata.uns.keys()
+# ['neighbors', 'pca', 'umap', 'leiden', 'rank_genes_groups', 'log1p']
+
+# 聚类信息
+adata.uns['leiden']
+# {'params': {'resolution': 1.0, 'random_state': 0},
+#  'connectivities': ...,
+#  'distances': ...}
+
+# 差异表达结果
+adata.uns['rank_genes_groups']
+# {'names': array([['CD3D', 'CD3E', ...]]),
+#  'scores': array([[30.5, 28.2, ...]]),
+#  'pvals': array([[1e-10, 1e-9, ...]])}
+</code></pre>
+</li>
+</ul>
+<h3><strong>5. obsm：细胞多维嵌入</strong></h3>
+<pre><code class="language-python">adata.obsm  # 细胞的多维坐标
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>dict</code> of <code>numpy.ndarray</code></li>
+<li><strong>形状</strong>：每个数组为<code>(n_obs, n_components)</code></li>
+<li><strong>常见内容</strong>：<pre><code class="language-python">adata.obsm.keys()
+# ['X_pca', 'X_umap', 'X_tsne', 'X_diffmap']
+
+# PCA坐标
+print(adata.obsm['X_pca'].shape)  # (5000, 50) - 5000个细胞，50个PCs
+
+# UMAP坐标
+print(adata.obsm['X_umap'].shape)  # (5000, 2) - 5000个细胞，2个维度
+</code></pre>
+</li>
+</ul>
+<h3><strong>6. varm：基因多维嵌入</strong></h3>
+<pre><code class="language-python">adata.varm  # 基因的多维坐标
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>dict</code> of <code>numpy.ndarray</code></li>
+<li><strong>形状</strong>：每个数组为<code>(n_var, n_components)</code></li>
+<li><strong>用途</strong>：存储基因级别的降维结果<pre><code class="language-python"># 例如：基因的PCA坐标（在基因共表达分析中）
+adata.varm['PCs']  # 形状：(20000, 50)
+</code></pre>
+</li>
+</ul>
+<h3><strong>7. obsp：细胞间关系矩阵</strong></h3>
+<pre><code class="language-python">adata.obsp  # 细胞-细胞关系
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>dict</code> of 稀疏矩阵</li>
+<li><strong>形状</strong>：每个矩阵为<code>(n_obs, n_obs)</code></li>
+<li><strong>常见内容</strong>：<pre><code class="language-python">adata.obsp.keys()
+# ['connectivities', 'distances', 'correlations']
+
+# 邻接矩阵（用于聚类）
+print(adata.obsp['connectivities'].shape)  # (5000, 5000)
+print(adata.obsp['distances'].shape)       # (5000, 5000)
+</code></pre>
+</li>
+</ul>
+<h3><strong>8. varp：基因间关系矩阵</strong></h3>
+<pre><code class="language-python">adata.varp  # 基因-基因关系
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>dict</code> of 稀疏矩阵</li>
+<li><strong>形状</strong>：每个矩阵为<code>(n_var, n_var)</code></li>
+<li><strong>用途</strong>：存储基因相关性、共表达网络等<pre><code class="language-python">adata.varp['correlations']  # 基因相关性矩阵
+</code></pre>
+</li>
+</ul>
+<h3><strong>9. layers：多层面表达数据</strong></h3>
+<pre><code class="language-python">adata.layers  # 附加表达矩阵
+</code></pre>
+<ul>
+<li><strong>类型</strong>：<code>dict</code> of 矩阵（与X同形状）</li>
+<li><strong>用途</strong>：存储原始计数、归一化值、imputed值等<pre><code class="language-python">adata.layers.keys()
+# ['counts', 'normalized', 'log1p', 'scaled']
+
+# 原始计数
+adata.layers['counts'] = adata.X.copy()  # 保存原始计数
+adata.X = sc.pp.log1p(adata.X)           # 对X进行log转换
+
+# 访问不同层的数据
+raw_counts = adata.layers['counts']
+log_transformed = adata.X
+</code></pre>
+</li>
+</ul>
+</section></main></body></html>

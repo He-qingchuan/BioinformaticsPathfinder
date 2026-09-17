@@ -1,0 +1,203 @@
+{
+  "id": "08",
+  "title": "手工细胞类型注释",
+  "attempt": "20260915T074833_dd2e88",
+  "status": "complete",
+  "directory": "results/08_manual_annotation/20260915T074833_dd2e88",
+  "parents": {
+    "07": "20260915T074022_5c04b4"
+  },
+  "source_sha256": "7ee8fbed8e597a3b730560c3bf4877ed1bcedbd80375e439461c4b73afd20371",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {
+    "config/annotations.json": "9c6351032c28afbe26facbf0690ac37c58b2f89e878eb7abb48363eeb6315077"
+  },
+  "started_at": "2026-09-15T07:48:42+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/08_manual_annotation/20260915T074833_dd2e88/checkpoint.h5ad",
+  "checkpoint_sha256": "7f61fd7da2d69da0b9a996fad7f5bd2bbe804366a4dbed1742b0e196556bf4c9",
+  "elapsed_seconds": 57.73,
+  "summary": {
+    "fine_cell_types": {
+      "Naive_memory_T": 3946,
+      "Low_quality_lymphoid_like": 3101,
+      "Erythroid": 2445,
+      "Naive_B": 1891,
+      "CD14_Mono": 1511,
+      "CD8_cytotoxic_T": 1260,
+      "Cycling_erythroid": 1057,
+      "Progenitor_like": 502,
+      "NK": 458,
+      "B_cell": 382,
+      "Myeloid_like_low_quality": 298,
+      "Antibody_secreting_cell": 106,
+      "pDC": 84
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 219735901
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 6737240
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_007_01.png",
+      "kind": "png",
+      "bytes": 273077
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_011_01.png",
+      "kind": "png",
+      "bytes": 544048
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_012_00.png",
+      "kind": "png",
+      "bytes": 550309
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_016_01.png",
+      "kind": "png",
+      "bytes": 561595
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_017_01.png",
+      "kind": "png",
+      "bytes": 575275
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_018_00.png",
+      "kind": "png",
+      "bytes": 2506451
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/dotplot__08_204.pdf",
+      "kind": "pdf",
+      "bytes": 219099
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/dotplot__08_204.png",
+      "kind": "png",
+      "bytes": 470029
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/manual_annotation_overview_1.pdf",
+      "kind": "pdf",
+      "bytes": 1735186
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/manual_annotation_overview_1.png",
+      "kind": "png",
+      "bytes": 2110209
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_200.pdf",
+      "kind": "pdf",
+      "bytes": 94239
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_200.png",
+      "kind": "png",
+      "bytes": 235340
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_209.pdf",
+      "kind": "pdf",
+      "bytes": 202163
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_209.png",
+      "kind": "png",
+      "bytes": 482615
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_210.pdf",
+      "kind": "pdf",
+      "bytes": 218408
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/figures/umap_08_210.png",
+      "kind": "png",
+      "bytes": 491598
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_02_lvl1_by_sample.csv",
+      "kind": "csv",
+      "bytes": 114
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_50_lvl1_by_sample.csv",
+      "kind": "csv",
+      "bytes": 160
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_50_lvl2_by_sample.csv",
+      "kind": "csv",
+      "bytes": 326
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/dotplot_color_fine.csv",
+      "kind": "csv",
+      "bytes": 12985
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/dotplot_size_fine.csv",
+      "kind": "csv",
+      "bytes": 23140
+    },
+    {
+      "path": "results/08_manual_annotation/20260915T074833_dd2e88/tables/manual_annotations.csv",
+      "kind": "csv",
+      "bytes": 1096230
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1247576064,
+    "wall_seconds": 66.94
+  },
+  "original_source_sha256": "6c1d0efab8f2cadd5927aed036233cf7c89e0c7dca9c784dd0689a41939645f6",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

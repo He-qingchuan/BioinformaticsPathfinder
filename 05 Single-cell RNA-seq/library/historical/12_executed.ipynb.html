@@ -1,0 +1,48 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>12_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/12_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>12_executed.ipynb</h1><section><small>单元格 0</small><h1>第 12 章 结果汇总与分析报告</h1>
+<h2>学习目标</h2>
+<p>整理可复用的分析对象，并形成有证据支持的综合报告。</p>
+<h2>为什么做与怎样做</h2>
+<p>保存完整 AnnData、细胞注释表与样本组成表；按当前有效运行整理目的、方法、结果和解释，以及完整附件索引。</p>
+<p>前置章节：11。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;12&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>12.1 保存数据</h2>
+</section><section><small>单元格 3</small><pre><code># # 功能说明：保存最终的 AnnData 对象。
+# # 运行目的：将包含所有分析结果（QC、聚类、手动注释、自动注释、差异基因等）的数据保存到磁盘，以便后续使用。
+# # 变量/函数/参数解析：
+# # - adata.write(...)：
+# #   - 保存为 `.h5ad` 格式（HDF5 AnnData）。
+# #   - 这是 Scanpy 的标准存储格式，读写速度快，支持压缩。
+
+adata.write_h5ad(ctx.directory / &quot;annotation_adata_out.h5ad&quot;, compression=&quot;gzip&quot;)
+</code></pre></section><section><small>单元格 4</small><pre><code>print(adata.X)</code></pre></section><section><small>单元格 5</small><pre><code>adata
+</code></pre></section><section><small>单元格 6</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 7</small><pre><code>ctx.table(&quot;final_cell_metadata&quot;, adata.obs)
+ctx.table(&quot;sample_celltype_counts&quot;, pd.crosstab(adata.obs[&quot;samples&quot;], adata.obs[&quot;celltypist_cell_label_fine&quot;]))
+ctx.finish(adata, {&quot;final_data&quot;: str((ctx.directory / &quot;annotation_adata_out.h5ad&quot;).relative_to(ROOT)), &quot;available_layers&quot;: list(adata.layers)}, save=False)</code></pre></section><section><small>单元格 8</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：怎样让他人从报告追溯到具体图表与运行参数？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

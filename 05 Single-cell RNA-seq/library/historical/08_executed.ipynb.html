@@ -1,0 +1,221 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/08_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>08_executed.ipynb</h1><section><small>单元格 0</small><h1>第 08 章 手工细胞类型注释</h1>
+<h2>学习目标</h2>
+<p>把多个标记基因的证据转化为分层的细胞类型标签。</p>
+<h2>为什么做与怎样做</h2>
+<p>先核对当前聚类与注释参照的一致性，再使用映射写入粗、细两级标签；对证据不足的群体保留不确定性。</p>
+<p>前置章节：07。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;08&quot;)
+adata = ctx.load_input()
+sets = marker_sets(adata)
+markers_1, markers_2 = sets[&quot;fine&quot;], sets[&quot;broad&quot;]
+markers = markers_1
+leiden_res = &quot;leiden_res_0_50&quot;
+</code></pre></section><section><small>单元格 2</small><h2>08.1 类群注释</h2>
+</section><section><small>单元格 3</small><p>根据当前点图、UMAP 和表达比例为簇提出粗粒度标签。映射针对已经核对的这次聚类；新的数据和聚类结果需要重新核对。</p>
+</section><section><small>单元格 4</small><p>下面读取已核对的映射，并使用 pandas.map 写入细胞注释。config/annotations.json 同时保存聚类指纹和标签，防止把一套聚类的编号用于另一套结果。</p>
+</section><section><small>单元格 5</small><pre><code>leiden_res = &quot;leiden_res_0_02&quot;
+coarse_mapping = ctx.annotation_map(adata, leiden_res, &quot;level1&quot;)
+print(coarse_mapping)
+adata.obs[&quot;cell_type_res_0.02_lvl1&quot;] = adata.obs[leiden_res].astype(str).map(coarse_mapping).astype(&quot;category&quot;)</code></pre></section><section><small>单元格 6</small><pre><code># 功能说明：查看细胞注释表。
+# 运行目的：确认一级注释列 `cell_type_res_0.02_lvl1` 是否成功添加。
+# 详细代码解析：
+# 1. `adata.obs`
+#    - 打印概览。
+
+adata.obs</code></pre></section><section><small>单元格 7</small><pre><code># 功能说明：重复绘制以便在不同分辨率下对比标签布局。
+# 运行目的：辅助选择最终用于注释的分辨率。
+sc.pl.umap(
+    adata,
+    color=[leiden_res, &quot;cell_type_res_0.02_lvl1&quot;, ],
+    legend_loc=&quot;on data&quot;,
+    save=&quot;_08_200.pdf&quot;,
+)
+</code></pre></section><section><small>单元格 8</small><pre><code># 功能说明：统计一级注释的细胞数量。
+# 运行目的：查看各主要细胞类型的分布情况。
+# 详细代码解析：
+# 1. `adata.obs[&quot;cell_type_res_0.02_lvl1&quot;].value_counts()`
+#    - 统计一级注释列中各类别的频数。
+
+# 查看每个类群细胞数量
+adata.obs[&quot;cell_type_res_0.02_lvl1&quot;].value_counts()</code></pre></section><section><small>单元格 9</small><h2>08.2 更高分辨率下类群注释</h2>
+</section><section><small>单元格 10</small><pre><code># 功能说明：切换到较高分辨率进行细致注释。
+# 运行目的：为接下来的二级注释（小类）设置参数，使用分辨率 0.50 和详细标记基因集 `markers_1`。
+# 详细代码解析：
+# 1. `leiden_res = &quot;leiden_res_0_50&quot;`
+#    - 更新分辨率变量。
+# 2. `markers = markers_1`
+#    - 更新标记基因集变量。
+
+# 定义聚类分辨率变量
+leiden_res = &quot;leiden_res_0_50&quot;
+# 指定使用的markers版本
+markers = markers_1</code></pre></section><section><small>单元格 11</small><pre><code># 功能说明：在较高分辨率簇上查看标记基因表达以细化注释。
+# 运行目的：判断更细粒度的细胞类型分群。
+sc.pl.dotplot(adata, markers, groupby=leiden_res, standard_scale=&quot;var&quot;, save=&quot;_08_204.pdf&quot;)</code></pre></section><section><small>单元格 12</small><pre><code># 功能说明：重复绘制以便在不同分辨率下对比标签布局。
+# 运行目的：辅助选择最终用于注释的分辨率。
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    sc.pl.umap(
+        adata,
+        color=[leiden_res],
+        legend_loc=&quot;on data&quot;,
+    )</code></pre></section><section><small>单元格 13</small><pre><code>
+
+# 使用 return_fig 参数返回图形对象
+dot_plot = sc.pl.dotplot(
+    adata, 
+    markers, 
+    groupby=leiden_res, 
+    standard_scale=&quot;var&quot;,
+    return_fig=True,
+    show=False  # 不显示图形，只获取数据
+)
+
+# 检查可用的属性
+print(&quot;可用的属性：&quot;, dir(dot_plot))
+
+# 获取点图中的数据
+if hasattr(dot_plot, &#x27;dot_color_df&#x27;):
+    print(&quot;颜色数据矩阵（标准化后的表达量）：&quot;)
+    print(dot_plot.dot_color_df)
+    
+if hasattr(dot_plot, &#x27;dot_size_df&#x27;):
+    print(&quot;\n点大小数据矩阵（表达比例）：&quot;)
+    print(dot_plot.dot_size_df)
+    
+# 最简单的方式：直接获取两个数据框
+color_df = dot_plot.dot_color_df
+size_df = dot_plot.dot_size_df
+# 保存到CSV文件以便进一步分析
+ctx.table(&quot;dotplot_color_fine&quot;, color_df)
+ctx.table(&quot;dotplot_size_fine&quot;, size_df)</code></pre></section><section><small>单元格 14</small><h2>08.3 二级注释的证据组织</h2>
+<p>先按谱系做一级注释，再在谱系内部判断更细的类型。请同时考虑标记基因的表达比例、平均表达和在其他群体中的分布。单个标记的高表达不足以确认细胞类型。</p>
+<p>建议整理包含聚类编号、一级标签、二级标签、支持标记、相反证据及待验证问题的表格。初始 B 细胞、抗体分泌细胞、T/NK 细胞和不同红系状态应分别查看相应的组合标记。对于不能清楚区分的亚型，先使用较宽泛或注明不确定性的标签。</p>
+<p>下方展示当前参照映射及注释结果。证据表保存在 config/annotation_evidence.csv，具体参数与运行身份由 annotations.json 关联。</p>
+</section><section><small>单元格 15</small><pre><code>leiden_res = &quot;leiden_res_0_50&quot;
+fine_level1 = ctx.annotation_map(adata, leiden_res, &quot;level1&quot;)
+fine_level2 = ctx.annotation_map(adata, leiden_res, &quot;level2&quot;)
+print(fine_level2)
+adata.obs[&quot;cell_type_res_0.50_lvl1&quot;] = adata.obs[leiden_res].astype(str).map(fine_level1).astype(&quot;category&quot;)
+adata.obs[&quot;cell_type_res_0.50_lvl2&quot;] = adata.obs[leiden_res].astype(str).map(fine_level2).astype(&quot;category&quot;)</code></pre></section><section><small>单元格 16</small><pre><code># 功能说明：绘制多面板 UMAP 图，展示聚类和两级注释结果。
+# 运行目的：直观对比聚类标签、一级注释和二级注释在空间上的分布。
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - `color=[...]`: 同时展示聚类结果、二级注释、一级注释等多个视角。
+#    - `save=&quot;...&quot;`: 保存图像。
+
+# 查看注释结果
+
+sc.pl.umap(
+        adata,
+        color=[&quot;leiden_res_0_50&quot;,  &quot;cell_type_res_0.50_lvl2&quot;,&quot;cell_type_res_0.50_lvl1&quot;, &quot;cell_type_res_0.02_lvl1&quot;, ],
+        legend_loc=&quot;on data&quot;,
+        save=&quot;_08_209.pdf&quot;,
+        )</code></pre></section><section><small>单元格 17</small><pre><code># 功能说明：单独绘制二级注释的 UMAP 图。
+# 运行目的：清晰展示最终的细分细胞类型注释结果。
+# 详细代码解析：
+# 1. `with rc_context({&quot;figure.figsize&quot;: (10, 8)}):`
+#    - 临时设置图形大小为 10x8 英寸。
+# 2. `sc.pl.umap(...)`
+#    - `color=[&quot;cell_type_res_0.50_lvl2&quot;]`: 仅展示二级注释。
+
+# 查看注释结果
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    
+    sc.pl.umap(
+            adata,
+            color=[&quot;cell_type_res_0.50_lvl2&quot; ],
+            legend_loc=&quot;on data&quot;,
+            save=&quot;_08_210.pdf&quot;,
+            )</code></pre></section><section><small>单元格 18</small><pre><code># 功能说明：绘制精美的多面板 UMAP 图，用于出版或展示。
+# 运行目的：生成高质量的注释概览图，包含聚类、一级和二级注释，并进行详细的样式调整。
+# 详细代码解析：
+# 1. `with rc_context(...)`: 设置绘图上下文。
+# 2. `sc.pl.umap(...)`:
+#    - `color=[...]`: 展示三个层级的信息。
+#    - `legend_loc`, `legend_fontsize`, `legend_fontoutline`: 优化图例显示。
+#    - `size`, `add_outline`, `outline_width`, `outline_color`: 优化数据点样式，增加轮廓以提高区分度。
+#    - `ncols`, `wspace`: 调整子图布局。
+#    - `vmax`, `palette`: 调整颜色映射。
+#    - `title`: 添加自定义标题。
+
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    sc.pl.umap(
+        # 1. 数据对象
+        adata,  # AnnData对象，包含单细胞数据和UMAP坐标
+        
+        # 2. 可视化内容：三个子图分别展示不同信息
+        color=[
+            leiden_res,              # 子图1: 分辨率0.50的Leiden聚类结果
+            &quot;cell_type_res_0.50_lvl1&quot;,      # 子图2: 一级细胞类型注释（基于分辨率0.50）
+            &quot;cell_type_res_0.50_lvl2&quot;,      # 子图3: 二级细胞类型注释（更细粒度的分类）
+        ],
+        # 3. 图例设置
+        legend_loc=&quot;on data&quot;,               # 图例直接标注在数据点上，更直观
+        legend_fontsize=10,                  # 减小字体大小以避免重叠（
+     #   legend_fontweight=&#x27;normal&#x27;,         # 使用正常字体粗细，避免粗体占用过多空间
+        legend_fontoutline=1.5,             # 添加1.5像素的字体描边，提高文字在复杂背景中的可读性
+        # 4. 数据点设置
+        size=25,                            # 数据点大小：平衡可视性和重叠问题（折中值）
+        add_outline=True,                   # 为数据点添加轮廓，增强区分度
+        outline_width=(0.4, 0.1),           # 轮廓宽度：外层0.4，内层0.1（更精细）
+        outline_color=(&#x27;black&#x27;, &#x27;white&#x27;),   # 轮廓颜色：外层黑色，内层白色，形成对比
+        # 5. 子图布局
+        ncols=3,                            # 3列布局（3个子图并排显示）
+        wspace=0.6,                         # 子图之间的水平间距（0.6比0.5稍大，避免拥挤）
+        
+        # 6. 颜色映射设置
+        vmax=&quot;p99&quot;,                         # 设置颜色映射最大值为第99百分位数，作用：去除极端值影响，使颜色分布更均匀
+        palette=&quot;Set3&quot;,                     # 使用Set3调色板（适用于分类数据），Set3提供12种鲜明且易于区分的颜色
+        # 7. 其他优化参数
+       # frameon=False,                      # 去除子图边框，使图像更简洁
+        show=False,                         # 不立即显示，便于后续调整或保存
+        # 8. 新增参数优化
+        alpha=0.8,                          # 设置透明度为0.8，在重叠区域显示更好
+        edgecolor=&#x27;none&#x27;,                   # 去除边缘颜色，避免与轮廓冲突
+        title=[                             # 为每个子图添加描述性标题
+            &quot;A. Leiden Clusters (res=0.50)&quot;, 
+            &quot;B. Level 1 Cell Types&quot;, 
+            &quot;C. Level 2 Cell Types&quot;
+        ],
+     #  save=&quot;_08_211.pdf&quot;,
+    )
+ctx.capture(&quot;manual_annotation_overview&quot;)
+</code></pre></section><section><small>单元格 19</small><pre><code># 功能说明：统计二级注释的细胞数量。
+# 运行目的：查看各细分细胞类型的分布情况。
+# 详细代码解析：
+# 1. `adata.obs[&quot;cell_type_res_0.50_lvl2&quot;].value_counts()`
+#    - 统计二级注释列中各类别的频数。
+
+# 查看每个类群细胞数量
+adata.obs[&quot;cell_type_res_0.50_lvl2&quot;].value_counts()</code></pre></section><section><small>单元格 20</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 21</small><pre><code>keys = [&quot;cell_type_res_0.02_lvl1&quot;, &quot;cell_type_res_0.50_lvl1&quot;, &quot;cell_type_res_0.50_lvl2&quot;]
+ctx.table(&quot;manual_annotations&quot;, adata.obs[keys + [&quot;samples&quot;, &quot;leiden_res_0_02&quot;, &quot;leiden_res_0_50&quot;]])
+for key in keys:
+    ctx.table(key.replace(&quot;.&quot;, &quot;_&quot;) + &quot;_by_sample&quot;, pd.crosstab(adata.obs[key], adata.obs[&quot;samples&quot;]))
+ctx.finish(adata, {&quot;fine_cell_types&quot;: adata.obs[keys[-1]].value_counts().to_dict()})</code></pre></section><section><small>单元格 22</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：为什么更换聚类参数后不能照搬以前的编号映射？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

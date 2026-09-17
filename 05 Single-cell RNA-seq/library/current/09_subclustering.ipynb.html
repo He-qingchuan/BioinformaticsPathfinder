@@ -1,0 +1,182 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>09_subclustering.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/09_subclustering.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>09_subclustering.ipynb</h1><section><small>单元格 0</small><h1>第 09 章 子群分析</h1>
+<h2>学习目标</h2>
+<p>比较在现有图中限制聚类与提取子集后重建图的两种分析方法。</p>
+<h2>为什么做与怎样做</h2>
+<p>先确认目标群体，再比较 restrict_to 与提取子集重建图；解释选择后保存主对象和子集。</p>
+<p>前置章节：08。运行前请完成项目环境准备。</p>
+<p>本章在项目副本运行。遇到等待材料/确认，请按根目录 <strong>99_运行与AI协作指南.md</strong> 查看当前结果、与用户讨论并续跑；不能跳过待办直接进入下游。</p>
+</section><section><small>单元格 1</small><pre><code># 功能说明：查找公共环境和当前项目，读取有效上游检查点；模板副本之间不共享分析状态。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+from course_projects import resolve_project, input_path, read_sample
+from course_resources import qc_gene_sets, marker_resources, resolution_preview
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+INSTALL_ROOT = ROOT
+ROOT = resolve_project()
+ctx = start_chapter(&quot;09&quot;)
+adata = ctx.load_input()
+coarse_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;coarse&quot;])
+fine_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;fine&quot;])
+sets = marker_sets(adata)
+markers_1, markers_2 = sets[&quot;fine&quot;], sets[&quot;broad&quot;]
+markers = markers_1
+leiden_res = fine_key
+
+
+</code></pre></section><section><small>单元格 2</small><h2>09.1 子聚类二次聚类注释</h2>
+</section><section><small>单元格 3</small><p>0.5分辨率似乎能区分数据中的大多数细胞类型。接下来，还应逐簇深入检查，必要时进行子聚类。</p>
+</section><section><small>单元格 4</small><h2>09.2 方法1：直接指定子类细胞类型进行子聚类</h2>
+</section><section><small>单元格 5</small><pre><code># 功能说明：查看细胞注释表。
+# 运行目的：检查当前的注释状态，为子聚类做准备。
+# 详细代码解析：
+# 1. `adata.obs`
+#    - 打印概览。
+
+adata.obs</code></pre></section><section><small>单元格 6</small><pre><code># 功能说明：先展示可研究群体及规模，确认目标后比较已有两种方法。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+target_column = &quot;manual_coarse&quot;
+target_counts = adata.obs[target_column].value_counts()
+ctx.table(&quot;available_subgroups&quot;, target_counts.rename(&quot;n_cells&quot;))
+target_group = ctx.choose(&quot;target_group&quot;, {str(k): {&quot;n_cells&quot;: int(v)} for k,v in target_counts.items() if v &gt; 0}, &quot;请先根据注释和细胞数确认要研究的群体，再计算两种子群方法。&quot;)
+</code></pre></section><section><small>单元格 7</small><pre><code># 功能说明：对特定细胞群进行子聚类。
+# 运行目的：在 &quot;B_cells&quot; 大类内部进行更细致的聚类（分辨率 0.05），以发现潜在的亚群。
+# 详细代码解析：
+# 1. `sc.tl.leiden(...)`
+#    - `restrict_to=(&#x27;manual_coarse&#x27;, [target_group])`:
+#      - 仅对 `manual_coarse` 列中标记为 `B_cells` 的细胞进行聚类。
+#      - 其他细胞的标签保持不变（或设为 NaN/默认值）。
+#    - `resolution=ctx.config[&quot;subcluster&quot;][&quot;resolution&quot;]`: 使用极低的分辨率，因为是在较小的子集上操作。
+#    - `key_added=&#x27;leiden_sub&#x27;, flavor=&#x27;leidenalg&#x27;, n_iterations=-1, random_state=0, neighbors_key=adata.uns[&#x27;course_neighbors_key&#x27;]`: 结果存储在 `leiden_sub` 列。
+
+sc.tl.leiden(
+    adata,
+    resolution=ctx.config[&quot;subcluster&quot;][&quot;resolution&quot;],
+    restrict_to=(&#x27;manual_coarse&#x27;, [target_group]),  # 在一个大类内部分别聚类，当然也可以提供多个
+    key_added=&#x27;leiden_sub&#x27;, flavor=&#x27;leidenalg&#x27;, n_iterations=-1, random_state=0, neighbors_key=adata.uns[&#x27;course_neighbors_key&#x27;]
+)</code></pre></section><section><small>单元格 8</small><pre><code># 功能说明：绘制子聚类结果的 UMAP 图。
+# 运行目的：可视化 B 细胞内部的亚群结构。
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - `color=[&quot;leiden_sub&quot;, ...]` : 展示子聚类标签。
+
+sc.pl.umap(
+        adata,
+        color=[&quot;leiden_sub&quot;, &quot;manual_coarse&quot;, ],
+        legend_loc=&quot;on data&quot;,
+        save=&quot;_09_218.pdf&quot;,
+        )</code></pre></section><section><small>单元格 9</small><pre><code># 功能说明：用点图展示各簇的标记基因表达水平。进行注释
+sc.pl.dotplot(adata, markers, groupby=&quot;leiden_sub&quot;, standard_scale=&quot;var&quot;, save=&quot;_09_219.pdf&quot;)</code></pre></section><section><small>单元格 10</small><h2>09.3 方法2：提取指定子类细胞类型所有细胞为新的adata数据，然后进行完整的基础分析</h2>
+</section><section><small>单元格 11</small><pre><code># 提取B细胞子集
+sub_cluster = adata.obs[&quot;manual_coarse&quot;] == target_group
+adata_sub = adata[sub_cluster].copy()
+if adata_sub.n_obs &lt; 51:
+    raise ValueError(&quot;目标群体不足 51 个，请先核对注释和子群分析参数。&quot;)
+# 将原始计数复制到X中，重新进行标准化
+adata_sub.X = adata_sub.layers[&#x27;counts&#x27;].copy()
+# 重新进行分析流程
+sc.pp.normalize_total(adata_sub)
+sc.pp.log1p(adata_sub)
+adata_sub.layers[&quot;log1p&quot;] = adata_sub.X.copy()
+sc.pp.highly_variable_genes(adata_sub, n_top_genes=2000, batch_key=&quot;samples&quot;)
+sc.tl.pca(adata_sub)
+sc.pp.neighbors(adata_sub,random_state=0)
+sc.tl.umap(adata_sub,random_state=0)
+sc.tl.leiden(adata_sub, key_added=&quot;leiden_sub&quot;, resolution=ctx.config[&quot;subcluster&quot;][&quot;resolution&quot;], flavor=&quot;igraph&quot;, n_iterations=-1, directed=False, random_state=0)
+
+</code></pre></section><section><small>单元格 12</small><pre><code># 功能说明：绘制提取子集后的 UMAP 图。
+# 运行目的：可视化仅包含 B 细胞的独立分析结果。
+# 详细代码解析：
+# 1. `sc.pl.umap(...)`
+#    - `adata_sub`: 使用提取出的 B 细胞子集对象。
+
+sc.pl.umap(
+    adata_sub,
+    color=[&quot;leiden_sub&quot;],
+    legend_loc=&quot;on data&quot;,
+    save=&quot;_09_222.pdf&quot;,
+)</code></pre></section><section><small>单元格 13</small><pre><code># 功能说明：用点图展示各簇的标记基因表达水平。进行注释
+sc.pl.dotplot(adata_sub, markers, groupby=&quot;leiden_sub&quot;, standard_scale=&quot;var&quot;, save=&quot;_09_223.pdf&quot;)</code></pre></section><section><small>单元格 14</small><h2>09.4 树状图</h2>
+<p>大多数可视化可以使用树状图排列类别。但是，树状图也可以独立绘制，如下所示：</p>
+</section><section><small>单元格 15</small><pre><code># 指定注释的结果
+cell_type = &quot;manual_level2&quot;
+
+
+# 功能说明：计算层次聚类树状图。
+# 运行目的：确定不同类别（如 cell_type）之间的相似性关系，用于后续绘图排序。
+# 变量/函数/参数解析：
+# - sc.tl.dendrogram(adata, cell_type)：
+#   - adata：AnnData 对象。
+#   - &quot;bulk_labels&quot;：要进行聚类的分组变量。
+#   - 该函数使用主成分（PCs）计算距离，并进行层次聚类。
+#   - 结果存储在 adata.uns[&#x27;dendrogram_cell_type&#x27;] 中。
+
+# 使用 PC 计算层次聚类（可以使用多种距离度量和链接方法）。
+sc.tl.dendrogram(adata, cell_type)
+
+# 功能说明：绘制树状图。
+# 运行目的：可视化类别之间的层次关系。
+# 变量/函数/参数解析：
+# - sc.pl.dendrogram(...)：
+#   - 绘制之前计算的树状图。
+#   - cell_type：指定要绘制的分组变量。
+
+ax = sc.pl.dendrogram(adata, cell_type,save=&quot;_09_225.pdf&quot;)</code></pre></section><section><small>单元格 16</small><h2>09.5 绘制相关性热图</h2>
+</section><section><small>单元格 17</small><pre><code># 指定注释的结果
+cell_type = &quot;manual_level2&quot;
+
+
+# 功能说明：绘制相关性矩阵图。
+# 运行目的：展示不同类别之间的相关性系数，结合树状图可以更直观地理解类别间的相似度。
+# 变量/函数/参数解析：
+# - sc.pl.correlation_matrix(...)：
+#   - adata：AnnData 对象。
+#   - cell_type：分组变量。
+#   - figsize=(5, 3.5)：设置图形大小。
+#   - 默认使用 Pearson 相关系数。
+
+ax = sc.pl.correlation_matrix(adata, cell_type, figsize=(8, 5),save=&quot;_09_227.pdf&quot;)</code></pre></section><section><small>单元格 18</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 19</small><pre><code># 变量/函数/参数解析：
+# - restricted：在现有邻居图内限制聚类；recomputed：提取目标群体后重建表示。
+# - selected_subcluster：所选路线的子群标签写回全体细胞；其他细胞注明未参与。
+# - 子集对象另存，不用它替换主线上完整的细胞集合。
+# 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata_sub.write_h5ad(ctx.directory / &quot;subgroup_subset.h5ad&quot;, compression=&quot;gzip&quot;)
+ctx.table(&quot;subset_subclusters&quot;, adata_sub.obs)
+ctx.table(&quot;restricted_subclusters&quot;, adata.obs[[&quot;leiden_sub&quot;, &quot;manual_coarse&quot;]])
+sub_route = ctx.choose(&quot;subcluster_route&quot;, {&quot;restricted&quot;: {&quot;label&quot;:&quot;原图内限制聚类&quot;}, &quot;recomputed&quot;: {&quot;label&quot;:&quot;子集重新降维聚类&quot;}}, &quot;请比较两种子群方法的图表后确认解释依据；全体细胞主对象仍保留。&quot;, files=sorted(ctx.tables.glob(&quot;*.csv&quot;)))
+adata.uns[&quot;selected_subcluster_route&quot;] = sub_route
+if sub_route == &quot;recomputed&quot;:
+    adata.obs[&quot;selected_subcluster&quot;] = &quot;未参与子群分析&quot;
+    adata.obs.loc[adata_sub.obs_names,&quot;selected_subcluster&quot;] = adata_sub.obs[&quot;leiden_sub&quot;].astype(str)
+else:
+    adata.obs[&quot;selected_subcluster&quot;] = adata.obs[&quot;leiden_sub&quot;].astype(str)
+ctx.finish(adata, {&quot;subset_cells&quot;: int(adata_sub.n_obs), &quot;subset_clusters&quot;: int(adata_sub.obs[&quot;leiden_sub&quot;].nunique())})
+</code></pre></section><section><small>单元格 20</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：两种子聚类方法的邻居图为什么可能不同？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

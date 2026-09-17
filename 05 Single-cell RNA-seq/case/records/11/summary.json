@@ -1,0 +1,41 @@
+{
+  "coarse_labels": {
+    "T cells": 7774,
+    "Erythroid": 3401,
+    "B cells": 2032,
+    "Monocytes": 1790,
+    "ILC": 958,
+    "B-cell lineage": 564,
+    "HSC/MPP": 191,
+    "DC": 112,
+    "pDC": 111,
+    "Plasma cells": 108
+  },
+  "fine_labels": {
+    "Tcm/Naive helper T cells": 4616,
+    "Late erythroid": 2344,
+    "Naive B cells": 1819,
+    "Classical monocytes": 1719,
+    "Mid erythroid": 1057,
+    "Tcm/Naive cytotoxic T cells": 1011,
+    "CD16+ NK cells": 958,
+    "Tem/Trm cytotoxic T cells": 767,
+    "Tem/Effector helper T cells": 592,
+    "Tem/Temra cytotoxic T cells": 401,
+    "Small pre-B cells": 324,
+    "MAIT cells": 198,
+    "HSC/MPP": 191,
+    "Regulatory T cells": 189,
+    "Memory B cells": 179,
+    "Pro-B cells": 147,
+    "Large pre-B cells": 127,
+    "DC2": 112,
+    "pDC": 111,
+    "Plasma cells": 108,
+    "Non-classical monocytes": 71
+  },
+  "median_confidence_coarse": 0.9998584586190687,
+  "median_confidence_fine": 0.9753447678038406,
+  "n_cells": 17041,
+  "n_genes": 23427
+}

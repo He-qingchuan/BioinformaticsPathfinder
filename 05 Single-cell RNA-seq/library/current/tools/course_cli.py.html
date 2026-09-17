@@ -1,0 +1,380 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_cli.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_cli.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_cli.py</h1><pre><code>#!/usr/bin/env python
+&quot;&quot;&quot;Run one lesson, inspect evidence and assemble a report without an AI API.&quot;&quot;&quot;
+from __future__ import annotations
+import argparse
+import base64
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+import uuid
+from course_projects import installation, resolve_project, descriptor, create_project, input_issues
+from course_runtime import (
+    chapter_info, chapter_status, digest, environment_versions, inventory, read_json,
+    relative, root_dir, settings, source_digest, state, write_json,
+)
+
+
+def check(root):
+    from course_environment import check as environment_check
+    result = environment_check(installation())
+    if root is not None:
+        print(&quot;项目输入核查：&quot;, descriptor(root)[&quot;name&quot;])
+        for code in (&quot;01&quot;, &quot;02&quot;, &quot;07&quot;, &quot;11&quot;):
+            issues = input_issues(root, code)
+            print(code, &quot;；&quot;.join(issues) if issues else &quot;材料登记完整；内容仍需按 99 指南检查。&quot;)
+    return result
+
+
+def status(root):
+    from course_environment import require_ready
+    try:
+        require_ready(installation())
+        print(&quot;本机环境：已通过检查。以下为分析结果状态。&quot;)
+    except RuntimeError as exc:
+        print(f&quot;本机环境：未就绪。{exc}&quot;)
+    current = state(root)
+    labels = {&quot;not_run&quot;: &quot;未运行&quot;, &quot;running&quot;: &quot;运行中&quot;, &quot;failed&quot;: &quot;失败&quot;, &quot;stale&quot;: &quot;需重跑&quot;, &quot;complete&quot;: &quot;计算完成&quot;, &quot;skipped&quot;: &quot;已确认跳过&quot;, &quot;reference&quot;: &quot;历史参考&quot;, &quot;awaiting_input&quot;: &quot;等待材料&quot;, &quot;awaiting_confirmation&quot;: &quot;等待确认&quot;}
+    for chapter in settings(root)[&quot;chapters&quot;]:
+        if chapter.get(&quot;optional&quot;):
+            continue
+        code = chapter[&quot;id&quot;]
+        result = chapter_status(code, root)
+        review = read_json(root / &quot;reports/sections&quot; / (code + &quot;.json&quot;), {})
+        record = current[&quot;chapters&quot;].get(code, {})
+        source = root / &quot;reports/sections&quot; / (code + &quot;.md&quot;)
+        interpretation = &quot;仅供查阅，不续跑&quot; if result==&quot;reference&quot; else (&quot;已解读&quot; if review_valid(root, code, result) else &quot;待解读&quot;)
+        print(f&quot;{code}  {chapter[&#x27;title&#x27;]:&lt;20} {labels[result]} / {interpretation}&quot;)
+
+
+def execute(root, code, fresh=False):
+    &quot;&quot;&quot;运行项目课件；同一次有效等待可续跑，改变科学输入必须另开尝试。&quot;&quot;&quot;
+    if descriptor(root).get(&quot;read_only&quot;):
+        raise ValueError(&quot;教程示例只读；请创建 tutorial 练习项目。&quot;)
+    from course_environment import require_ready
+    require_ready(installation())
+    if code == &quot;E02&quot;:
+        require_ready(installation(), &quot;scvi&quot;, active=False)
+    import nbformat
+    from nbclient import NotebookClient
+    from jupyter_client import KernelManager
+    from jupyter_client.kernelspec import KernelSpec, KernelSpecManager
+    import psutil
+    import threading
+    spec = chapter_info(code, root)
+    for parent in spec.get(&quot;depends&quot;, []):
+        if chapter_status(parent, root) not in (&quot;complete&quot;, &quot;skipped&quot;):
+            raise RuntimeError(f&quot;请先运行第 {parent} 章；当前上游结果不完整或已过期。&quot;)
+    executable = installation() / &quot;.envs&quot; / (&quot;scvi&quot; if code == &quot;E02&quot; else &quot;sc_rna&quot;) / &quot;bin/python&quot;
+    if not executable.exists():
+        raise RuntimeError(&quot;请先运行 bash setup.sh --scvi 准备扩展环境。&quot;)
+    previous = state(root)[&quot;chapters&quot;].get(code, {})
+    resumable = chapter_status(code, root) in (&quot;awaiting_input&quot;, &quot;awaiting_confirmation&quot;)
+    attempt = previous[&quot;attempt&quot;] if resumable and not fresh else time.strftime(&quot;%Y%m%dT%H%M%S&quot;) + &quot;_&quot; + uuid.uuid4().hex[:6]
+    directory = root / &quot;results&quot; / spec[&quot;slug&quot;] / attempt
+    directory.mkdir(parents=True, exist_ok=True)
+    nb = nbformat.read(root / spec[&quot;notebook&quot;], as_version=4)
+    for cell in nb.cells:
+        if cell.cell_type == &quot;code&quot;:
+            cell.outputs = []
+            cell.execution_count = None
+    env = os.environ.copy()
+    threads = str(settings(root)[&quot;parameters&quot;][&quot;threads&quot;])
+    env.update(SC_COURSE_ROOT=str(installation()), SC_COURSE_PROJECT=root.name, SC_COURSE_ATTEMPT=attempt,
+               OMP_NUM_THREADS=threads, OPENBLAS_NUM_THREADS=threads,
+               MKL_NUM_THREADS=threads, NUMBA_NUM_THREADS=threads,
+               PYTHONNOUSERSITE=&quot;1&quot;, PYTHONHASHSEED=&quot;0&quot;,
+               MPLCONFIGDIR=str(root / &quot;.runtime/matplotlib&quot;),
+               IPYTHONDIR=str(root / &quot;.runtime/ipython&quot;))
+
+    class ProjectKernelSpecManager(KernelSpecManager):
+        def get_kernel_spec(self, kernel_name):
+            return KernelSpec(argv=[str(executable), &quot;-m&quot;, &quot;ipykernel_launcher&quot;, &quot;-f&quot;, &quot;{connection_file}&quot;],
+                              display_name=&quot;scRNA course&quot;, language=&quot;python&quot;)
+
+    manager = KernelManager(kernel_name=&quot;course&quot;, kernel_spec_manager=ProjectKernelSpecManager())
+    started = time.time()
+    memory = {&quot;peak_process_tree_rss_bytes&quot;: 0}
+    stopped = threading.Event()
+
+    def monitor():
+        process = psutil.Process()
+        while not stopped.wait(0.5):
+            total = 0
+            for child in [process] + process.children(recursive=True):
+                try:
+                    total += child.memory_info().rss
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+            memory[&quot;peak_process_tree_rss_bytes&quot;] = max(memory[&quot;peak_process_tree_rss_bytes&quot;], total)
+
+    watcher = threading.Thread(target=monitor, daemon=True)
+    watcher.start()
+    log_path = directory / &quot;execution.log&quot;
+
+    def after_cell(cell, cell_index, **kwargs):
+        with log_path.open(&quot;a&quot;, encoding=&quot;utf-8&quot;) as log:
+            log.write(f&quot;\n--- Cell {cell_index} ---\n&quot;)
+            for number, output in enumerate(cell.get(&quot;outputs&quot;, [])):
+                if output.output_type == &quot;stream&quot;:
+                    log.write(output.text)
+                if output.output_type == &quot;error&quot;:
+                    log.write(&quot;\n&quot;.join(output.traceback))
+                data = output.get(&quot;data&quot;, {})
+                if &quot;image/png&quot; in data:
+                    images = directory / &quot;figures&quot;
+                    images.mkdir(exist_ok=True)
+                    (images / f&quot;cell_{cell_index:03d}_{number:02d}.png&quot;).write_bytes(base64.b64decode(data[&quot;image/png&quot;]))
+        print(f&quot;[{code}] 完成单元格 {cell_index + 1}/{len(nb.cells)}&quot;, flush=True)
+
+    client = NotebookClient(nb, km=manager, timeout=3600, allow_errors=False,
+                            force_raise_errors=True, on_cell_executed=after_cell,
+                            resources={&quot;metadata&quot;: {&quot;path&quot;: str(root)}})
+    failure = None
+    paused = False
+    try:
+        client.execute(env=env)
+    except Exception as exc:
+        current = state(root)
+        record = current[&quot;chapters&quot;].get(code, {})
+        # 只有本次内核明确发出的教学等待才按正常暂停处理；其他异常照常失败。
+        paused = (record.get(&quot;attempt&quot;) == attempt
+                  and record.get(&quot;status&quot;) in (&quot;awaiting_input&quot;, &quot;awaiting_confirmation&quot;)
+                  and getattr(exc, &quot;ename&quot;, &quot;&quot;) == &quot;AwaitingDecision&quot;)
+        if not paused:
+            failure = exc
+            owns_current = not record or record.get(&quot;attempt&quot;) == attempt
+            if not owns_current:
+                record = {&quot;id&quot;: code, &quot;attempt&quot;: attempt, &quot;directory&quot;: relative(directory, root)}
+            record.update(status=&quot;failed&quot;, error=str(exc)[-5000:])
+            if owns_current:
+                current[&quot;chapters&quot;][code] = record
+                write_json(root / &quot;results/state.json&quot;, current)
+            write_json(directory / &quot;run.json&quot;, record)
+    finally:
+        stopped.set()
+        watcher.join(timeout=2)
+        if manager.has_kernel:
+            manager.shutdown_kernel(now=True)
+        if client.kc is not None:
+            client.kc.stop_channels()
+        nbformat.write(nb, directory / &quot;executed.ipynb&quot;)
+        write_json(directory / &quot;resources.json&quot;, {**memory, &quot;wall_seconds&quot;: round(time.time() - started, 2)})
+        current = state(root)
+        record = current[&quot;chapters&quot;].get(code)
+        if record and record.get(&quot;attempt&quot;) == attempt:
+            record[&quot;artifacts&quot;] = inventory(directory, root)
+            record[&quot;resources&quot;] = read_json(directory / &quot;resources.json&quot;)
+            write_json(directory / &quot;run.json&quot;, record)
+            write_json(root / &quot;results/state.json&quot;, current)
+    # Refresh the export after any attempt so an old downstream interpretation
+    # is not left in the Word document after its input has become stale.
+    build_report(root)
+    if paused:
+        record = state(root)[&quot;chapters&quot;][code]
+        print(&quot;正常暂停：&quot; + record[&quot;message&quot;])
+        print(&quot;待办与候选：&quot; + record[&quot;request&quot;])
+        return
+    if failure:
+        raise RuntimeError(f&quot;第 {code} 章执行失败，请查看 {relative(directory / &#x27;executed.ipynb&#x27;, root)}&quot;) from failure
+    if chapter_status(code, root) != &quot;complete&quot;:
+        raise RuntimeError(&quot;章节没有提交有效检查点，请检查最后一个单元格。&quot;)
+    print(f&quot;图表和摘要：{relative(directory / &#x27;run.json&#x27;, root)}&quot;)
+    print(&quot;请阅读结果，保存解读 Markdown，再使用 course review 绑定本次运行。&quot;)
+
+
+def review(root, code, source):
+    if chapter_status(code, root) not in (&quot;complete&quot;, &quot;skipped&quot;):
+        raise RuntimeError(&quot;只能为当前有效的已完成/明确跳过章节提交解读。&quot;)
+    record = state(root)[&quot;chapters&quot;][code]
+    source = Path(source).resolve()
+    text = source.read_text(encoding=&quot;utf-8&quot;)
+    for heading in (&quot;目的&quot;, &quot;方法&quot;, &quot;结果&quot;, &quot;解释&quot;):
+        if not re.search(r&quot;^#{1,4}\s+.*&quot; + heading, text, re.M):
+            raise ValueError(&quot;本章解读需包含目的、方法、结果、解释四项标题。&quot;)
+    evidence = []
+    # 图片只需核对其所属的当前章节，避免每张图重新哈希所有大型检查点。
+    valid_directories = [(chapter, root / item[&quot;directory&quot;])
+                         for chapter,item in state(root)[&quot;chapters&quot;].items()]
+    for target in re.findall(r&quot;!\[[^\]]*\]\(([^)]+)\)&quot;, text):
+        path = (root / target).resolve()
+        if not path.is_file() or not any(path.is_relative_to(d) and chapter_status(chapter, root) in (&quot;complete&quot;, &quot;skipped&quot;) for chapter,d in valid_directories):
+            raise ValueError(f&quot;图片必须来自当前有效结果：{target}&quot;)
+        evidence.append(relative(path, root))
+    destination = root / &quot;reports/sections&quot; / (code + &quot;.md&quot;)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        history = root / &quot;reports/.meta/history&quot; / code
+        history.mkdir(parents=True, exist_ok=True)
+        stamp = time.strftime(&quot;%Y%m%dT%H%M%S&quot;) + &quot;_&quot; + uuid.uuid4().hex[:6]
+        (history / (stamp + &quot;.md&quot;)).write_text(destination.read_text(encoding=&quot;utf-8&quot;), encoding=&quot;utf-8&quot;)
+        previous = read_json(destination.with_suffix(&quot;.json&quot;))
+        if previous:
+            write_json(history / (stamp + &quot;.json&quot;), previous)
+    destination.write_text(text, encoding=&quot;utf-8&quot;)
+    write_json(destination.with_suffix(&quot;.json&quot;), {
+        &quot;chapter&quot;: code, &quot;attempt&quot;: record[&quot;attempt&quot;], &quot;markdown_sha256&quot;: digest(destination),
+        &quot;evidence&quot;: {f: digest(root / f) for f in evidence},
+        &quot;tables&quot;: {a[&quot;path&quot;]: digest(root / a[&quot;path&quot;]) for a in record.get(&quot;artifacts&quot;, []) if a[&quot;kind&quot;] == &quot;csv&quot;},
+        &quot;reviewed_at&quot;: time.strftime(&quot;%Y-%m-%dT%H:%M:%S%z&quot;),
+    })
+    print(f&quot;第 {code} 章解读已与本次运行关联。&quot;)
+    build_report(root)
+
+
+def review_valid(root, code, known_status=None):
+    &quot;&quot;&quot;解读正文、当前尝试、引用图片和本章数字表均未变，才进入正式报告。&quot;&quot;&quot;
+    record = state(root)[&quot;chapters&quot;].get(code, {})
+    source = root / &quot;reports/sections&quot; / (code + &quot;.md&quot;)
+    meta = read_json(source.with_suffix(&quot;.json&quot;), {})
+    # 无解读时先返回；调用方刚核对过的状态可以复用，证据内容仍逐项检查。
+    if not (source.exists() and meta.get(&quot;attempt&quot;) == record.get(&quot;attempt&quot;)
+            and meta.get(&quot;markdown_sha256&quot;) == digest(source)):
+        return False
+    if (known_status or chapter_status(code, root)) not in (&quot;complete&quot;, &quot;skipped&quot;):
+        return False
+    for collection in (meta.get(&quot;evidence&quot;, {}), meta.get(&quot;tables&quot;, {})):
+        if not isinstance(collection, dict):
+            return False
+        if any(not (root / f).is_file() or digest(root / f) != h for f,h in collection.items()):
+            return False
+    return True
+
+
+def build_report(root):
+    &quot;&quot;&quot;每次从有效章节重新合成 Word；过期解读从成品撤出，历史源文件仍保留。&quot;&quot;&quot;
+    project = descriptor(root)
+    if project.get(&quot;read_only&quot;):
+        print(&quot;历史参考报告：&quot; + str(root / &quot;reports/analysis_report.docx&quot;))
+        return
+    payload = {&quot;title&quot;: project[&quot;name&quot;] + &quot; — 单细胞转录组分析报告&quot;,
+               &quot;created&quot;: time.strftime(&quot;%Y-%m-%d %H:%M&quot;), &quot;root&quot;: str(root),
+               &quot;chapters&quot;: [], &quot;pending&quot;: [], &quot;appendix&quot;: [], &quot;notes&quot;: []}
+    if project.get(&quot;test_only&quot;):
+        payload[&quot;title&quot;] = &quot;[流程验收，非用户科学确认] &quot; + payload[&quot;title&quot;]
+    current = state(root)[&quot;chapters&quot;]
+    markdown = [&quot;# &quot; + payload[&quot;title&quot;], &quot;&quot;]
+    for spec in settings(root)[&quot;chapters&quot;]:
+        if spec.get(&quot;optional&quot;):
+            continue
+        code = spec[&quot;id&quot;]
+        status_code = chapter_status(code, root)
+        record = current.get(code, {})
+        source = root / &quot;reports/sections&quot; / (code + &quot;.md&quot;)
+        if review_valid(root, code, status_code):
+            payload[&quot;chapters&quot;].append({&quot;id&quot;:code,&quot;title&quot;:spec[&quot;title&quot;],
+                &quot;markdown&quot;:source.read_text(),&quot;attempt&quot;:record[&quot;attempt&quot;]})
+            markdown += [&quot;## 第 &quot; + code + &quot; 章 &quot; + spec[&quot;title&quot;], &quot;&quot;, source.read_text(), &quot;&quot;]
+        else:
+            payload[&quot;pending&quot;].append({&quot;id&quot;:code,&quot;title&quot;:spec[&quot;title&quot;],&quot;status&quot;:status_code})
+        if status_code in (&quot;complete&quot;,&quot;skipped&quot;,&quot;awaiting_input&quot;,&quot;awaiting_confirmation&quot;):
+            payload[&quot;appendix&quot;].append({&quot;id&quot;:code,&quot;title&quot;:spec[&quot;title&quot;],&quot;artifacts&quot;:record.get(&quot;artifacts&quot;,[])})
+    for source in sorted((root / &quot;reports/notes&quot;).glob(&quot;*.md&quot;)):
+        payload[&quot;notes&quot;].append({&quot;title&quot;:source.stem,&quot;markdown&quot;:source.read_text()})
+    if payload[&quot;pending&quot;]:
+        markdown += [&quot;## 待完成或待更新的章节&quot;, &quot;&quot;] + [f&quot;- {x[&#x27;id&#x27;]} {x[&#x27;title&#x27;]}：{x[&#x27;status&#x27;]}&quot; for x in payload[&quot;pending&quot;]]
+    directory = root / &quot;reports&quot;
+    directory.mkdir(exist_ok=True)
+    write_json(directory / &quot;.meta/report_content.json&quot;, payload)
+    (directory / &quot;analysis_report.md&quot;).write_text(&quot;\n&quot;.join(markdown), encoding=&quot;utf-8&quot;)
+    index = [&quot;# 当前结果索引&quot;, &quot;&quot;, &quot;路径相对于本项目目录。候选结果并非已确认的最终输出。&quot;, &quot;&quot;]
+    for chapter in payload[&quot;appendix&quot;]:
+        index += [f&quot;## {chapter[&#x27;id&#x27;]} {chapter[&#x27;title&#x27;]}&quot;, &quot;&quot;]
+        index += [&quot;- &quot; + a[&quot;path&quot;] for a in chapter[&quot;artifacts&quot;]]
+        index.append(&quot;&quot;)
+    (directory / &quot;artifact_index.md&quot;).write_text(&quot;\n&quot;.join(index), encoding=&quot;utf-8&quot;)
+    node = installation() / &quot;.envs/sc_rna/bin/node&quot;
+    temporary = directory / &quot;.meta/analysis_report.pending.docx&quot;
+    subprocess.run([str(node), str(installation() / &quot;tools/build_report.cjs&quot;),
+                    str(directory / &quot;.meta/report_content.json&quot;), str(temporary)], check=True)
+    temporary.replace(directory / &quot;analysis_report.docx&quot;)
+    print(f&quot;Word 已更新：{directory / &#x27;analysis_report.docx&#x27;}（{len(payload[&#x27;chapters&#x27;])} 章有效解读）&quot;)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=&quot;逐项目、逐章运行单细胞课程；参见 99 指南&quot;)
+    parser.add_argument(&quot;--project&quot;, help=&quot;项目编号；在项目目录内运行可省略&quot;)
+    commands = parser.add_subparsers(dest=&quot;command&quot;, required=True)
+    commands.add_parser(&quot;check&quot;)
+    commands.add_parser(&quot;status&quot;)
+    commands.add_parser(&quot;report&quot;)
+    project = commands.add_parser(&quot;project&quot;).add_subparsers(dest=&quot;project_command&quot;, required=True)
+    project.add_parser(&quot;list&quot;)
+    create = project.add_parser(&quot;create&quot;)
+    create.add_argument(&quot;identifier&quot;)
+    create.add_argument(&quot;--name&quot;, required=True)
+    create.add_argument(&quot;--preset&quot;, choices=[&quot;tutorial&quot;,&quot;custom&quot;], default=&quot;custom&quot;)
+    run = commands.add_parser(&quot;run&quot;)
+    run.add_argument(&quot;chapter&quot;)
+    run.add_argument(&quot;--fresh&quot;, action=&quot;store_true&quot;, help=&quot;新建尝试，保留旧结果；旧确认不自动迁移&quot;)
+    interpretation = commands.add_parser(&quot;review&quot;)
+    interpretation.add_argument(&quot;chapter&quot;)
+    interpretation.add_argument(&quot;--source&quot;, required=True)
+    choice = commands.add_parser(&quot;choose&quot;)
+    choice.add_argument(&quot;chapter&quot;); choice.add_argument(&quot;stage&quot;); choice.add_argument(&quot;candidate&quot;)
+    approval = commands.add_parser(&quot;approve&quot;)
+    approval.add_argument(&quot;chapter&quot;, choices=[&quot;08&quot;])
+    for sub in (choice,approval):
+        sub.add_argument(&quot;--confirmation&quot;, required=True, help=&quot;用户真实确认原文；不能由 AI 虚构&quot;)
+        sub.add_argument(&quot;--test-only&quot;, action=&quot;store_true&quot;, help=&quot;只允许显式 test_only 验收项目&quot;)
+    skip = commands.add_parser(&quot;skip&quot;)
+    skip.add_argument(&quot;chapter&quot;, choices=[&quot;05&quot;,&quot;09&quot;,&quot;11&quot;])
+    skip.add_argument(&quot;--reason&quot;, required=True); skip.add_argument(&quot;--confirmation&quot;, required=True)
+    redraw = commands.add_parser(&quot;redraw&quot;)
+    redraw.add_argument(&quot;chapter&quot;); redraw.add_argument(&quot;--script&quot;, required=True)
+    model = commands.add_parser(&quot;models&quot;).add_subparsers(dest=&quot;model_command&quot;, required=True)
+    search = model.add_parser(&quot;search&quot;); search.add_argument(&quot;--query&quot;, default=&quot;&quot;)
+    download = model.add_parser(&quot;download&quot;); download.add_argument(&quot;filename&quot;)
+    download.add_argument(&quot;--confirmation&quot;, required=True)
+    args = parser.parse_args()
+    if args.command == &quot;project&quot;:
+        if args.project_command == &quot;create&quot;:
+            create_project(args.identifier, args.name, args.preset)
+        else:
+            for path in sorted((installation()/&quot;projects&quot;).glob(&quot;*/project.json&quot;)):
+                data=read_json(path)
+                print(data[&quot;id&quot;], data[&quot;name&quot;], &quot;历史参考&quot; if data.get(&quot;read_only&quot;) else &quot;可运行项目&quot;)
+        return
+    root = resolve_project(args.project, required=args.command!=&quot;check&quot;)
+    if root:
+        os.environ[&quot;SC_COURSE_PROJECT&quot;] = root.name
+    if args.command == &quot;check&quot;:
+        check(root)
+    elif args.command == &quot;status&quot;:
+        status(root)
+    elif args.command == &quot;run&quot;:
+        execute(root, args.chapter.zfill(2), args.fresh)
+    elif args.command == &quot;review&quot;:
+        review(root, args.chapter.zfill(2), args.source)
+    elif args.command in (&quot;choose&quot;, &quot;approve&quot;):
+        from course_decisions import confirm
+        confirm(root, args.chapter.zfill(2), args.stage if args.command==&quot;choose&quot; else &quot;annotation&quot;,
+                args.candidate if args.command==&quot;choose&quot; else &quot;apply&quot;, args.confirmation, args.test_only)
+    elif args.command == &quot;skip&quot;:
+        from course_actions import skip_chapter
+        skip_chapter(root, args.chapter, args.reason, args.confirmation)
+        build_report(root)
+    elif args.command == &quot;redraw&quot;:
+        from course_actions import redraw_chapter
+        redraw_chapter(root,args.chapter.zfill(2),args.script)
+        build_report(root)
+    elif args.command == &quot;models&quot;:
+        from course_resources import fetch_catalog,download_model
+        if args.model_command==&quot;search&quot;: fetch_catalog(root,args.query)
+        else: download_model(root,args.filename,args.confirmation)
+    else:
+        build_report(root)
+
+
+if __name__ == &quot;__main__&quot;:
+    try:
+        main()
+    except Exception as exc:
+        print(f&quot;错误：{exc}&quot;, file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+</code></pre></main></body></html>

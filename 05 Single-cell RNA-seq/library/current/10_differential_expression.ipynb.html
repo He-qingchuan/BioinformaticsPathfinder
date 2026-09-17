@@ -1,0 +1,512 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10_differential_expression.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/10_differential_expression.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>10_differential_expression.ipynb</h1><section><small>单元格 0</small><h1>第 10 章 差异表达与标记基因</h1>
+<h2>学习目标</h2>
+<p>寻找支持细胞类型注释的差异表达基因，并正确理解比较对象和统计量。</p>
+<h2>为什么做与怎样做</h2>
+<p>在 log1p 表达数据上用 Wilcoxon 比较簇与其余细胞，并演示指定群体比较、表达比例过滤及多种图形。结果用于描述性标记探索。</p>
+<p>前置章节：09。运行前请完成项目环境准备。</p>
+<p>本章在项目副本运行。遇到等待材料/确认，请按根目录 <strong>99_运行与AI协作指南.md</strong> 查看当前结果、与用户讨论并续跑；不能跳过待办直接进入下游。</p>
+</section><section><small>单元格 1</small><pre><code># 功能说明：查找公共环境和当前项目，读取有效上游检查点；模板副本之间不共享分析状态。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+from course_projects import resolve_project, input_path, read_sample
+from course_resources import qc_gene_sets, marker_resources, resolution_preview
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+INSTALL_ROOT = ROOT
+ROOT = resolve_project()
+ctx = start_chapter(&quot;10&quot;)
+adata = ctx.load_input()
+coarse_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;coarse&quot;])
+fine_key = str(adata.uns[&quot;annotation_keys&quot;][&quot;fine&quot;])
+
+
+</code></pre></section><section><small>单元格 2</small><h2>10.1 以差异表达基因注释</h2>
+</section><section><small>单元格 3</small><pre><code># 功能说明：更新图形输出目录。
+# 运行目的：将差异表达分析相关的图片保存到特定子文件夹。
+# 详细代码解析：
+# 1. `sc.settings.figdir = ...`
+#    - 设置新的输出路径。
+
+# 设置输出目录
+sc.settings.figdir = ctx.figures</code></pre></section><section><small>单元格 4</small><pre><code># 变量/函数/参数解析：
+# - comparison：研究问题、比较组和参照组的实际登记，确认发生在统计之前。
+# - counts：每个手工标签的真实细胞数；不足时先补资料/调整问题。
+# - plot_clusters：只控制后面示例图显示哪些真实簇，不改变比较问题。
+# 功能说明：展示实际比较组及样本量，确认研究问题后保留原 Wilcoxon 分析。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+comparison = ctx.config[&quot;comparison&quot;]
+counts = adata.obs[&quot;manual_level1&quot;].value_counts()
+ctx.table(&quot;comparison_group_sizes&quot;, counts.rename(&quot;n_cells&quot;))
+if not comparison.get(&quot;question&quot;) or not comparison.get(&quot;group&quot;) or not comparison.get(&quot;reference&quot;) or any(counts.get(k, 0) &lt; 2 for k in [comparison.get(&quot;group&quot;), comparison.get(&quot;reference&quot;)]):
+    ctx.wait_input(&quot;comparison&quot;, &quot;请根据实际注释和研究问题登记 comparison.question、group 与 reference，两组各需至少两个细胞。&quot;)
+ctx.choose(&quot;comparison&quot;, {&quot;run&quot;: {&quot;group&quot;: comparison[&quot;group&quot;], &quot;reference&quot;: comparison[&quot;reference&quot;], &quot;question&quot;: comparison[&quot;question&quot;], &quot;sizes&quot;: {str(k):int(v) for k,v in counts.items()}}}, &quot;请确认比较对象和研究问题，再计算 Wilcoxon；不能看到显著性后倒选问题。&quot;)
+plot_clusters = comparison.get(&quot;plot_clusters&quot;) or list(adata.obs[fine_key].cat.categories[:2])
+if any(k not in adata.obs[fine_key].astype(str).unique() for k in plot_clusters):
+    ctx.wait_input(&quot;plot_clusters&quot;, &quot;绘图簇编号不存在，请依据当前聚类选择 comparison.plot_clusters。&quot;)
+</code></pre></section><section><small>单元格 5</small><h2>10.2 进行差异表达分析</h2>
+<p>还可以为每个簇计算差异表达基因，并根据这些基因是否对应已知的生物学（如细胞类型/状态）进行注释。常用的统计检验包括 Wilcoxon 与 t 检验，采用“该簇 vs 其余”的比较策略。
+为了识别差异表达基因，我们运行 <code>sc.tl.rank_genes_groups</code>。此函数将获取每组细胞，并将组中每个基因的分布与不在该组中的所有其他细胞中的分布进行比较。</p>
+</section><section><small>单元格 6</small><pre><code># 功能说明：执行差异表达分析（Differential Expression Analysis）。
+# 运行目的：识别每个聚类（细胞类型）的特异性标记基因（Marker Genes），用于后续的生物学注释。
+# 变量/函数/参数解析：
+# - leiden_res = fine_key：
+#   - 定义要使用的聚类结果列名。
+# - sc.tl.rank_genes_groups(...)：
+#   - adata：AnnData 对象。
+#   - groupby=leiden_res：指定分组变量，即按哪个聚类结果进行差异分析。
+#   - method=&quot;wilcoxon&quot;：
+#     - 使用 Wilcoxon 秩和检验（非参数检验）。
+#     - 相比 t 检验，它不假设数据服从正态分布，更适合单细胞数据的稀疏和偏态分布特性。
+#   - key_added=leiden_res+&quot;_rank_genes_groups&quot;：
+#     - 将分析结果存储在 adata.uns 中的指定键名下，避免覆盖默认的 &#x27;rank_genes_groups&#x27;。
+#   - 默认行为：
+#     - 对每个组进行 &quot;One-vs-Rest&quot;（该组 vs 其余所有组）比较。
+#     - 计算 p 值、校正 p 值（benjamini-hochberg）、log2FC（对数倍数变化）等统计量。
+
+
+
+# 4. 生物学意义：
+#    - 识别每个聚类/细胞类型的特异性标记基因
+#    - 用于细胞类型注释（找到每个细胞类型的特征基因）
+#    - 发现不同条件下差异表达的基因
+
+# 定义聚类分辨率变量
+leiden_res = fine_key
+sc.tl.rank_genes_groups(
+    adata,                    
+    groupby=leiden_res, 
+    method=&quot;wilcoxon&quot;, use_raw=False, layer=&quot;log1p&quot;,
+    key_added=leiden_res+&quot;_rank_genes_groups&quot;
+)</code></pre></section><section><small>单元格 7</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata
+</code></pre></section><section><small>单元格 8</small><h2>10.3 使用UMAP可视化差异表达基因</h2>
+</section><section><small>单元格 9</small><pre><code># 功能说明：批量绘制每个簇的前 5 个差异基因的 UMAP 图。
+# 运行目的：直观地验证差异基因在空间上的分布是否集中在对应的簇中。
+# 详细代码解析：
+# 1. 获取簇列表：
+#    - `adata.obs[leiden_res].cat.categories.tolist()`: 获取所有聚类标签。
+# 2. 循环遍历每个簇：
+#    - `sc.get.rank_genes_groups_df(...)`:
+#      - 获取指定簇的差异基因列表。
+#      - `group=cluster_num`: 指定当前簇。
+#      - `key=...`: 指定差异分析结果的存储键。
+#      - `.head(5)[&quot;names&quot;].tolist()`: 提取前 5 个基因的名称。
+# 3. `sc.pl.umap(...)`:
+#    - `color=dc_cluster_genes + [leiden_res]`: 同时展示 5 个基因的表达量和聚类图。
+#    - `vmin=0, vmax=&quot;p99&quot;`: 设置颜色映射范围，去除极端值影响。
+#    - `ncols=3`: 每行显示 3 个子图。
+
+# 首先，获取所有需要遍历的簇标签列表
+with rc_context({&quot;figure.figsize&quot;: (3, 3)}):
+    all_clusters = adata.obs[leiden_res].cat.categories.tolist()
+    for cluster_num in all_clusters:
+        print(f&quot;=== 可视化 Cluster {cluster_num} 的 top 5 差异基因 ===\n&quot;)
+        
+        # 关键修改：在循环内，动态获取当前簇的差异基因
+        dc_cluster_genes = sc.get.rank_genes_groups_df(
+            adata,
+            group=cluster_num,  # 动态设为当前簇的编号
+            key=leiden_res+&quot;_rank_genes_groups&quot;
+        ).head(5)[&quot;names&quot;].tolist()  # 转为列表
+        # 可视化：在当前簇的差异基因外，同时着色细胞簇本身
+        sc.pl.umap(
+            adata,
+            color=dc_cluster_genes + [leiden_res],  # 合并基因列表和分组标签
+            legend_loc=&quot;on data&quot;,
+            vmin=0,
+            vmax=&quot;p99&quot;,
+            sort_order=False,
+            frameon=False,
+            ncols=3,  # 每行显示3张小图
+            # cmap=&quot;Reds&quot;,
+            save=f&quot;_10_234_{cluster_num}.pdf&quot;
+        )
+        
+        print(f&quot;=== 可视化 Cluster {cluster_num} 的 top 5 差异基因已完成 ===\n&quot;)</code></pre></section><section><small>单元格 10</small><h2>10.4 使用点图可视化差异表达基因</h2>
+<p>我们可以在点图上可视化每个簇的前 5 个差异表达基因。</p>
+</section><section><small>单元格 11</small><pre><code># 绘制差异表达基因点图（Dot Plot）
+# 功能解释：
+# 1. 可视化内容：
+#    - 每个聚类的特异性标记基因
+#    - 点的大小表示该基因在聚类中的表达比例（表达该基因的细胞百分比）
+#    - 点的颜色表示该基因在聚类中的平均表达量（已标准化）
+# 2. 图形解读：
+#    - X轴：不同的细胞聚类（leiden_res_0_50）
+#    - Y轴：差异表达基因
+#    - 点大小：表达比例（越大表示越多的细胞表达该基因）
+#    - 点颜色：标准化后的表达量（红色表示高表达，蓝色表示低表达）
+# 3. 参数说明：
+#    - groupby: 必须与rank_genes_groups中使用的分组一致
+#    - standard_scale: 标准化方式，可选：
+#        * &quot;var&quot;: 按基因标准化（每行/每个基因），# 将每个基因在所有聚类中的表达值缩放到0-1范围，# 便于比较基因在不同聚类中的相对表达水平
+#        * &quot;group&quot;: 按分组标准化（每列/每个聚类）
+#        * None: 不标准化，使用原始表达值
+#    - n_genes: 每个聚类展示的基因数
+#    - 其他可选参数：
+#        * gene_symbols: 使用基因符号而非ID
+#        * values_to_plot: 展示哪种值（默认是log fold change）
+#        * cmap: 颜色映射
+#        * min_logfoldchange: 最小log2倍数变化阈值
+#        * key: 指定存储差异分析结果的键名,指定从哪里读取差异分析的结果（对应之前 `key_added` 的值）。
+# 4. 生物学应用：
+#    - 快速识别每个细胞类型的特征标记基因
+#    - 比较不同聚类之间标记基因的表达模式
+#    - 验证细胞类型注释的正确性
+#    - 发现共表达的基因模块
+# 5. 注意事项：
+#    - 必须先执行sc.tl.rank_genes_groups才能绘制此图
+#    - 图形可能较复杂，可以通过调整参数优化显示效果
+sc.pl.rank_genes_groups_dotplot(adata, 
+                                groupby=leiden_res, 
+                                standard_scale=&quot;var&quot;, 
+                                n_genes=5, 
+                                key=leiden_res+&quot;_rank_genes_groups&quot;,
+                                save=&quot;_10_236.pdf&quot;)</code></pre></section><section><small>单元格 12</small><p>我们可以使用这些基因来推断各簇对应的细胞类型。例如，第 7 簇表达 <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=NKG7&amp;keywords=nkg7">NKG7</a> 与 <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=GNLY&amp;keywords=GNLY">GNLY</a>，提示其可能为 <a href="https://zh.wikipedia.org/wiki/%E8%87%AA%E7%84%B6%E6%9D%80%E4%BC%A4%E7%BB%86%E8%83%9E">自然杀伤细胞（NK）</a>。</p>
+</section><section><small>单元格 13</small><p>如上图所示，许多差异表达基因在多个簇中高表达。我们可以过滤差异表达基因，以选择更具簇特异性的差异表达基因：</p>
+</section><section><small>单元格 14</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata_filtered = adata
+</code></pre></section><section><small>单元格 15</small><pre><code># 检查两个变量是否指向同一对象
+print(adata_filtered is adata)  # True 表示是同一对象
+# 检查内存地址
+print(id(adata_filtered) == id(adata))  # True 表示相同地址</code></pre></section><section><small>单元格 16</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata_filtered = adata.copy()
+</code></pre></section><section><small>单元格 17</small><pre><code># 检查两个变量是否指向同一对象
+print(adata_filtered is adata)  # True 表示是同一对象
+# 检查内存地址
+print(id(adata_filtered) == id(adata))  # True 表示相同地址</code></pre></section><section><small>单元格 18</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+print(type(adata))
+</code></pre></section><section><small>单元格 19</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+print(type(adata_filtered))
+</code></pre></section><section><small>单元格 20</small><pre><code># 功能说明：过滤差异表达基因，筛选出更具特异性的标记。
+# 运行目的：去除那些在很多簇中都表达的基因，只保留在目标簇中高表达且在其他簇中低表达的基因。
+# 详细代码解析：
+# 1. `sc.tl.filter_rank_genes_groups(...)`
+#    - `sc.tl.filter_rank_genes_groups`: 过滤差异基因的函数。
+#    - `adata`: 数据对象。
+#    - `min_in_group_fraction=0.2`: 筛选条件1。基因在目标簇内的表达比例至少要达到 20%。
+#    - `max_out_group_fraction=0.2`: 筛选条件2。基因在目标簇之外（其他所有簇）的表达比例不能超过 20%。
+#    - `key=leiden_res+&quot;_rank_genes_groups&quot;`: 输入的差异分析结果键名。
+#    - `key_added=leiden_res+&quot;_rank_genes_groups&quot;+&quot;_filtered&quot;`: 将过滤后的结果存储在新的键名下。
+
+sc.tl.filter_rank_genes_groups(
+    adata_filtered,
+    min_in_group_fraction=0.2,
+    max_out_group_fraction=0.2,
+    key=leiden_res+&quot;_rank_genes_groups&quot;,
+    key_added=leiden_res+&quot;_rank_genes_groups&quot;+&quot;_filtered&quot;,
+)</code></pre></section><section><small>单元格 21</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+leiden_res+&quot;_rank_genes_groups&quot;
+</code></pre></section><section><small>单元格 22</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+adata
+</code></pre></section><section><small>单元格 23</small><p>可视化过滤后的基因：</p>
+</section><section><small>单元格 24</small><pre><code># 功能说明：绘制过滤后的差异基因点图。
+# 运行目的：展示经过特异性筛选后的标记基因，验证过滤效果。
+# 详细代码解析：
+# 1. `sc.pl.rank_genes_groups_dotplot(...)`
+#    - `key=...+&quot;_filtered&quot;`: 使用过滤后的差异分析结果。
+#    - 其他参数同上。
+
+sc.pl.rank_genes_groups_dotplot(
+    adata_filtered,
+    groupby=leiden_res,
+    standard_scale=&quot;var&quot;,
+    n_genes=5,
+    key=leiden_res+&quot;_rank_genes_groups&quot;+&quot;_filtered&quot;,
+    save=&quot;_10_249.pdf&quot;
+)</code></pre></section><section><small>单元格 25</small><p>为了获得更好的表示，我们可以绘制 对数倍数变化 (log fold changes) 而不是基因表达量。此外，我们要关注在细胞类型表达与其他细胞之间对数倍数变化 &gt;= 3 的基因。</p>
+<p>在这种情况下，我们设置 values_to_plot='logfoldchanges' 和 min_logfoldchange=3。</p>
+<p>因为对数倍数变化是一个发散的尺度，我们也调整了要绘制的最小值和最大值，并使用了发散色图。</p>
+</section><section><small>单元格 26</small><pre><code># 功能说明：绘制基于对数倍数变化（Log Fold Change）的点图。
+# 运行目的：展示基因表达变化的幅度（Fold Change），而不仅仅是表达量。这有助于识别表达量虽然不高但差异倍数很大的基因。
+# 变量/函数/参数解析：
+# - values_to_plot=&quot;logfoldchanges&quot;：
+#   - 绘制的值是对数倍数变化（Log2FC）。
+#   - 正值表示上调，负值表示下调。
+# - min_logfoldchange=3：
+#   - 仅显示 LogFC 绝对值 &gt;= 3 的基因。
+#   - 这是一个严格的阈值，只保留差异非常显著的基因。
+# - vmax=7, vmin=-7：
+#   - 设置颜色映射的范围为 [-7, 7]。
+#   - 保证颜色标尺的对称性，便于观察上调和下调。
+# - cmap=&quot;bwr&quot;：
+#   - 使用 &quot;Blue-White-Red&quot; 色图。
+#   - 蓝色=下调，白色=无变化，红色=上调。
+
+sc.pl.rank_genes_groups_dotplot(
+    adata,
+    n_genes=5,
+    values_to_plot=&quot;logfoldchanges&quot;,
+    min_logfoldchange=3,
+    vmax=7,
+    vmin=-7,
+    cmap=&quot;bwr&quot;,
+    key=leiden_res+&quot;_rank_genes_groups&quot;,
+    save=&quot;_10_251.pdf&quot;
+)</code></pre></section><section><small>单元格 27</small><p>标记基因需要组合解释。例如 NKG7 和 GNLY 的表达可提示细胞具有细胞毒性相关特征，但仍需结合其他标记与群体背景区分 NK 和部分 T 细胞。请以本次图表定位相应的簇。</p>
+</section><section><small>单元格 28</small><h2>10.5 聚焦特定聚类</h2>
+<p>使用 groups 参数选择两个聚类，并通过 min_logfoldchange 关注效应较大的基因。下面最多展示每组 5 个基因；聚类编号的生物学含义以本次注释为准。</p>
+</section><section><small>单元格 29</small><pre><code># 功能说明：绘制特定簇（Cluster 2 和 11）的差异基因点图（LogFC）。
+# 运行目的：深入比较特定两个感兴趣的簇，查看它们各自的特异性上调基因。
+# 变量/函数/参数解析：
+# - groups=plot_clusters：
+#   - 仅展示聚类 &quot;2&quot; 和 &quot;11&quot; 的结果。
+# - n_genes=5：
+#   - 每个簇显示前 5 个基因。
+# - min_logfoldchange=4：
+#   - 提高阈值到 4，筛选差异更显著的基因。
+
+sc.pl.rank_genes_groups_dotplot(
+    adata,
+    n_genes=5,
+    values_to_plot=&quot;logfoldchanges&quot;,
+    min_logfoldchange=4,
+    vmax=7,
+    vmin=-7,
+    cmap=&quot;bwr&quot;,
+    groups=plot_clusters,
+    key=leiden_res+&quot;_rank_genes_groups&quot;,
+    save=&quot;_10_254.pdf&quot;  
+)</code></pre></section><section><small>单元格 30</small><pre><code># 功能说明：绘制特定簇（Cluster 2 和 11）的差异基因点图（标准化表达量）。
+# 运行目的：查看这两个簇标记基因的实际表达水平（标准化后）。
+# 变量/函数/参数解析：
+# - standard_scale=&quot;var&quot;：
+#   - 按基因标准化，展示相对表达高低。
+
+sc.pl.rank_genes_groups_dotplot(adata, 
+                                standard_scale=&quot;var&quot;, 
+                                n_genes=5, 
+                                groups=plot_clusters,
+                                key=leiden_res+&quot;_rank_genes_groups&quot;,
+                                save=&quot;_10_255.pdf&quot;
+                        )</code></pre></section><section><small>单元格 31</small><h2>10.6 矩阵图与缩放表达</h2>
+<p>对本次展示的基因构造绘图副本，并将 z-score 保存到该副本的 scaled 层。主对象的 log1p 表达保持不变。</p>
+</section><section><small>单元格 32</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+ranked_genes = sc.get.rank_genes_groups_df(adata, group=None, key=leiden_res + &quot;_rank_genes_groups&quot;)
+plot_genes = ranked_genes.groupby(&quot;group&quot;, observed=True).head(3)[&quot;names&quot;].tolist()
+adata_scaled = scaled_view(adata, plot_genes)
+# 功能说明：使用矩阵图（Matrix Plot）展示差异表达基因。
+# 运行目的：以热图形式展示每个聚类的前 3 个标记基因的平均表达量。矩阵图类似于热图，但通常用于展示分组后的平均值。
+# 变量/函数/参数解析：
+# - sc.pl.rank_genes_groups_matrixplot(...)：
+#   - n_genes=3：每个聚类显示前 3 个基因。
+#   - use_raw=False：使用处理后的数据（adata.X 或 layers）。
+#   - layer=&quot;scaled&quot;：
+#     - 使用之前计算并存储在 layers 中的 &quot;scaled&quot; 数据（Z-score 标准化数据）。
+#     - 这对于热图类可视化很重要，可以突出相对差异。
+#   - vmin=-3, vmax=3：设置颜色映射范围。
+
+sc.pl.rank_genes_groups_matrixplot(adata_scaled, n_genes=3, use_raw=False, vmin=-3, vmax=3, cmap=&quot;bwr&quot;, layer=&quot;scaled&quot;,key=leiden_res+&quot;_rank_genes_groups&quot;,save=&quot;_10_257.pdf&quot;)
+</code></pre></section><section><small>单元格 33</small><h2>10.7 使用堆叠小提琴图可视化差异表达基因</h2>
+</section><section><small>单元格 34</small><pre><code># 功能说明：使用堆叠小提琴图（Stacked Violin Plot）展示差异表达基因。
+# 运行目的：同时展示基因表达的分布（小提琴图的形状）和强度。相比点图，它能提供更丰富的分布信息。
+# 变量/函数/参数解析：
+# - sc.pl.rank_genes_groups_stacked_violin(...)：
+#   - n_genes=3：每个聚类显示前 3 个基因。
+#   - cmap=&quot;viridis_r&quot;：
+#     - 使用 &quot;viridis_r&quot;（反转的 viridis）色图。
+#     - 通常用于表示表达密度或强度。
+
+sc.pl.rank_genes_groups_stacked_violin(adata, n_genes=3, cmap=&quot;viridis_r&quot;,key=leiden_res+&quot;_rank_genes_groups&quot;,save=&quot;_10_259.pdf&quot;)</code></pre></section><section><small>单元格 35</small><h2>10.8 使用热图可视化差异表达基因</h2>
+</section><section><small>单元格 36</small><pre><code># 功能说明：使用热图（Heatmap）展示差异表达基因。
+# 运行目的：以单细胞分辨率（或抽样后的单细胞）展示每个聚类的前 3 个标记基因的表达情况。
+# 变量/函数/参数解析：
+# - sc.pl.rank_genes_groups_heatmap(...)：
+#   - n_genes=3：每个聚类显示前 3 个基因。
+#   - swap_axes=True：
+#     - 交换 X 轴和 Y 轴。
+#     - 结果：行是基因，列是细胞（按聚类排序）。
+#   - show_gene_labels=True：显示基因名称。
+#   - layer=&quot;scaled&quot;：使用标准化数据。
+#   - figsize=(15, 12)：设置较大的图形尺寸以容纳标签。
+
+sc.pl.rank_genes_groups_heatmap(
+    adata_scaled,
+    n_genes=3,
+    use_raw=False,
+    swap_axes=True,
+    vmin=-3,
+    vmax=3,
+    cmap=&quot;bwr&quot;,
+    layer=&quot;scaled&quot;,
+    figsize=(15, 12),
+    show_gene_labels=True,
+    key=leiden_res+&quot;_rank_genes_groups&quot;,
+    #show=False,
+    save=&quot;_10_261.pdf&quot;
+)</code></pre></section><section><small>单元格 37</small><p>下面关闭基因标签并交换坐标轴，以观察整体模式；具体展示数量以 n_genes 参数为准。</p>
+</section><section><small>单元格 38</small><pre><code># 功能说明：绘制更紧凑的热图（不显示基因名）。
+# 运行目的：展示更多基因（每个聚类 3 个）的整体表达模式，忽略具体的基因名称，关注聚类间的整体差异模式。
+# 变量/函数/参数解析：
+# - n_genes=3：每个聚类显示前 3 个基因。
+# - show_gene_labels=False：
+#   - 隐藏基因名称。
+#   - 当展示大量基因时，标签会重叠且难以阅读，隐藏后可以更清晰地看到色块模式。
+
+sc.pl.rank_genes_groups_heatmap(
+    adata_scaled,
+    n_genes=3,
+    use_raw=False,
+    swap_axes=True,
+    show_gene_labels=False,
+    vmin=-3,
+    vmax=3,
+    cmap=&quot;bwr&quot;,
+    layer=&quot;scaled&quot;,
+    key=leiden_res+&quot;_rank_genes_groups&quot;,
+    save=&quot;_10_263.pdf&quot;
+)</code></pre></section><section><small>单元格 39</small><h2>10.9 使用分割小提琴图比较标记基因</h2>
+</section><section><small>单元格 40</small><pre><code># 功能说明：使用分割小提琴图（Violin Plot）展示差异表达基因。
+# 运行目的：概览每个聚类的前 10 个标记基因的表达分布。
+# 变量/函数/参数解析：
+# - sc.pl.rank_genes_groups_violin(...)：
+#   - n_genes=10：每个聚类显示前 10 个基因。
+#   - jitter=False：
+#     - 此处不叠加散点，避免大量细胞遮挡分布。
+#     - 需要查看单细胞分布时可启用 jitter；小样本仍应同时核对细胞数。
+with rc_context({&quot;figure.figsize&quot;: (9, 1.5)}):
+    sc.pl.rank_genes_groups_violin(adata, n_genes=10, jitter=False,key=leiden_res+&quot;_rank_genes_groups&quot;, save=&quot;_10_265.pdf&quot;)</code></pre></section><section><small>单元格 41</small><h2>10.10 指定特定类群之间进行差异表达分析</h2>
+</section><section><small>单元格 42</small><pre><code># 使用较细聚类的一级谱系标签进行比较；粗聚类中的混合免疫群不作为纯 T/NK 参照。
+# 功能说明：指定特定类群之间进行差异表达分析。
+# 运行目的：比较两个特定的细胞类型（例如 B 细胞 vs T/NK/ILC 细胞），寻找它们之间的差异基因。
+# 变量/函数/参数解析：
+# - groupby=&quot;manual_level1&quot;：
+#   - 使用一级细胞类型注释作为分组。
+# - groups=[comparison[&quot;group&quot;]]：
+#   - 目标组（实验组）：B 细胞。
+# - reference=comparison[&quot;reference&quot;]：
+#   - 参考组（对照组）：T/NK/ILC 细胞。
+#   - 默认是 &quot;rest&quot;（其余所有），这里指定了具体的对照组。
+# - key_added=&quot;selected_comparison&quot;：
+#   - 将结果存储在 &quot;selected_comparison&quot; 键下，避免覆盖其他结果。
+
+sc.tl.rank_genes_groups(
+    adata,                    
+    groupby=&quot;manual_level1&quot;, 
+    method=&quot;wilcoxon&quot;, use_raw=False, layer=&quot;log1p&quot;, 
+    groups=[comparison[&quot;group&quot;]],
+    reference=comparison[&quot;reference&quot;],
+    key_added=&quot;selected_comparison&quot;,      # 自定义结果存储键名
+)</code></pre></section><section><small>单元格 43</small><h2>10.11 保存差异表达结果</h2>
+</section><section><small>单元格 44</small><p>若需自定义绘图或采用更自动化的流程，可使用 scanpy.get.rank_genes_groups_df 以便利的格式提取差异表达结果。</p>
+</section><section><small>单元格 45</small><pre><code># 功能说明：提取差异表达分析结果为 DataFrame。
+# 运行目的：将复杂的差异分析结果对象转换为易于阅读和处理的表格格式。
+# 变量/函数/参数解析：
+# - sc.get.rank_genes_groups_df(...)：
+#   - adata：AnnData 对象。
+#   - group=None：
+#     - 提取所有分组的结果。
+#     - 如果指定具体组名（如 &quot;0&quot;），则只提取该组的结果。
+#   - key=leiden_res+&quot;_rank_genes_groups&quot;：
+#     - 指定要提取的差异分析结果来源。
+
+# - group 哪个分组（如scanpy.tl.rank_genes_groups()函数中groupby参数所定义）需要返回结果。可以指定为列表形式。若groups参数为None，则返回所有分组的结果。
+a = sc.get.rank_genes_groups_df(adata, group=None,key=leiden_res+&quot;_rank_genes_groups&quot;)
+a</code></pre></section><section><small>单元格 46</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+b = sc.get.rank_genes_groups_df(adata, group=None,key=&quot;selected_comparison&quot;)
+b
+</code></pre></section><section><small>单元格 47</small><pre><code># 功能说明：将差异分析结果保存为 CSV 文件。
+# 运行目的：导出数据以便在 Excel 或其他工具中查看和分享。
+# 变量/函数/参数解析：
+# - a.to_csv(...)：
+#   - Pandas DataFrame 的保存方法。
+#   - &#x27;de_result.csv&#x27;：文件名。
+#   - encoding=&#x27;utf-8-sig&#x27;：
+#     - 使用带 BOM 的 UTF-8 编码。
+#     - 这对于在 Windows 上的 Excel 中正确打开包含非 ASCII 字符（如中文）的文件非常重要。
+
+ctx.table(&quot;markers_by_cluster&quot;, a, index=False)  # 支持中文的编码,, sep=&#x27;\t&#x27;
+ctx.table(&quot;selected_comparison&quot;, b, index=False)  # 支持中文的编码,, sep=&#x27;\t&#x27;</code></pre></section><section><small>单元格 48</small><p>当然也可以进行其他注释层次的分析</p>
+</section><section><small>单元格 49</small><pre><code># 功能说明：执行差异表达分析（Differential Expression Analysis）。
+# 运行目的：识别每个聚类（细胞类型）的特异性标记基因（Marker Genes），用于后续的生物学注释。
+# 变量/函数/参数解析：
+# - leiden_res = fine_key：
+#   - 定义要使用的聚类结果列名。
+# - sc.tl.rank_genes_groups(...)：
+#   - adata：AnnData 对象。
+#   - groupby=leiden_res：指定分组变量，即按哪个聚类结果进行差异分析。
+#   - method=&quot;wilcoxon&quot;：
+#     - 使用 Wilcoxon 秩和检验（非参数检验）。
+#     - 相比 t 检验，它不假设数据服从正态分布，更适合单细胞数据的稀疏和偏态分布特性。
+#   - key_added=leiden_res+&quot;_rank_genes_groups&quot;：
+#     - 将分析结果存储在 adata.uns 中的指定键名下，避免覆盖默认的 &#x27;rank_genes_groups&#x27;。
+#   - 默认行为：
+#     - 对每个组进行 &quot;One-vs-Rest&quot;（该组 vs 其余所有组）比较。
+#     - 计算 p 值、校正 p 值（benjamini-hochberg）、log2FC（对数倍数变化）等统计量。
+
+
+
+# 4. 生物学意义：
+#    - 识别每个聚类/细胞类型的特异性标记基因
+#    - 用于细胞类型注释（找到每个细胞类型的特征基因）
+#    - 发现不同条件下差异表达的基因
+
+# 定义聚类分辨率变量
+leiden_res = &quot;manual_coarse&quot;
+sc.tl.rank_genes_groups(
+    adata,                    
+    groupby=leiden_res, 
+    method=&quot;wilcoxon&quot;, use_raw=False, layer=&quot;log1p&quot;,
+    key_added=leiden_res+&quot;_rank_genes_groups&quot;
+)
+#保存结果
+c = sc.get.rank_genes_groups_df(adata, group=None,key=leiden_res+&quot;_rank_genes_groups&quot;)
+c
+</code></pre></section><section><small>单元格 50</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+ctx.table(&quot;markers_by_broad_type&quot;, c, index=False)  # 支持中文的编码,, sep=&#x27;\t&#x27;
+</code></pre></section><section><small>单元格 51</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 52</small><pre><code># 功能说明：运行本章的检查、绘图或结果保存；输入对象及输出目录均来自当前项目。
+# 运行目的：让当前项目的输入、候选与用户决定对应，避免复用其他分析的答案。
+# 数据流程：ctx 定位本项目；中间证据进入 results；确认后才形成下游检查点。
+ctx.table(&quot;markers_by_cluster&quot;, a, index=False)
+ctx.table(&quot;selected_comparison&quot;, b, index=False)
+ctx.table(&quot;markers_by_broad_type&quot;, c, index=False)
+filtered_key = fine_key + &quot;_rank_genes_groups_filtered&quot;
+filtered = sc.get.rank_genes_groups_df(adata_filtered, group=None, key=filtered_key)
+ctx.table(&quot;filtered_markers&quot;, filtered, index=False)
+ctx.finish(adata, {&quot;cluster_marker_rows&quot;: len(a), &quot;selected_comparison_rows&quot;: len(b), &quot;broad_type_marker_rows&quot;: len(c), &quot;method&quot;: &quot;wilcoxon&quot;, &quot;expression_layer&quot;: &quot;log1p&quot;, &quot;comparison_scope&quot;: &quot;描述性标记探索；不代表有独立生物学重复的条件效应检验&quot;})
+</code></pre></section><section><small>单元格 53</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：统计显著、表达差异大和细胞类型特异性强，是同一件事吗？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

@@ -1,0 +1,9 @@
+{
+  "final_data": "results/12_summary/20260915T080103_6b30ff/annotation_adata_out.h5ad",
+  "available_layers": [
+    "counts",
+    "log1p"
+  ],
+  "n_cells": 17041,
+  "n_genes": 23427
+}

@@ -1,0 +1,357 @@
+{
+  "id": "07",
+  "title": "已知标记基因与可视化",
+  "attempt": "20260915T074022_5c04b4",
+  "status": "complete",
+  "directory": "results/07_marker_visualization/20260915T074022_5c04b4",
+  "parents": {
+    "06": "20260915T073923_fe681c"
+  },
+  "source_sha256": "e177c4dffe91875bd52e5bebcf1cd837d7f15e3d26732d14ddbe53268bd8e829",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:40:25+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/07_marker_visualization/20260915T074022_5c04b4/checkpoint.h5ad",
+  "checkpoint_sha256": "070841e324534fe716300e9dbd3b2928aebe965f894f5028bf7bd584014421a6",
+  "elapsed_seconds": 137.19,
+  "summary": {
+    "marker_groups": [
+      "CD14+ Mono",
+      "CD16+ Mono",
+      "cDC2",
+      "Erythroblast",
+      "Proerythroblast",
+      "NK",
+      "ILC",
+      "Naive CD20+ B",
+      "B cells",
+      "Plasma cells",
+      "Plasmablast",
+      "CD4+ T",
+      "CD8+ T",
+      "T naive",
+      "pDC",
+      "platelet"
+    ],
+    "missing_markers": {
+      "CD14+ Mono": [],
+      "CD16+ Mono": [],
+      "cDC2": [],
+      "Erythroblast": [],
+      "Proerythroblast": [],
+      "NK": [],
+      "ILC": [],
+      "Naive CD20+ B": [],
+      "B cells": [],
+      "Plasma cells": [],
+      "Plasmablast": [],
+      "CD4+ T": [],
+      "CD8+ T": [],
+      "T naive": [],
+      "pDC": [],
+      "platelet": []
+    },
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 219683786
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 11114149
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_012_02.png",
+      "kind": "png",
+      "bytes": 1151866
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_012_05.png",
+      "kind": "png",
+      "bytes": 711448
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_012_08.png",
+      "kind": "png",
+      "bytes": 1488082
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_012_11.png",
+      "kind": "png",
+      "bytes": 1814591
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_014_02.png",
+      "kind": "png",
+      "bytes": 354430
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_014_05.png",
+      "kind": "png",
+      "bytes": 213579
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_014_08.png",
+      "kind": "png",
+      "bytes": 427534
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_014_11.png",
+      "kind": "png",
+      "bytes": 474358
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_016_03.png",
+      "kind": "png",
+      "bytes": 264870
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_018_02.png",
+      "kind": "png",
+      "bytes": 142037
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_020_03.png",
+      "kind": "png",
+      "bytes": 137234
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_022_03.png",
+      "kind": "png",
+      "bytes": 155474
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_024_03.png",
+      "kind": "png",
+      "bytes": 160086
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_026_01.png",
+      "kind": "png",
+      "bytes": 236129
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_027_00.png",
+      "kind": "png",
+      "bytes": 562065
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/dotplot__07_192.pdf",
+      "kind": "pdf",
+      "bytes": 77644
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/dotplot__07_192.png",
+      "kind": "png",
+      "bytes": 203727
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/heatmap_07_188.pdf",
+      "kind": "pdf",
+      "bytes": 45693
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/heatmap_07_188.png",
+      "kind": "png",
+      "bytes": 134468
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/heatmap_07_190.pdf",
+      "kind": "pdf",
+      "bytes": 46558
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/heatmap_07_190.png",
+      "kind": "png",
+      "bytes": 139023
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/matrixplot__07_184.pdf",
+      "kind": "pdf",
+      "bytes": 27724
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/matrixplot__07_184.png",
+      "kind": "png",
+      "bytes": 123261
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/matrixplot__07_186.pdf",
+      "kind": "pdf",
+      "bytes": 27669
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/matrixplot__07_186.png",
+      "kind": "png",
+      "bytes": 119626
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/stacked_violin__07_182.pdf",
+      "kind": "pdf",
+      "bytes": 459300
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/stacked_violin__07_182.png",
+      "kind": "png",
+      "bytes": 227459
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_B_Cells.pdf",
+      "kind": "pdf",
+      "bytes": 964746
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_B_Cells.png",
+      "kind": "png",
+      "bytes": 1272820
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_Erythroid.pdf",
+      "kind": "pdf",
+      "bytes": 472806
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_Erythroid.png",
+      "kind": "png",
+      "bytes": 604142
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_Myeloid_Leukocytes.pdf",
+      "kind": "pdf",
+      "bytes": 694614
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_Myeloid_Leukocytes.png",
+      "kind": "png",
+      "bytes": 986072
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_T_NK_ILCs.pdf",
+      "kind": "pdf",
+      "bytes": 1184974
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/umap_07_178_T_NK_ILCs.png",
+      "kind": "png",
+      "bytes": 1552450
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_B_Cells.pdf",
+      "kind": "pdf",
+      "bytes": 158914
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_B_Cells.png",
+      "kind": "png",
+      "bytes": 374629
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_Erythroid.pdf",
+      "kind": "pdf",
+      "bytes": 73558
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_Erythroid.png",
+      "kind": "png",
+      "bytes": 186032
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_Myeloid_Leukocytes.pdf",
+      "kind": "pdf",
+      "bytes": 131956
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_Myeloid_Leukocytes.png",
+      "kind": "png",
+      "bytes": 311686
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_T_NK_ILCs.pdf",
+      "kind": "pdf",
+      "bytes": 193295
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/figures/violin_07_180_T_NK_ILCs.png",
+      "kind": "png",
+      "bytes": 413007
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/dotplot_color_coarse.csv",
+      "kind": "csv",
+      "bytes": 2953
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/dotplot_size_coarse.csv",
+      "kind": "csv",
+      "bytes": 6404
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_fraction_coarse.csv",
+      "kind": "csv",
+      "bytes": 6404
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_fraction_fine.csv",
+      "kind": "csv",
+      "bytes": 23140
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_mean_coarse.csv",
+      "kind": "csv",
+      "bytes": 3904
+    },
+    {
+      "path": "results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_mean_fine.csv",
+      "kind": "csv",
+      "bytes": 13608
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 2078785536,
+    "wall_seconds": 140.28
+  },
+  "original_source_sha256": "deb3b0b2d00d208db67084170228793e9deb41940d9c1f35039e5bb283ed1f3e",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

@@ -1,0 +1,5 @@
+﻿,total_counts,total_counts,total_counts,total_counts,n_genes_by_counts,n_genes_by_counts,n_genes_by_counts,n_genes_by_counts,pct_counts_mt,pct_counts_mt,pct_counts_mt,pct_counts_mt,pct_counts_ribo,pct_counts_ribo,pct_counts_ribo,pct_counts_ribo,pct_counts_hb,pct_counts_hb,pct_counts_hb,pct_counts_hb
+,median,mean,min,max,median,mean,min,max,median,mean,min,max,median,mean,min,max,median,mean,min,max
+samples,,,,,,,,,,,,,,,,,,,,
+s1d1,5644.0,8124.6074,500.0,87268.0,1473.0,1614.9655686904625,100,7540,8.019418,15.282125,0.022836264,95.400986,13.812576,17.471508,0.15772872,65.207214,0.6071119,13.908195,0.024307244,96.91215
+s1d3,6004.5,8203.222,500.0,150735.0,1451.5,1497.6418107588856,101,8455,6.4331775,9.825135,0.0,93.28891,24.49631,24.353466,0.22332506,61.93785,0.49253,16.983948,0.04211072,97.48517

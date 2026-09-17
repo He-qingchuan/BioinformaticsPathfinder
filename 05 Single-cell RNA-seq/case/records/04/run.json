@@ -1,0 +1,163 @@
+{
+  "id": "04",
+  "title": "降维与邻居图",
+  "attempt": "20260915T073130_f556ae",
+  "status": "complete",
+  "directory": "results/04_dimensionality/20260915T073130_f556ae",
+  "parents": {
+    "03": "20260915T073055_538150"
+  },
+  "source_sha256": "4d5b31a565a1b6baaaa80d54b182eb64984fa9abae2ce4757ce6308630e7de07",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:31:33+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/04_dimensionality/20260915T073130_f556ae/checkpoint.h5ad",
+  "checkpoint_sha256": "d8a2aa3c26c8ffdf1c61f9d16a1ca284de6f528470302643ad97e518be3021a7",
+  "elapsed_seconds": 152.36,
+  "summary": {
+    "n_pcs": 50,
+    "variance_ratio_first_10": 0.48599860072135925,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 207153265
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 1683517
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/cell_006_01.png",
+      "kind": "png",
+      "bytes": 51848
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/cell_008_01.png",
+      "kind": "png",
+      "bytes": 142902
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/cell_009_01.png",
+      "kind": "png",
+      "bytes": 624003
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/cell_015_01.png",
+      "kind": "png",
+      "bytes": 227748
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/cell_024_01.png",
+      "kind": "png",
+      "bytes": 191285
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_04_77.pdf",
+      "kind": "pdf",
+      "bytes": 82775
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_04_77.png",
+      "kind": "png",
+      "bytes": 122231
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_04_78.pdf",
+      "kind": "pdf",
+      "bytes": 424582
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_04_78.png",
+      "kind": "png",
+      "bytes": 522224
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_variance_ratio_04_75.pdf",
+      "kind": "pdf",
+      "bytes": 11347
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/pca_variance_ratio_04_75.png",
+      "kind": "png",
+      "bytes": 46269
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/tsne_04_84.pdf",
+      "kind": "pdf",
+      "bytes": 139767
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/tsne_04_84.png",
+      "kind": "png",
+      "bytes": 189777
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/umap_04_93.pdf",
+      "kind": "pdf",
+      "bytes": 126478
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/figures/umap_04_93.png",
+      "kind": "png",
+      "bytes": 157893
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/tables/embedding.csv",
+      "kind": "csv",
+      "bytes": 739786
+    },
+    {
+      "path": "results/04_dimensionality/20260915T073130_f556ae/tables/pca_variance.csv",
+      "kind": "csv",
+      "bytes": 783
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1561546752,
+    "wall_seconds": 155.48
+  },
+  "original_source_sha256": "862aeccf3471c382c72bdc30dcda42535b6d829569bde01153d389c9601a0e1a",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

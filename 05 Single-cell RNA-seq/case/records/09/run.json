@@ -1,0 +1,183 @@
+{
+  "id": "09",
+  "title": "子群分析",
+  "attempt": "20260915T074942_425323",
+  "status": "complete",
+  "directory": "results/09_subclustering/20260915T074942_425323",
+  "parents": {
+    "08": "20260915T074833_dd2e88"
+  },
+  "source_sha256": "87801ea6ea94c4faf2e4247e15365b69c27f6e0e974296857f3a07f94c7ca8ca",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {},
+  "started_at": "2026-09-15T07:49:45+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/09_subclustering/20260915T074942_425323/checkpoint.h5ad",
+  "checkpoint_sha256": "693fb7352df57ccc6d69b4462a5ccddc44ec5514c5bbeb79de4a7b98bfad8fc3",
+  "elapsed_seconds": 77.56,
+  "summary": {
+    "b_cells": 2268,
+    "subset_clusters": 2,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/b_cells_subset.h5ad",
+      "kind": "h5ad",
+      "bytes": 31156851
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 219790474
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 1677934
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_007_01.png",
+      "kind": "png",
+      "bytes": 276732
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_008_01.png",
+      "kind": "png",
+      "bytes": 318623
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_011_01.png",
+      "kind": "png",
+      "bytes": 133497
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_012_01.png",
+      "kind": "png",
+      "bytes": 242417
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_014_01.png",
+      "kind": "png",
+      "bytes": 60470
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/cell_016_01.png",
+      "kind": "png",
+      "bytes": 197773
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/correlation_matrix_09_227.pdf",
+      "kind": "pdf",
+      "bytes": 21032
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/correlation_matrix_09_227.png",
+      "kind": "png",
+      "bytes": 173600
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dendrogram_09_225.pdf",
+      "kind": "pdf",
+      "bytes": 13948
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dendrogram_09_225.png",
+      "kind": "png",
+      "bytes": 53065
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dotplot__09_219.pdf",
+      "kind": "pdf",
+      "bytes": 88935
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dotplot__09_219.png",
+      "kind": "png",
+      "bytes": 274269
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dotplot__09_223.pdf",
+      "kind": "pdf",
+      "bytes": 47517
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/dotplot__09_223.png",
+      "kind": "png",
+      "bytes": 208933
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/umap_09_218.pdf",
+      "kind": "pdf",
+      "bytes": 94220
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/umap_09_218.png",
+      "kind": "png",
+      "bytes": 239397
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/umap_09_222.pdf",
+      "kind": "pdf",
+      "bytes": 54367
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/figures/umap_09_222.png",
+      "kind": "png",
+      "bytes": 116906
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/tables/b_cell_subclusters.csv",
+      "kind": "csv",
+      "bytes": 629803
+    },
+    {
+      "path": "results/09_subclustering/20260915T074942_425323/tables/restricted_subclusters.csv",
+      "kind": "csv",
+      "bytes": 717236
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 1455861760,
+    "wall_seconds": 80.87
+  },
+  "original_source_sha256": "01e71cc16a3b81c66b43b02c67e6ca82edeb36eed42a57db6b807b0ad9a094aa",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

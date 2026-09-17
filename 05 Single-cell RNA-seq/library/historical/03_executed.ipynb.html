@@ -1,0 +1,162 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/03_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>03_executed.ipynb</h1><section><small>单元格 0</small><h1>第 03 章 归一化与高变基因</h1>
+<h2>学习目标</h2>
+<p>减少测序深度差异，并挑选有助于描述细胞异质性的基因。</p>
+<h2>为什么做与怎样做</h2>
+<p>先保存 counts 层。normalize_total 的 target_sum=None 使用细胞总计数的中位数作为目标，再做 log1p；按样本选择 2,000 个高变基因。</p>
+<p>前置章节：02。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;03&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>03.1 归一化</h2>
+<p>归一化减少每个细胞测序深度不同带来的影响。这里 normalize_total(target_sum=None) 将总计数缩放到当前细胞总计数的中位数，再进行 log1p。CellTypist 后续有独立的 10,000 counts 输入要求，不与这里的默认目标混用。</p>
+</section><section><small>单元格 3</small><pre><code># 功能说明：保存原始计数矩阵到 layers 中以备后用。
+# 运行目的：保留原始未归一化的计数数据，便于后续差异分析或聚合等。
+# 变量/函数/参数解析：
+# - adata.layers[&quot;counts&quot;] = adata.X.copy()：
+# 将原始计数数据保存到 adata.layers[&quot;counts&quot;] 中，以便后续可能需要使用原始计数数据
+# adata.X 是 AnnData 对象的默认数据矩阵，这里使用 copy() 创建副本，避免后续操作修改原始数据
+adata.layers[&quot;counts&quot;] = adata.X.copy()</code></pre></section><section><small>单元格 4</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：检查数据结构的变化，确认 layers 中是否成功添加了 &quot;counts&quot; 层。
+# 详细代码解析：
+# 1. `adata`
+#    - 打印 AnnData 对象的概览。
+#    - 此时应能看到 `layers` 属性中包含 `counts`。
+
+adata</code></pre></section><section><small>单元格 5</small><pre><code># 功能说明：按中位总计数归一化并进行对数变换。
+# 运行目的：消除测序深度差异并稳定方差，便于后续特征选择与降维。
+
+# 对每个细胞进行归一化，使得每个细胞的总计数相同（默认为每个细胞的总计数为1e4）
+# 这一步是为了消除细胞间测序深度差异的影响
+# 参数说明：
+#   adata: AnnData 对象
+#   target_sum: 若为None，则在标准化后，每个观测值（细胞）的总计数将等于标准化前观测值（细胞）总计数中位数。也可以设置为#target_sum=10**4
+#   layer: 指定对哪个layer进行操作，默认为None，即对adata.X进行操作
+#   inplace: 是否在原地修改，默认为True
+sc.pp.normalize_total(adata, target_sum=None)
+# 对数化
+# 对归一化后的数据进行对数化（使用 log1p，即 log(1+x)），使数据更接近正态分布，并稳定方差
+# 参数说明：
+#   adata: AnnData 对象
+#   base: 对数的底，默认为None（使用自然对数）
+#   layer: 指定对哪个layer进行操作，默认为None，即对adata.X进行操作
+#   inplace: 是否在原地修改，默认为True
+sc.pp.log1p(adata)</code></pre></section><section><small>单元格 6</small><p>保存归一化结果到adata.layers[&quot;log1p&quot;]</p>
+</section><section><small>单元格 7</small><pre><code># 功能说明：保存归一化并对数化后的数据到 layers。
+# 运行目的：将处理后的数据（Log1p 变换后）备份到 &quot;log1p&quot; 层，以便后续需要使用此特定处理阶段的数据时调用。
+# 详细代码解析：
+# 1. `adata.X.copy()`
+#    - `adata.X`: 当前的主数据矩阵（已经过归一化和 Log1p 变换）。
+#    - `.copy()`: 创建深拷贝，确保后续修改 `adata.X` 不会影响备份的数据。
+# 2. `adata.layers[&quot;log1p&quot;] = ...`
+#    - 将拷贝的数据赋值给 `adata` 的 `layers` 属性中的 &quot;log1p&quot; 键。
+
+adata.layers[&quot;log1p&quot;] = adata.X.copy()</code></pre></section><section><small>单元格 8</small><pre><code># 功能说明：查看 AnnData 对象的摘要信息。
+# 运行目的：确认 layers 中是否成功添加了 &quot;log1p&quot; 层。
+# 详细代码解析：
+# 1. `adata`
+#    - 打印 AnnData 对象的概览。
+#    - 此时 `layers` 应包含 `counts` 和 `log1p`。
+
+adata</code></pre></section><section><small>单元格 9</small><h2>03.2 识别高变基因</h2>
+</section><section><small>单元格 10</small><pre><code># 识别高变基因（highly variable genes, HVGs），这些基因在不同细胞间表达差异大，通常包含重要的生物学信息
+## 特征选择（Feature selection）
+# 下一步我们希望降低数据维度，只保留最具信息量的基因（特征选择）。
+# Scanpy 的 `pp.highly_variable_genes` 会标注高变基因，
+# 其实现可选择 Seurat {cite}`Satija2015`、Cell Ranger {cite}`Zheng2017` 或 Seurat v3 {cite}`Stuart2019`，取决于 `flavor` 参数。
+# 参数说明：
+#   adata: AnnData 对象
+#   n_top_genes: 选择的高变基因数量，默认为2000
+#   batch_key: 指定批次信息的列名，这里为&quot;samples&quot;，表示按批次分别进行高变基因选择，然后取交集或并集（默认取并集）
+#   flavor: 选择高变基因的方法，默认为&#x27;seurat&#x27;，其他可选&#x27;cell_ranger&#x27;、&#x27;seurat_v3&#x27;等
+#   inplace: 是否在原地修改，默认为True，将结果存储在adata.var中，包括&#x27;highly_variable&#x27;、&#x27;means&#x27;、&#x27;dispersions&#x27;等列
+sc.pp.highly_variable_genes(adata, n_top_genes=ctx.config[&quot;parameters&quot;][&quot;n_top_genes&quot;], batch_key=&quot;samples&quot;)</code></pre></section><section><small>单元格 11</small><pre><code># 功能说明：查看基因注释表（var）。
+# 运行目的：检查高变基因选择的结果，查看是否添加了 `highly_variable` 等相关列。
+# 详细代码解析：
+# 1. `adata.var`
+#    - 显示基因注释 DataFrame。
+#    - 运行高变基因选择后，应包含：
+#      - `highly_variable`: 布尔值，指示是否为高变基因。
+#      - `means`: 基因表达均值。
+#      - `dispersions`: 基因表达离散度。
+#      - `dispersions_norm`: 归一化后的离散度。
+
+adata.var</code></pre></section><section><small>单元格 12</small><p>我们可以看到 var 中现在有一些额外的列：
+highly_variable_nbatches - 发现每个基因高度可变的批次数量
+highly_variable_intersection - 每个基因是否在每个批次中都高度可变
+highly_variable - 合并每个批次的结果后，每个基因是否被选为高度可变</p>
+</section><section><small>单元格 13</small><p>让我们检查每个基因在多少个批次中是可变的：</p>
+</section><section><small>单元格 14</small><pre><code># 功能说明：统计并绘制基因在多少个批次中被识别为高变基因的分布图。
+# 运行目的：评估所选高变基因在批次间的保守性。
+# 详细代码解析：
+# 1. `n_batches = adata.var[&quot;highly_variable_nbatches&quot;].value_counts()`
+#    - `adata.var[&quot;highly_variable_nbatches&quot;]`: 获取每个基因被识别为高变的批次数量（例如，0, 1, 2, 或 3）。
+#    - `.value_counts()`: 统计每个数量对应的基因个数。
+# 2. `ax = n_batches.plot(kind=&quot;bar&quot;)`
+#    - `.plot(kind=&quot;bar&quot;)`: pandas绘图方法，绘制柱状图。
+#    - `ax`: 返回的matplotlib轴对象。
+# 3. `n_batches`
+#    - 打印具体的统计数值。
+
+n_batches = adata.var[&quot;highly_variable_nbatches&quot;].value_counts()
+ax = n_batches.plot(kind=&quot;bar&quot;)
+n_batches
+ax.figure.savefig(ctx.figures / &quot;hvg_batch_counts.pdf&quot;, bbox_inches=&quot;tight&quot;)
+</code></pre></section><section><small>单元格 15</small><p>我们注意到的第一件事是大多数基因不是高度可变的。通常情况如此，但这可能取决于我们要整合的样本有多大差异。随着我们添加更多样本，重叠会减少，只有相对较少的基因在所有三个批次中都高度可变。通过选择前 2000 个基因，我们选择了存在于两个或三个批次中的所有 HVG，以及大多数存在于一个批次中的 HVG。</p>
+<pre><code class="language-{admonition}">
+使用多少个基因？
+
+这个问题没有明确的答案。我们下面使用的 **scvi-tools** 包的作者建议在 1000 到 10000 个基因之间，但具体数量取决于上下文，包括数据集的复杂性和批次数量。之前一篇最佳实践论文 （参考文献：Luecken2019-og） 的调查表明，人们在标准分析中通常使用 1000 到 6000 个 HVG。虽然选择较少的基因有助于消除批次效应 （参考文献：Luecken2021-jo）（最高度可变的基因通常仅描述主要的生物学变异），但我们建议选择稍微多一点的基因，而不是选择太少，以免冒着移除对稀有细胞类型或感兴趣的通路很重要的基因的风险。然而，应该注意的是，更多的基因也会增加运行整合方法所需的时间。
+</code></pre>
+</section><section><small>单元格 16</small><pre><code># 功能说明：可视化高变基因的选择结果与分布。
+# 运行目的：检查高变基因选择是否合理并观察各统计量。
+# 绘制高变基因的图表，用于可视化筛选结果
+# 参数说明：
+#   adata: AnnData 对象
+#   show: 是否显示图形，默认为True
+#   save: 是否保存图形，默认为None（不保存）
+
+# 横坐标 (X轴)	基因的平均表达水平	通常是对数转换后（例如log1p）所有细胞中表达值的平均值。它反映了基因表达的丰度。
+# 纵坐标 (Y轴)	基因的离散度 (归一化后)	衡量基因在不同细胞间表达值的变异程度。为了排除表达水平本身对变异幅度的影响，Scanpy会按表达水平分箱，并对离散度进行归一化处理。归一化离散度越高，说明该基因的变异越可能由真实的生物差异引起，而非技术噪音。
+
+sc.pl.highly_variable_genes(adata, save=&quot;_03_68.pdf&quot;)</code></pre></section><section><small>单元格 17</small><p>保存高变基因</p>
+</section><section><small>单元格 18</small><pre><code># 功能说明：创建一个仅包含选定高变基因的新AnnData对象。
+# 运行目的：为了减少计算量和噪音，后续的整合分析将只针对这2000个高变基因进行。
+# 详细代码解析：
+# 1. `adata[:, adata.var[&quot;highly_variable&quot;]]`
+#    - `adata.var[&quot;highly_variable&quot;]`: 布尔列，标记最终被选为高变的基因。
+#    - `adata[:, ...]`: 对列进行切片，只保留高变基因。
+# 2. `.copy()`
+#    - 创建深层副本，生成独立的`adata_hvg`对象。
+# 3. `adata_hvg`
+#    - 打印新对象的摘要。
+
+adata_hvg = adata[:, adata.var[&quot;highly_variable&quot;]].copy()
+adata_hvg</code></pre></section><section><small>单元格 19</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 20</small><pre><code>ctx.table(&quot;highly_variable_genes&quot;, adata.var)
+ctx.table(&quot;normalization_totals&quot;, pd.DataFrame({&quot;raw_total&quot;: np.asarray(adata.layers[&quot;counts&quot;].sum(axis=1)).ravel(), &quot;sample&quot;: adata.obs[&quot;samples&quot;].values}, index=adata.obs_names))
+ctx.finish(adata, {&quot;n_highly_variable&quot;: int(adata.var[&quot;highly_variable&quot;].sum()), &quot;normalization_target&quot;: float(np.median(np.asarray(adata.layers[&quot;counts&quot;].sum(axis=1)).ravel())), &quot;layers&quot;: list(adata.layers)})</code></pre></section><section><small>单元格 21</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：counts、log1p 和高变基因子集分别用于哪些任务？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

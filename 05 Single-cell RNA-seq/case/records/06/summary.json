@@ -1,0 +1,14 @@
+{
+  "clusters": {
+    "leiden_res_0_02": 5,
+    "leiden_res_0_50": 16,
+    "leiden_res_1_00": 25,
+    "leiden_res_2_00": 37
+  },
+  "cluster_fingerprints": {
+    "leiden_res_0_02": "7d4b9fa0573565c1a3af1080d2ec9ca41349a1bc85bd90889e7a57167a31ab70",
+    "leiden_res_0_50": "4cb5ef9aaae350ea060d985f18463b91a58191623b396c598f81750664766470"
+  },
+  "n_cells": 17041,
+  "n_genes": 23427
+}

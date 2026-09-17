@@ -1,0 +1,95 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E01_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/E01_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>E01_executed.ipynb</h1><section><small>单元格 0</small><h1>第 E01 章 MTX 格式导入练习</h1>
+<h2>学习目标</h2>
+<p>认识 10X MTX 的三文件结构，并完成导入练习。</p>
+<h2>为什么做与怎样做</h2>
+<p>读取 barcodes、features 和稀疏表达矩阵，合并两个练习样本。练习到导入和对象检查为止。</p>
+<p>前置章节：无。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;E01&quot;)
+</code></pre></section><section><small>单元格 2</small><p>另外一种常见格式10X数据格式读取演示</p>
+</section><section><small>单元格 3</small><pre><code>import gzip
+for filename in [&quot;barcodes.tsv.gz&quot;, &quot;features.tsv.gz&quot;, &quot;matrix.mtx.gz&quot;]:
+    print(&quot;\n&quot; + filename)
+    with gzip.open(ROOT / &quot;data/mtx/F30&quot; / filename, &quot;rt&quot;) as handle:
+        for _, line in zip(range(5), handle):
+            print(line.rstrip())
+
+samples = {
+    &quot;M66&quot;: ROOT / &quot;data/mtx/M66&quot;,  # 文件夹路径
+    &quot;F30&quot;: ROOT / &quot;data/mtx/F30&quot;,   # 文件夹路径
+}
+adatas = {}
+
+for sample_id, folder_path in samples.items():
+    # 读取10X mtx格式数据
+    sample_adata = sc.read_10x_mtx(
+        folder_path,          # 包含三个文件的文件夹路径
+        var_names=&#x27;gene_symbols&#x27;,  # 使用基因符号作为变量名，[&#x27;gene_symbols&#x27;, &#x27;gene_ids&#x27;]（默认：&#x27;gene_symbols&#x27;）
+        cache=False,           # 可选：缓存以提高后续读取速度
+        gex_only=True,          #仅保留‘基因表达’数据，忽略其他特征类型，例如‘抗体捕获’、‘CRISPR引导捕获’或‘自定义’数据。对于多组学数据
+        prefix=None
+    )
+    sample_adata.var_names_make_unique()
+    adatas[sample_id] = sample_adata
+
+# 合并所有数据
+adata_mtx = ad.concat(adatas, label=&quot;samples&quot;)
+adata_mtx.obs_names_make_unique()
+print(adata_mtx.obs[&quot;samples&quot;].value_counts())
+
+
+# 如果使用的是mtx格式，记得将下面注释的代码运行
+# adata = adata_mtx.copy()
+</code></pre></section><section><small>单元格 4</small><pre><code># 三个文件的详细解释
+# 1. barcodes.tsv.gz - 细胞条形码文件
+# 含义
+# 包含每个细胞的唯一标识符（barcode）
+# 每行代表一个细胞样本
+# 总行数 = 细胞数量
+# 2. features.tsv.gz - 基因特征文件
+# 第一列（Gene ID）：
+# Ensembl数据库中的唯一标识符
+# 格式：ENSGXXXXXXXXXXXX
+# 用于基因组浏览器、数据库查询
+# 第二列（Gene Symbol）：
+# 基因的常用名称/符号
+# 更容易理解的名称（如TP53, ACTB）
+# 第三列（Feature Type）：
+# 特征类型标识：
+# Gene Expression：标准mRNA表达
+# 3. matrix.mtx.gz - 表达矩阵文件（核心数据）
+# 三个数字（空格分隔）：
+# 第1列：
+# 行索引：基因的索引（从1开始）
+# 第2列：
+# 列索引：细胞的索引（从1开始）
+# 第3列：
+# 值：UMI计数（表达量）
+</code></pre></section><section><small>单元格 5</small><pre><code>print(adata_mtx.X)</code></pre></section><section><small>单元格 6</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 7</small><pre><code>ctx.table(&quot;mtx_sample_counts&quot;, adata_mtx.obs[&quot;samples&quot;].value_counts().rename(&quot;n_cells&quot;))
+ctx.finish(adata_mtx, {&quot;purpose&quot;: &quot;MTX 导入练习，不进入 H5 分析主线&quot;})</code></pre></section><section><small>单元格 8</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：如果 features 同时包含 Gene Expression 和其他模态，gex_only 会产生什么影响？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

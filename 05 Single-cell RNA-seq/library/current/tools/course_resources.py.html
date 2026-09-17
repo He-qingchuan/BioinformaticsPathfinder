@@ -1,0 +1,134 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>course_resources.py</title><link rel="stylesheet" href="../../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../../case/current/tools/course_resources.py" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>course_resources.py</h1><pre><code>&quot;&quot;&quot;按项目核对标记、质控基因和外部模型；资源缺失时交回 AI 与用户讨论。&quot;&quot;&quot;
+from __future__ import annotations
+import json
+from pathlib import Path
+import time
+import urllib.request
+
+MODEL_INDEX = &#x27;https://celltypist.cog.sanger.ac.uk/models/models.json&#x27;
+
+
+def marker_resources(ctx):
+    &quot;&quot;&quot;读取本项目标记列表。JSON 使用 broad/fine；CSV 每行是一个 cell_type/gene。&quot;&quot;&quot;
+    from course_projects import input_path
+    path = input_path(ctx.root,ctx.config[&#x27;markers&#x27;])
+    if path.suffix.lower()==&#x27;.json&#x27;:
+        value=json.loads(path.read_text())
+        if not all(isinstance(value.get(k),dict) and value[k] for k in (&#x27;broad&#x27;,&#x27;fine&#x27;)):
+            raise ValueError(&#x27;markers JSON 需要非空 broad、fine 字典；键为候选类型，值为基因列表。&#x27;)
+        return value
+    import pandas as pd
+    frame=pd.read_csv(path,sep=&#x27;\t&#x27; if path.suffix==&#x27;.tsv&#x27; else &#x27;,&#x27;,dtype=str,keep_default_na=False)
+    if not {&#x27;cell_type&#x27;,&#x27;gene&#x27;,&#x27;source&#x27;}.issubset(frame.columns):
+        raise ValueError(&#x27;标记表至少包含 cell_type、gene、source；可用 level 列区分 broad/fine。&#x27;)
+    value={}
+    for level in (&#x27;broad&#x27;,&#x27;fine&#x27;):
+        subset=frame if &#x27;level&#x27; not in frame else frame[frame.level.isin([level,&#x27;both&#x27;])]
+        value[level]=subset.groupby(&#x27;cell_type&#x27;,sort=False)[&#x27;gene&#x27;].agg(list).to_dict()
+    return value
+
+
+def qc_gene_sets(ctx,adata):
+    &quot;&quot;&quot;按用户核对的命名/基因清单生成布尔列；未匹配到基因不会伪装为真实零比例。&quot;&quot;&quot;
+    import numpy as np
+    from course_projects import input_path
+    valid=[]
+    if not ctx.config.get(&quot;qc&quot;,{}).get(&quot;gene_sets&quot;):
+        ctx.wait_input(&quot;qc_genes&quot;, &quot;未定义质控基因规则；请按物种补充，无法计算的指标需明确 disabled_reason。&quot;)
+    for category,rule in ctx.config.get(&#x27;qc&#x27;,{}).get(&#x27;gene_sets&#x27;,{}).items():
+        if rule.get(&#x27;disabled_reason&#x27;):
+            print(f&quot;{category} 未计算：{rule[&#x27;disabled_reason&#x27;]}&quot;);continue
+        names=adata.var[rule[&#x27;column&#x27;]].astype(str) if rule.get(&#x27;column&#x27;) else adata.var_names
+        mask=np.zeros(adata.n_vars,dtype=bool)
+        if rule.get(&#x27;prefixes&#x27;): mask|=np.asarray(names.str.startswith(tuple(rule[&#x27;prefixes&#x27;])))
+        if rule.get(&#x27;regex&#x27;): mask|=np.asarray(names.str.contains(rule[&#x27;regex&#x27;],regex=True))
+        genes=rule.get(&#x27;genes&#x27;,[])
+        if rule.get(&#x27;file&#x27;):
+            genes=input_path(ctx.root,rule[&#x27;file&#x27;]).read_text().splitlines()
+        if genes: mask|=np.asarray(names.isin(genes))
+        if not mask.any():
+            ctx.wait_input(&#x27;qc_genes&#x27;,f&#x27;{category} 未匹配任何基因，请核对物种/编号并提供清单；确实无法计算时，经用户确认后填写 disabled_reason。&#x27;)
+        adata.var[category]=mask;valid.append(category)
+    return valid
+
+
+def resolution_preview(ctx,adata,markers):
+    &quot;&quot;&quot;复用第 06 章的分辨率，先给出同一标记集合的图表，再确认粗/细聚类列。&quot;&quot;&quot;
+    import pandas as pd
+    import scanpy as sc
+    import matplotlib.pyplot as plt
+    from course_runtime import cluster_digest
+    available={ct:list(dict.fromkeys(g for g in genes if g in adata.var_names)) for ct,genes in markers.items()}
+    available={ct:genes for ct,genes in available.items() if genes}
+    if not available:
+        ctx.wait_input(&#x27;markers&#x27;,&#x27;所有标记均未匹配；请先检查基因编号、物种和标记来源。&#x27;)
+    choices={};rows=[];evidence=[]
+    for key in [x for x in adata.obs if x.startswith(&#x27;leiden_res_&#x27;)]:
+        sizes=adata.obs[key].value_counts()
+        choices[key]={&#x27;label&#x27;:key,&#x27;n_clusters&#x27;:int((sizes&gt;0).sum()),&#x27;smallest_cluster&#x27;:int(sizes[sizes&gt;0].min()),
+                      &#x27;cluster_sha256&#x27;:cluster_digest(adata,key)}
+        for label,n in sizes.items():
+            rows.append({&#x27;cluster_key&#x27;:key,&#x27;cluster&#x27;:str(label),&#x27;n_cells&#x27;:int(n)})
+        # 预览复用固定文件；确认时绑定这些真实表/图，排版或数据改变需重新审阅。
+        figure=ctx.figures/(&#x27;compare_&#x27;+key+&#x27;.png&#x27;)
+        mean=ctx.tables/(&#x27;compare_mean_&#x27;+key+&#x27;.csv&#x27;);fraction=ctx.tables/(&#x27;compare_fraction_&#x27;+key+&#x27;.csv&#x27;)
+        if not figure.exists():
+            plot=sc.pl.dotplot(adata,available,groupby=key,layer=&#x27;log1p&#x27;,use_raw=False,return_fig=True,show=False)
+            plot.savefig(figure,dpi=120)
+            ctx.table(&#x27;compare_mean_&#x27;+key,plot.dot_color_df)
+            ctx.table(&#x27;compare_fraction_&#x27;+key,plot.dot_size_df)
+            plt.close(&#x27;all&#x27;)
+        evidence.extend([figure,mean,fraction])
+    sizes=ctx.tables/&#x27;resolution_sizes.csv&#x27;
+    if not sizes.exists():ctx.table(&#x27;resolution_sizes&#x27;,pd.DataFrame(rows),index=False)
+    evidence.append(sizes)
+    coarse=ctx.choose(&#x27;coarse_resolution&#x27;,choices,&#x27;请先比较各分辨率的簇规模、QC 和 marker 图，再确认粗粒度展示使用的聚类列。&#x27;,files=evidence)
+    fine=ctx.choose(&#x27;fine_resolution&#x27;,choices,&#x27;请结合 marker 的群体区分度确认细粒度注释使用的聚类列。可与粗粒度相同。&#x27;,files=evidence)
+    adata.uns[&#x27;annotation_keys&#x27;]={&#x27;coarse&#x27;:coarse,&#x27;fine&#x27;:fine}
+    return coarse,fine
+
+
+def fetch_catalog(root,query=&#x27;&#x27;):
+    &quot;&quot;&quot;只读取官方模型清单，不自动下载权重；失败与‘未找到适配模型’分开记录。&quot;&quot;&quot;
+    from course_runtime import write_json
+    output=root/&#x27;results/resource_checks&#x27;;output.mkdir(parents=True,exist_ok=True)
+    result={&#x27;source&#x27;:MODEL_INDEX,&#x27;checked_at&#x27;:time.strftime(&#x27;%Y-%m-%dT%H:%M:%S%z&#x27;),&#x27;query&#x27;:query}
+    try:
+        with urllib.request.urlopen(MODEL_INDEX,timeout=45) as response:
+            catalog=json.load(response)
+        words=query.lower().split()
+        result.update(status=&#x27;searched&#x27;,models=[m for m in catalog[&#x27;models&#x27;] if all(w in (m[&#x27;filename&#x27;]+&#x27; &#x27;+m.get(&#x27;details&#x27;,&#x27;&#x27;)).lower() for w in words)])
+        result[&#x27;note&#x27;]=&#x27;这些是关键词候选；AI 还需核对物种、组织、阶段、标签范围和来源论文。不能把关键词匹配当适配证明。&#x27;
+    except Exception as exc:
+        result.update(status=&#x27;network_unavailable&#x27;,error=str(exc),models=[],note=&#x27;无法核查官网，不代表没有适配模型；请向用户说明并讨论提供文件或跳过。&#x27;)
+    write_json(output/&#x27;model_search.json&#x27;,result)
+    print(json.dumps(result,ensure_ascii=False,indent=2))
+    return result
+
+
+def download_model(root,filename,confirmation):
+    &quot;&quot;&quot;用户明确同意后下载指定的一个模型；保留来源和哈希，下一步仍需检查适配性。&quot;&quot;&quot;
+    from course_runtime import digest,read_json,write_json
+    if not confirmation.strip(): raise ValueError(&#x27;下载前请记录用户明确同意的原文。&#x27;)
+    search=read_json(root/&#x27;results/resource_checks/model_search.json&#x27;,{})
+    candidates=[m for m in search.get(&#x27;models&#x27;,[]) if m[&#x27;filename&#x27;]==filename]
+    if search.get(&#x27;status&#x27;)!=&#x27;searched&#x27; or len(candidates)!=1:
+        raise ValueError(&#x27;请先检索官方目录，并选择已展示给用户的确切模型文件名。&#x27;)
+    model=candidates[0]
+    if Path(filename).name!=filename or not model[&#x27;url&#x27;].startswith(&#x27;https://celltypist.cog.sanger.ac.uk/&#x27;):
+        raise ValueError(&#x27;模型地址或文件名异常；请核查官方来源。&#x27;)
+    output=root/&#x27;inputs/models&#x27;;output.mkdir(parents=True,exist_ok=True)
+    path=output/filename
+    if path.exists(): raise FileExistsError(&#x27;已有同名模型，请先核对，不覆盖已有版本。&#x27;)
+    temporary=path.with_suffix(&#x27;.download&#x27;)
+    try:
+        with urllib.request.urlopen(model[&#x27;url&#x27;],timeout=60) as response,temporary.open(&#x27;wb&#x27;) as out:
+            while block:=response.read(1024*1024):out.write(block)
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+    write_json(path.with_suffix(&#x27;.source.json&#x27;),{**model,&#x27;sha256&#x27;:digest(path),&#x27;confirmation&#x27;:confirmation,
+                                               &#x27;downloaded_at&#x27;:time.strftime(&#x27;%Y-%m-%dT%H:%M:%S%z&#x27;)})
+    print(f&#x27;模型已保存：{path.relative_to(root)}。请核对物种、组织、标签和基因匹配，登记到 project.json.models。&#x27;)
+    return path
+</code></pre></main></body></html>

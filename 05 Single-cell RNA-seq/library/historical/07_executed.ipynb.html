@@ -1,0 +1,491 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>07_executed.ipynb</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/historical/07_executed.ipynb" download>下载原文</a></header><main class="document-content"><p class="document-note">历史执行课件快照：用于核对当时的方法，不直接续跑。</p><h1>07_executed.ipynb</h1><section><small>单元格 0</small><h1>第 07 章 已知标记基因与可视化</h1>
+<h2>学习目标</h2>
+<p>学习用多种图形展示已知标记基因，建立注释所需的证据。</p>
+<h2>为什么做与怎样做</h2>
+<p>整理粗粒度与细粒度标记集合，检查基因是否存在；比较表达强度、表达比例和细胞分布。z-score 仅用于需要缩放的绘图副本。</p>
+<p>前置章节：06。运行前请完成项目环境准备。</p>
+</section><section><small>单元格 1</small><pre><code>from __future__ import annotations
+from pathlib import Path
+import os
+import sys
+ROOT = Path(os.environ.get(&quot;SC_COURSE_ROOT&quot;, Path.cwd())).resolve()
+while not (ROOT / &quot;config/course.json&quot;).is_file() and ROOT != ROOT.parent:
+    ROOT = ROOT.parent
+if not (ROOT / &quot;config/course.json&quot;).is_file():
+    raise RuntimeError(&quot;请从课程目录或其 notebooks/exercises 目录运行。&quot;)
+os.environ[&quot;CELLTYPIST_FOLDER&quot;] = str(ROOT / &quot;.runtime/celltypist&quot;)
+os.environ[&quot;MPLCONFIGDIR&quot;] = str(ROOT / &quot;.runtime/matplotlib&quot;)
+sys.path.insert(0, str(ROOT / &quot;tools&quot;))
+from course_runtime import start_chapter, marker_sets, scaled_view
+import anndata as ad
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+from scipy.sparse import csr_matrix
+from scipy.stats import median_abs_deviation
+ctx = start_chapter(&quot;07&quot;)
+adata = ctx.load_input()
+</code></pre></section><section><small>单元格 2</small><h2>07.1 以已知的标记基因注释</h2>
+</section><section><small>单元格 3</small><pre><code># 功能说明：更新图形输出目录。
+# 运行目的：将基于标记基因注释的图片保存到特定子文件夹。
+# 详细代码解析：
+# 1. `sc.settings.figdir = ...`
+#    - 设置新的输出路径。
+
+# 设置输出目录
+sc.settings.figdir = ctx.figures</code></pre></section><section><small>单元格 4</small><h2>07.2 标记基因整理</h2>
+<p>我们为本数据集中主要细胞类型定义一组标记基因。该集合改编自 <a href="https://www.sc-best-practices.org/cellular_structure/annotation.html">Single Cell Best Practices 的注释章节</a>。如需更详细的概览与最佳实践，请参考该章节。</p>
+</section><section><small>单元格 5</small><pre><code># 功能说明：定义主要细胞类型的标记基因字典。
+# 运行目的：用于 dotplot/UMAP 等可视化及手动注释。
+# 变量/函数/参数解析：
+# - markers(dict[str, list[str]])：键为细胞类型名称，值为该类型的候选标记基因列表。
+# 注意：其中少数基因为负标记（不表达），已在注释中注明。
+markers_1 = {
+    &quot;CD14+ Mono&quot;: [&quot;FCN1&quot;, &quot;CD14&quot;],
+    &quot;CD16+ Mono&quot;: [&quot;TCF7L2&quot;, &quot;FCGR3A&quot;, &quot;LYN&quot;],
+    # 注意：DMXL2 应为负标记
+    &quot;cDC2&quot;: [&quot;CST3&quot;, &quot;COTL1&quot;, &quot;LYZ&quot;, &quot;DMXL2&quot;, &quot;CLEC10A&quot;, &quot;FCER1A&quot;],
+    &quot;Erythroblast&quot;: [&quot;MKI67&quot;, &quot;HBA1&quot;, &quot;HBB&quot;],
+    # 注意：HBM 与 GYPA 为负标记
+    &quot;Proerythroblast&quot;: [&quot;CDK6&quot;, &quot;SYNGR1&quot;, &quot;HBM&quot;, &quot;GYPA&quot;],
+    &quot;NK&quot;: [&quot;GNLY&quot;, &quot;NKG7&quot;, &quot;CD247&quot;, &quot;FCER1G&quot;, &quot;TYROBP&quot;, &quot;KLRG1&quot;, &quot;FCGR3A&quot;],
+    &quot;ILC&quot;: [&quot;ID2&quot;, &quot;PLCG2&quot;, &quot;GNLY&quot;, &quot;SYNE1&quot;],
+    &quot;Naive CD20+ B&quot;: [&quot;MS4A1&quot;, &quot;IL4R&quot;, &quot;IGHD&quot;, &quot;FCRL1&quot;, &quot;IGHM&quot;],
+    # 注意：IGHD 与 IGHM 为负标记
+    &quot;B cells&quot;: [
+        &quot;MS4A1&quot;,
+        &quot;ITGB1&quot;,
+        &quot;COL4A4&quot;,
+        &quot;PRDM1&quot;,
+        &quot;IRF4&quot;,
+        &quot;PAX5&quot;,
+        &quot;BCL11A&quot;,
+        &quot;BLK&quot;,
+        &quot;IGHD&quot;,
+        &quot;IGHM&quot;,
+    ],
+    &quot;Plasma cells&quot;: [&quot;MZB1&quot;, &quot;HSP90B1&quot;, &quot;FNDC3B&quot;, &quot;PRDM1&quot;, &quot;IGKC&quot;, &quot;JCHAIN&quot;],
+    # 注意：PAX5 为负标记
+    &quot;Plasmablast&quot;: [&quot;XBP1&quot;, &quot;PRDM1&quot;, &quot;PAX5&quot;],
+    &quot;CD4+ T&quot;: [&quot;CD4&quot;, &quot;IL7R&quot;, &quot;TRBC2&quot;],
+    &quot;CD8+ T&quot;: [&quot;CD8A&quot;, &quot;CD8B&quot;, &quot;GZMK&quot;, &quot;GZMA&quot;, &quot;CCL5&quot;, &quot;GZMB&quot;, &quot;GZMH&quot;, &quot;GZMA&quot;],
+    &quot;T naive&quot;: [&quot;LEF1&quot;, &quot;CCR7&quot;, &quot;TCF7&quot;],
+    &quot;pDC&quot;: [&quot;GZMB&quot;, &quot;IL3RA&quot;, &quot;COBLL1&quot;, &quot;TCF4&quot;],
+    &quot;platelet&quot;:  [&quot;ITGA2B&quot;, &quot;PF4&quot;, &quot;TUBB1&quot;, &quot;PPBP&quot;, ]
+}
+missing_markers = {ct: [g for g in gs if g not in adata.var_names] for ct, gs in markers_1.items()}
+</code></pre></section><section><small>单元格 6</small><pre><code># 仅保留在我们数据中检测到的标记。我们将循环遍历所有细胞类型，并仅保留我们在 adata 对象中找到的基因作为该细胞类型的标记。这将防止我们在开始绘图时出现错误。
+# 创建一个空字典，用于存储每个细胞类型在数据集中实际存在的标记基因
+# 格式：{细胞类型1: [存在的基因1, 存在的基因2, ...], 细胞类型2: [...]}
+markers_in_data = {}
+# 遍历原始标记基因字典中的每一个键值对
+# ct: 细胞类型名称 (cell type)
+# markers: 该细胞类型对应的标记基因列表
+for ct, markers in markers_1.items():   
+    # 为当前细胞类型创建一个空列表，用于存储在数据集中实际找到的标记基因
+    markers_found = []    
+    # 遍历当前细胞类型的所有标记基因
+    for marker in markers:
+        # 检查当前标记基因是否存在于adata的基因索引中
+        # adata.var.index 通常包含数据集中所有基因的名称
+        if marker in adata.var.index:
+            # 如果基因存在，将其添加到找到的基因列表中
+            markers_found.append(marker)    
+    # 将当前细胞类型及其在数据集中实际存在的标记基因列表存入结果字典
+    markers_in_data[ct] = markers_found
+markers_1 = markers_in_data
+# 代码执行完毕后：
+# markers_in_data 字典将只包含那些在数据集中实际存在的标记基因
+# 如果某个细胞类型的所有标记基因都不在数据集中，对应的值将为空列表</code></pre></section><section><small>单元格 7</small><pre><code># 功能说明：查看过滤后的标记基因字典。
+# 运行目的：确认哪些标记基因在当前数据集中实际存在。
+# 详细代码解析：
+# 1. `markers_1`
+#    - 打印字典内容。
+
+markers_1</code></pre></section><section><small>单元格 8</small><table>
+<thead>
+<tr>
+  <th style="text-align:left">细胞大类 (Major Class)</th>
+  <th style="text-align:left">细胞类型 (Cell Type)</th>
+  <th style="text-align:left">主要谱系</th>
+  <th style="text-align:left">关键定义性标记 (正/负)</th>
+  <th style="text-align:left">主要生物学功能</th>
+  <th style="text-align:left">主要关联/分化关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left"><strong>髓系白细胞 (Myeloid Leukocytes)</strong></td>
+  <td style="text-align:left"><strong>CD14+ 单核细胞 (CD14+ Monocyte)</strong></td>
+  <td style="text-align:left">髓系</td>
+  <td style="text-align:left"><strong>FCN1, CD14</strong></td>
+  <td style="text-align:left">炎症单核，强吞噬与抗原呈递能力</td>
+  <td style="text-align:left">可分化至巨噬细胞、DC或CD16+单核</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>髓系白细胞 (Myeloid Leukocytes)</strong></td>
+  <td style="text-align:left"><strong>CD16+ 单核细胞 (CD16+ Monocyte)</strong></td>
+  <td style="text-align:left">髓系</td>
+  <td style="text-align:left"><strong>TCF7L2, FCGR3A, LYN</strong></td>
+  <td style="text-align:left">巡逻单核，免疫监视，抗病毒应答强</td>
+  <td style="text-align:left">与CD14+ Mono构成功能连续体</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>髓系白细胞 (Myeloid Leukocytes)</strong></td>
+  <td style="text-align:left"><strong>经典树突状细胞2型 (cDC2)</strong></td>
+  <td style="text-align:left">髓系</td>
+  <td style="text-align:left"><strong>CST3, COTL1, LYZ, CLEC10A, FCER1A</strong>（负标记：DMXL2）</td>
+  <td style="text-align:left">经典树突状细胞2型，激活CD4+ T细胞</td>
+  <td style="text-align:left">起源于髓系前体</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>髓系白细胞 (Myeloid Leukocytes)</strong></td>
+  <td style="text-align:left"><strong>浆细胞样树突状细胞 (pDC)</strong></td>
+  <td style="text-align:left">髓系（近淋）</td>
+  <td style="text-align:left"><strong>GZMB, IL3RA, COBLL1, TCF4</strong></td>
+  <td style="text-align:left">浆细胞样树突状细胞，大量产生I型干扰素</td>
+  <td style="text-align:left">专职抗病毒免疫</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>红细胞系 (Erythroid)</strong></td>
+  <td style="text-align:left"><strong>早幼红细胞 (Proerythroblast)</strong></td>
+  <td style="text-align:left">红系前体</td>
+  <td style="text-align:left"><strong>CDK6, SYNGR1</strong>（负标记：HBM, GYPA）</td>
+  <td style="text-align:left">早期红细胞前体，高增殖潜力</td>
+  <td style="text-align:left">分化为 <strong>Erythroblast</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>红细胞系 (Erythroid)</strong></td>
+  <td style="text-align:left"><strong>幼红细胞 (Erythroblast)</strong></td>
+  <td style="text-align:left">红系前体</td>
+  <td style="text-align:left"><strong>HBA1, HBB, MKI67</strong></td>
+  <td style="text-align:left">晚期红细胞前体，合成血红蛋白</td>
+  <td style="text-align:left">来自 <strong>Proerythroblast</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>B细胞及终末分化群体 (B Cells and Terminal Descendants)</strong></td>
+  <td style="text-align:left"><strong>初始CD20+ B细胞 (Naive CD20+ B cell)</strong></td>
+  <td style="text-align:left">淋巴系 (B)</td>
+  <td style="text-align:left"><strong>MS4A1, IL4R, FCRL1</strong>（负标记：IGHD, IGHM）</td>
+  <td style="text-align:left">初始B细胞，未接触抗原</td>
+  <td style="text-align:left">为B细胞激活的起点</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>B细胞及终末分化群体 (B Cells and Terminal Descendants)</strong></td>
+  <td style="text-align:left"><strong>B细胞 (B cells (general))</strong></td>
+  <td style="text-align:left">淋巴系 (B)</td>
+  <td style="text-align:left"><strong>MS4A1, ITGB1, COL4A4, PRDM1, IRF4, PAX5, BCL11A, BLK</strong>（负标记：IGHD, IGHM）</td>
+  <td style="text-align:left">广义B细胞（含初始与记忆）</td>
+  <td style="text-align:left">可分化为 <strong>Plasmablast</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>B细胞及终末分化群体 (B Cells and Terminal Descendants)</strong></td>
+  <td style="text-align:left"><strong>浆母细胞 (Plasmablast)</strong></td>
+  <td style="text-align:left">淋巴系 (B)</td>
+  <td style="text-align:left"><strong>XBP1, PRDM1</strong>（负标记：PAX5）</td>
+  <td style="text-align:left">增殖中的抗体分泌细胞，中间状态</td>
+  <td style="text-align:left">分化为 <strong>Plasma cells</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>B细胞及终末分化群体 (B Cells and Terminal Descendants)</strong></td>
+  <td style="text-align:left"><strong>浆细胞 (Plasma cells)</strong></td>
+  <td style="text-align:left">淋巴系 (B)</td>
+  <td style="text-align:left"><strong>MZB1, HSP90B1, FNDC3B, PRDM1, IGKC, JCHAIN</strong></td>
+  <td style="text-align:left">终末浆细胞，专职分泌抗体</td>
+  <td style="text-align:left">来自 <strong>Plasmablast</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)</strong></td>
+  <td style="text-align:left"><strong>初始T细胞 (T naive cell)</strong></td>
+  <td style="text-align:left">淋巴系 (T)</td>
+  <td style="text-align:left"><strong>LEF1, CCR7, TCF7</strong></td>
+  <td style="text-align:left">初始T细胞，处于静息状态</td>
+  <td style="text-align:left">分化为 <strong>CD4+ T</strong> 或 <strong>CD8+ T</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)</strong></td>
+  <td style="text-align:left"><strong>CD4+ T细胞 (CD4+ T cell)</strong></td>
+  <td style="text-align:left">淋巴系 (T)</td>
+  <td style="text-align:left"><strong>CD4, IL7R, TRBC2</strong></td>
+  <td style="text-align:left">辅助T细胞，协调免疫应答</td>
+  <td style="text-align:left">来自 <strong>T naive</strong></td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)</strong></td>
+  <td style="text-align:left"><strong>CD8+ T细胞 (CD8+ T cell)</strong></td>
+  <td style="text-align:left">淋巴系 (T)</td>
+  <td style="text-align:left"><strong>CD8A, CD8B, GZMK, GZMA, CCL5, GZMB, GZMH</strong></td>
+  <td style="text-align:left">细胞毒性T细胞，直接杀伤靶细胞</td>
+  <td style="text-align:left">来自 <strong>T naive</strong>；功能与NK相似</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)</strong></td>
+  <td style="text-align:left"><strong>自然杀伤细胞 (NK cell)</strong></td>
+  <td style="text-align:left">淋巴系 (ILC)</td>
+  <td style="text-align:left"><strong>GNLY, NKG7, CD247, FCER1G, TYROBP, KLRG1, FCGR3A</strong></td>
+  <td style="text-align:left">自然杀伤细胞，固有免疫杀伤</td>
+  <td style="text-align:left">与CD8+ T功能互补，无抗原特异性</td>
+</tr>
+<tr>
+  <td style="text-align:left"><strong>T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)</strong></td>
+  <td style="text-align:left"><strong>固有淋巴细胞 (ILC)</strong></td>
+  <td style="text-align:left">淋巴系 (ILC)</td>
+  <td style="text-align:left"><strong>ID2, PLCG2, GNLY, SYNE1</strong></td>
+  <td style="text-align:left">固有淋巴细胞，组织驻留免疫哨兵</td>
+  <td style="text-align:left">功能类似T细胞，但属固有免疫</td>
+</tr>
+</tbody>
+</table>
+<p>分类说明：</p>
+<p>髓系白细胞：涵盖了所有源自髓系祖细胞的单核细胞和树突状细胞，它们主要负责先天免疫、抗原呈递和免疫调节。</p>
+<p>红细胞系：专门归集红细胞生成过程中的前体细胞，与免疫细胞功能路径不同。</p>
+<p>B细胞及终末分化群体：将B细胞谱系从初始阶段到终末的抗体分泌细胞（浆细胞）归为一类，体现了该谱系的完整分化轨迹。</p>
+<p>T细胞、NK及固有淋巴细胞：将具有细胞毒性、辅助性和固有免疫功能的淋巴细胞归为一类，它们在细胞介导的免疫中扮演核心角色，功能上互补且常被同时分析。</p>
+</section><section><small>单元格 9</small><pre><code># ## 1. 髓系白细胞 (Myeloid Leukocytes)
+# - **包含细胞类型**：CD14+ Mono、CD16+ Mono、cDC2、pDC
+# - **标记基因集合**：`[&#x27;FCN1&#x27;, &#x27;CD14&#x27;, &#x27;TCF7L2&#x27;, &#x27;FCGR3A&#x27;, &#x27;LYN&#x27;, &#x27;CST3&#x27;, &#x27;COTL1&#x27;, &#x27;LYZ&#x27;, &#x27;DMXL2&#x27;, &#x27;CLEC10A&#x27;, &#x27;FCER1A&#x27;, &#x27;GZMB&#x27;, &#x27;IL3RA&#x27;, &#x27;COBLL1&#x27;, &#x27;TCF4&#x27;]`
+# ## 2. 红细胞系 (Erythroid)
+# - **包含细胞类型**：Proerythroblast、Erythroblast
+# - **标记基因集合**：`[&#x27;CDK6&#x27;, &#x27;SYNGR1&#x27;, &#x27;HBM&#x27;, &#x27;GYPA&#x27;, &#x27;MKI67&#x27;, &#x27;HBA1&#x27;, &#x27;HBB&#x27;]`
+# ## 3. B细胞及终末分化群体 (B Cells and Terminal Descendants)
+# - **包含细胞类型**：Naive CD20+ B、B cells、Plasmablast、Plasma cells
+# - **标记基因集合**：`[&#x27;MS4A1&#x27;, &#x27;IL4R&#x27;, &#x27;IGHD&#x27;, &#x27;FCRL1&#x27;, &#x27;IGHM&#x27;, &#x27;ITGB1&#x27;, &#x27;COL4A4&#x27;, &#x27;PRDM1&#x27;, &#x27;IRF4&#x27;, &#x27;PAX5&#x27;, &#x27;BCL11A&#x27;, &#x27;BLK&#x27;, &#x27;XBP1&#x27;, &#x27;MZB1&#x27;, &#x27;HSP90B1&#x27;, &#x27;FNDC3B&#x27;, &#x27;IGKC&#x27;, &#x27;JCHAIN&#x27;]`
+# ## 4. T细胞、NK及固有淋巴细胞 (T Cells, NK &amp; ILCs)
+# - **包含细胞类型**：T naive、CD4+ T、CD8+ T、NK、ILC
+# - **标记基因集合**：`[&#x27;LEF1&#x27;, &#x27;CCR7&#x27;, &#x27;TCF7&#x27;, &#x27;CD4&#x27;, &#x27;IL7R&#x27;, &#x27;TRBC2&#x27;, &#x27;CD8A&#x27;, &#x27;CD8B&#x27;, &#x27;GZMK&#x27;, &#x27;GZMA&#x27;, &#x27;CCL5&#x27;, &#x27;GZMB&#x27;, &#x27;GZMH&#x27;, &#x27;GNLY&#x27;, &#x27;NKG7&#x27;, &#x27;FCER1G&#x27;, &#x27;TYROBP&#x27;, &#x27;KLRG1&#x27;, &#x27;FCGR3A&#x27;, &#x27;ID2&#x27;, &#x27;PLCG2&#x27;, &#x27;SYNE1&#x27;]`
+
+markers_2={
+            &#x27;Myeloid_Leukocytes&#x27;: [
+                &#x27;FCN1&#x27;, &#x27;CD14&#x27;, &#x27;TCF7L2&#x27;, &#x27;FCGR3A&#x27;, &#x27;LYN&#x27;, &#x27;CST3&#x27;, &#x27;COTL1&#x27;, 
+                &#x27;LYZ&#x27;, &#x27;DMXL2&#x27;, &#x27;CLEC10A&#x27;, &#x27;FCER1A&#x27;, &#x27;GZMB&#x27;, &#x27;IL3RA&#x27;, &#x27;COBLL1&#x27;, &#x27;TCF4&#x27;
+            ],
+            &#x27;Erythroid&#x27;: [
+                &#x27;CDK6&#x27;, &#x27;SYNGR1&#x27;, &#x27;HBM&#x27;, &#x27;GYPA&#x27;, &#x27;MKI67&#x27;, &#x27;HBA1&#x27;, &#x27;HBB&#x27;
+            ],
+            &#x27;B_Cells&#x27;: [
+                &#x27;MS4A1&#x27;, &#x27;IL4R&#x27;, &#x27;IGHD&#x27;, &#x27;FCRL1&#x27;, &#x27;IGHM&#x27;, &#x27;ITGB1&#x27;, &#x27;COL4A4&#x27;, 
+                &#x27;PRDM1&#x27;, &#x27;IRF4&#x27;, &#x27;PAX5&#x27;, &#x27;BCL11A&#x27;, &#x27;BLK&#x27;, &#x27;XBP1&#x27;, &#x27;MZB1&#x27;, 
+                &#x27;HSP90B1&#x27;, &#x27;FNDC3B&#x27;, &#x27;IGKC&#x27;, &#x27;JCHAIN&#x27;
+            ],
+            &#x27;T_NK_ILCs&#x27;: [
+                &#x27;LEF1&#x27;, &#x27;CCR7&#x27;, &#x27;TCF7&#x27;, &#x27;CD4&#x27;, &#x27;IL7R&#x27;, &#x27;TRBC2&#x27;, &#x27;CD8A&#x27;, 
+                &#x27;CD8B&#x27;, &#x27;GZMK&#x27;, &#x27;GZMA&#x27;, &#x27;CCL5&#x27;, &#x27;GZMB&#x27;, &#x27;GZMH&#x27;, &#x27;GNLY&#x27;, 
+                &#x27;NKG7&#x27;, &#x27;FCER1G&#x27;, &#x27;TYROBP&#x27;, &#x27;KLRG1&#x27;, &#x27;FCGR3A&#x27;, &#x27;ID2&#x27;, &#x27;PLCG2&#x27;, &#x27;SYNE1&#x27;
+            ]
+        }
+markers_2 = {ct: [g for g in gs if g in adata.var_names] for ct, gs in markers_2.items()}
+</code></pre></section><section><small>单元格 10</small><pre><code># 功能说明：设置当前分析使用的聚类分辨率和标记基因集。
+# 运行目的：为接下来的可视化（如 UMAP、点图）指定参数，针对低分辨率（0.02）进行大类注释。
+# 详细代码解析：
+# 1. `leiden_res = &quot;leiden_res_0_02&quot;`
+#    - 将变量 `leiden_res` 设置为字符串 &quot;leiden_res_0_02&quot;，对应 `adata.obs` 中的列名。
+# 2. `markers = markers_2`
+#    - 将变量 `markers` 指向 `markers_2` 字典（大类标记基因）。
+
+# 定义聚类分辨率变量
+leiden_res = &quot;leiden_res_0_02&quot;
+# 指定使用的markers版本
+markers = markers_2</code></pre></section><section><small>单元格 11</small><h2>07.3 使用UMAP展示markergene</h2>
+</section><section><small>单元格 12</small><pre><code># 功能说明：循环绘制不同细胞亚型的标记基因在 UMAP 上的表达分布。
+# 运行目的：通过可视化已知标记基因的表达情况，来判断数据中哪些区域对应哪些细胞类型。
+# 详细代码解析：
+# 1. `for ct in markers:`
+#    - 遍历之前定义的 B 细胞亚型列表。
+# 2. `print(f&quot;{ct.upper()}:&quot;)`
+#    - 打印当前正在处理的细胞类型名称（转换为大写），作为标题。
+# 3. `sc.pl.umap(...)`
+#    - `sc.pl.umap`: Scanpy 的绘图函数，绘制 UMAP 图。
+#    - `adata`: 数据对象。
+#    - `color=markers_in_data[ct]`: 设置颜色依据。这里传入当前细胞类型对应的标记基因列表。Scanpy 会为列表中的每个基因生成一个子图，颜色深浅表示表达量。
+#    - `vmin=0`: 设置颜色映射的最小值。
+#    - `vmax=&quot;p99&quot;`: 设置颜色映射的最大值。
+#      - `&quot;p99&quot;`: 表示使用第 99 百分位数的表达值作为最大值。这可以防止极少数异常高表达的细胞（离群值）拉伸颜色范围，导致其他细胞看起来都是无色的。
+#    - `sort_order=False`:
+#      - `False`: 不对绘制顺序进行排序。默认情况下，Scanpy 可能会把表达量高的点画在上面。设置为 False 可以避免这种视觉偏差，更真实地反映平均表达情况。
+#    - `frameon=False`: 不显示图形的边框。
+#    - `cmap=&quot;Reds&quot;`: 设置颜色映射表（Colormap）。&quot;Reds&quot; 表示从白色（低表达）到红色（高表达）的渐变。
+# 4. `print(&quot;\n\n\n&quot;)`
+#    - 打印三个换行符，增加输出之间的间距，使结果更易读。
+with rc_context({&quot;figure.figsize&quot;: (3, 3)}):
+    for ct in markers:
+        print(f&quot;=== 可视化  {ct} 的标记基因 ===\n&quot;)  
+        sc.pl.umap(
+            adata,
+            color = markers[ct]+ [leiden_res],
+            vmin=0,
+            vmax=&quot;p99&quot;, 
+            sort_order=False, 
+            frameon=False,
+        #    cmap=&quot;Reds&quot;, 
+            save=f&quot;_07_178_{ct}.pdf&quot;
+            )
+        print(f&quot;=== 可视化  {ct} 的标记基因已完成 ===\n&quot;)  
+        print(&quot;\n\n\n&quot;)  
+</code></pre></section><section><small>单元格 13</small><h2>07.4 使用小提琴图 (violin plot)展示markergene</h2>
+</section><section><small>单元格 14</small><pre><code>for ct in markers:
+    print(f&quot;=== 可视化  {ct}的标记基因 ===\n&quot;)
+    sc.pl.violin(
+        adata,
+        keys = markers[ct],
+        groupby=leiden_res,
+        stripplot=False,  # 移除内部的点
+        inner=&quot;box&quot;,  # 在小提琴内部添加箱线图
+        save=f&quot;_07_180_{ct}.pdf&quot;,  # 使用多面板模式
+    )</code></pre></section><section><small>单元格 15</small><h2>07.5 使用堆叠小提琴图 (stacked-violin plot)展示markergene</h2>
+</section><section><small>单元格 16</small><pre><code># 功能说明：绘制堆叠小提琴图。
+# 运行目的：紧凑地展示多个基因在多个聚类中的表达分布。
+# 变量/函数/参数解析：
+# - sc.pl.stacked_violin(...)：
+#   - markers_dict：标记基因字典。
+#   - groupby=&quot;leiden_res_0_50&quot;：分组变量。
+#   - swap_axes=False：不交换 x 轴和 y 轴。
+#   - dendrogram=True：添加树状图。
+
+sc.pl.stacked_violin(adata, markers, groupby=leiden_res, swap_axes=False, dendrogram=True,standard_scale=&#x27;var&#x27;,figsize=(18, 4),save=&quot;_07_182.pdf&quot;)</code></pre></section><section><small>单元格 17</small><h2>07.6 使用矩阵图 (matrixplot)展示markergene</h2>
+</section><section><small>单元格 18</small><pre><code># 功能说明：绘制矩阵图（Matrix Plot）。
+# 运行目的：以热图形式展示基因在各聚类中的平均表达量。
+# 变量/函数/参数解析：
+# - sc.pl.matrixplot(...)：
+#   - cmap=&quot;Blues&quot;：设置颜色映射为蓝色渐变。
+#   - standard_scale=&quot;var&quot;：
+#     - 对每个变量（基因）进行标准化缩放，使其值在 0 到 1 之间。
+#     - 这有助于比较不同基因在不同组间的相对表达模式，忽略绝对表达量的差异。
+#   - colorbar_title=&quot;...&quot;：设置颜色条的标题。
+#    figsize，tuple[float, float] | None (默认值: None)，格式为 (宽度, 高度)
+with rc_context({&quot;figure.figsize&quot;: (18, 18)}):
+    sc.pl.matrixplot(
+        adata,
+        markers,
+        leiden_res,
+        dendrogram=True,
+        cmap=&quot;Blues&quot;,
+        standard_scale=&quot;var&quot;,
+        colorbar_title=&quot;column scaled\nexpression&quot;,
+        figsize=(18, 4),
+        save=&quot;_07_184.pdf&quot;
+    )</code></pre></section><section><small>单元格 19</small><p>另一个有用的选项是使用 sc.pp.scale 对基因表达进行归一化。在这里，我们将此信息存储在 scale 层下。之后，我们调整绘图的最小值和最大值，并使用发散色图（在本例中为 RdBu_r，其中 _r 表示反转）。</p>
+</section><section><small>单元格 20</small><pre><code># 功能说明：对数据进行标准化（Z-score 归一化）并存储。
+# 运行目的：计算每个基因的 Z-score（均值为 0，方差为 1），用于后续可视化，以便更清晰地展示高表达和低表达。
+# 变量/函数/参数解析：
+# - sc.pp.scale(adata, copy=True)：
+#   - 对数据进行标准化。
+#   - copy=True：返回一个新的 AnnData 对象，而不修改原对象。
+# - .X：
+#   - 获取标准化后的数据矩阵。
+# - adata.layers[&quot;scaled&quot;] = ...：
+#   - 将标准化后的矩阵存储在 adata 的 layers 中，命名为 &quot;scaled&quot;。这样可以在不覆盖原始数据（.X）的情况下保存处理后的数据。
+
+# 缩放并将结果存储在图层中
+adata_scaled = scaled_view(adata, [g for genes in markers.values() for g in genes])
+
+
+# 功能说明：使用标准化后的数据绘制矩阵图。
+# 运行目的：展示基因表达的 Z-score，突出显示相对于平均水平的上调（红）或下调（蓝）。
+# 变量/函数/参数解析：
+# - layer=&quot;scaled&quot;：
+#   - 指定使用之前存储在 layers[&quot;scaled&quot;] 中的数据进行绘图。
+# - vmin=-2, vmax=2：
+#   - 设置颜色映射的范围为 -2 到 2。超过此范围的值将被截断显示。这对于 Z-score 数据很常见。
+# - cmap=&quot;RdBu_r&quot;：
+#   - 使用 &quot;RdBu_r&quot;（红-蓝反转）色图。通常红色表示高表达（正值），蓝色表示低表达（负值）。
+
+sc.pl.matrixplot(
+    adata_scaled,
+    markers,
+    leiden_res,
+    dendrogram=True,
+    colorbar_title=&quot;mean z-score&quot;,
+    layer=&quot;scaled&quot;,
+    vmin=-2,
+    vmax=2,
+    cmap=&quot;RdBu_r&quot;,
+    figsize=(18, 4),
+    save=&quot;_07_186.pdf&quot;
+)</code></pre></section><section><small>单元格 21</small><h2>07.7 使用热图 (Heatmaps)展示markergene</h2>
+</section><section><small>单元格 22</small><pre><code># 功能说明：绘制单细胞分辨率的热图。
+# 运行目的：展示每个细胞的基因表达情况，而不是分组平均值。
+# 变量/函数/参数解析：
+# - sc.pl.heatmap(...)：
+#   - adata：AnnData 对象。
+#   - markers_dict：标记基因。
+#   - groupby=&quot;clusters&quot;：按聚类排列细胞，并在图侧显示聚类颜色条。
+#   - cmap=&quot;viridis&quot;：颜色映射。
+#   - dendrogram=True：显示聚类树状图。
+
+sc.pl.heatmap(adata, markers, groupby=leiden_res, cmap=&quot;viridis&quot;, dendrogram=True,standard_scale=&quot;var&quot;, save=&quot;_07_188.pdf&quot;)</code></pre></section><section><small>单元格 23</small><p>热图也可以绘制在缩放后的数据上，调整了最小值和最大值。</p>
+</section><section><small>单元格 24</small><pre><code># 功能说明：绘制基于标准化数据的热图，并交换轴。
+# 运行目的：更清晰地展示基因表达模式，交换轴后基因在行，细胞在列（或反之，取决于默认）。
+# 变量/函数/参数解析：
+# - layer=&quot;scaled&quot;：使用标准化数据。
+# - vmin=-2, vmax=2：设置显示范围。
+# - cmap=&quot;RdBu_r&quot;：红蓝反转色图。
+# - swap_axes=True：
+#   - 交换 x 轴和 y 轴。默认情况下，热图的行是细胞，列是基因。交换后，行变成基因，列变成细胞。
+# - figsize=(11, 4)：设置图形大小。
+
+sc.pl.heatmap(
+    adata_scaled,
+    markers,
+    groupby=leiden_res,
+    layer=&quot;scaled&quot;,
+    vmin=-2,
+    vmax=2,
+    cmap=&quot;RdBu_r&quot;,
+    dendrogram=True,
+  #  swap_axes=True,
+   # figsize=(11, 4),
+   save=&quot;_07_190.pdf&quot;,
+)</code></pre></section><section><small>单元格 25</small><h2>07.8 使用点图 (dotplot)展示markergene</h2>
+</section><section><small>单元格 26</small><pre><code># 功能说明：用点图展示各簇的标记基因表达水平。
+# 运行目的：辅助为粗分辨率簇进行谱系级别的标签赋予。
+# 变量/函数/参数解析：
+# - sc.pl.dotplot(adata, markers, groupby=leiden_res, standard_scale=&quot;var&quot;)：
+#   - groupby(str)：按哪一列分组显示，此处为低分辨率聚类标签。
+#   - standard_scale(str)：&quot;var&quot; 表示按基因维度标准化显示。
+sc.pl.dotplot(adata, markers, groupby=leiden_res, standard_scale=&quot;var&quot;, save=&quot;_07_192.pdf&quot;)</code></pre></section><section><small>单元格 27</small><pre><code># 功能说明：重复绘制以便在不同分辨率下对比标签布局。
+# 运行目的：辅助选择最终用于注释的分辨率。
+with rc_context({&quot;figure.figsize&quot;: (10, 8)}):
+    sc.pl.umap(
+        adata,
+        color=[ leiden_res],
+        legend_loc=&quot;on data&quot;,
+    )</code></pre></section><section><small>单元格 28</small><pre><code>
+# 使用 return_fig 参数返回图形对象
+dot_plot = sc.pl.dotplot(
+    adata, 
+    markers, 
+    groupby=leiden_res, 
+    standard_scale=&quot;var&quot;,
+    return_fig=True,
+    show=False  # 不显示图形，只获取数据
+)
+# 检查可用的属性
+print(&quot;可用的属性：&quot;, dir(dot_plot))
+# 获取点图中的数据
+if hasattr(dot_plot, &#x27;dot_color_df&#x27;):
+    print(&quot;颜色数据矩阵（标准化后的表达量）：&quot;)
+    print(dot_plot.dot_color_df)
+    
+if hasattr(dot_plot, &#x27;dot_size_df&#x27;):
+    print(&quot;\n点大小数据矩阵（表达比例）：&quot;)
+    print(dot_plot.dot_size_df)
+    
+# 最简单的方式：直接获取两个数据框
+color_df = dot_plot.dot_color_df
+size_df = dot_plot.dot_size_df
+# 保存到CSV文件以便进一步分析
+ctx.table(&quot;dotplot_color_coarse&quot;, color_df)
+ctx.table(&quot;dotplot_size_coarse&quot;, size_df)</code></pre></section><section><small>单元格 29</small><h2>保存本章结果</h2>
+<p>保存表格、参数摘要和可供后续章节读取的数据。</p>
+</section><section><small>单元格 30</small><pre><code>adata.uns[&quot;course_markers&quot;] = {&quot;fine&quot;: markers_1, &quot;broad&quot;: markers_2}
+for label, key, group in [(&quot;coarse&quot;, &quot;leiden_res_0_02&quot;, markers_2), (&quot;fine&quot;, &quot;leiden_res_0_50&quot;, markers_1)]:
+    dp = sc.pl.dotplot(adata, group, groupby=key, return_fig=True, show=False)
+    ctx.table(&quot;marker_mean_&quot; + label, dp.dot_color_df)
+    ctx.table(&quot;marker_fraction_&quot; + label, dp.dot_size_df)
+ctx.finish(adata, {&quot;marker_groups&quot;: list(markers_1), &quot;missing_markers&quot;: missing_markers})</code></pre></section><section><small>单元格 31</small><h2>结果阅读与思考</h2>
+<p>请打开本次结果目录中的 summary.json、tables 和 figures。将目的、方法、结果和解释写入本章报告源稿，再更新 Word。</p>
+<p>思考题：点图中点的大小和颜色分别代表什么？</p>
+<p>运行与报告操作见课程根目录的 99_运行与AI协作指南.md。</p>
+</section></main></body></html>

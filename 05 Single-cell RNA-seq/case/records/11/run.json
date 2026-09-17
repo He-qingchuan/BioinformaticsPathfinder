@@ -1,0 +1,206 @@
+{
+  "id": "11",
+  "title": "CellTypist 自动注释",
+  "attempt": "20260915T075936_a73aa2",
+  "status": "complete",
+  "directory": "results/11_celltypist/20260915T075936_a73aa2",
+  "parents": {
+    "10": "20260915T075105_46d0d8"
+  },
+  "source_sha256": "9a0adfac06d297868c3f533a6698d2d0c9e9d981d55f530303deb8979186378a",
+  "config_sha256": "15c89d20a1f224829e598298c1665fb78b26bfbc0133577ec19162e85a715350",
+  "external_inputs": {
+    "model/Immune_All_High.pkl": "a715fec36c2c421f7c4e31cf4cb4bea883eedab7fd7b20a4b76f091c22660448",
+    "model/Immune_All_Low.pkl": "290874d35dac039d4c9218c343fde4aac1077709b72a331ce7266f6828c36502"
+  },
+  "started_at": "2026-09-15T07:59:44+0000",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-5.15.0-173-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "scanpy": "1.11.5",
+    "anndata": "0.12.19",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9",
+    "scikit-learn": "1.9.1",
+    "harmonypy": "0.0.10",
+    "bbknn": "1.6.0",
+    "igraph": "0.11.9",
+    "leidenalg": "0.10.2",
+    "celltypist": "1.7.1",
+    "nbclient": "0.10.4"
+  },
+  "parameters": {
+    "random_seed": 0,
+    "threads": 8,
+    "min_genes": 100,
+    "min_cells": 3,
+    "n_top_genes": 2000,
+    "n_pcs": 50,
+    "resolutions": [
+      0.02,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "integration": "uncorrected",
+    "apply_mt_filter": false,
+    "apply_mad_filter": false,
+    "remove_doublets": false,
+    "scvi_epochs": 10
+  },
+  "checkpoint": "results/11_celltypist/20260915T075936_a73aa2/checkpoint.h5ad",
+  "checkpoint_sha256": "fe98e23f8d76bf4a3d954e13834ff1e1ae561b56d697cced9e3ed3b37fae9fb9",
+  "elapsed_seconds": 70.96,
+  "summary": {
+    "coarse_labels": {
+      "T cells": 7774,
+      "Erythroid": 3401,
+      "B cells": 2032,
+      "Monocytes": 1790,
+      "ILC": 958,
+      "B-cell lineage": 564,
+      "HSC/MPP": 191,
+      "DC": 112,
+      "pDC": 111,
+      "Plasma cells": 108
+    },
+    "fine_labels": {
+      "Tcm/Naive helper T cells": 4616,
+      "Late erythroid": 2344,
+      "Naive B cells": 1819,
+      "Classical monocytes": 1719,
+      "Mid erythroid": 1057,
+      "Tcm/Naive cytotoxic T cells": 1011,
+      "CD16+ NK cells": 958,
+      "Tem/Trm cytotoxic T cells": 767,
+      "Tem/Effector helper T cells": 592,
+      "Tem/Temra cytotoxic T cells": 401,
+      "Small pre-B cells": 324,
+      "MAIT cells": 198,
+      "HSC/MPP": 191,
+      "Regulatory T cells": 189,
+      "Memory B cells": 179,
+      "Pro-B cells": 147,
+      "Large pre-B cells": 127,
+      "DC2": 112,
+      "pDC": 111,
+      "Plasma cells": 108,
+      "Non-classical monocytes": 71
+    },
+    "median_confidence_coarse": 0.9998584586190687,
+    "median_confidence_fine": 0.9753447678038406,
+    "n_cells": 17041,
+    "n_genes": 23427
+  },
+  "artifacts": [
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/checkpoint.h5ad",
+      "kind": "h5ad",
+      "bytes": 241422876
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/executed.ipynb",
+      "kind": "ipynb",
+      "bytes": 3574877
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/cell_028_01.png",
+      "kind": "png",
+      "bytes": 418621
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/cell_029_01.png",
+      "kind": "png",
+      "bytes": 531406
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/cell_031_02.png",
+      "kind": "png",
+      "bytes": 83026
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/cell_034_01.png",
+      "kind": "png",
+      "bytes": 1616979
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/dendrogram_11_306.pdf",
+      "kind": "pdf",
+      "bytes": 14949
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/dendrogram_11_306.png",
+      "kind": "png",
+      "bytes": 75798
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/report_confidence.pdf",
+      "kind": "pdf",
+      "bytes": 301772
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/report_confidence.png",
+      "kind": "png",
+      "bytes": 398183
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_303.pdf",
+      "kind": "pdf",
+      "bytes": 194943
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_303.png",
+      "kind": "png",
+      "bytes": 357107
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_304.pdf",
+      "kind": "pdf",
+      "bytes": 258865
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_304.png",
+      "kind": "png",
+      "bytes": 454828
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_309.pdf",
+      "kind": "pdf",
+      "bytes": 614398
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/figures/umap_11_309.png",
+      "kind": "png",
+      "bytes": 1392955
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/tables/celltypist_annotations.csv",
+      "kind": "csv",
+      "bytes": 6677252
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/tables/confidence_by_cluster.csv",
+      "kind": "csv",
+      "bytes": 2166
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/tables/manual_vs_auto_coarse.csv",
+      "kind": "csv",
+      "bytes": 332
+    },
+    {
+      "path": "results/11_celltypist/20260915T075936_a73aa2/tables/manual_vs_auto_fine.csv",
+      "kind": "csv",
+      "bytes": 1178
+    }
+  ],
+  "resources": {
+    "peak_process_tree_rss_bytes": 3479097344,
+    "wall_seconds": 79.06
+  },
+  "original_source_sha256": "8ed3d43a3247443b045899ea3ea64862fc14131e46cd7f95a5c899e781fe6aeb",
+  "source_identity": "python_ast_v1; comments and display outputs excluded"
+}

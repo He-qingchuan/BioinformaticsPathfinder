@@ -1,0 +1,919 @@
+{
+  "snapshot": "2026-09-17",
+  "case": "tutorial_example",
+  "reference_kind": "historical",
+  "files": [
+    {
+      "source": "projects/tutorial_example/results/00_orientation/20260915T072614_3f337a/summary.json",
+      "path": "case/records/00/summary.json",
+      "sha256": "7401be5aede37de0744ea19d641d029c923d805a4bc42912f75a127b306389f8",
+      "bytes": 517
+    },
+    {
+      "source": "projects/tutorial_example/results/00_orientation/20260915T072614_3f337a/run.json",
+      "path": "case/records/00/run.json",
+      "sha256": "518f4896ec51b2c24a001ecbd577d910d18c6a62eaf8e0a9f8d95e7439cc3965",
+      "bytes": 2305
+    },
+    {
+      "source": "projects/tutorial_example/results/00_orientation/20260915T072614_3f337a/executed.ipynb",
+      "path": "case/historical/00_executed.ipynb",
+      "sha256": "270bbc5db9793d071eea64d6d1129cfc964e3e1ff47206d17aa191d9182c0739",
+      "bytes": 13407
+    },
+    {
+      "source": "projects/tutorial_example/results/01_data_import/20260915T072732_9b3fa3/tables/sample_counts.csv",
+      "path": "case/tables/01/sample_counts.csv",
+      "sha256": "6c53e9816e7bc4898cf0535236a3212981fe406875c78977669cc0e4766d0b2d",
+      "bytes": 39
+    },
+    {
+      "source": "projects/tutorial_example/results/01_data_import/20260915T072732_9b3fa3/summary.json",
+      "path": "case/records/01/summary.json",
+      "sha256": "a03046e87232a962c9fd939a1e5ef24498d2d9bc4fe1e7afc0bd288fa59b6a68",
+      "bytes": 97
+    },
+    {
+      "source": "projects/tutorial_example/results/01_data_import/20260915T072732_9b3fa3/run.json",
+      "path": "case/records/01/run.json",
+      "sha256": "62af9fdfa2f8dbf40325df28ff157a2e74822947d6ccb8423118839a9e76d393",
+      "bytes": 2582
+    },
+    {
+      "source": "projects/tutorial_example/results/01_data_import/20260915T072732_9b3fa3/executed.ipynb",
+      "path": "case/historical/01_executed.ipynb",
+      "sha256": "f17ee222b2cfd59e945830520d572aec7ff0efe32a6851d4de1c41763dc10ec8",
+      "bytes": 17306
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/tables/cell_qc.csv",
+      "path": "case/tables/02/cell_qc.csv",
+      "sha256": "37e83490817a14fde0d5020e5b45211eaeb6b072b7b9c113280ffa4c01ed788e",
+      "bytes": 4080568
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/tables/cell_retention.csv",
+      "path": "case/tables/02/cell_retention.csv",
+      "sha256": "8ced75bf1af3a0bf3f7c0175e3e4a6130254197e0cd0977777a7f2a985c87f7f",
+      "bytes": 124
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/tables/qc_by_sample.csv",
+      "path": "case/tables/02/qc_by_sample.csv",
+      "sha256": "fdb06be9391668444788fd145093955ad186abb1d348b0265bd0b6859ac35217",
+      "bytes": 807
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/tables/doublets_by_sample.csv",
+      "path": "case/tables/02/doublets_by_sample.csv",
+      "sha256": "e9dba3234b9fac10367d1c2e7c3a1baa5f1cd1bbf87e7f52adfdfc5a4a91b4ab",
+      "bytes": 94
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/summary.json",
+      "path": "case/records/02/summary.json",
+      "sha256": "dcab2ebcec8016f6a24a49899eadbbba3fe486910285acc9e168766d2c6b804f",
+      "bytes": 433
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/run.json",
+      "path": "case/records/02/run.json",
+      "sha256": "58fac6b2047aa171e31465efea08ea0b68db9cc485caa1230eebaf73ae9d39c5",
+      "bytes": 4946
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/executed.ipynb",
+      "path": "case/historical/02_executed.ipynb",
+      "sha256": "49b230d292c3f9d9c4b3af6dce67b3695f92c8459ce74bf27f09a9cdc9f20acf",
+      "bytes": 2201925
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/tables/normalization_totals.csv",
+      "path": "case/tables/03/normalization_totals.csv",
+      "sha256": "47c76a8eca8e25c0953ef7b4a504ab8216b020cb3dc8ccca32e130515bb11800",
+      "bytes": 531531
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/tables/highly_variable_genes.csv",
+      "path": "case/tables/03/highly_variable_genes.csv",
+      "sha256": "5a6d02e50e138b248a6c43ac51f4dc7f28975d92f4a51daeb3243388ab05d5b2",
+      "bytes": 4049881
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/summary.json",
+      "path": "case/records/03/summary.json",
+      "sha256": "340733748c9e154541e9a645165cd4e8affc5e1094d30a1e82200e1301fd33d9",
+      "bytes": 150
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/run.json",
+      "path": "case/records/03/run.json",
+      "sha256": "f8bbeb1558d8f5f6dfd780b723fc8fff99878acf076c1d6ed2cba9a0b4cec4dd",
+      "bytes": 3535
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/executed.ipynb",
+      "path": "case/historical/03_executed.ipynb",
+      "sha256": "560cfc59cd2a4aed288298b0f4e99ad6d2603ddf4d8178e19de201ae2ed4feb0",
+      "bytes": 205091
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/tables/pca_variance.csv",
+      "path": "case/tables/04/pca_variance.csv",
+      "sha256": "b6195c04333304120aa1c7bcf0fa3162a982933862f9be14d705da7df6b05090",
+      "bytes": 783
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/tables/embedding.csv",
+      "path": "case/tables/04/embedding.csv",
+      "sha256": "475f6617674b60630848fe9e18e68809ef6f087dcc9bc418d7ee37d403baff3e",
+      "bytes": 739786
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/summary.json",
+      "path": "case/records/04/summary.json",
+      "sha256": "7b9ca6fa3c4786e9c70195ea2e714f47c25b6535f223cc12e5844315d70f1dd4",
+      "bytes": 107
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/run.json",
+      "path": "case/records/04/run.json",
+      "sha256": "592ecb1f852c7ee1b1f19112ad5e037c4b2cf13ed51c689a0b2331e214763559",
+      "bytes": 4704
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/executed.ipynb",
+      "path": "case/historical/04_executed.ipynb",
+      "sha256": "2cb02211fa00a0857dbd0a02c7611586a84ff1471432133480342617184b583c",
+      "bytes": 1683517
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/tables/umap_bbknn.csv",
+      "path": "case/tables/05/umap_bbknn.csv",
+      "sha256": "b6bda87de3542988e5cbbc90a62c22c45a9c97276a5935417f52646844cecc7d",
+      "bytes": 758839
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/tables/umap_harmony.csv",
+      "path": "case/tables/05/umap_harmony.csv",
+      "sha256": "1e3966de7639041f95bb9ebd57bfe034e65aa3b2979224004a1c8e087a8b95e2",
+      "bytes": 742032
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/tables/umap_uncorrected.csv",
+      "path": "case/tables/05/umap_uncorrected.csv",
+      "sha256": "475f6617674b60630848fe9e18e68809ef6f087dcc9bc418d7ee37d403baff3e",
+      "bytes": 739786
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/summary.json",
+      "path": "case/records/05/summary.json",
+      "sha256": "2b171c4dadb21932e8b2637451424433de8ee890eb710bde77800b1d888abec9",
+      "bytes": 190
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/run.json",
+      "path": "case/records/05/run.json",
+      "sha256": "8e46bdd8db3ab3a6dc5cbac5c4c263381b94396932d42b8a231605694a6021e3",
+      "bytes": 4024
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/executed.ipynb",
+      "path": "case/historical/05_executed.ipynb",
+      "sha256": "8903c66bda6c8889eb38be33fb553c7090265562d5d9f85c58e3cb4add53e83d",
+      "bytes": 816017
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_02_by_sample.csv",
+      "path": "case/tables/06/leiden_res_0_02_by_sample.csv",
+      "sha256": "af4b0a6bf0390c82088050de1a14720e7535152b811d6eeb65df4b59276cfd4f",
+      "bytes": 85
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_2_00_by_sample.csv",
+      "path": "case/tables/06/leiden_res_2_00_by_sample.csv",
+      "sha256": "e6d72d59c3b0d61a0d3b34fca1f28ea6ac21c27c98eb448a802a6e8f0309106d",
+      "bytes": 399
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_02_qc.csv",
+      "path": "case/tables/06/leiden_res_0_02_qc.csv",
+      "sha256": "6d047ba0bafa5a922057da8f774b416d67c13ba7c879972b231d2f9ffd25008c",
+      "bytes": 393
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_50_qc.csv",
+      "path": "case/tables/06/leiden_res_0_50_qc.csv",
+      "sha256": "82ce5ec96db1eeb04669792f3f87a4aa2ac1b3cf5ad0ec70248e841a37cf29e6",
+      "bytes": 1018
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_2_00_qc.csv",
+      "path": "case/tables/06/leiden_res_2_00_qc.csv",
+      "sha256": "2309af5eced0dab052675cd9f46ce0c40d8e39727e07f4544e0466a948d7791e",
+      "bytes": 2169
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/clusters.csv",
+      "path": "case/tables/06/clusters.csv",
+      "sha256": "c92f54e7d9ce6c56d00fad0a02f9d49df62d2e4b4da2b7ef129d92fa87f02dd2",
+      "bytes": 4235797
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_1_00_by_sample.csv",
+      "path": "case/tables/06/leiden_res_1_00_by_sample.csv",
+      "sha256": "f8edf51456576beadfa89801606ceb81e84e9e1df3a89fd8b48b4d02307bcc5b",
+      "bytes": 278
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_1_00_qc.csv",
+      "path": "case/tables/06/leiden_res_1_00_qc.csv",
+      "sha256": "2f96f8e011af34f6020745998bb0f5b72450a7ffb9d6235fcef287ce237d674a",
+      "bytes": 1550
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/tables/leiden_res_0_50_by_sample.csv",
+      "path": "case/tables/06/leiden_res_0_50_by_sample.csv",
+      "sha256": "1f18677205dc948490798b84a4514d21edd765aa937cc363c142a06e9602642f",
+      "bytes": 193
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/summary.json",
+      "path": "case/records/06/summary.json",
+      "sha256": "f4f34b144d3a2b82705027e72254f340b22f563221a4c6e0ea00e7fc6b4880bc",
+      "bytes": 383
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/run.json",
+      "path": "case/records/06/run.json",
+      "sha256": "f0513e4c202e43d3be3fa7e2ae5db79c28bb9ecb3c9d783578d6020f6c280148",
+      "bytes": 5674
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/executed.ipynb",
+      "path": "case/historical/06_executed.ipynb",
+      "sha256": "d599495e1801d9fe1991d6ff373f7fbd4232945180df2c7295a6a201afb9457a",
+      "bytes": 4227556
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/dotplot_size_coarse.csv",
+      "path": "case/tables/07/dotplot_size_coarse.csv",
+      "sha256": "101d5843bca8ce1a606f70f4205cee823bc64efd07555eb174b402ebf9943038",
+      "bytes": 6404
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/dotplot_color_coarse.csv",
+      "path": "case/tables/07/dotplot_color_coarse.csv",
+      "sha256": "c1f6f03c8e6063e5172714a7fa65df010bf4af2d4a36490567c3f858aa5809e4",
+      "bytes": 2953
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_fraction_fine.csv",
+      "path": "case/tables/07/marker_fraction_fine.csv",
+      "sha256": "e3aea7c4a016458d0adf83452396431f1cd1d2d773417d2fb970f9176e069293",
+      "bytes": 23140
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_mean_fine.csv",
+      "path": "case/tables/07/marker_mean_fine.csv",
+      "sha256": "992747f5c295eca86f45522e73fd9fc637ce420a4b338c2bf2609349d444444f",
+      "bytes": 13608
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_fraction_coarse.csv",
+      "path": "case/tables/07/marker_fraction_coarse.csv",
+      "sha256": "101d5843bca8ce1a606f70f4205cee823bc64efd07555eb174b402ebf9943038",
+      "bytes": 6404
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/tables/marker_mean_coarse.csv",
+      "path": "case/tables/07/marker_mean_coarse.csv",
+      "sha256": "0857b57facb7ca675af2372f65984f841a843013c37c6a1a41a87db1322a6d7d",
+      "bytes": 3904
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/summary.json",
+      "path": "case/records/07/summary.json",
+      "sha256": "157b7df1846ebb8e09e27d3995fc43f562981c40874f2bd350d0b87aaa2d4975",
+      "bytes": 672
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/run.json",
+      "path": "case/records/07/run.json",
+      "sha256": "4ceb2c464d19e8f5acf158dab83b0f06fbb65decba7dacf9f5a2eb138a028e77",
+      "bytes": 10643
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/executed.ipynb",
+      "path": "case/historical/07_executed.ipynb",
+      "sha256": "6ded176dd949b37ffe21e4fd7d5f9fd0e59df29702684d4c373941273fec5760",
+      "bytes": 11114149
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/dotplot_size_fine.csv",
+      "path": "case/tables/08/dotplot_size_fine.csv",
+      "sha256": "b0bdd601bd865a4c47e9d173941358e21797e71c81c01edf1ad4065bb16fcd8a",
+      "bytes": 23140
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_50_lvl1_by_sample.csv",
+      "path": "case/tables/08/cell_type_res_0_50_lvl1_by_sample.csv",
+      "sha256": "e60dcebc181dd180bdb38cd799fdc2422189afa20591e2ca0df427edc480b030",
+      "bytes": 160
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_50_lvl2_by_sample.csv",
+      "path": "case/tables/08/cell_type_res_0_50_lvl2_by_sample.csv",
+      "sha256": "e5c616dcb6b747cfe5f97a1684538cd1247438a9394ba97b4149017f4c0712b3",
+      "bytes": 326
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/cell_type_res_0_02_lvl1_by_sample.csv",
+      "path": "case/tables/08/cell_type_res_0_02_lvl1_by_sample.csv",
+      "sha256": "408cf2c0f1f97376227697cd8bc1f35d256123f9385e3a3586def42f4c467460",
+      "bytes": 114
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/manual_annotations.csv",
+      "path": "case/tables/08/manual_annotations.csv",
+      "sha256": "b3c79109890e641c3039a08530f72d56df14565b166a75c634a01f01ddfe6f4c",
+      "bytes": 1096230
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/dotplot_color_fine.csv",
+      "path": "case/tables/08/dotplot_color_fine.csv",
+      "sha256": "16224d9a2f2148b69acfc06a0ec27d7a5c34374c11df7800bcb7e48d9a85545f",
+      "bytes": 12985
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/tables/annotation_evidence_legacy.csv",
+      "path": "case/tables/08/annotation_evidence_legacy.csv",
+      "sha256": "8c1ea9d64379c0fedb755fedd933d8a59d1e838785dde7b8526303b89e215de1",
+      "bytes": 2023
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/summary.json",
+      "path": "case/records/08/summary.json",
+      "sha256": "19f355f4f41920e8dd066adfe1db60674d9028daa44aa02ecf2d621c171dc12a",
+      "bytes": 413
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/run.json",
+      "path": "case/records/08/run.json",
+      "sha256": "700795ca581c8a6966ee9fc8e5dba79ea574b5a72d4bb2799d569af68e09f8a3",
+      "bytes": 6059
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/executed.ipynb",
+      "path": "case/historical/08_executed.ipynb",
+      "sha256": "0123f648aa08cb38c4ddf63417bc7c519c714de3891c0a6be23fbb6485b11472",
+      "bytes": 6737240
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/tables/restricted_subclusters.csv",
+      "path": "case/tables/09/restricted_subclusters.csv",
+      "sha256": "32b585ac5c81aeb74c4329f9f33f8eb91531b310ad594d25c86a57e2e26ad0e1",
+      "bytes": 717236
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/tables/b_cell_subclusters.csv",
+      "path": "case/tables/09/b_cell_subclusters.csv",
+      "sha256": "fe395eb85b9d0c627c74d6715ae315417a9a6fd4ecae6c78131bb35182565ed8",
+      "bytes": 629803
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/summary.json",
+      "path": "case/records/09/summary.json",
+      "sha256": "7397de8ae734c0889f375e8737a6468ac7540adba98bc7145afd7ad721c2bff0",
+      "bytes": 85
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/run.json",
+      "path": "case/records/09/run.json",
+      "sha256": "4e26b2deb58101e0b4f3bd23281e3bf9c5da4b0460ff11f0ff2b2860d69b0a5c",
+      "bytes": 5292
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/executed.ipynb",
+      "path": "case/historical/09_executed.ipynb",
+      "sha256": "cd8924b75ee1ef96e04859f5c0cbaeacf2552467142f7dbb6680615f820fa285",
+      "bytes": 1677934
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/tables/markers_by_cluster.csv",
+      "path": "case/tables/10/markers_by_cluster.csv",
+      "sha256": "7ccb72af9278681e7d7de66c6c2e086aa6417352758ce022062ab91df8eddbc8",
+      "bytes": 26774008
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/tables/markers_by_broad_type.csv",
+      "path": "case/tables/10/markers_by_broad_type.csv",
+      "sha256": "2c5feffcbc128124de7897a61a1ec108fefe1588ca9cc9443d3a3dd3b074d2d8",
+      "bytes": 7380950
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/tables/filtered_markers.csv",
+      "path": "case/tables/10/filtered_markers.csv",
+      "sha256": "cf3b522c39b3bac9efa00cadeaef8fb046619b3d2fc370ad6075a5c678404699",
+      "bytes": 24289168
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/tables/b_vs_t_nk_ilc.csv",
+      "path": "case/tables/10/b_vs_t_nk_ilc.csv",
+      "sha256": "dd0bc3f6f66bf08d8c40c5999fcb4f4554ab4f3d283b1c46aeef2824c2fc9987",
+      "bytes": 1331880
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/summary.json",
+      "path": "case/records/10/summary.json",
+      "sha256": "1f25dd4071463048d885d2f41b6beba476fccc41375ed59323caf284f454276e",
+      "bytes": 300
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/run.json",
+      "path": "case/records/10/run.json",
+      "sha256": "63b6650e750abf71681f1bd891f3ae3fdfecf56257d0b37c4d67e2999c685c9f",
+      "bytes": 23311
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/executed.ipynb",
+      "path": "case/historical/10_executed.ipynb",
+      "sha256": "96691cd7dc9b4e18a47505bd3d9ced1d03ac4c321f79845cb6ca563573d76529",
+      "bytes": 18037167
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/tables/manual_vs_auto_coarse.csv",
+      "path": "case/tables/11/manual_vs_auto_coarse.csv",
+      "sha256": "03e92708108ed30869d632ca8b95b06c494634dd9df1bfbe017c40d273a41bff",
+      "bytes": 332
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/tables/confidence_by_cluster.csv",
+      "path": "case/tables/11/confidence_by_cluster.csv",
+      "sha256": "f9ea6f78716aa12e2e3930b92f26ba39d63879095f4c474875707d55eb6eac70",
+      "bytes": 2166
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/tables/celltypist_annotations.csv",
+      "path": "case/tables/11/celltypist_annotations.csv",
+      "sha256": "27fc6f603e7f8e255b9fe81a73ef80c1ea8acf983e00e58d92a3b4be25dfc17d",
+      "bytes": 6677252
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/tables/manual_vs_auto_fine.csv",
+      "path": "case/tables/11/manual_vs_auto_fine.csv",
+      "sha256": "7682d615ee157552a862385c1d604f92ccd6a549fda95b26b505da465288bfdb",
+      "bytes": 1178
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/summary.json",
+      "path": "case/records/11/summary.json",
+      "sha256": "1bf04e537b00d9e52b1b84a59b248882361f920a9b79914b2def51ec798cd739",
+      "bytes": 1011
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/run.json",
+      "path": "case/records/11/run.json",
+      "sha256": "22f4ae25ad8de263396afc4e4c8e3100b3dbaa876bebc6ca699e5486ab697aaf",
+      "bytes": 5990
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/executed.ipynb",
+      "path": "case/historical/11_executed.ipynb",
+      "sha256": "becb9520c4754bbda2e75ea10e3dbe525d2da10aedc98ddb4ffd86f6c25ac7b7",
+      "bytes": 3574877
+    },
+    {
+      "source": "projects/tutorial_example/results/12_summary/20260915T080103_6b30ff/tables/sample_celltype_counts.csv",
+      "path": "case/tables/12/sample_celltype_counts.csv",
+      "sha256": "68b372cfa93b15a9385a978a73851d76eb3e4f3be99dc28887b34ea8fe541487",
+      "bytes": 536
+    },
+    {
+      "source": "projects/tutorial_example/results/12_summary/20260915T080103_6b30ff/tables/final_cell_metadata.csv",
+      "path": "case/tables/12/final_cell_metadata.csv",
+      "sha256": "27fc6f603e7f8e255b9fe81a73ef80c1ea8acf983e00e58d92a3b4be25dfc17d",
+      "bytes": 6677252
+    },
+    {
+      "source": "projects/tutorial_example/results/12_summary/20260915T080103_6b30ff/summary.json",
+      "path": "case/records/12/summary.json",
+      "sha256": "ca078512bad8e24770f76e3e52c3b23618a79b43bb0293be7fd1917ac631d3e8",
+      "bytes": 184
+    },
+    {
+      "source": "projects/tutorial_example/results/12_summary/20260915T080103_6b30ff/run.json",
+      "path": "case/records/12/run.json",
+      "sha256": "e0cc2d3ebb8c44819097a2f83aa7f6ec37b1f5a0c3bbc456dc83f7f305a38566",
+      "bytes": 2584
+    },
+    {
+      "source": "projects/tutorial_example/results/12_summary/20260915T080103_6b30ff/executed.ipynb",
+      "path": "case/historical/12_executed.ipynb",
+      "sha256": "fedd7e01d08c75301f8753054692edc81c592c3d531ae1e65f5f795551a1f41f",
+      "bytes": 11611
+    },
+    {
+      "source": "projects/tutorial_example/results/E01_mtx_import/20260915T080308_5087b8/tables/mtx_sample_counts.csv",
+      "path": "case/tables/E01/mtx_sample_counts.csv",
+      "sha256": "4764505e885b6388473cc3d18ef5d8384c551f1dee90121c5d0165f3e9afc008",
+      "bytes": 37
+    },
+    {
+      "source": "projects/tutorial_example/results/E01_mtx_import/20260915T080308_5087b8/summary.json",
+      "path": "case/records/E01/summary.json",
+      "sha256": "98343b5fbd9b137b7291a486d6bf263417662a49b747becf0d724c646136aa44",
+      "bytes": 103
+    },
+    {
+      "source": "projects/tutorial_example/results/E01_mtx_import/20260915T080308_5087b8/run.json",
+      "path": "case/records/E01/run.json",
+      "sha256": "bfc2aeab4060b4a629b2167f7847cff86f6547eac8bc48cef4aa870b64e8be4b",
+      "bytes": 2755
+    },
+    {
+      "source": "projects/tutorial_example/results/E01_mtx_import/20260915T080308_5087b8/executed.ipynb",
+      "path": "case/historical/E01_executed.ipynb",
+      "sha256": "1bb6076e6c1660fdb3bd15f7259fa7b7b6e193202ec7e1097c6b132df3a88f47",
+      "bytes": 11534
+    },
+    {
+      "source": "notebooks/05_integration.ipynb",
+      "path": "case/current/05_integration.ipynb",
+      "sha256": "06737dfbd41874d56b1947c69f9f9c167f12ecbc8953b22e88a965933f58df68",
+      "bytes": 18744
+    },
+    {
+      "source": "notebooks/04_dimensionality.ipynb",
+      "path": "case/current/04_dimensionality.ipynb",
+      "sha256": "2aecd50f1b24ebacd2cad0764e388ad6fd1d944e84506e3673281c79911c5704",
+      "bytes": 18778
+    },
+    {
+      "source": "notebooks/06_clustering.ipynb",
+      "path": "case/current/06_clustering.ipynb",
+      "sha256": "fc50133bfa4c09f9837428728b1cc676254625b82e8e960e5237cf919386a43a",
+      "bytes": 17800
+    },
+    {
+      "source": "notebooks/00_orientation.ipynb",
+      "path": "case/current/00_orientation.ipynb",
+      "sha256": "a6edfebfa52cb74ef6c9ef9f53de45d5c0c4d02c0bb36bca4ca58e8ef71c2aa8",
+      "bytes": 11819
+    },
+    {
+      "source": "notebooks/09_subclustering.ipynb",
+      "path": "case/current/09_subclustering.ipynb",
+      "sha256": "f80d9e4d9e6ef7e92c31f351d5fee5a80af1d85e7c1461d9d215c5ab5044e2ee",
+      "bytes": 14775
+    },
+    {
+      "source": "notebooks/11_celltypist.ipynb",
+      "path": "case/current/11_celltypist.ipynb",
+      "sha256": "e64208717f8a969463d193578465bcf43256c1e9f61daca86a1ae5c259634d7f",
+      "bytes": 32419
+    },
+    {
+      "source": "notebooks/12_summary.ipynb",
+      "path": "case/current/12_summary.ipynb",
+      "sha256": "3995eb53dcf5ad63b3a8d27e280bb783b0b13a88a466689a42a0079919e4ffb6",
+      "bytes": 6551
+    },
+    {
+      "source": "notebooks/10_differential_expression.ipynb",
+      "path": "case/current/10_differential_expression.ipynb",
+      "sha256": "e9a6f8279b0ff9aed9b8ddeebc1a8ab88f7b4feb0f0489024fd7720c7bff6523",
+      "bytes": 42575
+    },
+    {
+      "source": "notebooks/01_data_import.ipynb",
+      "path": "case/current/01_data_import.ipynb",
+      "sha256": "c67972c07d89849b20a7e89e56cc92d0b5d0e34bf8bef4250174cd5b25bf6eef",
+      "bytes": 10174
+    },
+    {
+      "source": "notebooks/07_marker_visualization.ipynb",
+      "path": "case/current/07_marker_visualization.ipynb",
+      "sha256": "83ae05c6ef2ee2530d01c58e49490eb7abab0cd086d12a5e028e9762474a93cd",
+      "bytes": 33188
+    },
+    {
+      "source": "notebooks/02_quality_control.ipynb",
+      "path": "case/current/02_quality_control.ipynb",
+      "sha256": "330a23bf56babdba1abd3e9361d41ad33440e87ee40ce75d4e23e1a7c845c20b",
+      "bytes": 43249
+    },
+    {
+      "source": "notebooks/03_normalization_hvg.ipynb",
+      "path": "case/current/03_normalization_hvg.ipynb",
+      "sha256": "9c9d4678eb8add779d3345c9f1b6f439e2e0e1d474a28b0dc1728e5567428e86",
+      "bytes": 16909
+    },
+    {
+      "source": "notebooks/08_manual_annotation.ipynb",
+      "path": "case/current/08_manual_annotation.ipynb",
+      "sha256": "c5a81587de692e52b9c94b6644ee8af19fa30681d65abb540044f5660ec1bda7",
+      "bytes": 19572
+    },
+    {
+      "source": "exercises/A01_anndata_reference.ipynb",
+      "path": "case/current/exercises/A01_anndata_reference.ipynb",
+      "sha256": "35347228844effb21e6b4838395c0d57c7a0c94a11dcdf18723fb5d9feb95d0b",
+      "bytes": 6241
+    },
+    {
+      "source": "exercises/E01_mtx_import.ipynb",
+      "path": "case/current/exercises/E01_mtx_import.ipynb",
+      "sha256": "ea56ebed5a062d0852f0f7c8dde8515f4ecaeccc5b32668cee56c21585c4e375",
+      "bytes": 8448
+    },
+    {
+      "source": "exercises/E02_scvi.ipynb",
+      "path": "case/current/exercises/E02_scvi.ipynb",
+      "sha256": "0e791e061d26ca8af949ae89e3a9dfb8d65aeb97d36591fa60820a426e2f2fd0",
+      "bytes": 19261
+    },
+    {
+      "source": "tools/course_environment.py",
+      "path": "case/current/tools/course_environment.py",
+      "sha256": "90b325a0d02272881b67864a31f18d29eecb6253da05ab72f0569ac957fe60ba",
+      "bytes": 11365
+    },
+    {
+      "source": "tools/course_cli.py",
+      "path": "case/current/tools/course_cli.py",
+      "sha256": "fe3d4dffaf2d6ac25546150e59fc64767e69a5e433f9d34f8935d8a4394a2367",
+      "bytes": 19682
+    },
+    {
+      "source": "tools/environment_smoke.py",
+      "path": "case/current/tools/environment_smoke.py",
+      "sha256": "779d07c2b66a8e7f2f646f617cfa953d27203b999dfb3c57e880440d612e1b4c",
+      "bytes": 2762
+    },
+    {
+      "source": "tools/course_projects.py",
+      "path": "case/current/tools/course_projects.py",
+      "sha256": "86be9a637ce96d3b268a6848032e2156e4b6a4f4fa7931029fde492c9c9da506",
+      "bytes": 13004
+    },
+    {
+      "source": "tools/prepare_report_figures.py",
+      "path": "case/current/tools/prepare_report_figures.py",
+      "sha256": "f11a586d2f341018ac47df99b00f099c5cc687df1ef53d62dee76428acda5df4",
+      "bytes": 3068
+    },
+    {
+      "source": "tools/course_decisions.py",
+      "path": "case/current/tools/course_decisions.py",
+      "sha256": "e308c2a972887c3e0537d01ad091800f044f23a2db13412e7730d9ed5cfebe8c",
+      "bytes": 18546
+    },
+    {
+      "source": "tools/course_runtime.py",
+      "path": "case/current/tools/course_runtime.py",
+      "sha256": "084316c859969bdfeb930d4cc2e6fa74ec05651426c19123b14410fc09b78de3",
+      "bytes": 14939
+    },
+    {
+      "source": "tools/course_resources.py",
+      "path": "case/current/tools/course_resources.py",
+      "sha256": "6eabacd0e28084398dcc08c565b9f1303fdaa132025dcd4b06da645d991d8881",
+      "bytes": 8055
+    },
+    {
+      "source": "tools/course_actions.py",
+      "path": "case/current/tools/course_actions.py",
+      "sha256": "b8cb854443276c24cc93914c84620206ba13478ebd9595f8cfd563510bddf007",
+      "bytes": 5121
+    },
+    {
+      "source": "REFERENCES.md",
+      "path": "case/current/REFERENCES.md",
+      "sha256": "7f43e4a5d4874012b634c3c4f67498749728fc271a9e054fbe828e6c9220cee3",
+      "bytes": 2321
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/figures/cell_016_01.png",
+      "path": "case/figures/02/cell_016_01.png",
+      "sha256": "83b07e0f7f4fb3177cf5828afec54c2acd1ac02eac64130e676e94d79cb7079a",
+      "bytes": 607349
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/figures/cell_019_01.png",
+      "path": "case/figures/02/cell_019_01.png",
+      "sha256": "3a77e7b3d79cb4b243d863a6bc4de62c01acfc75b0b889b7be7966d61c8e54bb",
+      "bytes": 112998
+    },
+    {
+      "source": "projects/tutorial_example/results/02_quality_control/20260915T072757_356d34/figures/cell_033_01.png",
+      "path": "case/figures/02/cell_033_01.png",
+      "sha256": "94f169a6a53179ee33a5cf85242b44423c1ee3e98b05381d882d532cb3d3c14a",
+      "bytes": 113211
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/figures/cell_016_01.png",
+      "path": "case/figures/03/cell_016_01.png",
+      "sha256": "03566d89a322c3e6f8ca41e46945c9bea05c120fdb5c36a75d16305e499edff4",
+      "bytes": 103277
+    },
+    {
+      "source": "projects/tutorial_example/results/03_normalization_hvg/20260915T073055_538150/figures/hvg_batch_counts.png",
+      "path": "case/figures/03/hvg_batch_counts.png",
+      "sha256": "0aaa910c6ad94e8a465bc14a34512d6596f86620164481fced35bce67bed9719",
+      "bytes": 23368
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/figures/cell_006_01.png",
+      "path": "case/figures/04/cell_006_01.png",
+      "sha256": "35b4596e56c3dfb2f5a3a36ee5b32f6d79e5202bb165b3daa72ffe643e18337d",
+      "bytes": 51848
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/figures/cell_009_01.png",
+      "path": "case/figures/04/cell_009_01.png",
+      "sha256": "7301e5824aec96e7b36c7781826e56726061cc4e7ce93d00ad207e36c16ec198",
+      "bytes": 624003
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/figures/cell_015_01.png",
+      "path": "case/figures/04/cell_015_01.png",
+      "sha256": "3cc2ae3149e17a7a83635907fbadd61d4c0929515d1089401dcee3ece017aa33",
+      "bytes": 227748
+    },
+    {
+      "source": "projects/tutorial_example/results/04_dimensionality/20260915T073130_f556ae/figures/cell_024_01.png",
+      "path": "case/figures/04/cell_024_01.png",
+      "sha256": "dd9e5ea681a0f3c0fb71942eba006ce3e3dcee9d9e86bebfce3a58d203a43707",
+      "bytes": 191285
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/figures/cell_020_01.png",
+      "path": "case/figures/05/cell_020_01.png",
+      "sha256": "436597a85cc595c7a6899d5322290bd8eeae243e02fae0a3bb6faef3267a3b78",
+      "bytes": 180066
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/figures/cell_008_01.png",
+      "path": "case/figures/05/cell_008_01.png",
+      "sha256": "73d89fd76645ffbce9659fe1ca1438bc338062df461832a571ae95d3940f52f8",
+      "bytes": 187352
+    },
+    {
+      "source": "projects/tutorial_example/results/05_integration/20260915T073407_99a665/figures/cell_018_01.png",
+      "path": "case/figures/05/cell_018_01.png",
+      "sha256": "2c98bce3816a09bf113f625ca3cf304f9db30952532421175bcaf214e07a8bc4",
+      "bytes": 225442
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/figures/cell_022_00.png",
+      "path": "case/figures/06/cell_022_00.png",
+      "sha256": "63fdcedfdf1c2d18ab8728c153df7856aa7afc05b6f0fc95d0a292fc0cc28c67",
+      "bytes": 542627
+    },
+    {
+      "source": "projects/tutorial_example/results/06_clustering/20260915T073923_fe681c/figures/cell_011_01.png",
+      "path": "case/figures/06/cell_011_01.png",
+      "sha256": "5e99e836089fafaf17a080c266a6fd55aa8ee7e098ce6c615028029c9fae6070",
+      "bytes": 668036
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_012_11.png",
+      "path": "case/figures/07/cell_012_11.png",
+      "sha256": "6e4cc461948a50dd708168712fb7e549349745fbd7005ae65329746b6694c3ab",
+      "bytes": 1814591
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_014_05.png",
+      "path": "case/figures/07/cell_014_05.png",
+      "sha256": "9221c40a11fccffdcf35559f4864f90658611e4c01ba7a4b727001ee657a77ee",
+      "bytes": 213579
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_016_03.png",
+      "path": "case/figures/07/cell_016_03.png",
+      "sha256": "8d5afa467f136b95dd8d3bacff4fdc89f2a38a7e9df75dc19d1c1071e340209e",
+      "bytes": 264870
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_018_02.png",
+      "path": "case/figures/07/cell_018_02.png",
+      "sha256": "ef5c0ae8d3b1c38f2f331905fd399f239bc7e20ebc4f610a3d2ef255dec80b6c",
+      "bytes": 142037
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_020_03.png",
+      "path": "case/figures/07/cell_020_03.png",
+      "sha256": "094768c6c6775cb49b5c219e78bc53cc541b1b3dc8da3aa12b005a1a02166348",
+      "bytes": 137234
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_022_03.png",
+      "path": "case/figures/07/cell_022_03.png",
+      "sha256": "9efc64610db962800449e86a76a4bfe25e0564c7b48ab9cabe3fd7ad7c9f66a5",
+      "bytes": 155474
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_024_03.png",
+      "path": "case/figures/07/cell_024_03.png",
+      "sha256": "c5c6ee685d7c52316a90d105c47397d9548cdaf70ab021f89dde2b8412f1f099",
+      "bytes": 160086
+    },
+    {
+      "source": "projects/tutorial_example/results/07_marker_visualization/20260915T074022_5c04b4/figures/cell_026_01.png",
+      "path": "case/figures/07/cell_026_01.png",
+      "sha256": "4af669098fe00736d9364d68eceb1c8644459063332b90fae0a9b3cd3f44d48b",
+      "bytes": 236129
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_011_01.png",
+      "path": "case/figures/08/cell_011_01.png",
+      "sha256": "f35b81c1d8e92ead02dc14a89095c82bdbb6790ffdc1399f5a4b5411ef5c95fb",
+      "bytes": 544048
+    },
+    {
+      "source": "projects/tutorial_example/results/08_manual_annotation/20260915T074833_dd2e88/figures/cell_018_00.png",
+      "path": "case/figures/08/cell_018_00.png",
+      "sha256": "62fb803617bca7a107e647f115b6882592d61702fe05be14166428fc3ca8a604",
+      "bytes": 2506451
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/figures/cell_007_01.png",
+      "path": "case/figures/09/cell_007_01.png",
+      "sha256": "230f30f85151e9232a4c4b2550a90925ab5f66da62653d8acc42ab6138030ede",
+      "bytes": 276732
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/figures/cell_011_01.png",
+      "path": "case/figures/09/cell_011_01.png",
+      "sha256": "40a8893fcd02c7434ccd17d6757725d65ef456b09e176f389ad7ce8677035ef7",
+      "bytes": 133497
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/figures/cell_012_01.png",
+      "path": "case/figures/09/cell_012_01.png",
+      "sha256": "8b0245c2f2de4955680b58e924d4f3d948937c190df41809b2230ff7398318e2",
+      "bytes": 242417
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/figures/cell_014_01.png",
+      "path": "case/figures/09/cell_014_01.png",
+      "sha256": "61b4f1aee730d5348ab652858f04f72671117ddbc19c5ad0ec826e88727be7e7",
+      "bytes": 60470
+    },
+    {
+      "source": "projects/tutorial_example/results/09_subclustering/20260915T074942_425323/figures/cell_016_01.png",
+      "path": "case/figures/09/cell_016_01.png",
+      "sha256": "6f31babe3fb98f2f364b45fe058a0f1bad4258a8bf9776f4c218d0516b631264",
+      "bytes": 197773
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/figures/cell_028_02.png",
+      "path": "case/figures/10/cell_028_02.png",
+      "sha256": "d08b439fe05bd1d89acdbbf6e5024cc2342899b8b9a7aaa119092fc511b766a4",
+      "bytes": 115116
+    },
+    {
+      "source": "projects/tutorial_example/results/10_differential_expression/20260915T075105_46d0d8/figures/cell_035_01.png",
+      "path": "case/figures/10/cell_035_01.png",
+      "sha256": "8f3f58fe5e03b03c8677adb0cb9d72fb8dbe194717e013593804ce7a6e0ac713",
+      "bytes": 296697
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/figures/cell_028_01.png",
+      "path": "case/figures/11/cell_028_01.png",
+      "sha256": "7562948f64a7e1069b43079212c86873250e49741e92b0ef9e8dcac86dc03ac9",
+      "bytes": 418621
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/figures/cell_029_01.png",
+      "path": "case/figures/11/cell_029_01.png",
+      "sha256": "ef547b73ed8087a36da5a7949f69313910af706b6cd8c39bed2e005ff3eca4ad",
+      "bytes": 531406
+    },
+    {
+      "source": "projects/tutorial_example/results/11_celltypist/20260915T075936_a73aa2/figures/cell_034_01.png",
+      "path": "case/figures/11/cell_034_01.png",
+      "sha256": "cbb96dbf6e8656d197e4ad2baa7b8c659be8339feaea6fe0ca47043a032940e1",
+      "bytes": 1616979
+    },
+    {
+      "source": "99_运行与AI协作指南.md",
+      "path": "case/current/99_运行与AI协作指南.md",
+      "sha256": "580f2aeee367c895d44b0ddd56fc1f86f463b294b1539f751c109cd96b873277",
+      "bytes": 20620
+    },
+    {
+      "source": "环境准备与迁移说明.md",
+      "path": "case/current/环境准备与迁移说明.md",
+      "sha256": "3148821bf6a0209e00c10c64048038ebf8972677d9c5cbba1ea3e85295bb599c",
+      "bytes": 11851
+    },
+    {
+      "source": "web/README.md",
+      "path": "case/current/web/README.md",
+      "sha256": "a1b9fa053b3bbdde54310599de34f9bd93379476f5f68ce7d33161d2609c391b",
+      "bytes": 5227
+    }
+  ]
+}

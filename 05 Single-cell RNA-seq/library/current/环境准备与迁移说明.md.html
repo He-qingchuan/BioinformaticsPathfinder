@@ -1,0 +1,142 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>环境准备与迁移说明.md</title><link rel="stylesheet" href="../../assets/style.css"><body class="document-page"><header class="document-header"><a href="../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">海岛地图</a><a href="../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">资料目录</a><a href="../../case/current/%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87%E4%B8%8E%E8%BF%81%E7%A7%BB%E8%AF%B4%E6%98%8E.md" download>下载原文</a></header><main class="document-content"><p class="document-note">当前教学模板副本：保留完整代码与注释；本页不执行分析。</p><h1>环境准备与迁移说明.md</h1><h1>环境准备与迁移说明</h1>
+<p>**先完成本机环境检查，再运行任何分析章节。**教师和学生使用同一套课件。你可以把本文件和 <code>99_运行与AI协作指南.md</code> 一起交给能够访问课程目录、执行命令的 AI。</p>
+<h2>1. 学生应该拿哪个包</h2>
+<p>默认下载 <code>sc_RNA_basic_course_v4_linux_x86_64_full.tar.gz</code>（Linux 完整包）。标准包 <code>sc_RNA_basic_course_v4_standard.tar.gz</code> 包含相同的课件、数据、模型、参考结果、报告、结果网页和独立海岛教程，只是不附带环境压缩包。</p>
+<table>
+<thead>
+<tr>
+  <th>情况</th>
+  <th>准备方式</th>
+  <th>是否需要联网</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>完整包，系统满足随包环境条件</td>
+  <td>解开环境包、修复路径并检查</td>
+  <td>主线准备通常不需要</td>
+</tr>
+<tr>
+  <td>标准包，或完整包的环境不兼容</td>
+  <td>在本机用 Conda 重建</td>
+  <td>需要下载依赖；预备了完整缓存时例外</td>
+</tr>
+<tr>
+  <td>已经有可用的项目环境</td>
+  <td>重新检查当前目录、依赖和运行能力</td>
+  <td>通常不需要</td>
+</tr>
+</tbody>
+</table>
+<p>完整包也能重建环境，不需要再下载一次标准包。scVI 是选修，不包含在主线环境包内，另行联网安装。</p>
+<h2>2. 目录和系统要求</h2>
+<p>解压后得到的 <strong><code>sc_RNA_basic_course_interactive</code> 就是课程根目录</strong>。公共环境和模板在此；每次分析的数据、模型路径和输出由 <code>projects/&lt;编号&gt;/project.json</code> 相对该项目定位。无需保留本服务器原来的上层目录。先把课程放到最终位置，再准备环境。</p>
+<p>建议最终路径不含空格，中文目录可以使用。完整包解包已在含中文和空格的目录中验证；但 Miniforge 官方安装器不接受安装路径中的空格。需要自动安装 Conda 时，应先选定不含空格的课程路径，或指定已有 Conda。</p>
+<p>正式支持 Linux x86_64（Intel/AMD 64 位）。Windows 请在 WSL2 的 x86_64 Linux 中解压和运行；macOS、ARM、原生 Windows、musl Linux 不在本课程自动部署的验收范围内，可使用合适的 Linux 服务器。</p>
+<p>随包环境的保守条件是 <strong>Linux x86_64、glibc ≥ 2.35</strong>。满足条件后仍需本机运行检查，不能只看发行版名称。较旧系统可尝试 Conda 重建：Miniforge 安装器要求 glibc ≥ 2.17，但课程中的 Python、Node 和科学计算包可能要求更高版本，最终以依赖解析和运行检查为准。Conda 无法直接替换系统 glibc；解析失败时应使用受支持的 Linux，不应随意改系统库。</p>
+<p>单个原教程主线建议至少有 8 GiB 可用内存；新版候选和多次尝试建议预留 30 GiB 以上可用磁盘，多个项目按实际数据量增加；联网重建会产生缓存，失败重试会保留环境备份，需预留更多空间。每位学生使用独立课程副本。</p>
+<h2>3. 首次准备：统一入口</h2>
+<p>在课程根目录打开终端，执行：</p>
+<pre><code class="language-bash">bash setup.sh
+</code></pre>
+<p>脚本依次完成：</p>
+<ol>
+<li>显示课程根目录、操作系统、CPU 架构和 glibc。</li>
+<li>检查项目已有环境；残缺安装会先保留备份再重新准备。</li>
+<li>如有兼容的环境包，解到 <code>.envs/sc_rna</code> 并执行 <code>conda-unpack</code>。这条路径不要求事先安装、激活或注册 Conda。</li>
+<li>环境包不存在或不兼容时，使用 Conda 在同一位置创建环境。</li>
+<li>检查核心软件包；启动新内核用合成计数矩阵进行小规模 PCA、UMAP、聚类、Harmony、BBKNN、绘图与 H5AD 保存读取测试，并生成含中文、图片和表格的测试 Word。</li>
+<li>全部通过后输出“准备完成”，保存本机环境就绪记录及实际 Python 包版本。</li>
+</ol>
+<p><code>setup.sh</code> 已包含运行检查，无须紧接着重复检查。以后需要重新验收时执行：</p>
+<pre><code class="language-bash">./course check
+</code></pre>
+<p>检查只写 <code>.runtime</code> 下的临时文件，不替换正式结果和参考报告。测试矩阵是合成数据，不用于生物学解释。</p>
+<p>通过检查后，如需手工打开课件，使用 <code>.envs/sc_rna/bin/python -m jupyterlab</code>，并选择项目环境的 Python 内核。显式指定 Python 可以避免长路径或含空格路径中的启动脚本依赖终端已有的 <code>python</code> 命令。</p>
+<h2>4. Conda 已装好、未安装，或者需要重建</h2>
+<h3>4.1 已安装 Conda，但没有激活</h3>
+<p>不必先进入 base 或注册课程环境。脚本会查找 <code>CONDA_EXE</code>、终端可用的 <code>conda</code> 和项目内 Miniforge。若 Conda 已安装但终端找不到，请让 AI 查明实际位置，再指定可执行文件：</p>
+<pre><code class="language-bash">COURSE_CONDA_EXE=&quot;/实际安装位置/bin/conda&quot; bash setup.sh
+</code></pre>
+<p>不要把示例路径原样照抄。主线解释器固定为 <code>.envs/sc_rna/bin/python</code>，课程入口会使用它，不依赖环境名称。</p>
+<h3>4.2 本机没有 Conda</h3>
+<p>需要重建时，脚本自动下载官方 Miniforge <strong>26.7.2-0</strong>，与随课程记录的官方 SHA256 比较，通过后安装到 <code>.runtime/miniforge</code>。不会执行 <code>conda init</code>，不会把课程依赖装进既有 base 或系统 Python。安装器版本、来源及校验值见 <code>environment/miniforge-installer.conf</code>。</p>
+<p>这一步需要可访问 GitHub、conda-forge 和 Python 包源，以及 <code>curl</code> 或 <code>wget</code>。网络受限时，AI 应先解决下载通道或使用已有 Conda，不能跳过校验、伪造成功记录或继续分析。</p>
+<h3>4.3 强制跳过环境包重建</h3>
+<pre><code class="language-bash">bash setup.sh --rebuild
+</code></pre>
+<p>默认使用 <code>environment/requirements-lock.txt</code> 锁定 Python 包版本。已有项目环境会先移动到 <code>.runtime/environment_backups</code> 保留，再在最终路径新建。备份因路径变化不能直接运行；如需恢复，应先由 AI 核对原路径、安装记录和环境状态。</p>
+<p>若锁定版本无法适应目标系统，AI 先读取日志判断原因。网络故障、磁盘不足等应先修复；确认属于依赖版本兼容问题后，才可使用范围配置重建：</p>
+<pre><code class="language-bash">bash setup.sh --rebuild --compatible
+</code></pre>
+<p>这会使用 <code>environment/requirements.txt</code>，保留关键教学软件约束，但允许部分依赖变化。实际版本保存到 <code>.runtime/sc_rna.resolved-requirements.txt</code>，完整检查仍必须通过。AI 应向学生说明与参考环境的差异；开始自己的分析后按当前结果解释，不能保证聚类编号与参考结果一致。</p>
+<p><code>environment/environment.yml</code> 供阅读和人工排查；<code>conda-linux-64.explicit.txt</code> 记录原构建的 Conda 包，不是跨系统通用安装清单。</p>
+<h3>4.4 scVI 选修</h3>
+<p>先完成主环境准备，再执行 <code>bash setup.sh --scvi</code>。它使用 <code>.envs/scvi</code>，主环境保持独立；可加 <code>--rebuild</code> 重建扩展。扩展检查只验证导入、CPU 张量及通用运行能力，不等同于 scVI 模型训练或收敛验收。</p>
+<h2>5. AI 必须检查什么，失败时怎么处理</h2>
+<p>AI 应读取 <code>.runtime/preflight.json</code> 的 <code>status</code>、检查目录和实际测试结果，确认本次检查成功。环境记录绑定当前目录、主机、解释器、安装包及环境测试代码；改变这些条件后，运行入口会要求重新检查。</p>
+<table>
+<thead>
+<tr>
+  <th>情况</th>
+  <th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>提示“环境尚未通过检查”</td>
+  <td>先执行 <code>bash setup.sh</code>；已有完整环境也可执行 <code>./course check</code></td>
+</tr>
+<tr>
+  <td>准备中断或失败</td>
+  <td>查看 <code>.runtime/setup-*.log</code> 与 <code>.runtime/preflight/.../result.json</code>；修复原因后重试</td>
+</tr>
+<tr>
+  <td>看见 Python 文件，但导入失败</td>
+  <td>不能据此判定环境可用；查明包缺失或库不兼容，必要时 <code>--rebuild</code></td>
+</tr>
+<tr>
+  <td>Jupyter 内核无法启动</td>
+  <td>检查解释器、临时目录权限及本机回环端口是否可用；受限 AI 工具需取得正常的本机执行能力后再验收</td>
+</tr>
+<tr>
+  <td>提示环境目录已经移动</td>
+  <td>从原始课程包重新解压到最终位置，或 <code>--rebuild</code>；不要只改就绪记录</td>
+</tr>
+<tr>
+  <td>Conda 无法解析、提示 GLIBC 缺失</td>
+  <td>区分包约束与系统库问题；记录原因，必要时使用更新的 Linux</td>
+</tr>
+<tr>
+  <td>提示 Annoy 等包编译失败、找不到 C++ 编译器</td>
+  <td>先读取编译日志。较旧系统可能无法使用随包 wheel，需由 AI 补充项目内编译依赖后重试；不要把编译器缺失误判为需要放宽所有版本</td>
+</tr>
+<tr>
+  <td>数据或模型缺失</td>
+  <td>软件环境可以仍然合格；按 99 指南检查当前项目材料。缺数据暂停导入，缺模型仅暂停 11；先检索并与用户沟通，不错误地重装整个环境</td>
+</tr>
+</tbody>
+</table>
+<p>失败时必须停止分析。已有参考结果的“计算完成 / 已解读”表示随包示例状态，<strong>不是本机环境验收结果</strong>。可以阅读参考材料，但不能把它说成本机刚刚计算的结果。</p>
+<p>通过后，AI 向学生简要汇报：课程根目录、采用解包还是重建、Python 路径、检查结果及兼容性限制，然后确认项目名称与输入，并在该项目副本进入第 00 章。</p>
+<h2>6. 学生交给 AI 的首次提示词</h2>
+<blockquote>
+<p>请先阅读本目录的《环境准备与迁移说明.md》和《99_运行与AI协作指南.md》。确认课程根目录，检查这台机器的系统和环境包情况，运行 setup.sh；需要时使用已有 Conda，或按说明安装项目内 Miniforge 并重建。环境失败先排查，不运行分析、不修改就绪记录来绕过检查。通过后告诉我环境位置和实际检查结果，再带我学习第 00 章，完成一章后停下来讨论。</p>
+</blockquote>
+<h2>7. 再次迁移与来源</h2>
+<p>给另一台机器时，使用原始学生压缩包，在新机器最终目录重新初始化。不要将已经执行过 <code>conda-unpack</code> 的展开环境直接复制过去。自己的新分析结果可以另行备份；不要把旧 <code>.runtime</code> 的就绪记录当作新机器的检查结果。</p>
+<ul>
+<li><a href="https://conda.github.io/conda-pack/">conda-pack 部署与迁移限制</a>：说明解包、路径修复和再次移动限制。</li>
+<li><a href="https://github.com/conda-forge/miniforge">Miniforge 官方说明</a>：安装方式和平台要求；<a href="https://github.com/conda-forge/miniforge/releases/tag/26.7.2-0">本课程固定的安装器版本</a>。</li>
+<li><a href="https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html">Conda 环境管理</a>：按目录创建环境。</li>
+<li><a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-virtual.html">Conda 系统虚拟包</a>：识别 glibc 等系统条件。</li>
+</ul>
+<h2>8. 多项目一起迁移</h2>
+<p>新机器先解压学生包到最终位置并初始化公共环境，再复制自己的 <code>projects/&lt;编号&gt;</code>，保持内部相对路径。若该项目引用 <code>../tutorial_example/inputs/</code>，必须连同包内示例输入保留；自有原始材料统一置于自己的 inputs 最便于独立迁移。</p>
+<p>查看旧报告可以不重算，但改变依赖/代码、重新选择路线或继续科学计算时必须复核状态和证据；环境相同不保证任意新物种都能不适配地运行。安装好 Conda 本身也不等于环境可用。AI 应执行检查，再按缺失材料清单与用户沟通。</p>
+<h2>9. 网页与教程一起迁移</h2>
+<p><code>web/</code> 和 <code>tutorials/</code> 随课程根目录一起保留。准备环境后执行 <code>bash web/start.sh</code>，默认仅监听 <code>127.0.0.1:8767</code>；端口占用时指定其他端口，例如 <code>bash web/start.sh 8768</code>。远程电脑访问需端口转发，步骤见 <a href="web/README.md.html">web/README.md</a>。</p>
+<p>网页使用主环境已包含的 Tornado/Mistune/Pillow；启动时另行检查这些展示依赖，不触发分析。只看既有结果也可以按 web README 建独立网页环境；网页启动成功不能替代科学环境验收。</p>
+<p>海岛教程的已生成 HTML 可直接用现代浏览器离线打开，无需 Conda，也不依赖原项目绝对路径。复制完整 <code>tutorials/scrna_island/</code> 才能保留图表、插画、术语与资料馆；不能只复制一个 HTML。学生解压后可先阅读教程，但开始计算仍须完成本机环境检查。</p>
+<p>发行包不带 <code>.viewer</code> 缩略图缓存；网页首次打开会按当前路径重建，缓存写不了时直接显示原图。教程案例是固定教学材料，不自动同步学生项目的新图，改图后只刷新相应项目结果和报告。</p>
+</main></body></html>

@@ -1,0 +1,19 @@
+{
+  "fine_cell_types": {
+    "Naive_memory_T": 3946,
+    "Low_quality_lymphoid_like": 3101,
+    "Erythroid": 2445,
+    "Naive_B": 1891,
+    "CD14_Mono": 1511,
+    "CD8_cytotoxic_T": 1260,
+    "Cycling_erythroid": 1057,
+    "Progenitor_like": 502,
+    "NK": 458,
+    "B_cell": 382,
+    "Myeloid_like_low_quality": 298,
+    "Antibody_secreting_cell": 106,
+    "pDC": 84
+  },
+  "n_cells": 17041,
+  "n_genes": 23427
+}
