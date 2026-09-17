@@ -1,0 +1,4 @@
+      2 magpie
+      4 sparrow
+logs/day-01.log:3:08:10 WARN battery low
+logs/day-02.log:3:08:10 WARN battery low

@@ -1,0 +1,382 @@
+{
+  "title": "Linux 入门 · 观察站的工作台",
+  "version": "1.0.0",
+  "lessons": [
+    {
+      "id": "01",
+      "title": "认识 Linux",
+      "stage": "从一个问题出发",
+      "question": "为什么整理文件也值得学一种新方法？",
+      "minutes": 15,
+      "objectives": "分清 Linux、发行版和 Shell；知道这门课能解决什么。",
+      "prerequisites": [],
+      "quiz": {
+        "question": "Linux 是什么？",
+        "options": [
+          "只是一种编程语言",
+          "内核的名称，也常用来指使用它的操作系统",
+          "一种只能用于生信的软件"
+        ],
+        "answer": 1,
+        "explanation": "Linux 严格说指内核；日常所说的 Linux 系统通常还包含工具、Shell 和其他软件。"
+      }
+    },
+    {
+      "id": "02",
+      "title": "准备你的工作台",
+      "stage": "从一个问题出发",
+      "question": "怎样得到一个可以放心练习的环境？",
+      "minutes": 15,
+      "objectives": "准备 Ubuntu 或 WSL；复制练习材料；分清 Windows 与 Linux 的终端。",
+      "prerequisites": [
+        "01"
+      ],
+      "quiz": {
+        "question": "在 Windows 的 PowerShell 里打开 WSL 后，课程命令在哪里运行？",
+        "options": [
+          "继续输入到任意聊天框",
+          "输入到已经进入 Ubuntu 的终端",
+          "输入到网页地址栏"
+        ],
+        "answer": 1,
+        "explanation": "WSL 提供 Linux 环境。安装 WSL 的命令在 Windows 终端运行；课程的 Bash 命令在 Ubuntu 终端运行。"
+      }
+    },
+    {
+      "id": "03",
+      "title": "第一条命令",
+      "stage": "从一个问题出发",
+      "question": "屏幕上的哪些字需要输入，哪些不用？",
+      "minutes": 15,
+      "objectives": "理解提示符、命令、参数和输出；使用帮助、补全和中断。",
+      "prerequisites": [
+        "02"
+      ],
+      "quiz": {
+        "question": "教程显示 $ echo hello，通常需要输入什么？",
+        "options": [
+          "$ echo hello",
+          "hello",
+          "echo hello"
+        ],
+        "answer": 2,
+        "explanation": "$ 通常代表提示符，不是命令的一部分。本教材的复制按钮只复制命令。"
+      }
+    },
+    {
+      "id": "04",
+      "title": "在目录里找路",
+      "stage": "把文件安顿好",
+      "question": "同一个文件，为什么有时找得到，有时找不到？",
+      "minutes": 20,
+      "objectives": "区分当前位置、绝对路径和相对路径；使用 cd、pwd、ls。",
+      "prerequisites": [
+        "03"
+      ],
+      "quiz": {
+        "question": "在 linux-lab/notes 中，../tables 指向哪里？",
+        "options": [
+          "linux-lab/tables",
+          "linux-lab/notes/tables",
+          "根目录下的 tables"
+        ],
+        "answer": 0,
+        "explanation": ".. 先回到 linux-lab，再进入它下面的 tables。相对路径取决于出发点。"
+      }
+    },
+    {
+      "id": "05",
+      "title": "整理你的文件",
+      "stage": "把文件安顿好",
+      "question": "复制、移动和删除，对原文件分别做了什么？",
+      "minutes": 20,
+      "objectives": "用 mkdir、cp、mv、rm 整理练习副本；理解覆盖和删除。",
+      "prerequisites": [
+        "04"
+      ],
+      "quiz": {
+        "question": "cp notes/morning.txt results/copy.txt 完成后，原文件在哪里？",
+        "options": [
+          "原文件被删除",
+          "仍在 notes/morning.txt",
+          "被移动到 results"
+        ],
+        "answer": 1,
+        "explanation": "cp 复制内容，保留原文件。mv 才会改变原来的名称或位置。"
+      }
+    },
+    {
+      "id": "06",
+      "title": "打开一份记录",
+      "stage": "把文件安顿好",
+      "question": "一份长文件，怎样先看清它的大概？",
+      "minutes": 20,
+      "objectives": "选择 cat、head、tail、less；理解 wc 的计数单位。",
+      "prerequisites": [
+        "05"
+      ],
+      "quiz": {
+        "question": "wc -l 的直接含义是什么？",
+        "options": [
+          "统计所有字符",
+          "统计换行符数量",
+          "统计基因个数"
+        ],
+        "answer": 1,
+        "explanation": "wc -l 统计换行符。文本通常每行以换行结尾，此时它也就是行数。"
+      }
+    },
+    {
+      "id": "07",
+      "title": "写下与保存",
+      "stage": "从文件找到线索",
+      "question": "屏幕上看见的结果，怎样变成一个文件？",
+      "minutes": 20,
+      "objectives": "用 nano 编辑文本；区分标准输出、> 和 >>。",
+      "prerequisites": [
+        "06"
+      ],
+      "quiz": {
+        "question": "连续两次使用 > 写同一个文件会怎样？",
+        "options": [
+          "第二次覆盖原有内容",
+          "自动在末尾追加",
+          "自动创建备份"
+        ],
+        "answer": 0,
+        "explanation": "> 会创建文件或截断已有文件；>> 才是追加。练习时先使用专门的结果文件。"
+      }
+    },
+    {
+      "id": "08",
+      "title": "文件名的线索",
+      "stage": "从文件找到线索",
+      "question": "几十个文件，怎样准确选中其中几个？",
+      "minutes": 20,
+      "objectives": "理解空格、引号与通配符；用 find 按名字查找。",
+      "prerequisites": [
+        "07"
+      ],
+      "quiz": {
+        "question": "find notes -name \"*.txt\" 中为什么给模式加引号？",
+        "options": [
+          "让文件变成隐藏文件",
+          "让 find 自己收到并解释这个模式",
+          "引号是文件名的一部分"
+        ],
+        "answer": 1,
+        "explanation": "引号防止 Shell 提前展开 *.txt；find 才能在它搜索的目录中按模式匹配。"
+      }
+    },
+    {
+      "id": "09",
+      "title": "在文本里搜索",
+      "stage": "从文件找到线索",
+      "question": "从很多行里，怎样找到那条出错记录？",
+      "minutes": 20,
+      "objectives": "用 grep 搜索文本；区分固定字符串和简单正则。",
+      "prerequisites": [
+        "08"
+      ],
+      "quiz": {
+        "question": "查找文本中的字面量 a.b，哪种方式最清楚？",
+        "options": [
+          "grep -F \"a.b\" 文件",
+          "grep \"a.b\" 文件",
+          "ls a.b"
+        ],
+        "answer": 0,
+        "explanation": "-F 把模式当固定字符串。正则中的点通常表示任意一个字符，两者含义不同。"
+      }
+    },
+    {
+      "id": "10",
+      "title": "让工具接力",
+      "stage": "让小工具合作",
+      "question": "怎样把一长串记录变成一份计数？",
+      "minutes": 20,
+      "objectives": "理解管道；组合 sort、uniq 和 wc；查看中间结果。",
+      "prerequisites": [
+        "09"
+      ],
+      "quiz": {
+        "question": "uniq 会自动合并相隔很远的重复行吗？",
+        "options": [
+          "会",
+          "不会，只处理相邻的重复行",
+          "只在文件小于 1 MB 时会"
+        ],
+        "answer": 1,
+        "explanation": "通常先 sort 把相同内容放在一起，再 uniq 或 uniq -c。排序会改变原有顺序。"
+      }
+    },
+    {
+      "id": "11",
+      "title": "整理一张小表",
+      "stage": "让小工具合作",
+      "question": "先弄清表头和分隔符，再动手选列。",
+      "minutes": 20,
+      "objectives": "读懂 TSV 表头；用 cut 选列、sort -n 排数值；保留字段含义。",
+      "prerequisites": [
+        "10"
+      ],
+      "quiz": {
+        "question": "对 2、12、8 按数值排序应该得到什么？",
+        "options": [
+          "12、2、8",
+          "2、8、12",
+          "8、12、2"
+        ],
+        "answer": 1,
+        "explanation": "默认排序不等于数值排序。数值列需要指定数值比较，表头也应与数据行分开。"
+      }
+    },
+    {
+      "id": "12",
+      "title": "把资料打包",
+      "stage": "让小工具合作",
+      "question": "压缩包里是什么，能不能先看再解压？",
+      "minutes": 20,
+      "objectives": "区分打包与压缩；用 tar 列出、生成和解开自己的归档。",
+      "prerequisites": [
+        "11"
+      ],
+      "quiz": {
+        "question": "收到一个 tar.gz 后，先查看文件清单用哪一个操作？",
+        "options": [
+          "tar -tzf 文件.tar.gz",
+          "rm 文件.tar.gz",
+          "chmod 文件.tar.gz"
+        ],
+        "answer": 0,
+        "explanation": "t 表示列出归档内容，z 表示通过 gzip 处理，f 后面跟归档文件名。"
+      }
+    },
+    {
+      "id": "13",
+      "title": "谁能做什么",
+      "stage": "让程序为你工作",
+      "question": "Permission denied 到底在说什么？",
+      "minutes": 20,
+      "objectives": "区分文件与目录权限；理解所有者、组和执行权限。",
+      "prerequisites": [
+        "12"
+      ],
+      "quiz": {
+        "question": "对目录来说，x 权限主要允许什么？",
+        "options": [
+          "把目录当脚本执行",
+          "进入和穿过目录路径",
+          "自动删除目录"
+        ],
+        "answer": 1,
+        "explanation": "目录的 x 是搜索／穿越权限；目录的 r 是列出目录项。文件与目录的 rwx 意义有区别。"
+      }
+    },
+    {
+      "id": "14",
+      "title": "命令从哪里来",
+      "stage": "让程序为你工作",
+      "question": "明明有一个程序，为什么仍然提示找不到？",
+      "minutes": 20,
+      "objectives": "理解 PATH、command -v 与 ./；区分程序安装和启用环境。",
+      "prerequisites": [
+        "13"
+      ],
+      "quiz": {
+        "question": "当前目录有 hello.sh，为什么常用 ./hello.sh？",
+        "options": [
+          "明确指出执行当前目录中的文件",
+          "让脚本拥有管理员权限",
+          "自动安装 Bash"
+        ],
+        "answer": 0,
+        "explanation": "./ 指明路径；仅输入程序名通常按 Shell 的查找规则寻找，其中外部程序会在 PATH 中查找。"
+      }
+    },
+    {
+      "id": "15",
+      "title": "观察运行中的任务",
+      "stage": "让程序为你工作",
+      "question": "没有马上回到提示符，是卡住了吗？",
+      "minutes": 20,
+      "objectives": "理解前台、后台与进程；查看日志、CPU、内存和磁盘。",
+      "prerequisites": [
+        "14"
+      ],
+      "quiz": {
+        "question": "df -h 和 du -h 分别主要看什么？",
+        "options": [
+          "网络速度与网速",
+          "文件系统空间与文件／目录占用",
+          "用户数量与密码"
+        ],
+        "answer": 1,
+        "explanation": "df 报告文件系统的容量和使用情况，du 统计指定文件或目录的磁盘占用。"
+      }
+    },
+    {
+      "id": "16",
+      "title": "把步骤写成脚本",
+      "stage": "把重复交给脚本",
+      "question": "已经做对的一串操作，怎样下次继续用？",
+      "minutes": 20,
+      "objectives": "创建 Bash 脚本；使用变量、引号和第一个位置参数。",
+      "prerequisites": [
+        "15"
+      ],
+      "quiz": {
+        "question": "变量指向带空格的路径时，应该怎样传递？",
+        "options": [
+          "通常使用 \"$变量名\"",
+          "去掉路径中的所有空格",
+          "给变量名加中文括号"
+        ],
+        "answer": 0,
+        "explanation": "双引号保留变量值内部的空格，让它作为一个参数传递。"
+      }
+    },
+    {
+      "id": "17",
+      "title": "判断与重复",
+      "stage": "把重复交给脚本",
+      "question": "一份记录能处理，十份呢？缺了一份怎么办？",
+      "minutes": 20,
+      "objectives": "使用简单 if 和 for；检查文件存在；理解退出状态。",
+      "prerequisites": [
+        "16"
+      ],
+      "quiz": {
+        "question": "Shell 中退出状态 0 通常表示什么？",
+        "options": [
+          "成功",
+          "失败",
+          "程序没有运行"
+        ],
+        "answer": 0,
+        "explanation": "通常 0 表示成功，非零表示其他状态或错误。grep 没有匹配时返回 1，并不一定是软件损坏。"
+      }
+    },
+    {
+      "id": "18",
+      "title": "完成一份观察简报",
+      "stage": "把重复交给脚本",
+      "question": "这次，自己把文件变成可检查的结果。",
+      "minutes": 20,
+      "objectives": "综合整理、搜索、汇总和脚本；根据输入核对结果。",
+      "prerequisites": [
+        "17"
+      ],
+      "quiz": {
+        "question": "如何判断简报可信，而不只是脚本跑完了？",
+        "options": [
+          "文件名好看即可",
+          "核对输入范围、中间结果与计数含义",
+          "终端不显示红字就行"
+        ],
+        "answer": 1,
+        "explanation": "执行成功只是一步；还应确认处理了哪些输入、表头是否排除、统计的是记录条数还是观测数量。"
+      }
+    }
+  ]
+}

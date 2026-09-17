@@ -1,0 +1,2 @@
+logs/day-01.log: 4
+logs/day-02.log: 4

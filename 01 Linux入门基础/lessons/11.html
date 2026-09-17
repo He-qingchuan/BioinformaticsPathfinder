@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>整理一张小表 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="../assets/style.css"></head>
+<body class="lesson-page" data-lesson="11"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="../index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="../index.html#course">课程目录</a><a href="../library.html">代码与资料</a><a href="../reading.html">全文阅读</a><a class="open-glossary" href="../reading.html#glossary">术语手册</a></nav></header><main id="main" class="lesson-layout"><aside class="lesson-aside"><a href="../index.html#course">← 全部课程</a><p class="eyebrow">本节路线</p><nav><a href="#11-part-1">先读表头，别急着计算</a><a href="#11-part-2">按列取出，再按数字排好</a><a href="#11-part-3">表头需要单独照顾</a><a href="#11-part-4">看懂选择造成的信息变化</a></nav><a href="../practice/linux-lab.zip" download>练习材料 ↓</a><button type="button" id="focus-mode" aria-pressed="false">专注阅读</button></aside><article class="prose lesson-body"><p class="eyebrow">第 11 节 · 让小工具合作</p><h1>整理一张小表</h1><p class="lesson-question">先弄清表头和分隔符，再动手选列。</p><div class="objectives"><strong>这一节，带走什么</strong><p>读懂 TSV 表头；用 cut 选列、sort -n 排数值；保留字段含义。</p></div><details class="mobile-toc"><summary>本节目录</summary><nav><a href="#11-part-1">先读表头，别急着计算</a><a href="#11-part-2">按列取出，再按数字排好</a><a href="#11-part-3">表头需要单独照顾</a><a href="#11-part-4">看懂选择造成的信息变化</a></nav></details><h2 id="11-part-1">先读表头，别急着计算</h2>
+<p>起始位置是 <code>~/linux-lab</code>。<code>tables/observations.tsv</code> 第一行是表头，后面六行是记录。<a class="term" data-term="tsv" href="../reading.html#term-tsv">TSV</a> 使用制表符分隔字段；屏幕上看起来像若干空格，但实际字符不同。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>date</td>
+<td>日期</td>
+</tr>
+<tr>
+<td>site</td>
+<td>地点：lake 或 wood</td>
+</tr>
+<tr>
+<td>species</td>
+<td>物种名称</td>
+</tr>
+<tr>
+<td>count</td>
+<td>这一次记录到的数量</td>
+</tr>
+</tbody>
+</table>
+<p>一行是一条观测记录，不是一只鸟；一列是一种属性。这个区分在以后使用电子表格、R 或 Python 时同样重要。</p>
+<figure class="concept"><p class="eyebrow">图解 · 先知道一行与一列代表什么</p><a class="zoom-image" href="../assets/illustrations/table.svg" data-description="每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。"><img src="../assets/illustrations/table.svg" alt="先知道一行与一列代表什么" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。</p><a class="zoom-image" href="../assets/illustrations/table.svg" data-description="每行是一次记录，species 是物种，count 是这一次的观测数量。高亮列帮助你对照 cut 的字段编号。">放大查看 ↗</a> <a href="../assets/illustrations/table.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="11-part-2">按列取出，再按数字排好</h2>
+<p><code>tail -n +2</code> 表示从第 2 行开始输出，与 <code>tail -n 2</code> 的“只取最后两行”不同。<code>cut -f</code> 默认按制表符选取字段，<code>2,4</code> 表示第二和第四列。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>head -n 1 tables/observations.tsv
+tail -n +2 tables/observations.tsv | cut -f 2,4
+tail -n +2 tables/observations.tsv | cut -f 4 | sort -n</code></pre></div><div class="output-box"><span>参考输出</span><pre>date	site	species	count
+lake	12
+wood	3
+lake	8
+wood	5
+lake	2
+wood	7
+2
+3
+5
+7
+8
+12</pre></div><p class="source-link"><a href="../practice/snippets/11-table.sh" download>下载这段命令 ↓</a></p>
+<p>第一条让我们先确认字段名称。第二条留下地点与数量；第三条只保留数量，再交给 <code>sort -n</code> 按数值排序。你应该看到 2、3、5、7、8、12，而不是把 12 排在 2 前面。</p>
+<h2 id="11-part-3">表头需要单独照顾</h2>
+<p>把表头也交给数值排序，可能让它出现在意外的位置。此处先剔除表头再处理数据；如果要输出一张完整的新表，应另外写入正确的新表头，再追加整理后的数据。</p>
+<p>我们的表格非常小，约定每条记录占一行，字段内部没有制表符或换行。<code>cut</code> 不会理解带引号、嵌入逗号等复杂 <a class="term" data-term="csv" href="../reading.html#term-csv">CSV</a> 规则。遇到那类表格，应使用真正的表格解析工具。</p>
+<h2 id="11-part-4">看懂选择造成的信息变化</h2>
+<p>选出第二和第四列后，物种与日期信息已经不在输出里。并不是原文件被删除了这些列，而是新输出只包含你要求的部分。新文件的用途应该与保留下来的信息一致。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>把记录条数与数量分开</h3><p>先用管道统计 observations.tsv 的数据记录条数，再列出物种名称并统计每种的记录条数。是否与上一节一致？</p>
+<details><summary>给我一点提示</summary><p>先用 tail -n +2 排除表头。物种是第三列。</p>
+</details><details><summary>查看参考解法与解释</summary><p>tail -n +2 tables/observations.tsv | wc -l 得到 6；tail -n +2 tables/observations.tsv | cut -f 3 | sort | uniq -c 得到 magpie 2 条、sparrow 4 条，与上一节一致。这仍然不是各物种的观测数量之和。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>对 2、12、8 按数值排序应该得到什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-11" value="0"> <span>12、2、8</span></label><label><input type="radio" name="quiz-11" value="1"> <span>2、8、12</span></label><label><input type="radio" name="quiz-11" value="2"> <span>8、12、2</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>默认排序不等于数值排序。数值列需要指定数值比较，表头也应与数据行分开。</p></details></section><nav class="lesson-navigation"><a href="10.html">← 上一节</a><button type="button" id="mark-read">标记本节已读</button><a href="12.html">下一节 →</a></nav></article></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="../library.html#sources">资料与来源</a><a href="../README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="../assets/glossary-data.js"></script><script src="../assets/app.js"></script></body></html>

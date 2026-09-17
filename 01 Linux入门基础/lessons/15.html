@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>观察运行中的任务 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="../assets/style.css"></head>
+<body class="lesson-page" data-lesson="15"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="../index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="../index.html#course">课程目录</a><a href="../library.html">代码与资料</a><a href="../reading.html">全文阅读</a><a class="open-glossary" href="../reading.html#glossary">术语手册</a></nav></header><main id="main" class="lesson-layout"><aside class="lesson-aside"><a href="../index.html#course">← 全部课程</a><p class="eyebrow">本节路线</p><nav><a href="#15-part-1">程序是配方，进程是正在做的那一次</a><a href="#15-part-2">用一个很短的任务观察等待</a><a href="#15-part-3">看日志，也看资源</a><a href="#15-part-4">远程任务多问一步</a></nav><a href="../practice/linux-lab.zip" download>练习材料 ↓</a><button type="button" id="focus-mode" aria-pressed="false">专注阅读</button></aside><article class="prose lesson-body"><p class="eyebrow">第 15 节 · 让程序为你工作</p><h1>观察运行中的任务</h1><p class="lesson-question">没有马上回到提示符，是卡住了吗？</p><div class="objectives"><strong>这一节，带走什么</strong><p>理解前台、后台与进程；查看日志、CPU、内存和磁盘。</p></div><details class="mobile-toc"><summary>本节目录</summary><nav><a href="#15-part-1">程序是配方，进程是正在做的那一次</a><a href="#15-part-2">用一个很短的任务观察等待</a><a href="#15-part-3">看日志，也看资源</a><a href="#15-part-4">远程任务多问一步</a></nav></details><h2 id="15-part-1">程序是配方，进程是正在做的那一次</h2>
+<p>一个程序文件可以被多次运行，每次运行产生一个或多个<a class="term" data-term="process" href="../reading.html#term-process">进程</a>。<a class="term" data-term="pid" href="../reading.html#term-pid">PID</a> 是系统用于识别进程的编号。不要把程序文件名、终端窗口和 PID 混成同一个东西。</p>
+<p>在<a class="term" data-term="foreground" href="../reading.html#term-foreground">前台</a>运行时，终端通常等它结束再给出提示符；在<a class="term" data-term="background" href="../reading.html#term-background">后台</a>运行时，你可以继续输入其他命令。后台不等于任务已经完成，也不保证关掉连接后继续运行。</p>
+<figure class="concept"><p class="eyebrow">图解 · 同一个程序，可以有不同的运行实例</p><a class="zoom-image" href="../assets/illustrations/process.svg" data-description="程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。"><img src="../assets/illustrations/process.svg" alt="同一个程序，可以有不同的运行实例" loading="lazy" width="850" height="370"></a><figcaption><strong>怎样读这幅图</strong><p>程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。</p><a class="zoom-image" href="../assets/illustrations/process.svg" data-description="程序文件好比保存的步骤，进程是正在运行的一次。PID 用于识别进程，图中的编号仅为示意。">放大查看 ↗</a> <a href="../assets/illustrations/process.svg" download>保存 SVG ↓</a></figcaption></figure>
+<h2 id="15-part-2">用一个很短的任务观察等待</h2>
+<p>这一段可以在练习目录运行：<code>sleep 1</code> 等待一秒，<code>&amp;</code> 把它放到后台，<code>wait</code> 等待当前 Shell 的后台任务完成。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>sleep 1 &amp;
+wait
+echo &#x27;后台任务已结束&#x27;</code></pre></div><div class="output-box"><span>参考输出</span><pre>后台任务已结束</pre></div><p class="source-link"><a href="../practice/snippets/15-job.sh" download>下载这段命令 ↓</a></p>
+<p>交互终端可能额外显示任务编号和 PID，它们会变化，因此参考输出只列程序本身的文字。想多观察一会儿，可以手动运行 <code>sleep 15 &amp;</code>，随后使用 <code>jobs</code> 查看当前 Shell 的作业；它不代表整个系统的进程清单。</p>
+<p>用 <code>ps -u &quot;$USER&quot;</code> 查看自己的进程；在使用这个变量前，先通过 <code>echo &quot;$USER&quot;</code> 确认当前环境中的用户名。<code>top</code> 动态显示资源情况，按 q 退出。使用 <code>kill PID</code> 前必须确认目标是自己刚启动的练习进程；默认的终止请求与强制终止不是同一种处理方式。</p>
+<h2 id="15-part-3">看日志，也看资源</h2>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>适合观察什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tail -f 日志文件</code></td>
+<td>继续观察后来追加的日志；Ctrl+C 停止跟随</td>
+</tr>
+<tr>
+<td><code>free -h</code></td>
+<td>内存使用情况，注意 available 等字段</td>
+</tr>
+<tr>
+<td><code>df -h .</code></td>
+<td>当前目录所在文件系统的容量和剩余空间</td>
+</tr>
+<tr>
+<td><code>du -sh results</code></td>
+<td>results 目录占用了多少磁盘空间</td>
+</tr>
+</tbody>
+</table>
+<p>内存中的缓存不一定是“浪费”；磁盘满了也不同于内存不足。先对应报错判断资源类型，再决定下一步。</p>
+<h2 id="15-part-4">远程任务多问一步</h2>
+<p>通过 SSH 运行任务时，连接断开可能影响进程。<code>nohup</code> 或 tmux 有各自的适用场景，不能把单独一个 <code>&amp;</code> 理解为可靠的长期托管。附录给出进一步学习入口，主线只运行短小练习。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>观察而不是猜测</h3><p>运行 sleep 15 &amp;，立即执行 jobs；等十几秒再查看。说明任务还在运行、任务结束、命令失败三种状态为什么不同。</p>
+<details><summary>给我一点提示</summary><p>没有马上显示结果并不自动等于失败。</p>
+</details><details><summary>查看参考解法与解释</summary><p>等待期间作业处于运行状态；时间到了，sleep 正常结束，随后不再是运行中的作业。失败要结合退出状态或诊断信息判断。</p>
+</details></section>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>df -h 和 du -h 分别主要看什么？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-15" value="0"> <span>网络速度与网速</span></label><label><input type="radio" name="quiz-15" value="1"> <span>文件系统空间与文件／目录占用</span></label><label><input type="radio" name="quiz-15" value="2"> <span>用户数量与密码</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>df 报告文件系统的容量和使用情况，du 统计指定文件或目录的磁盘占用。</p></details></section><nav class="lesson-navigation"><a href="14.html">← 上一节</a><button type="button" id="mark-read">标记本节已读</button><a href="16.html">下一节 →</a></nav></article></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="../library.html#sources">资料与来源</a><a href="../README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="../assets/glossary-data.js"></script><script src="../assets/app.js"></script></body></html>

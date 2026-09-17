@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>完成一份观察简报 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="../assets/style.css"></head>
+<body class="lesson-page" data-lesson="18"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="../index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="../index.html#course">课程目录</a><a href="../library.html">代码与资料</a><a href="../reading.html">全文阅读</a><a class="open-glossary" href="../reading.html#glossary">术语手册</a></nav></header><main id="main" class="lesson-layout"><aside class="lesson-aside"><a href="../index.html#course">← 全部课程</a><p class="eyebrow">本节路线</p><nav><a href="#18-part-1">这次，把线索整理成一份可核对的简报</a><a href="#18-part-2">先自己拼出命令</a><a href="#18-part-3">把工作保存为脚本</a><a href="#18-part-4">完成不是只看文件存在</a><a href="#18-part-5">现在，你能把过程讲清楚了</a></nav><a href="../practice/linux-lab.zip" download>练习材料 ↓</a><button type="button" id="focus-mode" aria-pressed="false">专注阅读</button></aside><article class="prose lesson-body"><p class="eyebrow">第 18 节 · 把重复交给脚本</p><h1>完成一份观察简报</h1><p class="lesson-question">这次，自己把文件变成可检查的结果。</p><div class="objectives"><strong>这一节，带走什么</strong><p>综合整理、搜索、汇总和脚本；根据输入核对结果。</p></div><details class="mobile-toc"><summary>本节目录</summary><nav><a href="#18-part-1">这次，把线索整理成一份可核对的简报</a><a href="#18-part-2">先自己拼出命令</a><a href="#18-part-3">把工作保存为脚本</a><a href="#18-part-4">完成不是只看文件存在</a><a href="#18-part-5">现在，你能把过程讲清楚了</a></nav></details><h2 id="18-part-1">这次，把线索整理成一份可核对的简报</h2>
+<p>起始位置是 <code>~/linux-lab</code>。观察站要交接一周材料，需要两份结果：每个物种有几条观测记录，以及两份设备日志中出现 WARN 的位置。</p>
+<p>先把交付说清楚：输入是固定的 observations.tsv 和两份 day 日志；结果放在 results/report；统计的是<strong>记录条数</strong>，不是鸟的数量总和。所有材料都是练习数据。</p>
+<h2 id="18-part-2">先自己拼出命令</h2>
+<p>给自己三个小任务：去掉表头、提取物种列并计数；从两份日志中找到 WARN；把两种结果保存成不同文件。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>先做，再对照</h3><p>尽量只使用前面学过的命令，完成以上两个结果文件，并读取它们检查内容。预期是 magpie 2 条、sparrow 4 条，以及两行 WARN。</p>
+<details><summary>给我一点提示</summary><p>表格从第 2 行开始；物种是第 3 列；查日志可以把两个路径都传给 grep。</p>
+</details><details><summary>查看参考解法与解释</summary><p>下方的分步示例是一种解法。也可以用其他等价组合，但需要解释输入、过滤与统计的含义。</p>
+</details></section>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>mkdir -p results/report
+tail -n +2 tables/observations.tsv | cut -f 3 | sort | uniq -c &gt; results/report/species-records.txt
+grep -n -F &#x27;WARN&#x27; logs/day-01.log logs/day-02.log &gt; results/report/warnings.txt
+cat results/report/species-records.txt
+cat results/report/warnings.txt</code></pre></div><div class="output-box"><span>参考输出</span><pre>      2 magpie
+      4 sparrow
+logs/day-01.log:3:08:10 WARN battery low
+logs/day-02.log:3:08:10 WARN battery low</pre></div><p class="source-link"><a href="../practice/snippets/18-report.sh" download>下载这段命令 ↓</a></p>
+<h2 id="18-part-3">把工作保存为脚本</h2>
+<p>随包的 tools/summarize.sh 把相同步骤保存下来，并补充几个必要检查：必须传入一个练习目录、输入文件可读、输出目录能创建、处理失败时给出提示。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>bash tools/summarize.sh .</code></pre></div>
+<p>这里 <code>.</code> 把当前 linux-lab 目录传给脚本。脚本的全部内容可以展开查看或直接下载：</p>
+<details class="full-source"><summary>查看完整脚本：summarize.sh</summary><div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>#!/usr/bin/env bash
+# A deliberately small report for this course&#x27;s bundled TSV and logs.
+# pipefail makes a failed stage visible in the pipeline&#x27;s exit status.
+set -o pipefail
+if [ &quot;$#&quot; -ne 1 ]; then
+  echo &#x27;Usage: bash summarize.sh &lt;linux-lab directory&gt;&#x27; &gt;&amp;2
+  exit 2
+fi
+project=$1
+for required in tables/observations.tsv logs/day-01.log logs/day-02.log; do
+  if [ ! -r &quot;$project/$required&quot; ]; then
+    printf &#x27;Cannot read: %s\n&#x27; &quot;$project/$required&quot; &gt;&amp;2
+    exit 2
+  fi
+done
+output=&quot;$project/results/report&quot;
+if ! mkdir -p &quot;$output&quot;; then
+  exit 1
+fi
+if ! tail -n +2 &quot;$project/tables/observations.tsv&quot; | cut -f 3 | sort | uniq -c &gt; &quot;$output/species-records.txt&quot;; then
+  echo &#x27;Could not build species record counts.&#x27; &gt;&amp;2
+  exit 1
+fi
+grep -n -F &#x27;WARN&#x27; &quot;$project/logs/day-01.log&quot; &quot;$project/logs/day-02.log&quot; &gt; &quot;$output/warnings.txt&quot;
+status=$?
+if [ &quot;$status&quot; -gt 1 ]; then
+  echo &#x27;Could not search the logs.&#x27; &gt;&amp;2
+  exit &quot;$status&quot;
+fi
+printf &#x27;Report saved in: %s\n&#x27; &quot;$output&quot;
+cat &quot;$output/species-records.txt&quot;</code></pre></div><p class="source-link"><a href="../practice/scripts/summarize.sh" download>下载这段命令 ↓</a></p></details>
+<p><code>$#</code> 是参数个数，<code>exit 2</code> 用非零状态结束脚本，<code>&gt;&amp;2</code> 将提示送到标准错误。<code>set -o pipefail</code> 让管道中某个工具失败时，整条管道也能返回失败状态；它本身不会自动退出脚本，所以这里配合 if 检查。<code>if ! ...</code> 表示在命令失败时进入对应分支。</p>
+<p>搜索 WARN 后单独检查状态，是因为 grep 没找到时返回 1，可能只是“本次没有提醒”；大于 1 才按搜索失败处理。先理解这几个保护措施的作用，再逐行对应代码。</p>
+<h2 id="18-part-4">完成不是只看文件存在</h2>
+<ul>
+<li>打开 species-records.txt，确认两种物种的记录条数合计为 6。</li>
+<li>打开 warnings.txt，回到原始日志确认文件名和行号。</li>
+<li>再运行一次脚本，确认计数没有因为上次结果而翻倍。</li>
+<li>复制一份练习目录，移走其中一份日志再运行，确认脚本明确报告缺失输入。</li>
+</ul>
+<p>脚本约定表格格式与随包材料一致，并不是任意数据的通用分析器。换成自己的数据时，还需要核对表头、分隔符、缺失值和字段含义。</p>
+<h2 id="18-part-5">现在，你能把过程讲清楚了</h2>
+<p>你已经经历了找位置、管文件、读内容、提线索、接工具、存脚本的完整过程。以后遇到新任务，可以先问三件事：输入是什么，想得到什么结果，怎样核对它。</p>
+<p>需要回查时，课程目录、命令索引和术语手册都可以单独使用。下一步先选择一个真实而小的问题，把这里的方法用一次。</p>
+<section class="quiz" data-answer="1"><p class="eyebrow">检查一下理解</p><h3>如何判断简报可信，而不只是脚本跑完了？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-18" value="0"> <span>文件名好看即可</span></label><label><input type="radio" name="quiz-18" value="1"> <span>核对输入范围、中间结果与计数含义</span></label><label><input type="radio" name="quiz-18" value="2"> <span>终端不显示红字就行</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>执行成功只是一步；还应确认处理了哪些输入、表头是否排除、统计的是记录条数还是观测数量。</p></details></section><nav class="lesson-navigation"><a href="17.html">← 上一节</a><button type="button" id="mark-read">标记本节已读</button><a href="../index.html#course">回到课程目录 →</a></nav></article></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="../library.html#sources">资料与来源</a><a href="../README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="../assets/glossary-data.js"></script><script src="../assets/app.js"></script></body></html>

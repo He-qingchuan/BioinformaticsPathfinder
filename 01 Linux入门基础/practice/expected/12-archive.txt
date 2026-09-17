@@ -1,0 +1,7 @@
+notes/
+notes/evening.txt
+notes/morning.txt
+notes/雨后 记录.txt
+Morning observation
+Lake: clear
+Birds: 12

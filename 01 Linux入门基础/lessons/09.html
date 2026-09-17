@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>在文本里搜索 · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="../assets/style.css"></head>
+<body class="lesson-page" data-lesson="09"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="../index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="../index.html#course">课程目录</a><a href="../library.html">代码与资料</a><a href="../reading.html">全文阅读</a><a class="open-glossary" href="../reading.html#glossary">术语手册</a></nav></header><main id="main" class="lesson-layout"><aside class="lesson-aside"><a href="../index.html#course">← 全部课程</a><p class="eyebrow">本节路线</p><nav><a href="#09-part-1">把错误那一行找出来</a><a href="#09-part-2">先用最简单的模式</a><a href="#09-part-3">正则表达式是另一套规则</a><a href="#09-part-4">没有结果，不一定是坏了</a></nav><a href="../practice/linux-lab.zip" download>练习材料 ↓</a><button type="button" id="focus-mode" aria-pressed="false">专注阅读</button></aside><article class="prose lesson-body"><p class="eyebrow">第 09 节 · 从文件找到线索</p><h1>在文本里搜索</h1><p class="lesson-question">从很多行里，怎样找到那条出错记录？</p><div class="objectives"><strong>这一节，带走什么</strong><p>用 grep 搜索文本；区分固定字符串和简单正则。</p></div><details class="mobile-toc"><summary>本节目录</summary><nav><a href="#09-part-1">把错误那一行找出来</a><a href="#09-part-2">先用最简单的模式</a><a href="#09-part-3">正则表达式是另一套规则</a><a href="#09-part-4">没有结果，不一定是坏了</a></nav></details><h2 id="09-part-1">把错误那一行找出来</h2>
+<p>起始位置是 <code>~/linux-lab</code>。日志里有 INFO、WARN 和 ERROR，它们在练习中分别表示普通信息、提醒和错误。我们先不看全部内容，只找想追踪的事件。</p>
+<p><a class="term" data-term="grep" href="../reading.html#term-grep">grep</a> 从输入文本里选择匹配的行。<code>-F</code> 表示按固定字符串寻找；<code>-n</code> 把原文件行号放在结果前面。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>grep -n -F &#x27;WARN&#x27; logs/day-01.log
+grep -F &#x27;ERROR&#x27; logs/day-02.log</code></pre></div><div class="output-box"><span>参考输出</span><pre>3:08:10 WARN battery low
+08:05 ERROR sensor missing</pre></div><p class="source-link"><a href="../practice/snippets/09-grep.sh" download>下载这段命令 ↓</a></p>
+<p>结果中的 <code>3:</code> 表示原文件的第 3 行，并不是“发生了三次报警”。不加 <code>-n</code> 时，匹配行为没有因此改变，只是不显示行号。</p>
+<h2 id="09-part-2">先用最简单的模式</h2>
+<table>
+<thead>
+<tr>
+<th>用法</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grep -F 'WARN' 文件</code></td>
+<td>哪些行含有这段固定文字？</td>
+</tr>
+<tr>
+<td><code>grep -i -F 'warn' 文件</code></td>
+<td>忽略大小写后，哪些行含有它？</td>
+</tr>
+<tr>
+<td><code>grep -v -F 'INFO' 文件</code></td>
+<td>哪些行不含有 INFO？</td>
+</tr>
+<tr>
+<td><code>grep -c -F 'WARN' 文件</code></td>
+<td>有多少行包含 WARN？</td>
+</tr>
+</tbody>
+</table>
+<p><code>-c</code> 数匹配的行，不是某个单词出现的总次数。同一行出现两次 WARN，仍然只计一行。</p>
+<h2 id="09-part-3">正则表达式是另一套规则</h2>
+<p><a class="term" data-term="regex" href="../reading.html#term-regex">正则表达式</a>描述文本的模式。先认识三个常见符号即可：<code>^</code> 表示行首，<code>$</code> 表示行尾，<code>.</code> 通常表示任意一个字符。</p>
+<div class="code-box"><div class="code-label"><span>Bash · 输入命令</span><button type="button" class="copy-code">复制</button></div><pre><code>grep &#x27;^08:00&#x27; logs/day-01.log</code></pre></div>
+<p>这条命令查找以 08:00 开头的行。文件名通配符和正则不是一套语法：例如通配符中的 <code>*</code> 与正则中的 <code>*</code> 不能直接互换。需要匹配字面量点号时，优先用 <code>grep -F</code>，避免无意中把点当模式。</p>
+<p>本节不要求背完整正则语法。先用固定字符串解决大多数简单查找，再在确实需要时扩展。</p>
+<h2 id="09-part-4">没有结果，不一定是坏了</h2>
+<p>试 <code>grep -F 'ERROR' logs/day-01.log</code>，它没有输出，因为这份文件中没有对应行。grep 通常在找到匹配时返回状态 0，没找到时返回 1；工具本身出错则是其他非零状态。退出状态会在第 17 节正式用到。</p>
+<section class="exercise"><p class="eyebrow">动手试试</p><h3>同样的词，两个文件</h3><p>分别查询两份日志中含有 WARN 的行。再找第二份日志中不含 INFO 的行。结果分别有多少行？</p>
+<details><summary>给我一点提示</summary><p>观察 -v 和 -c 各自改变了什么。</p>
+</details><details><summary>查看参考解法与解释</summary><p>每份日志各有一行 WARN；第二份日志中不含 INFO 的行有两行，分别是 ERROR 与 WARN。</p>
+</details></section>
+<section class="quiz" data-answer="0"><p class="eyebrow">检查一下理解</p><h3>查找文本中的字面量 a.b，哪种方式最清楚？</h3><fieldset><legend class="sr-only">选择一个答案</legend><label><input type="radio" name="quiz-09" value="0"> <span>grep -F &quot;a.b&quot; 文件</span></label><label><input type="radio" name="quiz-09" value="1"> <span>grep &quot;a.b&quot; 文件</span></label><label><input type="radio" name="quiz-09" value="2"> <span>ls a.b</span></label></fieldset><button type="button" class="check-quiz">检查答案</button><p class="quiz-status" aria-live="polite"></p><details><summary>查看解释</summary><p>-F 把模式当固定字符串。正则中的点通常表示任意一个字符，两者含义不同。</p></details></section><nav class="lesson-navigation"><a href="08.html">← 上一节</a><button type="button" id="mark-read">标记本节已读</button><a href="10.html">下一节 →</a></nav></article></main>
+<footer class="site-footer"><span>Linux 入门 · v1.0.0<br>从一份小记录，走向能解释的操作。</span><a href="../library.html#sources">资料与来源</a><a href="../README.md">使用与维护说明</a></footer>
+<dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option><option>环境与系统</option><option>命令与运行</option><option>文件与路径</option><option>文本与数据</option><option>输入与输出</option><option>权限与进程</option><option>脚本与逻辑</option></select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
+<dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="../assets/glossary-data.js"></script><script src="../assets/app.js"></script></body></html>

@@ -1,0 +1,2 @@
+3:08:10 WARN battery low
+08:05 ERROR sensor missing

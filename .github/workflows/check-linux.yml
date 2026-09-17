@@ -1,0 +1,47 @@
+name: Check Linux textbook
+
+on:
+  push:
+    paths: ["01 Linux入门基础/**", ".github/workflows/check-linux.yml"]
+  pull_request:
+    paths: ["01 Linux入门基础/**", ".github/workflows/check-linux.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install build and browser dependencies
+        working-directory: 01 Linux入门基础
+        run: |
+          python -m pip install -r requirements.txt
+          npm --prefix qa ci --ignore-scripts --no-audit --no-fund
+          npx --prefix qa playwright install --with-deps chromium
+      - name: Verify commands and build independently
+        working-directory: 01 Linux入门基础
+        run: |
+          python qa/check_practice.py
+          python tools/build.py
+          python qa/validate.py
+          node qa/browser.cjs
+          python tools/package.py
+      - name: Generated pages match committed sources
+        run: git diff --exit-code -- '01 Linux入门基础'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-course-validation
+          path: |
+            01 Linux入门基础/qa/artifacts/*.json
+            01 Linux入门基础/qa/artifacts/*.png
+            01 Linux入门基础/dist/*.zip
