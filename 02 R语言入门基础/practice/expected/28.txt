@@ -1,0 +1,2 @@
+   simulated_p normal_model_p 
+        0.0746         0.0736 

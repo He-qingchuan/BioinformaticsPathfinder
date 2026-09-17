@@ -1,0 +1,2 @@
+            records missing_temperature 
+                 42                   2 

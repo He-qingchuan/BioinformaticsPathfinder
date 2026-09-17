@@ -1,0 +1,15 @@
+  site temperature
+1  P01          27
+2  P02          30
+3  P03          26
+[1] 3 2
+[1] 27 30 26
+  site temperature
+2  P02          30
+  site temperature
+1  P01          27
+2  P02          30
+  site temperature temperature_f
+1  P01          27          80.6
+2  P02          30          86.0
+3  P03          26          78.8

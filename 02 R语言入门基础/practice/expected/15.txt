@@ -1,0 +1,6 @@
+   raw_rows unique_rows 
+         43          42 
+  site_id n_records n_valid mean_c
+1     P01        14      13  29.99
+2     P02        14      13  30.57
+3     P03        14      14  28.74

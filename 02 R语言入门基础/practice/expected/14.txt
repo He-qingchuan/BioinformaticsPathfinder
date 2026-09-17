@@ -1,0 +1,7 @@
+  record_id site_id temperature_c temperature_f
+1      O011     P02          33.0         91.40
+2      O017     P02          32.5         90.50
+3      O034     P01          32.5         90.50
+4      O035     P02          32.5         90.50
+5      O023     P02          32.3         90.14
+[1] 19

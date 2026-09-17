@@ -1,0 +1,6 @@
+                raw      duplicate_rows               clean missing_temperature 
+                 43                   1                  42                   2 
+  site_id site_name n_records n_valid mean_c
+1     P01 Riverside        14      13 29.992
+2     P02    Meadow        14      13 30.569
+3     P03     Grove        14      14 28.736

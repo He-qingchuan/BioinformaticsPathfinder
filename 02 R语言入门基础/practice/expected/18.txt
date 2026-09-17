@@ -1,0 +1,5 @@
+[1] "  regular " "regular"    " CHECK "   
+[1] "regular" "check"  
+[1] "2026-06-01" "2026-06-07"
+[1] 0
+[1] 7

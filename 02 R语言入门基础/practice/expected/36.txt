@@ -1,0 +1,7 @@
+            raw duplicate_rows clean missing_temperature
+first_week   43              1    42                   2
+new_records  13              1    12                   1
+  site_id site_name n_records n_valid mean_c
+1     P01 Riverside         4       3 29.633
+2     P02    Meadow         4       4 30.800
+3     P03     Grove         4       4 28.650

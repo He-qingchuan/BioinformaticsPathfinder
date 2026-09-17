@@ -1,0 +1,838 @@
+{
+  "title": "R 入门 · 数据调查小镇",
+  "version": "1.0.0",
+  "zones": [
+    {
+      "id": "welcome",
+      "title": "启程接待所",
+      "subtitle": "打开第一份调查笔记"
+    },
+    {
+      "id": "objects",
+      "title": "对象仓库",
+      "subtitle": "认识 R 怎样装下数据"
+    },
+    {
+      "id": "tidy",
+      "title": "整理工坊",
+      "subtitle": "让每份记录各就各位"
+    },
+    {
+      "id": "charts",
+      "title": "图形广场",
+      "subtitle": "让数字的关系显现出来"
+    },
+    {
+      "id": "scripts",
+      "title": "脚本工作室",
+      "subtitle": "把方法写成可以重用的步骤"
+    },
+    {
+      "id": "sampling",
+      "title": "抽样公园",
+      "subtitle": "看见样本背后的不确定性"
+    },
+    {
+      "id": "evidence",
+      "title": "证据研究所",
+      "subtitle": "比较、估计，再检查依据"
+    },
+    {
+      "id": "report",
+      "title": "成果展厅",
+      "subtitle": "交付一份能重跑的解释"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "01",
+      "title": "R 从哪里来",
+      "stage": "启程接待所",
+      "zone": "welcome",
+      "question": "一张表已经能看，为什么还需要 R？",
+      "minutes": 20,
+      "objectives": "分清 R、RStudio 和包；理解从记录到可复查结果的工作方式。",
+      "prerequisites": [],
+      "quiz": {
+        "question": "哪一个负责实际执行 R 表达式？",
+        "options": [
+          "网页上的学习地图",
+          "R",
+          "RStudio 的窗口布局"
+        ],
+        "answer": 1,
+        "explanation": "R 是语言及运行环境；RStudio 是编辑与组织操作的工具。"
+      }
+    },
+    {
+      "id": "02",
+      "title": "准备 R 与 RStudio",
+      "stage": "启程接待所",
+      "zone": "welcome",
+      "question": "怎样确认工作台已经能用了？",
+      "minutes": 20,
+      "objectives": "安装 R 与 RStudio Desktop；辨认控制台；完成第一项环境检查。",
+      "prerequisites": [
+        "01"
+      ],
+      "quiz": {
+        "question": "教程中的 > 1 + 1 应该输入哪部分？",
+        "options": [
+          "> 1 + 1",
+          "[1] 2",
+          "1 + 1"
+        ],
+        "answer": 2,
+        "explanation": "> 是控制台提示符；[1] 2 是输出，两者都不是需要输入的代码。"
+      }
+    },
+    {
+      "id": "03",
+      "title": "给数字一个名字",
+      "stage": "启程接待所",
+      "zone": "welcome",
+      "question": "刚算出的结果，怎样留给下一步？",
+      "minutes": 20,
+      "objectives": "理解对象、赋值、函数调用与命名参数；查询函数帮助。",
+      "prerequisites": [
+        "02"
+      ],
+      "quiz": {
+        "question": "执行 temperature + 2 后，原对象会自动增加 2 吗？",
+        "options": [
+          "不会，更新需要赋值",
+          "一定会",
+          "只有数字大于 0 才会"
+        ],
+        "answer": 0,
+        "explanation": "计算返回一个结果，赋值才把结果保存到指定名字。"
+      }
+    },
+    {
+      "id": "04",
+      "title": "保存一份可以重跑的工作",
+      "stage": "启程接待所",
+      "zone": "welcome",
+      "question": "明天重开电脑，今天的步骤还在吗？",
+      "minutes": 20,
+      "objectives": "建立 RStudio 项目；理解相对路径；保存并执行脚本。",
+      "prerequisites": [
+        "03"
+      ],
+      "quiz": {
+        "question": "最有助于证明脚本没有隐藏依赖的操作是？",
+        "options": [
+          "保存屏幕截图",
+          "重启 R 后完整重跑脚本",
+          "只看对象列表里是否有结果"
+        ],
+        "answer": 1,
+        "explanation": "重启清除本次会话中的对象，完整重跑可以暴露漏写的创建和读取步骤。"
+      }
+    },
+    {
+      "id": "05",
+      "title": "一排数字一起计算",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "四次测温，可以一起加一吗？",
+      "minutes": 20,
+      "objectives": "创建向量，查看类型和长度，理解逐元素计算。",
+      "prerequisites": [
+        "04"
+      ],
+      "quiz": {
+        "question": "length(c(27, 29, 28, 31)) 是多少？",
+        "options": [
+          "1",
+          "31",
+          "4"
+        ],
+        "answer": 2,
+        "explanation": "length() 统计元素个数，不是最大值，也不是对象名字的数量。"
+      }
+    },
+    {
+      "id": "06",
+      "title": "用条件找到想看的记录",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "怎样只留下比较热的几次测量？",
+      "minutes": 20,
+      "objectives": "区分位置索引和逻辑筛选，组合逐元素条件。",
+      "prerequisites": [
+        "05"
+      ],
+      "quiz": {
+        "question": "同时检查一列数的两个条件，使用哪个符号？",
+        "options": [
+          "&",
+          "<-",
+          "+"
+        ],
+        "answer": 0,
+        "explanation": "& 逐元素组合逻辑条件；<- 赋值；+ 做加法。"
+      }
+    },
+    {
+      "id": "07",
+      "title": "缺了一格，意味着什么",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "空白温度可以直接当成零吗？",
+      "minutes": 20,
+      "objectives": "识别 NA，解释缺失传播、类型转换和向量回收。",
+      "prerequisites": [
+        "06"
+      ],
+      "quiz": {
+        "question": "mean(x, na.rm = TRUE) 会补回缺失值吗？",
+        "options": [
+          "会自动填入均值",
+          "不会，只在此次计算中忽略缺失",
+          "会自动填零"
+        ],
+        "answer": 1,
+        "explanation": "计算规则与数据修补是不同操作；忽略后要记录有效样本数。"
+      }
+    },
+    {
+      "id": "08",
+      "title": "把记录放进一张表",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "温度和地点怎样保持一一对应？",
+      "minutes": 20,
+      "objectives": "理解数据框的一行一列，安全提取、筛选和新增列。",
+      "prerequisites": [
+        "07"
+      ],
+      "quiz": {
+        "question": "records[2, ] 选择什么？",
+        "options": [
+          "第二列的所有行",
+          "值等于 2 的全部元素",
+          "第二行的所有列"
+        ],
+        "answer": 2,
+        "explanation": "逗号前是行，逗号后是列；留空表示这一方向全部保留。"
+      }
+    },
+    {
+      "id": "09",
+      "title": "类别也需要顺序",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "为什么 afternoon 会排在 morning 前面？",
+      "minutes": 20,
+      "objectives": "理解因子与水平；避免把类别内部编码当数值。",
+      "prerequisites": [
+        "08"
+      ],
+      "quiz": {
+        "question": "对字符标签为 10、20 的因子直接转整数，通常得到什么？",
+        "options": [
+          "内部水平编码",
+          "原始测量值 10、20",
+          "自动计算的均值"
+        ],
+        "answer": 0,
+        "explanation": "因子存储类别编码及标签；转整数暴露的是编码。"
+      }
+    },
+    {
+      "id": "10",
+      "title": "矩阵与列表，各装什么",
+      "stage": "对象仓库",
+      "zone": "objects",
+      "question": "一个分析结果为什么能同时有数字、表格和文字？",
+      "minutes": 20,
+      "objectives": "区分矩阵、数据框和列表；理解 [ ] 与 [[ ]]。",
+      "prerequisites": [
+        "09"
+      ],
+      "quiz": {
+        "question": "matrix(1:6, nrow = 3) 默认怎样填入？",
+        "options": [
+          "随机填入",
+          "按列填入",
+          "按行填入"
+        ],
+        "answer": 1,
+        "explanation": "默认 byrow = FALSE，因此先填第一列，再填第二列。"
+      }
+    },
+    {
+      "id": "11",
+      "title": "读入和带走一份记录",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "文件已经打开，R 真的读懂它了吗？",
+      "minutes": 20,
+      "objectives": "读取 CSV，核对行列与缺失；导出表格和单个 R 对象。",
+      "prerequisites": [
+        "10"
+      ],
+      "quiz": {
+        "question": "保留单个 R 对象结构的文件格式是？",
+        "options": [
+          "PNG",
+          "只保留截图",
+          "RDS"
+        ],
+        "answer": 2,
+        "explanation": "RDS 保存 R 对象；PNG 是图像，不能恢复原对象结构。"
+      }
+    },
+    {
+      "id": "12",
+      "title": "先认识数字的分布",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "平均温度能讲完整个故事吗？",
+      "minutes": 20,
+      "objectives": "理解均值、中位数、四分位数和标准差；画第一幅基础图。",
+      "prerequisites": [
+        "11"
+      ],
+      "quiz": {
+        "question": "标准差描述什么？",
+        "options": [
+          "观测值的分散程度",
+          "均值估计一定有多准确",
+          "类别数量"
+        ],
+        "answer": 0,
+        "explanation": "标准差描述数据的分散；均值的标准误在抽样部分另行讨论。"
+      }
+    },
+    {
+      "id": "13",
+      "title": "增加工具，连接步骤",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "装过一个包，为什么重启后还要加载？",
+      "minutes": 20,
+      "objectives": "区分安装与加载，使用命名空间和原生管道。",
+      "prerequisites": [
+        "12"
+      ],
+      "quiz": {
+        "question": "x |> mean() 会自动创建 mean 对象吗？",
+        "options": [
+          "会建立一个新文件",
+          "不会，它返回函数结果",
+          "会自动保存到 x"
+        ],
+        "answer": 1,
+        "explanation": "管道连接计算，不替代赋值或文件写出。"
+      }
+    },
+    {
+      "id": "14",
+      "title": "让表格回答一个小问题",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "哪些下午记录比较热？",
+      "minutes": 20,
+      "objectives": "用 filter、select、mutate 和 arrange 组织逐步整理。",
+      "prerequisites": [
+        "13"
+      ],
+      "quiz": {
+        "question": "select() 的主要作用是？",
+        "options": [
+          "按条件选择行",
+          "对每组计算均值",
+          "选择列"
+        ],
+        "answer": 2,
+        "explanation": "select 选列，filter 选行；名称相似时先说出操作方向。"
+      }
+    },
+    {
+      "id": "15",
+      "title": "每个地点各算一次",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "三处公园的均值，分别用了多少条记录？",
+      "minutes": 20,
+      "objectives": "识别完全重复，分组汇总并同时报告记录数和有效数。",
+      "prerequisites": [
+        "14"
+      ],
+      "quiz": {
+        "question": "相同记录编号却有不同温度，应该怎么办？",
+        "options": [
+          "检查冲突来源再决定",
+          "直接保留第一行",
+          "把两个温度都填成零"
+        ],
+        "answer": 0,
+        "explanation": "编号冲突不同于完全相同的重复导入，不能未经核查删掉其中一条。"
+      }
+    },
+    {
+      "id": "16",
+      "title": "把地点资料接到记录旁边",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "连接两张表，为什么行数突然变多了？",
+      "minutes": 20,
+      "objectives": "理解连接键、左连接与未匹配记录，检查键的唯一性。",
+      "prerequisites": [
+        "15"
+      ],
+      "quiz": {
+        "question": "左连接遇到没有地点资料的观察记录会怎样？",
+        "options": [
+          "自动猜一个地点名称",
+          "保留观察行，补入字段为 NA",
+          "自动删除观察行"
+        ],
+        "answer": 1,
+        "explanation": "左连接保留左侧记录；缺少匹配需要检查，不能把 NA 当作新信息。"
+      }
+    },
+    {
+      "id": "17",
+      "title": "一张表可以换个形状",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "上午和下午，应该放在列名里还是一列里？",
+      "minutes": 20,
+      "objectives": "进行宽长转换，识别转换键与原始信息是否保留。",
+      "prerequisites": [
+        "16"
+      ],
+      "quiz": {
+        "question": "三行两列温度转成六行，说明收集了更多独立样本吗？",
+        "options": [
+          "有，样本数翻倍",
+          "有，只要行数增多就算",
+          "没有，只改变信息摆放方式"
+        ],
+        "answer": 2,
+        "explanation": "观察单位由记录设计决定，变换表形不创造新测量。"
+      }
+    },
+    {
+      "id": "18",
+      "title": "整理文字与日期",
+      "stage": "整理工坊",
+      "zone": "tidy",
+      "question": "同一个 regular，为什么被分成三组？",
+      "minutes": 20,
+      "objectives": "去除多余空格、统一明确的标签，并解析与检查日期。",
+      "prerequisites": [
+        "17"
+      ],
+      "quiz": {
+        "question": "文字转日期后最应该补做哪项检查？",
+        "options": [
+          "检查解析失败的 NA 与日期范围",
+          "只看是否没有报错",
+          "直接删除原文件"
+        ],
+        "answer": 0,
+        "explanation": "解析与记录意图可能不一致；有效性和合理范围都需要检查。"
+      }
+    },
+    {
+      "id": "19",
+      "title": "一幅图怎样搭起来",
+      "stage": "图形广场",
+      "zone": "charts",
+      "question": "点的位置和颜色，哪些来自数据？",
+      "minutes": 20,
+      "objectives": "理解 ggplot 的数据、映射与图层，区分映射和固定设置。",
+      "prerequisites": [
+        "18"
+      ],
+      "quiz": {
+        "question": "aes(x = canopy_pct) 表示什么？",
+        "options": [
+          "把全部点放在同一位置",
+          "把冠层覆盖率映射到横坐标",
+          "把横轴标题写成 canopy_pct"
+        ],
+        "answer": 1,
+        "explanation": "映射控制每条记录的位置；标题由 labs() 等设置处理。"
+      }
+    },
+    {
+      "id": "20",
+      "title": "给问题选一张合适的图",
+      "stage": "图形广场",
+      "zone": "charts",
+      "question": "柱子、箱子和散点，各能看见什么？",
+      "minutes": 20,
+      "objectives": "区分类别计数与连续分布，结合原始点阅读箱线图。",
+      "prerequisites": [
+        "19"
+      ],
+      "quiz": {
+        "question": "直方图与类别柱状图区别的关键是什么？",
+        "options": [
+          "有没有颜色",
+          "柱子是否足够宽",
+          "连续数值分箱与类别计数的区别"
+        ],
+        "answer": 2,
+        "explanation": "变量类型与统计含义决定图形，不是外观装饰。"
+      }
+    },
+    {
+      "id": "21",
+      "title": "把时间与地点分开看",
+      "stage": "图形广场",
+      "zone": "charts",
+      "question": "同一张图里的点，应该怎样连线？",
+      "minutes": 20,
+      "objectives": "正确指定线的分组，使用分面比较地点并说明缺失。",
+      "prerequisites": [
+        "20"
+      ],
+      "quiz": {
+        "question": "比较不同地点的绝对温度，默认统一坐标有什么好处？",
+        "options": [
+          "同样的高度对应同样的温度",
+          "让各地点看起来一样热",
+          "自动完成显著性检验"
+        ],
+        "answer": 0,
+        "explanation": "统一比例尺保证面板之间的数值位置可比较。"
+      }
+    },
+    {
+      "id": "22",
+      "title": "让图离开电脑后仍能读懂",
+      "stage": "图形广场",
+      "zone": "charts",
+      "question": "别人只拿到图片，还知道你画了什么吗？",
+      "minutes": 20,
+      "objectives": "补充标题、单位、样本说明和来源；明确保存尺寸与文件格式。",
+      "prerequisites": [
+        "21"
+      ],
+      "quiz": {
+        "question": "为什么建议 ggsave() 明确写 plot = p？",
+        "options": [
+          "让 CSV 变成图片",
+          "确保保存指定图对象",
+          "自动提高统计显著性"
+        ],
+        "answer": 1,
+        "explanation": "明确对象能避免脚本增加图形后保存了错误的上一张图。"
+      }
+    },
+    {
+      "id": "23",
+      "title": "把重复规则写成函数",
+      "stage": "脚本工作室",
+      "zone": "scripts",
+      "question": "每次遇到全缺失，都要重写判断吗？",
+      "minutes": 20,
+      "objectives": "使用单个逻辑条件，定义有明确输入和输出的小函数。",
+      "prerequisites": [
+        "22"
+      ],
+      "quiz": {
+        "question": "if 的条件通常应当是什么？",
+        "options": [
+          "任意长度的数据框",
+          "所有温度组成的向量",
+          "一个非缺失的逻辑结果"
+        ],
+        "answer": 2,
+        "explanation": "if 决定程序分支，需要单个 TRUE 或 FALSE。"
+      }
+    },
+    {
+      "id": "24",
+      "title": "重复步骤，也保持清楚",
+      "stage": "脚本工作室",
+      "zone": "scripts",
+      "question": "四次换算该用循环，还是一次向量运算？",
+      "minutes": 20,
+      "objectives": "写出 for 循环，使用 seq_along，并比较等价的向量化操作。",
+      "prerequisites": [
+        "23"
+      ],
+      "quiz": {
+        "question": "重复同一批观察数据 100 次，会增加独立样本量吗？",
+        "options": [
+          "不会",
+          "会增加到 100 倍",
+          "只要用了循环就会"
+        ],
+        "answer": 0,
+        "explanation": "计算重复与独立采集数据不同，复制记录不会创造新证据。"
+      }
+    },
+    {
+      "id": "25",
+      "title": "一行数据算一个样本吗",
+      "stage": "抽样公园",
+      "zone": "sampling",
+      "question": "42 条记录，为什么不一定是 42 个独立样本？",
+      "minutes": 30,
+      "objectives": "区分总体、样本、观察单位、随机抽样和随机分组。",
+      "prerequisites": [
+        "24"
+      ],
+      "quiz": {
+        "question": "随机分组主要决定什么？",
+        "options": [
+          "某张图用什么颜色",
+          "进入实验的单位接受哪种条件",
+          "哪些对象被抽入目标样本"
+        ],
+        "answer": 1,
+        "explanation": "随机分组与随机抽样分别处理条件分配和样本来源。"
+      }
+    },
+    {
+      "id": "26",
+      "title": "换一批样本，均值会变吗",
+      "stage": "抽样公园",
+      "zone": "sampling",
+      "question": "总体没变，为什么每次结果还会不同？",
+      "minutes": 30,
+      "objectives": "通过模拟认识抽样波动、标准误与随机种子的作用。",
+      "prerequisites": [
+        "25"
+      ],
+      "quiz": {
+        "question": "固定随机种子能证明估计没有不确定性吗？",
+        "options": [
+          "可以，结果已经固定",
+          "只要重复 1000 次就可以",
+          "不能，只让计算可重复"
+        ],
+        "answer": 2,
+        "explanation": "可复现的计算与现实样本的抽样不确定性是两个层面。"
+      }
+    },
+    {
+      "id": "27",
+      "title": "给估计留出一段范围",
+      "stage": "抽样公园",
+      "zone": "sampling",
+      "question": "95% 置信区间中的 95%，究竟指什么？",
+      "minutes": 30,
+      "objectives": "用重复抽样理解区间覆盖率；识别均值区间的条件与边界。",
+      "prerequisites": [
+        "26"
+      ],
+      "quiz": {
+        "question": "均值的 95% 置信区间表示 95% 个体都在其中吗？",
+        "options": [
+          "不表示，估计目标是总体均值",
+          "表示所有观测值",
+          "表示恰好 95% 的当前数据"
+        ],
+        "answer": 0,
+        "explanation": "均值区间描述均值估计的不确定性，不是个体数据的覆盖范围。"
+      }
+    },
+    {
+      "id": "28",
+      "title": "先提出假设，再看数据",
+      "stage": "抽样公园",
+      "zone": "sampling",
+      "question": "一个小 p 值，到底反对了什么？",
+      "minutes": 30,
+      "objectives": "说明零假设、双侧极端性和 p 值；区分证据强度与效应大小。",
+      "prerequisites": [
+        "27"
+      ],
+      "quiz": {
+        "question": "p 值是零假设为真的概率吗？",
+        "options": [
+          "只有 p 小于 0.05 时才是",
+          "不是，它在零假设及模型条件下定义",
+          "是，p 越大假设越真"
+        ],
+        "answer": 1,
+        "explanation": "p 值的条件方向不能倒过来解释。"
+      }
+    },
+    {
+      "id": "29",
+      "title": "比较两种材料的降温量",
+      "stage": "证据研究所",
+      "zone": "evidence",
+      "question": "差多少，比“有没有星号”更具体吗？",
+      "minutes": 30,
+      "objectives": "进行独立两组 Welch 比较，报告差值方向、区间与 p 值。",
+      "prerequisites": [
+        "28"
+      ],
+      "quiz": {
+        "question": "Welch 方法允许什么？",
+        "options": [
+          "同一对象的重复测量一定独立",
+          "任意数据都无需检查",
+          "两组总体方差不同"
+        ],
+        "answer": 2,
+        "explanation": "允许方差不同不等于放弃独立性和其他推断条件。"
+      }
+    },
+    {
+      "id": "30",
+      "title": "一起变化，不等于造成变化",
+      "stage": "证据研究所",
+      "zone": "evidence",
+      "question": "树荫多的地方较凉，可以马上说是树荫造成的吗？",
+      "minutes": 30,
+      "objectives": "读取 Pearson 相关系数，结合散点图考虑混杂和异常值。",
+      "prerequisites": [
+        "29"
+      ],
+      "quiz": {
+        "question": "Pearson 相关系数是否带摄氏度单位？",
+        "options": [
+          "不带单位",
+          "带摄氏度",
+          "带百分比乘摄氏度"
+        ],
+        "answer": 0,
+        "explanation": "它是标准化的线性关联量，和有单位的回归斜率不同。"
+      }
+    },
+    {
+      "id": "31",
+      "title": "用一条直线描述关系",
+      "stage": "证据研究所",
+      "zone": "evidence",
+      "question": "覆盖率增加一个百分点，温度平均改变多少？",
+      "minutes": 30,
+      "objectives": "拟合一元线性回归，解释斜率、区间、均值预测和 R²。",
+      "prerequisites": [
+        "30"
+      ],
+      "quiz": {
+        "question": "interval = \"confidence\" 在这里给谁的区间？",
+        "options": [
+          "所有原始观察值",
+          "指定覆盖率下的平均响应",
+          "一个新地点的个体温度"
+        ],
+        "answer": 1,
+        "explanation": "平均响应区间与新个体预测区间的目标不同。"
+      }
+    },
+    {
+      "id": "32",
+      "title": "直线没讲完的部分",
+      "stage": "证据研究所",
+      "zone": "evidence",
+      "question": "模型画得出来，就说明模型合适吗？",
+      "minutes": 30,
+      "objectives": "阅读残差图与 Q–Q 图，识别外推和模型条件的限制。",
+      "prerequisites": [
+        "31"
+      ],
+      "quiz": {
+        "question": "Q–Q 图主要帮助检查什么？",
+        "options": [
+          "随机分组是否真实执行",
+          "数据文件是否下载完整",
+          "残差分布与指定理论分布的差异"
+        ],
+        "answer": 2,
+        "explanation": "分布诊断不能替代数据采集设计或文件核验。"
+      }
+    },
+    {
+      "id": "33",
+      "title": "让分析离开旧工作区",
+      "stage": "成果展厅",
+      "zone": "report",
+      "question": "代码昨天能跑，今天为什么说对象不存在？",
+      "minutes": 30,
+      "objectives": "读取错误线索，检查输入条件，保存运行环境并干净重跑。",
+      "prerequisites": [
+        "32"
+      ],
+      "quiz": {
+        "question": "sessionInfo() 能提供什么？",
+        "options": [
+          "R、平台和已加载包等环境信息",
+          "自动保证结论正确",
+          "自动恢复所有原始数据"
+        ],
+        "answer": 0,
+        "explanation": "环境信息帮助复现和排错，不能代替数据、代码与方法审核。"
+      }
+    },
+    {
+      "id": "34",
+      "title": "接下一份完整委托",
+      "stage": "成果展厅",
+      "zone": "report",
+      "question": "拿到原始表，怎样留下可检查的整理过程？",
+      "minutes": 30,
+      "objectives": "运行完整分析，核对原始数、重复数、有效数和汇总结果。",
+      "prerequisites": [
+        "33"
+      ],
+      "quiz": {
+        "question": "哪种编号重复应该阻止流程继续？",
+        "options": [
+          "不同地点的不同编号",
+          "同一编号对应冲突的不同记录",
+          "一条完全相同的重复导入且规则已明确"
+        ],
+        "answer": 1,
+        "explanation": "冲突需要回查；不能用自动保留第一行代替判断。"
+      }
+    },
+    {
+      "id": "35",
+      "title": "把图和证据放进同一份报告",
+      "stage": "成果展厅",
+      "zone": "report",
+      "question": "别人能从一句结论找到它的依据吗？",
+      "minutes": 30,
+      "objectives": "核对自动生成的图表、效应、区间和报告措辞。",
+      "prerequisites": [
+        "34"
+      ],
+      "quiz": {
+        "question": "自动生成报告后，还需要做什么？",
+        "options": [
+          "只检查配色",
+          "直接把模拟结果作为真实结论",
+          "核对设计、方法条件与解释是否一致"
+        ],
+        "answer": 2,
+        "explanation": "自动生成减少抄录错误，不能自动保证统计解释成立。"
+      }
+    },
+    {
+      "id": "36",
+      "title": "换一份数据，再走一次",
+      "stage": "成果展厅",
+      "zone": "report",
+      "question": "你的方法能离开原来的例子吗？",
+      "minutes": 30,
+      "objectives": "用新记录复跑，辨认改变与未改变的输入，并整理交付材料。",
+      "prerequisites": [
+        "35"
+      ],
+      "quiz": {
+        "question": "方法可以迁移，意味着什么？",
+        "options": [
+          "换入符合约定的新数据并重新核对设计和结果",
+          "所有数据都能套同一种检验",
+          "输出数字不变就一定正确"
+        ],
+        "answer": 0,
+        "explanation": "可复用代码需要清楚的输入约定；研究设计和解释仍要重新检查。"
+      }
+    }
+  ]
+}

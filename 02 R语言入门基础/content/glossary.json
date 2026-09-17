@@ -1,0 +1,1447 @@
+[
+  {
+    "id": "r",
+    "zh": "R",
+    "en": "R language and environment",
+    "category": "环境与工作方式",
+    "summary": "用于数据处理、统计计算与图形的语言和运行环境。",
+    "example": "R 执行 mean(c(27, 29))，得到 28。",
+    "pitfall": "RStudio 是编辑工具，不等同于 R。",
+    "in_course": "在第 01 节《R 从哪里来》中使用。",
+    "aliases": [
+      "R language and environment"
+    ],
+    "related": [
+      "rstudio",
+      "package"
+    ],
+    "lessons": [
+      "01"
+    ]
+  },
+  {
+    "id": "rstudio",
+    "zh": "RStudio",
+    "en": "RStudio IDE",
+    "category": "环境与工作方式",
+    "summary": "帮助组织脚本、控制台、对象和图形的开发工具。",
+    "example": "在脚本区选中一行，点击 Run 送到 R 控制台。",
+    "pitfall": "安装 RStudio 通常不能替代安装 R。",
+    "in_course": "在第 01 节《R 从哪里来》中使用。",
+    "aliases": [
+      "RStudio IDE"
+    ],
+    "related": [
+      "r",
+      "package"
+    ],
+    "lessons": [
+      "01"
+    ]
+  },
+  {
+    "id": "console",
+    "zh": "控制台",
+    "en": "Console",
+    "category": "环境与工作方式",
+    "summary": "接收并立即执行代码、显示结果的区域。",
+    "example": "在 > 后输入 1 + 1，再回车。",
+    "pitfall": "提示符 > 和输出前的 [1] 不是要抄写的代码。",
+    "in_course": "在第 02 节《准备 R 与 RStudio》中使用。",
+    "aliases": [
+      "Console"
+    ],
+    "related": [],
+    "lessons": [
+      "02"
+    ]
+  },
+  {
+    "id": "script",
+    "zh": "脚本",
+    "en": "Script",
+    "category": "环境与工作方式",
+    "summary": "按顺序保存计算步骤的文本文件。",
+    "example": "lessons/04.R 读取路径、写出文字并检查结果。",
+    "pitfall": "只保存工作区对象，不等于保存了生成步骤。",
+    "in_course": "在第 01 节《R 从哪里来》中使用。",
+    "aliases": [
+      "Script"
+    ],
+    "related": [
+      "project",
+      "workingdir",
+      "reproducibility"
+    ],
+    "lessons": [
+      "01"
+    ]
+  },
+  {
+    "id": "object",
+    "zh": "对象",
+    "en": "Object",
+    "category": "环境与工作方式",
+    "summary": "R 中能够被操作的值及其结构。",
+    "example": "temperature 保存一个数，records 保存一张数据框。",
+    "pitfall": "对象名和用引号括起来的文字不是一回事。",
+    "in_course": "在第 03 节《给数字一个名字》中使用。",
+    "aliases": [
+      "Object"
+    ],
+    "related": [
+      "assignment",
+      "function",
+      "argument"
+    ],
+    "lessons": [
+      "03"
+    ]
+  },
+  {
+    "id": "assignment",
+    "zh": "赋值",
+    "en": "Assignment",
+    "category": "环境与工作方式",
+    "summary": "把计算结果绑定到一个名字。",
+    "example": "x <- x + 1 先计算旧 x 加一，再更新 x。",
+    "pitfall": "单独运行 x + 1 不会自动改写 x。",
+    "in_course": "在第 03 节《给数字一个名字》中使用。",
+    "aliases": [
+      "Assignment",
+      "<-"
+    ],
+    "related": [
+      "object",
+      "function",
+      "argument"
+    ],
+    "lessons": [
+      "03"
+    ]
+  },
+  {
+    "id": "function",
+    "zh": "函数",
+    "en": "Function",
+    "category": "环境与工作方式",
+    "summary": "接收参数、执行规则并返回结果的可调用对象。",
+    "example": "mean() 对输入向量计算均值。",
+    "pitfall": "函数成功返回，并不证明它适合当前研究问题。",
+    "in_course": "在第 03 节《给数字一个名字》中使用。",
+    "aliases": [
+      "Function"
+    ],
+    "related": [
+      "object",
+      "assignment",
+      "argument",
+      "condition"
+    ],
+    "lessons": [
+      "03"
+    ]
+  },
+  {
+    "id": "argument",
+    "zh": "参数",
+    "en": "Argument",
+    "category": "环境与工作方式",
+    "summary": "调用函数时提供的数据或设置。",
+    "example": "round(28.456, digits = 1) 中 digits 指定小数位。",
+    "pitfall": "参数名必须与函数接口匹配，不能只凭中文意思随便起名。",
+    "in_course": "在第 03 节《给数字一个名字》中使用。",
+    "aliases": [
+      "Argument"
+    ],
+    "related": [
+      "object",
+      "assignment",
+      "function"
+    ],
+    "lessons": [
+      "03"
+    ]
+  },
+  {
+    "id": "project",
+    "zh": "项目",
+    "en": "Project",
+    "category": "环境与工作方式",
+    "summary": "把某次工作的数据、脚本和结果组织在同一上下文中。",
+    "example": "双击 r-lab.Rproj，从项目根目录运行练习。",
+    "pitfall": "项目不是把所有对象藏进旧工作区的理由。",
+    "in_course": "在第 04 节《保存一份可以重跑的工作》中使用。",
+    "aliases": [
+      "Project"
+    ],
+    "related": [
+      "script",
+      "workingdir",
+      "reproducibility"
+    ],
+    "lessons": [
+      "04"
+    ]
+  },
+  {
+    "id": "workingdir",
+    "zh": "工作目录",
+    "en": "Working directory",
+    "category": "环境与工作方式",
+    "summary": "相对文件路径开始寻找的位置。",
+    "example": "在 r-lab 根目录，data/sites.csv 指向其 data 子目录。",
+    "pitfall": "同一个相对路径在不同工作目录下可能指向不同文件。",
+    "in_course": "在第 04 节《保存一份可以重跑的工作》中使用。",
+    "aliases": [
+      "Working directory",
+      "路径",
+      "getwd"
+    ],
+    "related": [
+      "script",
+      "project",
+      "reproducibility"
+    ],
+    "lessons": [
+      "04"
+    ]
+  },
+  {
+    "id": "vector",
+    "zh": "向量",
+    "en": "Vector",
+    "category": "R 对象与结构",
+    "summary": "按位置排列的一组值；基础原子向量的元素类型一致。",
+    "example": "c(27, 29, 28) 是长度为 3 的数值向量。",
+    "pitfall": "文字与数值混合时可能统一转换成字符。",
+    "in_course": "在第 05 节《一排数字一起计算》中使用。",
+    "aliases": [
+      "Vector"
+    ],
+    "related": [
+      "logical",
+      "index",
+      "missing"
+    ],
+    "lessons": [
+      "05"
+    ]
+  },
+  {
+    "id": "index",
+    "zh": "索引",
+    "en": "Index",
+    "category": "R 对象与结构",
+    "summary": "指定要提取或修改哪些元素的位置或条件。",
+    "example": "x[c(1, 4)] 取第一与第四个元素。",
+    "pitfall": "常规正整数索引从 1 开始；负索引表示排除。",
+    "in_course": "在第 06 节《用条件找到想看的记录》中使用。",
+    "aliases": [
+      "Index"
+    ],
+    "related": [
+      "vector",
+      "logical",
+      "missing"
+    ],
+    "lessons": [
+      "06"
+    ]
+  },
+  {
+    "id": "logical",
+    "zh": "逻辑值",
+    "en": "Logical value",
+    "category": "R 对象与结构",
+    "summary": "表示条件真假，通常为 TRUE、FALSE，也可能缺失。",
+    "example": "x > 28 对 x 中每个元素产生判断。",
+    "pitfall": "带 NA 的条件不能直接假设只有真和假两种结果。",
+    "in_course": "在第 06 节《用条件找到想看的记录》中使用。",
+    "aliases": [
+      "Logical value"
+    ],
+    "related": [
+      "vector",
+      "index",
+      "missing"
+    ],
+    "lessons": [
+      "06"
+    ]
+  },
+  {
+    "id": "missing",
+    "zh": "缺失值",
+    "en": "Missing value / NA",
+    "category": "R 对象与结构",
+    "summary": "表示相应信息未被观察或未知。",
+    "example": "c(27, NA, 29) 的第二个温度未知。",
+    "pitfall": "NA 不等于 0；忽略 NA 计算也没有补好它。",
+    "in_course": "在第 07 节《缺了一格，意味着什么》中使用。",
+    "aliases": [
+      "Missing value",
+      "NA",
+      "缺测"
+    ],
+    "related": [
+      "vector",
+      "logical",
+      "index"
+    ],
+    "lessons": [
+      "07"
+    ]
+  },
+  {
+    "id": "coercion",
+    "zh": "类型转换",
+    "en": "Type coercion",
+    "category": "R 对象与结构",
+    "summary": "把数据从一种表示类型转为另一种。",
+    "example": "as.numeric(c(\"27\", \"29\")) 得到数值。",
+    "pitfall": "无法转换的字符串可能成为 NA，需要检查警告与新缺失。",
+    "in_course": "在第 07 节《缺了一格，意味着什么》中使用。",
+    "aliases": [
+      "Type coercion"
+    ],
+    "related": [
+      "factor",
+      "level"
+    ],
+    "lessons": [
+      "07"
+    ]
+  },
+  {
+    "id": "recycling",
+    "zh": "回收规则",
+    "en": "Recycling",
+    "category": "R 对象与结构",
+    "summary": "部分向量运算重复使用较短向量的元素。",
+    "example": "c(1,2,3,4) 加 c(10,20)，相当于加 10、20、10、20。",
+    "pitfall": "长度能整除时没有警告，也未必符合分析意图。",
+    "in_course": "在第 07 节《缺了一格，意味着什么》中使用。",
+    "aliases": [
+      "Recycling"
+    ],
+    "related": [],
+    "lessons": [
+      "07"
+    ]
+  },
+  {
+    "id": "dataframe",
+    "zh": "数据框",
+    "en": "Data frame",
+    "category": "R 对象与结构",
+    "summary": "由等长列组成的表；不同列可有不同类型。",
+    "example": "地点文字列和温度数值列共同组成观察表。",
+    "pitfall": "排序时要保持整行对应，不能单独打乱温度再放回去。",
+    "in_course": "在第 08 节《把记录放进一张表》中使用。",
+    "aliases": [
+      "Data frame"
+    ],
+    "related": [
+      "matrix",
+      "list",
+      "tibble"
+    ],
+    "lessons": [
+      "08"
+    ]
+  },
+  {
+    "id": "factor",
+    "zh": "因子",
+    "en": "Factor",
+    "category": "R 对象与结构",
+    "summary": "保存类别编码及其水平标签的对象。",
+    "example": "把 morning、afternoon 设为按早晚排列的水平。",
+    "pitfall": "直接转整数会得到内部编码，不一定是标签表示的数值。",
+    "in_course": "在第 09 节《类别也需要顺序》中使用。",
+    "aliases": [
+      "Factor"
+    ],
+    "related": [
+      "level",
+      "coercion"
+    ],
+    "lessons": [
+      "09"
+    ]
+  },
+  {
+    "id": "level",
+    "zh": "水平",
+    "en": "Level",
+    "category": "R 对象与结构",
+    "summary": "因子中允许的类别标签与顺序。",
+    "example": "levels(period) 返回 morning、afternoon。",
+    "pitfall": "类别的排列顺序不等于类别之间有相等的数值距离。",
+    "in_course": "在第 09 节《类别也需要顺序》中使用。",
+    "aliases": [
+      "Level"
+    ],
+    "related": [
+      "factor",
+      "coercion"
+    ],
+    "lessons": [
+      "09"
+    ]
+  },
+  {
+    "id": "matrix",
+    "zh": "矩阵",
+    "en": "Matrix",
+    "category": "R 对象与结构",
+    "summary": "带行列维度的同类元素集合。",
+    "example": "matrix(1:6, nrow = 3) 默认逐列填充。",
+    "pitfall": "与允许各列不同类型的数据框不同。",
+    "in_course": "在第 10 节《矩阵与列表，各装什么》中使用。",
+    "aliases": [
+      "Matrix"
+    ],
+    "related": [
+      "dataframe",
+      "list",
+      "tibble"
+    ],
+    "lessons": [
+      "10"
+    ]
+  },
+  {
+    "id": "list",
+    "zh": "列表",
+    "en": "List",
+    "category": "R 对象与结构",
+    "summary": "元素可以具有不同类型与长度的容器。",
+    "example": "一个列表同时保存标题、矩阵和检查标志。",
+    "pitfall": "单方括号取得子列表；双方括号取得元素本身。",
+    "in_course": "在第 10 节《矩阵与列表，各装什么》中使用。",
+    "aliases": [
+      "List"
+    ],
+    "related": [
+      "dataframe",
+      "matrix",
+      "tibble"
+    ],
+    "lessons": [
+      "10"
+    ]
+  },
+  {
+    "id": "csv",
+    "zh": "逗号分隔文件",
+    "en": "Comma-separated values / CSV",
+    "category": "数据与整理",
+    "summary": "以文本形式保存表格字段的常见格式。",
+    "example": "第一行是列名，后续各行用逗号分隔字段。",
+    "pitfall": "扩展名不能保证编码、分隔符和缺失规则符合预期。",
+    "in_course": "在第 11 节《读入和带走一份记录》中使用。",
+    "aliases": [
+      "Comma-separated values"
+    ],
+    "related": [],
+    "lessons": [
+      "11"
+    ]
+  },
+  {
+    "id": "rds",
+    "zh": "R 对象文件",
+    "en": "RDS",
+    "category": "数据与整理",
+    "summary": "用于保存单个 R 对象及其结构的序列化格式。",
+    "example": "saveRDS() 写出，readRDS() 读回并赋给自己选定的名字。",
+    "pitfall": "不像普通 CSV 那样便于各类软件直接读取。",
+    "in_course": "在第 11 节《读入和带走一份记录》中使用。",
+    "aliases": [
+      "RDS"
+    ],
+    "related": [],
+    "lessons": [
+      "11"
+    ]
+  },
+  {
+    "id": "mean",
+    "zh": "均值",
+    "en": "Mean",
+    "category": "数据与整理",
+    "summary": "数值总和除以参与计算的数量。",
+    "example": "26、27、28、39 的均值是 30。",
+    "pitfall": "均值可能受极端值影响，不能独自说明整个分布。",
+    "in_course": "在第 12 节《先认识数字的分布》中使用。",
+    "aliases": [
+      "Mean"
+    ],
+    "related": [
+      "median",
+      "sd",
+      "se"
+    ],
+    "lessons": [
+      "12"
+    ]
+  },
+  {
+    "id": "median",
+    "zh": "中位数",
+    "en": "Median",
+    "category": "数据与整理",
+    "summary": "把数值排序后位于中间的中心位置。",
+    "example": "26、27、28、39 的中位数为 27.5。",
+    "pitfall": "它与均值回答中心的方式不同，不必总相等。",
+    "in_course": "在第 12 节《先认识数字的分布》中使用。",
+    "aliases": [
+      "Median"
+    ],
+    "related": [
+      "mean",
+      "sd",
+      "se"
+    ],
+    "lessons": [
+      "12"
+    ]
+  },
+  {
+    "id": "sd",
+    "zh": "标准差",
+    "en": "Standard deviation / SD",
+    "category": "数据与整理",
+    "summary": "描述观测值分散程度的统计量，与原数值同单位。",
+    "example": "温度标准差以摄氏度计量。",
+    "pitfall": "标准差不是均值的标准误。",
+    "in_course": "在第 12 节《先认识数字的分布》中使用。",
+    "aliases": [
+      "Standard deviation",
+      "sd"
+    ],
+    "related": [
+      "mean",
+      "median",
+      "se"
+    ],
+    "lessons": [
+      "12"
+    ]
+  },
+  {
+    "id": "descriptive",
+    "zh": "描述统计",
+    "en": "Descriptive statistics",
+    "category": "数据与整理",
+    "summary": "总结已获得数据的数量、中心、分散和分布。",
+    "example": "按地点列出有效数、中位数与均值。",
+    "pitfall": "描述这批记录，不自动证明其他时间或地点的情况。",
+    "in_course": "在第 12 节《先认识数字的分布》中使用。",
+    "aliases": [
+      "Descriptive statistics"
+    ],
+    "related": [],
+    "lessons": [
+      "12"
+    ]
+  },
+  {
+    "id": "package",
+    "zh": "包",
+    "en": "Package",
+    "category": "环境与工作方式",
+    "summary": "包含函数、数据、文档等可安装功能的集合。",
+    "example": "ggplot2 提供图形语法工具。",
+    "pitfall": "安装与加载是不同动作；当前会话未加载不等于未安装。",
+    "in_course": "在第 01 节《R 从哪里来》中使用。",
+    "aliases": [
+      "Package"
+    ],
+    "related": [
+      "r",
+      "rstudio",
+      "library",
+      "namespace"
+    ],
+    "lessons": [
+      "01"
+    ]
+  },
+  {
+    "id": "library",
+    "zh": "包库",
+    "en": "Library",
+    "category": "数据与整理",
+    "summary": "磁盘上存放已安装 R 包的目录。",
+    "example": "安装后，包文件位于 R 可查找的包库中。",
+    "pitfall": "不要把其他环境的包库直接混接而忽略兼容问题。",
+    "in_course": "在第 13 节《增加工具，连接步骤》中使用。",
+    "aliases": [
+      "Library"
+    ],
+    "related": [
+      "package",
+      "namespace"
+    ],
+    "lessons": [
+      "13"
+    ]
+  },
+  {
+    "id": "namespace",
+    "zh": "命名空间",
+    "en": "Namespace",
+    "category": "数据与整理",
+    "summary": "包中函数等对象的命名范围。",
+    "example": "dplyr::filter() 明确使用 dplyr 的函数。",
+    "pitfall": "同名函数可能有不同用途和参数。",
+    "in_course": "在第 13 节《增加工具，连接步骤》中使用。",
+    "aliases": [
+      "Namespace"
+    ],
+    "related": [
+      "package",
+      "library"
+    ],
+    "lessons": [
+      "13"
+    ]
+  },
+  {
+    "id": "pipe",
+    "zh": "管道",
+    "en": "Pipe",
+    "category": "数据与整理",
+    "summary": "把前一步结果传给下一步调用的语法。",
+    "example": "先对 x 求均值，再将结果交给 round()。",
+    "pitfall": "原生管道与 ggplot 的图层加号不是同一种接口。",
+    "in_course": "在第 13 节《增加工具，连接步骤》中使用。",
+    "aliases": [
+      "Pipe",
+      "|>",
+      "%>%"
+    ],
+    "related": [],
+    "lessons": [
+      "13"
+    ]
+  },
+  {
+    "id": "grouping",
+    "zh": "分组",
+    "en": "Grouping",
+    "category": "数据与整理",
+    "summary": "把记录按一个或多个字段分成子集再计算。",
+    "example": "group_by(site_id) 后分别求每处地点均值。",
+    "pitfall": "汇总后还可能保留分组，应明确后续行为。",
+    "in_course": "在第 15 节《每个地点各算一次》中使用。",
+    "aliases": [
+      "Grouping"
+    ],
+    "related": [
+      "key",
+      "tidydata"
+    ],
+    "lessons": [
+      "15"
+    ]
+  },
+  {
+    "id": "tibble",
+    "zh": "tibble 数据框",
+    "en": "Tibble",
+    "category": "数据与整理",
+    "summary": "tidyverse 中常用的一种数据框形式。",
+    "example": "dplyr 汇总结果通常以紧凑方式打印行列信息。",
+    "pitfall": "打印外观变化不会创造新的独立观察。",
+    "in_course": "在第 15 节《每个地点各算一次》中使用。",
+    "aliases": [
+      "Tibble"
+    ],
+    "related": [
+      "dataframe",
+      "matrix",
+      "list"
+    ],
+    "lessons": [
+      "15"
+    ]
+  },
+  {
+    "id": "key",
+    "zh": "连接键",
+    "en": "Join key",
+    "category": "数据与整理",
+    "summary": "用于对应多张表中相关记录的字段。",
+    "example": "site_id 连接温度记录与地点资料。",
+    "pitfall": "右表键重复可能使左表记录被复制多次。",
+    "in_course": "在第 16 节《把地点资料接到记录旁边》中使用。",
+    "aliases": [
+      "Join key",
+      "join",
+      "左连接"
+    ],
+    "related": [
+      "grouping",
+      "tidydata"
+    ],
+    "lessons": [
+      "16"
+    ]
+  },
+  {
+    "id": "tidydata",
+    "zh": "整洁数据",
+    "en": "Tidy data",
+    "category": "数据与整理",
+    "summary": "变量、观察和表结构具有明确对应的组织方式。",
+    "example": "长表用地点、时段和温度三列表达测量。",
+    "pitfall": "长表并不总是唯一合适形式；转换不能创造样本信息。",
+    "in_course": "在第 17 节《一张表可以换个形状》中使用。",
+    "aliases": [
+      "Tidy data"
+    ],
+    "related": [
+      "grouping",
+      "key"
+    ],
+    "lessons": [
+      "17"
+    ]
+  },
+  {
+    "id": "date",
+    "zh": "日期",
+    "en": "Date",
+    "category": "数据与整理",
+    "summary": "以日为单位表达日历位置的对象。",
+    "example": "两个 Date 对象相减可以得到相隔天数。",
+    "pitfall": "03/04/2026 必须先确认月日约定，不能只看能否解析。",
+    "in_course": "在第 18 节《整理文字与日期》中使用。",
+    "aliases": [
+      "Date"
+    ],
+    "related": [],
+    "lessons": [
+      "18"
+    ]
+  },
+  {
+    "id": "ggplot",
+    "zh": "ggplot2",
+    "en": "ggplot2",
+    "category": "图形表达",
+    "summary": "依据图形语法组织数据、映射与图层的绘图包。",
+    "example": "先设定 x、y，再增加散点图层。",
+    "pitfall": "绘图函数成功运行不表示统计解释已经正确。",
+    "in_course": "在第 19 节《一幅图怎样搭起来》中使用。",
+    "aliases": [
+      "ggplot2"
+    ],
+    "related": [
+      "aesthetic",
+      "facet"
+    ],
+    "lessons": [
+      "19"
+    ]
+  },
+  {
+    "id": "aesthetic",
+    "zh": "美学映射",
+    "en": "Aesthetic mapping",
+    "category": "图形表达",
+    "summary": "将数据变量映射为位置、颜色、大小等可见属性。",
+    "example": "aes(colour = material) 让类别决定颜色。",
+    "pitfall": "固定颜色写在 aes 外，不要把 \"blue\" 当作变量映射使用。",
+    "in_course": "在第 19 节《一幅图怎样搭起来》中使用。",
+    "aliases": [
+      "Aesthetic mapping"
+    ],
+    "related": [
+      "ggplot",
+      "facet"
+    ],
+    "lessons": [
+      "19"
+    ]
+  },
+  {
+    "id": "histogram",
+    "zh": "直方图",
+    "en": "Histogram",
+    "category": "图形表达",
+    "summary": "把连续数值划分区间，展示各区间的频数或密度。",
+    "example": "按半度区间统计降温量。",
+    "pitfall": "分箱宽度改变外观；不能和类别计数柱状图混为一谈。",
+    "in_course": "在第 20 节《给问题选一张合适的图》中使用。",
+    "aliases": [
+      "Histogram"
+    ],
+    "related": [
+      "bar",
+      "boxplot"
+    ],
+    "lessons": [
+      "20"
+    ]
+  },
+  {
+    "id": "bar",
+    "zh": "柱状图",
+    "en": "Bar chart",
+    "category": "图形表达",
+    "summary": "用柱长或柱高表示类别的数量或其他数值。",
+    "example": "地点名对应柱子，柱高对应已有均值。",
+    "pitfall": "geom_bar() 默认计数，已有高度常用 geom_col()。",
+    "in_course": "在第 20 节《给问题选一张合适的图》中使用。",
+    "aliases": [
+      "Bar chart"
+    ],
+    "related": [
+      "histogram",
+      "boxplot"
+    ],
+    "lessons": [
+      "20"
+    ]
+  },
+  {
+    "id": "boxplot",
+    "zh": "箱线图",
+    "en": "Box plot",
+    "category": "图形表达",
+    "summary": "用中位数、四分位数及须等摘要展示分布。",
+    "example": "叠加全部原始点可看见样本量和具体值。",
+    "pitfall": "须外的点不自动等于错误数据。",
+    "in_course": "在第 20 节《给问题选一张合适的图》中使用。",
+    "aliases": [
+      "Box plot"
+    ],
+    "related": [
+      "bar",
+      "histogram"
+    ],
+    "lessons": [
+      "20"
+    ]
+  },
+  {
+    "id": "facet",
+    "zh": "分面",
+    "en": "Facet",
+    "category": "图形表达",
+    "summary": "按分组变量把同一种图形拆成多个面板。",
+    "example": "每个地点一幅早晚温度趋势图。",
+    "pitfall": "自由缩放的面板不能只凭视觉高度比较绝对数值。",
+    "in_course": "在第 21 节《把时间与地点分开看》中使用。",
+    "aliases": [
+      "Facet"
+    ],
+    "related": [
+      "ggplot",
+      "aesthetic"
+    ],
+    "lessons": [
+      "21"
+    ]
+  },
+  {
+    "id": "condition",
+    "zh": "条件判断",
+    "en": "Conditional statement",
+    "category": "程序与复现",
+    "summary": "依据一个逻辑结果选择执行哪段代码。",
+    "example": "if (all(is.na(x))) 决定如何处理全缺失。",
+    "pitfall": "if 需要单个非缺失逻辑值，不接受任意整列条件。",
+    "in_course": "在第 23 节《把重复规则写成函数》中使用。",
+    "aliases": [
+      "Conditional statement"
+    ],
+    "related": [
+      "function",
+      "return",
+      "loop",
+      "vectorization"
+    ],
+    "lessons": [
+      "23"
+    ]
+  },
+  {
+    "id": "return",
+    "zh": "返回值",
+    "en": "Return value",
+    "category": "程序与复现",
+    "summary": "函数完成计算后交回调用者的结果。",
+    "example": "mean_if_present() 返回数值或数值型 NA。",
+    "pitfall": "返回与打印不同；有返回值未必在 Source 时自动显示。",
+    "in_course": "在第 23 节《把重复规则写成函数》中使用。",
+    "aliases": [
+      "Return value"
+    ],
+    "related": [
+      "function",
+      "condition",
+      "loop",
+      "vectorization"
+    ],
+    "lessons": [
+      "23"
+    ]
+  },
+  {
+    "id": "loop",
+    "zh": "循环",
+    "en": "Loop",
+    "category": "程序与复现",
+    "summary": "按照一组值或条件重复执行步骤。",
+    "example": "for 循环依次换算每个位置的温度。",
+    "pitfall": "多执行几次计算不等于多采集了独立观察。",
+    "in_course": "在第 24 节《重复步骤，也保持清楚》中使用。",
+    "aliases": [
+      "Loop"
+    ],
+    "related": [
+      "function",
+      "condition",
+      "return",
+      "vectorization"
+    ],
+    "lessons": [
+      "24"
+    ]
+  },
+  {
+    "id": "vectorization",
+    "zh": "向量化",
+    "en": "Vectorization",
+    "category": "程序与复现",
+    "summary": "让已有操作直接处理整组元素。",
+    "example": "celsius * 9 / 5 + 32 对整列进行换算。",
+    "pitfall": "并非所有任务都必须用最短的向量表达式。",
+    "in_course": "在第 24 节《重复步骤，也保持清楚》中使用。",
+    "aliases": [
+      "Vectorization"
+    ],
+    "related": [
+      "function",
+      "condition",
+      "return",
+      "loop"
+    ],
+    "lessons": [
+      "24"
+    ]
+  },
+  {
+    "id": "population",
+    "zh": "总体",
+    "en": "Population",
+    "category": "统计推断",
+    "summary": "研究问题希望描述或推断的对象集合。",
+    "example": "目标可以是某一周某城市的公园测量情境。",
+    "pitfall": "目标必须具体，不能默认样本代表所有地点和时段。",
+    "in_course": "在第 25 节《一行数据算一个样本吗》中使用。",
+    "aliases": [
+      "Population"
+    ],
+    "related": [
+      "sample",
+      "unit",
+      "randomsample",
+      "randomassignment"
+    ],
+    "lessons": [
+      "25"
+    ]
+  },
+  {
+    "id": "sample",
+    "zh": "样本",
+    "en": "Sample",
+    "category": "统计推断",
+    "summary": "从目标对象中实际获得的观察集合。",
+    "example": "实验中的 48 个独立装置构成一批样本。",
+    "pitfall": "样本量大不能自动消除选择偏差。",
+    "in_course": "在第 25 节《一行数据算一个样本吗》中使用。",
+    "aliases": [
+      "Sample"
+    ],
+    "related": [
+      "population",
+      "unit",
+      "randomsample",
+      "randomassignment"
+    ],
+    "lessons": [
+      "25"
+    ]
+  },
+  {
+    "id": "unit",
+    "zh": "观察单位",
+    "en": "Observational unit",
+    "category": "统计推断",
+    "summary": "一项观察所对应的对象或层级。",
+    "example": "一次独立装置的降温结果，与同地点的多次测温不同。",
+    "pitfall": "数据行数不一定等于独立单位数。",
+    "in_course": "在第 25 节《一行数据算一个样本吗》中使用。",
+    "aliases": [
+      "Observational unit"
+    ],
+    "related": [
+      "population",
+      "sample",
+      "randomsample",
+      "randomassignment"
+    ],
+    "lessons": [
+      "25"
+    ]
+  },
+  {
+    "id": "randomsample",
+    "zh": "随机抽样",
+    "en": "Random sampling",
+    "category": "统计推断",
+    "summary": "依据明确随机机制从目标总体选择对象。",
+    "example": "按抽样方案选择要测量的地点。",
+    "pitfall": "随机抽样与把样本分进实验组不同。",
+    "in_course": "在第 25 节《一行数据算一个样本吗》中使用。",
+    "aliases": [
+      "Random sampling"
+    ],
+    "related": [
+      "population",
+      "sample",
+      "unit",
+      "randomassignment"
+    ],
+    "lessons": [
+      "25"
+    ]
+  },
+  {
+    "id": "randomassignment",
+    "zh": "随机分组",
+    "en": "Random assignment",
+    "category": "统计推断",
+    "summary": "把已进入实验的单位随机分配到条件。",
+    "example": "48 个装置随机分到 A、B 材料组。",
+    "pitfall": "随机分组本身不保证能向任意外部环境推广。",
+    "in_course": "在第 25 节《一行数据算一个样本吗》中使用。",
+    "aliases": [
+      "Random assignment"
+    ],
+    "related": [
+      "population",
+      "sample",
+      "unit",
+      "randomsample"
+    ],
+    "lessons": [
+      "25"
+    ]
+  },
+  {
+    "id": "normal",
+    "zh": "正态分布",
+    "en": "Normal distribution",
+    "category": "统计推断",
+    "summary": "由均值和标准差描述的对称钟形概率模型。",
+    "example": "rnorm() 在演示中生成均值 30、标准差 3 的值。",
+    "pitfall": "真实数据并非因为连续就必然正态。",
+    "in_course": "在第 26 节《换一批样本，均值会变吗》中使用。",
+    "aliases": [
+      "Normal distribution"
+    ],
+    "related": [
+      "samplingdist",
+      "se",
+      "seed",
+      "ci"
+    ],
+    "lessons": [
+      "26"
+    ]
+  },
+  {
+    "id": "samplingdist",
+    "zh": "抽样分布",
+    "en": "Sampling distribution",
+    "category": "统计推断",
+    "summary": "重复按同一设计抽样时，某统计量形成的分布。",
+    "example": "反复取 20 个值，每次求均值，收集这些均值。",
+    "pitfall": "它不同于单份样本中个体观测值的分布。",
+    "in_course": "在第 26 节《换一批样本，均值会变吗》中使用。",
+    "aliases": [
+      "Sampling distribution"
+    ],
+    "related": [
+      "normal",
+      "se",
+      "seed",
+      "ci"
+    ],
+    "lessons": [
+      "26"
+    ]
+  },
+  {
+    "id": "se",
+    "zh": "标准误",
+    "en": "Standard error / SE",
+    "category": "统计推断",
+    "summary": "估计量在重复抽样中波动程度的量度。",
+    "example": "独立样本均值的标准误可用样本标准差除以根号 n 估计。",
+    "pitfall": "标准误描述估计量，标准差描述个体观测的分散。",
+    "in_course": "在第 26 节《换一批样本，均值会变吗》中使用。",
+    "aliases": [
+      "Standard error",
+      "标准误差"
+    ],
+    "related": [
+      "mean",
+      "median",
+      "sd",
+      "normal"
+    ],
+    "lessons": [
+      "26"
+    ]
+  },
+  {
+    "id": "seed",
+    "zh": "随机种子",
+    "en": "Random seed",
+    "category": "统计推断",
+    "summary": "为伪随机生成器指定可复现的起点。",
+    "example": "重设相同种子后，按同样步骤可生成相同序列。",
+    "pitfall": "不能反复换种子只挑选支持预期的结果。",
+    "in_course": "在第 26 节《换一批样本，均值会变吗》中使用。",
+    "aliases": [
+      "Random seed"
+    ],
+    "related": [
+      "normal",
+      "samplingdist",
+      "se",
+      "ci"
+    ],
+    "lessons": [
+      "26"
+    ]
+  },
+  {
+    "id": "ci",
+    "zh": "置信区间",
+    "en": "Confidence interval / CI",
+    "category": "统计推断",
+    "summary": "用样本构造的区间估计，其置信水平描述方法的长期覆盖表现。",
+    "example": "正确条件下重复计算的 95% 区间长期约有 95% 覆盖真值。",
+    "pitfall": "不是 95% 个体落入的区间，也不是已算区间的后验概率。",
+    "in_course": "在第 27 节《给估计留出一段范围》中使用。",
+    "aliases": [
+      "Confidence interval",
+      "95%",
+      "置信水平"
+    ],
+    "related": [
+      "normal",
+      "samplingdist",
+      "se",
+      "seed"
+    ],
+    "lessons": [
+      "27"
+    ]
+  },
+  {
+    "id": "null",
+    "zh": "零假设",
+    "en": "Null hypothesis",
+    "category": "统计推断",
+    "summary": "检验中被明确指定并用于推导比较基准的假设。",
+    "example": "演示中规定总体均值为 30。",
+    "pitfall": "p 较大不意味着零假设已经被证明。",
+    "in_course": "在第 28 节《先提出假设，再看数据》中使用。",
+    "aliases": [
+      "Null hypothesis"
+    ],
+    "related": [
+      "pvalue",
+      "alpha",
+      "twosided",
+      "welch"
+    ],
+    "lessons": [
+      "28"
+    ]
+  },
+  {
+    "id": "pvalue",
+    "zh": "p 值",
+    "en": "p-value",
+    "category": "统计推断",
+    "summary": "零假设及相关模型条件下，统计量至少与观测结果同样极端的概率。",
+    "example": "双侧演示同时计算均值不低于 31.2 或不高于 28.8 的概率。",
+    "pitfall": "不是零假设为真的概率，也不直接衡量效应大小。",
+    "in_course": "在第 28 节《先提出假设，再看数据》中使用。",
+    "aliases": [
+      "p-value",
+      "p值",
+      "P value"
+    ],
+    "related": [
+      "null",
+      "alpha",
+      "twosided",
+      "welch"
+    ],
+    "lessons": [
+      "28"
+    ]
+  },
+  {
+    "id": "twosided",
+    "zh": "双侧比较",
+    "en": "Two-sided comparison",
+    "category": "统计推断",
+    "summary": "把预先定义的两个偏离方向都纳入极端结果。",
+    "example": "B−A 过大或过小都可能与零差异不相容。",
+    "pitfall": "看过结果后再挑单侧方向会改变原来的错误率解释。",
+    "in_course": "在第 28 节《先提出假设，再看数据》中使用。",
+    "aliases": [
+      "Two-sided comparison"
+    ],
+    "related": [
+      "null",
+      "pvalue",
+      "alpha",
+      "welch"
+    ],
+    "lessons": [
+      "28"
+    ]
+  },
+  {
+    "id": "alpha",
+    "zh": "显著性水平",
+    "en": "Significance level / alpha",
+    "category": "统计推断",
+    "summary": "在预定检验规则中用于控制第一类错误的水平。",
+    "example": "常见预先设定为 0.05。",
+    "pitfall": "不是把科学结论分成真与假的魔法界限。",
+    "in_course": "在第 28 节《先提出假设，再看数据》中使用。",
+    "aliases": [
+      "Significance level"
+    ],
+    "related": [
+      "null",
+      "pvalue",
+      "twosided",
+      "welch"
+    ],
+    "lessons": [
+      "28"
+    ]
+  },
+  {
+    "id": "welch",
+    "zh": "Welch t 检验",
+    "en": "Welch two-sample t-test",
+    "category": "统计推断",
+    "summary": "在合适条件下比较独立两组均值，允许方差不同的方法。",
+    "example": "t.test(b, a, var.equal = FALSE) 比较 B−A。",
+    "pitfall": "允许方差不同不等于任何依赖结构或极端分布都可忽略。",
+    "in_course": "在第 29 节《比较两种材料的降温量》中使用。",
+    "aliases": [
+      "Welch two-sample t-test"
+    ],
+    "related": [
+      "null",
+      "pvalue",
+      "alpha",
+      "twosided"
+    ],
+    "lessons": [
+      "29"
+    ]
+  },
+  {
+    "id": "correlation",
+    "zh": "相关系数",
+    "en": "Correlation coefficient",
+    "category": "统计推断",
+    "summary": "Pearson 系数衡量两个变量的线性关联方向与程度。",
+    "example": "负系数表示一个变量较大时另一个倾向较小。",
+    "pitfall": "相关接近零不排除曲线关系，相关也不证明因果。",
+    "in_course": "在第 30 节《一起变化，不等于造成变化》中使用。",
+    "aliases": [
+      "Correlation coefficient"
+    ],
+    "related": [
+      "confounding",
+      "regression",
+      "rsquared",
+      "residual"
+    ],
+    "lessons": [
+      "30"
+    ]
+  },
+  {
+    "id": "confounding",
+    "zh": "混杂",
+    "en": "Confounding",
+    "category": "统计推断",
+    "summary": "其他因素影响比较或关联，使因果解释受到干扰。",
+    "example": "地面材质可能同时与树荫分布、温度有关。",
+    "pitfall": "单一相关或简单回归通常不能排除所有其他解释。",
+    "in_course": "在第 30 节《一起变化，不等于造成变化》中使用。",
+    "aliases": [
+      "Confounding"
+    ],
+    "related": [
+      "correlation",
+      "regression",
+      "rsquared",
+      "residual"
+    ],
+    "lessons": [
+      "30"
+    ]
+  },
+  {
+    "id": "regression",
+    "zh": "一元线性回归",
+    "en": "Simple linear regression",
+    "category": "统计推断",
+    "summary": "用一个解释变量的线性函数描述平均响应变化。",
+    "example": "温度由截距加斜率乘冠层覆盖率来拟合。",
+    "pitfall": "模型计算成功不代表线性、独立性等条件自动成立。",
+    "in_course": "在第 31 节《用一条直线描述关系》中使用。",
+    "aliases": [
+      "Simple linear regression"
+    ],
+    "related": [
+      "correlation",
+      "confounding",
+      "rsquared",
+      "residual"
+    ],
+    "lessons": [
+      "31"
+    ]
+  },
+  {
+    "id": "rsquared",
+    "zh": "决定系数",
+    "en": "R-squared / R²",
+    "category": "统计推断",
+    "summary": "当前线性拟合对样本响应变异的解释比例。",
+    "example": "模型输出 R² 用于描述样本内拟合的一方面。",
+    "pitfall": "高 R² 不证明因果，也不是外部预测准确性的保证。",
+    "in_course": "在第 31 节《用一条直线描述关系》中使用。",
+    "aliases": [
+      "R-squared",
+      "R2",
+      "R^2"
+    ],
+    "related": [
+      "correlation",
+      "confounding",
+      "regression",
+      "residual"
+    ],
+    "lessons": [
+      "31"
+    ]
+  },
+  {
+    "id": "residual",
+    "zh": "残差",
+    "en": "Residual",
+    "category": "统计推断",
+    "summary": "观察值减去模型的拟合值。",
+    "example": "温度高于直线预测时残差为正。",
+    "pitfall": "带截距的最小二乘残差均值接近零，不等于模型正确。",
+    "in_course": "在第 32 节《直线没讲完的部分》中使用。",
+    "aliases": [
+      "Residual"
+    ],
+    "related": [
+      "correlation",
+      "confounding",
+      "regression",
+      "rsquared"
+    ],
+    "lessons": [
+      "32"
+    ]
+  },
+  {
+    "id": "qq",
+    "zh": "Q–Q 图",
+    "en": "Quantile–quantile plot",
+    "category": "统计推断",
+    "summary": "比较两个分布相应分位数的图。",
+    "example": "用正态理论分位数对照残差分位数，检查明显偏离。",
+    "pitfall": "图上接近直线不能证明观察相互独立。",
+    "in_course": "在第 32 节《直线没讲完的部分》中使用。",
+    "aliases": [
+      "Quantile–quantile plot"
+    ],
+    "related": [
+      "correlation",
+      "confounding",
+      "regression",
+      "rsquared"
+    ],
+    "lessons": [
+      "32"
+    ]
+  },
+  {
+    "id": "assertion",
+    "zh": "断言",
+    "en": "Assertion",
+    "category": "程序与复现",
+    "summary": "要求程序中的指定条件成立，否则停止。",
+    "example": "stopifnot() 检查必需列存在。",
+    "pitfall": "让程序停止常是在保护分析，不应该一律删除检查。",
+    "in_course": "在第 33 节《让分析离开旧工作区》中使用。",
+    "aliases": [
+      "Assertion"
+    ],
+    "related": [],
+    "lessons": [
+      "33"
+    ]
+  },
+  {
+    "id": "reproducibility",
+    "zh": "可复现",
+    "en": "Reproducibility",
+    "category": "程序与复现",
+    "summary": "依据公开的输入、步骤和环境说明重新得到相应结果。",
+    "example": "空白 R 会话从原始 CSV 生成图、表和报告。",
+    "pitfall": "固定种子或保存截图都不能单独保证完整复现。",
+    "in_course": "在第 33 节《让分析离开旧工作区》中使用。",
+    "aliases": [
+      "Reproducibility"
+    ],
+    "related": [
+      "script",
+      "project",
+      "workingdir"
+    ],
+    "lessons": [
+      "33"
+    ]
+  }
+]

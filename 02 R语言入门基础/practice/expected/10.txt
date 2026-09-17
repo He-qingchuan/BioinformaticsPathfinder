@@ -1,0 +1,13 @@
+    morning afternoon
+P01       1         4
+P02       2         5
+P03       3         6
+[1] 2
+[1] 3 1
+[1] "title"    "readings" "checked" 
+[1] "list"
+[1] "matrix" "array" 
+    morning afternoon
+P01       1         4
+P02       2         5
+P03       3         6
