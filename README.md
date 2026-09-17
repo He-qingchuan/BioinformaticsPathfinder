@@ -4,7 +4,7 @@
 
 ## 01 Linux入门基础
 
-[Linux 入门 · 观察站的工作台](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)：独立的 18 节入门教材，从目录与文件、文本处理走到简单脚本，配套图解、术语与可运行练习。
+[Linux 入门 · 观察站的工作台](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)：沿着动态的自然观察站地图，学习独立的 18 节入门课程，从目录与文件、文本处理走到简单脚本，配套图解、术语与可运行练习。
 
 - [连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/reading.html)
 - [代码、练习数据与资料](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/library.html)
