@@ -1,0 +1,147 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>catalog · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/tools/catalog.py" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>catalog.py</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code># 文件用途｜声明命令行可改参数的白名单和类型边界。
+# 使用：由 0script/tools/run_chapter.py 导入；只提供规则/函数，不作为单独分析步骤执行。输入输出与每个
+#   参数见下面接口注释。
+# 注释用 # 独立行说明；现有 docstring 和程序帮助文本保持原样，不把注释变成执行时读取的新配置。
+
+&quot;&quot;&quot;命令行参数定义；保留原章节的参数类型、范围和默认值。&quot;&quot;&quot;
+# 接口｜parameter：声明一个 CLI 参数的元数据。
+# 参数：
+# default（必填，无默认值）：省略参数时的默认值；可为数字、字符、布尔或列表。
+# label（必填，无默认值）：可读的简短中文名称，不是传参键名。
+# help_text（必填，无默认值）：说明用途和修改影响的字符串。
+# kind（默认 &#x27;number&#x27;）：参数类型名，如 number/integer/choice/string/boolean 及复数数组类型；决定验证
+#   和转换。
+# minimum（默认 None）：数值下界或 None；仅数值类型使用，None 不限制这一端。
+# maximum（默认 None）：数值上界或 None；仅数值类型使用，None 不限制这一端。
+# choices（默认 None）：允许值列表或 None；列表存在时每个值须在其中。
+# style（默认 False）：bool；True 表示允许用于仅重绘请求，False 表示不能在 redraw 请求中修改；不代表参
+#   数不写入清单。
+# 返回/写出与边界：返回描述字典；这里只声明，不校验实际值、不运行分析。PARAMETERS 白名单由这些描述组成。
+def parameter(default, label, help_text, kind=&quot;number&quot;, minimum=None, maximum=None, choices=None, style=False):
+    return dict(default=default, label=label, help=help_text, type=kind,
+                minimum=minimum, maximum=maximum, choices=choices, style=style)
+
+
+# 数组参数在 CLI JSON 中提供列表，验证后才转为 R 向量；从不 eval 用户输入。
+P = parameter
+# 字典键是 MD 的 execute 单元名；每项的 default/类型/边界用于 CLI 验证，不意味着可以修改 MD 中没有白名
+#   单的所有变量。
+PARAMETERS = {
+    &quot;fastp&quot;: {
+        &quot;sample_jobs&quot;: P(2, &quot;同时处理样本数&quot;, &quot;总线程分给并行样本。&quot;, &quot;integer&quot;, 1, 64),
+        &quot;min_length&quot;: P(20, &quot;最短长度（nt）&quot;, &quot;过滤后长度下限；更改会重新过滤。&quot;, &quot;integer&quot;, 1, 1000),
+        &quot;qualified_quality_phred&quot;: P(20, &quot;合格碱基质量&quot;, &quot;Phred 阈值。&quot;, &quot;integer&quot;, 0, 40),
+        &quot;unqualified_percent_limit&quot;: P(40, &quot;不合格碱基上限（%）&quot;, &quot;允许低质量碱基的最大百分比。&quot;, &quot;integer&quot;, 0, 100),
+        &quot;n_base_limit&quot;: P(5, &quot;N 碱基上限&quot;, &quot;超过则过滤该 read。&quot;, &quot;integer&quot;, 0, 1000),
+        &quot;compression_level&quot;: P(6, &quot;压缩等级&quot;, &quot;只影响体积和压缩耗时。&quot;, &quot;integer&quot;, 1, 9),
+    },
+    &quot;index&quot;: {&quot;kmer_length&quot;: P(31, &quot;索引 k-mer&quot;, &quot;修改后需重新建索引及定量。&quot;, &quot;integer&quot;, 15, 31)},
+    &quot;quantification&quot;: {
+        &quot;sample_jobs&quot;: P(2, &quot;同时定量样本数&quot;, &quot;总线程分给并行样本。&quot;, &quot;integer&quot;, 1, 64),
+        &quot;library_type&quot;: P(&quot;A&quot;, &quot;文库类型&quot;, &quot;A 自动判断；其他值应依据建库记录。&quot;, &quot;choice&quot;,
+                          choices=[&quot;A&quot;, &quot;IU&quot;, &quot;ISF&quot;, &quot;ISR&quot;, &quot;OU&quot;, &quot;OSF&quot;, &quot;OSR&quot;, &quot;MU&quot;, &quot;MSF&quot;, &quot;MSR&quot;]),
+    },
+    &quot;sample_relationships&quot;: {
+        &quot;removeVar&quot;: P(.3, &quot;去除低变异基因比例&quot;, &quot;0.3 为去除最低的 30%，不是保留 30%。&quot;, minimum=0, maximum=.99),
+        &quot;correlation_method&quot;: P(&quot;pearson&quot;, &quot;相关系数&quot;, &quot;改变后重新计算相关性。&quot;, &quot;choice&quot;, choices=[&quot;pearson&quot;, &quot;spearman&quot;]),
+        &quot;pca_x&quot;: P(&quot;PC1&quot;, &quot;横轴主成分&quot;, &quot;必须存在的主成分。&quot;, &quot;choice&quot;, choices=[&quot;PC1&quot;, &quot;PC2&quot;, &quot;PC3&quot;, &quot;PC4&quot;, &quot;PC5&quot;]),
+        &quot;pca_y&quot;: P(&quot;PC2&quot;, &quot;纵轴主成分&quot;, &quot;不能与横轴相同。&quot;, &quot;choice&quot;, choices=[&quot;PC1&quot;, &quot;PC2&quot;, &quot;PC3&quot;, &quot;PC4&quot;, &quot;PC5&quot;]),
+        &quot;label_versions&quot;: P([False, True], &quot;样本标签版本&quot;, &quot;false 无标签，true 有标签，可保留两版。&quot;, &quot;booleans&quot;, style=True),
+        &quot;encircle_versions&quot;: P([False, True], &quot;分组包围版本&quot;, &quot;只是视觉辅助，不是置信区间。&quot;, &quot;booleans&quot;, style=True),
+        &quot;expression_threshold&quot;: P(1, &quot;表达基因阈值&quot;, &quot;单位为原流程 TMM 表达量。&quot;, minimum=0),
+    },
+    &quot;deseq2&quot;: {
+        &quot;min_reps&quot;: P(2, &quot;低表达过滤样本数&quot;, &quot;至少多少个样本 CPM 大于阈值；更改会重新拟合。&quot;, &quot;integer&quot;, 1, 10000),
+        &quot;min_cpm&quot;: P(1, &quot;低表达过滤 CPM&quot;, &quot;与 min_reps 联合使用。&quot;, minimum=0),
+    },
+    &quot;sets&quot;: {
+        &quot;nintersects&quot;: P(30, &quot;UpSet 交集数&quot;, &quot;最多显示多少个交集。&quot;, &quot;integer&quot;, 1, 500, style=True),
+        &quot;venn_first_n&quot;: P(3, &quot;经典韦恩集合数&quot;, &quot;过多集合优先查看 UpSet。&quot;, &quot;integer&quot;, 2, 5, style=True),
+        &quot;venn_styles&quot;: P([&quot;default&quot;, &quot;gradient&quot;], &quot;韦恩图样式&quot;, &quot;保留多个有效样式。&quot;, &quot;strings&quot;, choices=[&quot;default&quot;, &quot;gradient&quot;], style=True),
+        &quot;directions&quot;: P([&quot;all&quot;, &quot;up&quot;, &quot;down&quot;], &quot;基因方向&quot;, &quot;按已保存差异结果取集合。&quot;, &quot;strings&quot;, choices=[&quot;all&quot;, &quot;up&quot;, &quot;down&quot;], style=True),
+    },
+    &quot;volcano&quot;: {
+        &quot;top_n&quot;: P(5, &quot;每个方向标签数&quot;, &quot;10 表示上调、下调各最多标注 10 个基因；0 不选标签。&quot;, &quot;integer&quot;, 0, 200, style=True),
+        &quot;methods&quot;: P([&quot;enhanced&quot;, &quot;classic&quot;, &quot;gradient&quot;], &quot;火山图类型&quot;, &quot;可同时保留三种，不改变差异分析。&quot;, &quot;strings&quot;, choices=[&quot;enhanced&quot;, &quot;classic&quot;, &quot;gradient&quot;], style=True),
+        &quot;label_versions&quot;: P([False, True], &quot;标签版本&quot;, &quot;false 无标签，true 有标签。&quot;, &quot;booleans&quot;, style=True),
+        &quot;label_size&quot;: P(3, &quot;标签字号&quot;, &quot;只改变文字大小。&quot;, minimum=1, maximum=12, style=True),
+        &quot;width&quot;: P(10, &quot;图宽（英寸）&quot;, &quot;不改变统计结果。&quot;, minimum=2, maximum=40, style=True),
+        &quot;height&quot;: P(8, &quot;图高（英寸）&quot;, &quot;不改变统计结果。&quot;, minimum=2, maximum=40, style=True),
+        &quot;dpi&quot;: P(180, &quot;PNG 分辨率&quot;, &quot;PDF 仍为矢量输出。&quot;, &quot;integer&quot;, 72, 600, style=True),
+    },
+    &quot;top_heatmaps&quot;: {
+        &quot;top_num&quot;: P(30, &quot;单比较 Top 基因数&quot;, &quot;从保存的差异结果选择。&quot;, &quot;integer&quot;, 1, 1000, style=True),
+        &quot;overview_top_nums&quot;: P([100, 300], &quot;概览 Top 数量&quot;, &quot;逗号分隔，可保留多套。&quot;, &quot;integers&quot;, 1, 2000, style=True),
+        &quot;palettes&quot;: P([&quot;blue_orange&quot;, &quot;red_blue&quot;], &quot;热图配色&quot;, &quot;保留两个配色选择。&quot;, &quot;strings&quot;, choices=[&quot;blue_orange&quot;, &quot;red_blue&quot;], style=True),
+        &quot;plot_width&quot;: P(12, &quot;图宽（英寸）&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=40, style=True),
+        &quot;fontsize&quot;: P(8, &quot;字号&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=20, style=True),
+    },
+    &quot;time_input&quot;: {&quot;tpm_threshold&quot;: P(1, &quot;表达过滤 TPM&quot;, &quot;改变进入聚类的基因集合。&quot;, minimum=0)},
+    &quot;time_clustering&quot;: {
+        &quot;top_var_props&quot;: P([.1, .2], &quot;高变异基因比例&quot;, &quot;例如 0.1,0.2 分别保留两套。&quot;, &quot;numbers&quot;, .001, 1),
+        &quot;cluster_numbers&quot;: P([6, 7, 8, 9, 10], &quot;聚类数&quot;, &quot;逗号分隔，保留原多个可选方案。&quot;, &quot;integers&quot;, 2, 30),
+        &quot;markGenes_num&quot;: P(30, &quot;标记基因数&quot;, &quot;只改变展示时优先复用聚类对象。&quot;, &quot;integer&quot;, 0, 500, style=True),
+        &quot;enrichment_top_n&quot;: P(5, &quot;每模块 GO 条目数&quot;, &quot;不是标记基因数。&quot;, &quot;integer&quot;, 1, 50, style=True),
+        &quot;line_variants&quot;: P([&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;], &quot;时间曲线样式&quot;, &quot;保留原三种样式。&quot;, &quot;strings&quot;, choices=[&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;], style=True),
+        &quot;label_versions&quot;: P([False, True], &quot;基因标签版本&quot;, &quot;可同时有标签与无标签。&quot;, &quot;booleans&quot;, style=True),
+        &quot;go_versions&quot;: P([False, True], &quot;GO 展示版本&quot;, &quot;只改变是否展示已计算的 GO 条目。&quot;, &quot;booleans&quot;, style=True),
+        &quot;label_size&quot;: P(10, &quot;标签字号&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=24, style=True),
+        &quot;heatmap_dpi&quot;: P(130, &quot;热图分辨率&quot;, &quot;PNG dpi。&quot;, &quot;integer&quot;, 72, 400, style=True),
+    },
+    &quot;jtk_input&quot;: {&quot;tpm_threshold&quot;: P(.5, &quot;周期输入过滤 TPM&quot;, &quot;先按所有时期的组内中位数过滤。&quot;, minimum=0)},
+    &quot;jtk_analysis&quot;: {
+        &quot;minper&quot;: P(20, &quot;最小候选周期（小时）&quot;, &quot;实际可检验周期受采样间隔限制。&quot;, minimum=.01, maximum=1000),
+        &quot;maxper&quot;: P(28, &quot;最大候选周期（小时）&quot;, &quot;不能超过数据支持范围而声称已经检验。&quot;, minimum=.01, maximum=1000),
+        &quot;fdr_cutoff&quot;: P(.05, &quot;周期 BH 阈值&quot;, &quot;严格小于该值。&quot;, minimum=.000001, maximum=1),
+    },
+    &quot;jtk_plots&quot;: {
+        &quot;top_genes&quot;: P(12, &quot;曲线基因数&quot;, &quot;只从已有检验结果绘图。&quot;, &quot;integer&quot;, 1, 200, style=True),
+        &quot;facet_columns&quot;: P(4, &quot;每行面板数&quot;, &quot;只改变排版。&quot;, &quot;integer&quot;, 1, 12, style=True),
+        &quot;plot_width&quot;: P(12, &quot;图宽（英寸）&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=40, style=True),
+        &quot;plot_height&quot;: P(8, &quot;图高（英寸）&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=40, style=True),
+        &quot;plot_dpi&quot;: P(180, &quot;分辨率&quot;, &quot;PNG dpi。&quot;, &quot;integer&quot;, 72, 600, style=True),
+    },
+    &quot;diamond&quot;: {
+        &quot;seed_evalue&quot;: P(.00001, &quot;种子 E 值&quot;, &quot;更改需重新注释。&quot;, minimum=1e-20, maximum=1),
+        &quot;max_annotation_threads&quot;: P(12, &quot;注释最多线程&quot;, &quot;同时受项目总线程约束。&quot;, &quot;integer&quot;, 1, 64),
+    },
+    &quot;diamond_modules&quot;: {
+        &quot;top_var_props&quot;: P([.1,.2], &quot;已有高变异基因比例&quot;, &quot;与第 16 章组合一致；未单独修改时继承本次聚类设置。&quot;, &quot;numbers&quot;, .001, 1),
+        &quot;cluster_numbers&quot;: P([6,7,8,9,10], &quot;已有聚类数&quot;, &quot;只处理第 16 章已生成的组合。&quot;, &quot;integers&quot;, 2, 30),
+        &quot;enrichment_top_n&quot;: P(5, &quot;每模块 GO 条目数&quot;, &quot;只改变展示条目数。&quot;, &quot;integer&quot;, 1, 50, style=True),
+        &quot;enrichment_fdr&quot;: P(.05, &quot;模块富集 BH 阈值&quot;, &quot;用于模块富集筛选。&quot;, minimum=.000001, maximum=1),
+        &quot;enrich_type&quot;: P(&quot;BP&quot;, &quot;模块 GO 类别&quot;, &quot;使用自建注释的相应本体。&quot;, &quot;choice&quot;, choices=[&quot;BP&quot;,&quot;MF&quot;,&quot;CC&quot;,&quot;ALL&quot;]),
+        &quot;minGSSize&quot;: P(10, &quot;最小基因集&quot;, &quot;改变后重新模块富集。&quot;, &quot;integer&quot;, 1, 10000),
+        &quot;maxGSSize&quot;: P(500, &quot;最大基因集&quot;, &quot;改变后重新模块富集。&quot;, &quot;integer&quot;, 1, 100000),
+        &quot;label_versions&quot;: P([False,True], &quot;标签版本&quot;, &quot;可同时保留有标签与无标签。&quot;, &quot;booleans&quot;, style=True),
+        &quot;label_size&quot;: P(10, &quot;标签字号&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=24, style=True),
+    },
+}
+for block in (&quot;sample_relationships&quot;, &quot;sets&quot;, &quot;volcano&quot;, &quot;top_heatmaps&quot;, &quot;time_input&quot;,
+              &quot;time_clustering&quot;, &quot;jtk_input&quot;, &quot;jtk_analysis&quot;, &quot;jtk_plots&quot;, &quot;diamond_modules&quot;):
+    PARAMETERS[block][&quot;variant_label&quot;] = P(&quot;&quot;, &quot;另存标签&quot;, &quot;同一关键参数下保留不同排版；不能含路径。&quot;, &quot;string&quot;, style=True)
+for block in (&quot;ora_analysis&quot;, &quot;gsea_analysis&quot;, &quot;diamond_ora&quot;, &quot;diamond_gsea&quot;):
+    PARAMETERS[block] = {
+        &quot;variant_label&quot;: P(&quot;&quot;, &quot;另存标签&quot;, &quot;保留不同排版的整套结果。&quot;, &quot;string&quot;, style=True),
+        &quot;term_num&quot;: P([10, 20], &quot;展示条目数&quot;, &quot;可设置多个 Top 数；与 Top1 显示独立。&quot;, &quot;integers&quot;, 1, 50, style=True),
+        &quot;ontologies&quot;: P([&quot;BP&quot;, &quot;MF&quot;, &quot;CC&quot;, &quot;ALL&quot;], &quot;GO 类别&quot;, &quot;保留原各类分析。&quot;, &quot;strings&quot;, choices=[&quot;BP&quot;, &quot;MF&quot;, &quot;CC&quot;, &quot;ALL&quot;]),
+        &quot;include_kegg&quot;: P(True, &quot;计算 KEGG&quot;, &quot;新分析可能访问 KEGG 网络；重绘只用保存的对象。&quot;, &quot;boolean&quot;),
+        &quot;minGSSize&quot;: P(10, &quot;最小基因集&quot;, &quot;改变后需重新富集分析。&quot;, &quot;integer&quot;, 1, 10000),
+        &quot;maxGSSize&quot;: P(500, &quot;最大基因集&quot;, &quot;改变后需重新富集分析。&quot;, &quot;integer&quot;, 1, 100000),
+        &quot;simplify_cutoff&quot;: P(.75, &quot;GO 去冗余阈值&quot;, &quot;更改会改变简化结果。&quot;, minimum=0, maximum=1),
+        &quot;plot_dpi&quot;: P(180, &quot;图形分辨率&quot;, &quot;PNG dpi。&quot;, &quot;integer&quot;, 72, 600, style=True),
+    }
+    if &quot;ora&quot; in block:
+        PARAMETERS[block].update({
+            &quot;directions&quot;: P([&quot;all&quot;, &quot;up&quot;, &quot;down&quot;], &quot;差异方向&quot;, &quot;分别计算全部、上调、下调集合。&quot;, &quot;strings&quot;, choices=[&quot;all&quot;, &quot;up&quot;, &quot;down&quot;]),
+            &quot;plot_styles&quot;: P([&quot;bar&quot;, &quot;dot&quot;], &quot;富集图样式&quot;, &quot;条形图与点图均可保留。&quot;, &quot;strings&quot;, choices=[&quot;bar&quot;, &quot;dot&quot;], style=True),
+            &quot;plot_width&quot;: P(10, &quot;图宽（英寸）&quot;, &quot;只改变排版。&quot;, minimum=2, maximum=40, style=True),
+            &quot;overview_dpi&quot;: P(150, &quot;综合图分辨率&quot;, &quot;综合图单独控制。&quot;, &quot;integer&quot;, 72, 400, style=True),
+        })
+    else:
+        PARAMETERS[block].update({
+            &quot;rankings&quot;: P([&quot;log2FoldChange&quot;, &quot;stat&quot;], &quot;排序统计量&quot;, &quot;改变后需重新计算 GSEA。&quot;, &quot;strings&quot;, choices=[&quot;log2FoldChange&quot;, &quot;stat&quot;]),
+            &quot;pvalue_tables&quot;: P([False, True], &quot;Top1 的 P 值表&quot;, &quot;空数组关闭 Top1；不控制多条目 TopN。&quot;, &quot;booleans&quot;, style=True),
+            &quot;draw_dotplot&quot;: P(True, &quot;绘制点图&quot;, &quot;保留原展示选项。&quot;, &quot;boolean&quot;, style=True),
+        })
+</code></pre></main></body></html>

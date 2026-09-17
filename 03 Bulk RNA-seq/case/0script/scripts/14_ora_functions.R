@@ -1,0 +1,258 @@
+# 文件用途｜第 14 章：对一个比较的差异基因做 GO/KEGG 过度代表分析。
+# 运行位置：能看见 0script 的项目根目录。R 函数库通过 source 加载定义及共用依赖；调用函数才执行本文件
+#   对应的分析/写出。
+# 改参方式：在同编号 MD 的参数入口赋值，再执行下面的具名调用；函数默认值只在该形参未传入时使用。编辑文
+#   件不会刷新内存中的旧函数/旧变量，需重新 source/赋值。
+# 接口说明：每个函数前列出用途、形参和输出；嵌套函数读取的外层变量属于闭包，不能误当成漏传的独立参数。
+# 共用语法：source 载入脚本；readRenviron 读取配置；Sys.getenv 取文本，as.numeric/as.integer 转数值；
+#   local=TRUE 表示定义放在当前调用环境。
+# 表格/图形约定：write.table 的 sep="\t" 用 TSV、quote=FALSE 不另加引号、row.names=FALSE 不写 R 行号；
+#   check.names=FALSE 保留原 ID。ggsave 的图幅按英寸，dpi 主要控制 PNG。
+
+source("0script/tools/metadata.R", local = TRUE)
+source("0script/tools/outputs.R", local = TRUE)
+
+# 接口｜enrichment_plot_height：根据实际条目标签数估算富集图高度。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# plot（必填，无默认值）：已经构造好的 ggplot/grob 等绘图对象；本函数格式化或保存它，不从 FASTQ 重新计
+#   算。
+# minimum（默认 8）：正数（英寸）；富集图允许的最低高度，实际根据条目数量取更大值。
+# 返回/写出与边界：返回正数英寸高度，下限为 minimum；只为排版，不改条目筛选。
+enrichment_plot_height <- function(plot, minimum = 8) {
+  labels <- ggplot2::ggplot_build(plot)$layout$panel_params[[1]]$y$get_labels()
+  lines <- stringr::str_count(as.character(labels), "\n") + 1
+  if (!length(lines)) return(minimum)
+  spacing <- if (length(lines) > 1) max((head(lines, -1) + tail(lines, -1)) / 2) else lines[1]
+  max(minimum, 2 + (length(lines) + 1) * (12 * spacing + 6) / 72)
+}
+
+# 接口｜save_enrichment_plot：从单个已有 ORA 对象保存表和条形/点图。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# object（必填，无默认值）：已完成的 enrichResult/gseaResult 对象；结果表、统计量和条目成员均来自上游
+#   分析。空对象按下面分支给出空结果提示。
+# title（必填，无默认值）：字符图标题；用于标明比较或本体，不参与统计或条目排序。
+# prefix（必填，无默认值）：字符输出路径前缀，不含 .png/.pdf 扩展名；辅助函数为同一张图保存两种格式。
+# term_num（必填，无默认值）：正整数向量；每种图最多展示的富集条目数，如 c(10,20) 各出 Top10/Top20，只
+#   取已有达标条目，不强行补足。要避免重算请选择重绘入口；完整分析入口改此值仍会运行相应分析。
+# refresh_layout_only（默认 FALSE）：TRUE/FALSE；内部图形刷新开关，具体跳过哪些图由下方分支决定；不能
+#   把 TRUE 当成只读模式。
+# plot_styles（默认 c("bar", "dot")）：字符向量；bar 条形图与 dot 点图，可同时保存。使用同一个富集结果
+#   对象，不重新检验。
+# width（默认 10）：正数，单位英寸；画布宽度。仅改变排版，PNG 像素宽约为 width × dpi。
+# dpi（默认 180）：正数，单位像素/英寸；控制 PNG 像素密度，不改变图幅的英寸数或统计结果。
+# 返回/写出与边界：保存 TSV/RDS 及所选 TopN 图片；空结果按分支记录后返回，不为了作图放宽显著性。
+save_enrichment_plot <- function(object, title, prefix, term_num, refresh_layout_only = FALSE,
+                                  plot_styles = c("bar", "dot"), width = 10, dpi = 180) {
+  stopifnot(length(term_num) == 1, is.finite(term_num), term_num >= 1, term_num == floor(term_num),
+            length(plot_styles) > 0, all(plot_styles %in% c("bar", "dot")), width > 0, dpi > 0)
+  table <- as.data.frame(object)
+  if (!nrow(table)) return(list(bar = NULL, dot = NULL))
+  bar <- barplot(object, showCategory = term_num, label_format = 45) + ggtitle(title)
+  dot <- enrichplot::dotplot(object, showCategory = term_num, label_format = 45) + ggtitle(title)
+  for (style in plot_styles) {
+    plot <- if (style == "bar") bar else dot
+    height <- enrichment_plot_height(plot)
+    if (!refresh_layout_only || height > 8) {
+      assert_fresh_plot(paste0(prefix, "_", style))
+      ggsave(paste0(prefix, "_", style, ".pdf"), plot, width = width, height = height)
+      ggsave(paste0(prefix, "_", style, ".png"), plot, width = width, height = height, dpi = dpi)
+    }
+  }
+  list(bar = bar, dot = dot)
+}
+
+# 接口｜save_ORA_overview：把多个本体已有结果拼成 ORA 概览图。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# views（必填，无默认值）：命名 list；已整理的富集绘图对象，供原始/去冗余多面板概览拼图使用，不重新富
+#   集。
+# output_dir（必填，无默认值）：字符路径；本函数保存结果的目录。是否拒绝同名文件或复用旧结果以本函数下
+#   面的保存步骤为准，不代表自动选择最新结果。
+# style（必填，无默认值）：字符风格名称；在富集概览中区分 raw/simplified 对象，按现有对象选择，不重新
+#   计算语义去冗余。
+# term_num（必填，无默认值）：正整数向量；每种图最多展示的富集条目数，如 c(10,20) 各出 Top10/Top20，只
+#   取已有达标条目，不强行补足。要避免重算请选择重绘入口；完整分析入口改此值仍会运行相应分析。
+# refresh_layout_only（默认 FALSE）：TRUE/FALSE；内部图形刷新开关，具体跳过哪些图由下方分支决定；不能
+#   把 TRUE 当成只读模式。
+# plot_styles（默认 c("bar", "dot")）：字符向量；bar 条形图与 dot 点图，可同时保存。使用同一个富集结果
+#   对象，不重新检验。
+# dpi（默认 150）：正数，单位像素/英寸；控制 PNG 像素密度，不改变图幅的英寸数或统计结果。
+# 返回/写出与边界：保存 raw/simplified 等概览 PNG/PDF；使用保存对象，不再次检验。
+save_ORA_overview <- function(views, output_dir, style, term_num, refresh_layout_only = FALSE,
+                              plot_styles = c("bar", "dot"), dpi = 150) {
+  stopifnot(length(dpi) == 1, is.finite(dpi), dpi > 0)
+  for (plot_style in plot_styles) {
+    panels <- lapply(intersect(c("GO_BP", "GO_MF", "GO_CC", "KEGG"), names(views)),
+                       function(x) views[[x]][[plot_style]])
+    panels <- Filter(Negate(is.null), panels)
+    if (!length(panels)) next
+    heights <- vapply(panels, enrichment_plot_height, numeric(1), minimum = 6)
+    row_heights <- vapply(split(heights, ceiling(seq_along(heights) / 2)), max, numeric(1))
+    height <- max(12, sum(row_heights))
+    if (refresh_layout_only && height <= 12) next
+    combined <- patchwork::wrap_plots(panels, ncol = 2, heights = row_heights)
+    prefix <- file.path(output_dir, paste0("ORA_overview_", style, "_top", term_num, "_", plot_style))
+    assert_fresh_plot(prefix)
+    ggsave(paste0(prefix, ".pdf"), combined, width = 17, height = height)
+    ggsave(paste0(prefix, ".png"), combined, width = 17, height = height, dpi = dpi)
+  }
+}
+
+# 接口｜plot_ORA：对一个比较的差异基因做 GO/KEGG 过度代表分析。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# de_result（必填，无默认值）：差异结果 data.frame；本函数必需 gene_id、contrast_id、pvalue、direction
+#   。有限 pvalue 定义可检验背景，direction 选择 up/down 候选；不在此重新拟合差异。
+# contrast_id（必填，无默认值）：一个比较 ID 字符串；按它精确选取传入数据或对应保存目录。此标识不按下
+#   划线拆分组名，输入来源以本函数说明为准。
+# OrgDb_name（必填，无默认值）：已加载的 OrgDb 数据库对象，不是任意包名字字符串。主线来自实际物种的注
+#   释包，非模式支线来自第 18 章自建数据库。
+# keyType（必填，无默认值）：字符键类型；OrgDb 用它理解输入 gene_id，必须在该数据库 keytypes() 中存在
+#   且能匹配实际 ID。
+# organism_name（必填，无默认值）：字符物种代码；模式 KEGG 使用 ath/hsa/mmu 等真实代码，非模式自建通路
+#   路线不靠它替代 TERM2GENE。
+# output_root（默认 "9Enrichment_Analysis/ORA"）：字符路径；本步骤输出根目录，函数再按比较/参数建立子
+#   目录。通常沿用；试算可选新目录，但后续读取位置不会自动更新。
+# fdr_cutoff（默认 0.05）：数值阈值，通常 0.05，范围 (0,1]；控制当前步骤的校正 P 值筛选，调小更严格。
+#   各比较/富集本体分别校正，不代表全项目共同做一次 BH。
+# kegg_terms（默认 NULL）：两列通路—基因对应表或 NULL；非模式通路富集使用的 TERM2GENE。NULL 走相应模式
+#   物种 KEGG 路线，不自动生成自建注释。
+# kegg_names（默认 NULL）：两列通路—名称表或 NULL；供自建 KEGG 结果展示用的 TERM2NAME，不决定基因成员
+#   。缺名称不能伪造生物学描述。
+# term_num（默认 c(10, 20)）：正整数向量；每种图最多展示的富集条目数，如 c(10,20) 各出 Top10/Top20，只
+#   取已有达标条目，不强行补足。要避免重算请选择重绘入口；完整分析入口改此值仍会运行相应分析。
+# directions（默认 c("all", "up", "down")）：字符向量；all 为已判为 up/down 的差异基因并集，up/down 各
+#   取对应方向。读取差异表已保存的 direction，不把 all 理解为全部被检验基因。
+# ontologies（默认 c("BP", "MF", "CC", "ALL")）：字符向量；BP 生物过程、MF 分子功能、CC 细胞组分、ALL
+#   合并本体。可同时分析；改变本体会改变检验的条目集合，不只是换标题。
+# include_kegg（默认 TRUE）：TRUE/FALSE；FALSE 跳过 KEGG。模式物种路线使用匹配物种/ID 类型，非模式路线
+#   使用保存的通路对应表；不能借用另一物种的注释。
+# minGSSize（默认 10）：正整数；与输入/背景匹配后的基因集中允许的最少基因数。提高会排除较小条目，改变
+#   参与检验的条目集合。
+# maxGSSize（默认 500）：正整数，且不小于 minGSSize；允许的最大基因集规模。降低会排除过大的条目，改变
+#   检验范围。
+# simplify_cutoff（默认 0.75）：0–1 数值；GO 语义相似性去冗余门槛，不是 P 值。越低越容易将相似条目合并
+#   ；原始 raw 结果仍单独保留，KEGG 不做这项 GO 简化。
+# go_qvalue（默认 0.05）：0–1 数值；GO ORA 的 q-value 筛选设置，另于 fdr_cutoff 的 BH/p.adjust 门槛。
+#   不是图中条目数量，也不用于 GSEA。
+# kegg_qvalue（默认 0.2）：0–1 数值；KEGG ORA 的 q-value 筛选设置，独立于 BH 门槛；改它会影响保留的通
+#   路。
+# plot_styles（默认 c("bar", "dot")）：字符向量；bar 条形图与 dot 点图，可同时保存。使用同一个富集结果
+#   对象，不重新检验。
+# plot_width（默认 10）：正数，单位英寸；输出图宽。增大可缓解标签拥挤，不改变统计筛选。
+# plot_dpi（默认 180）：正数，单位像素/英寸；PNG 的像素密度。相同英寸下越大像素越多、文件通常越大；PDF
+#   的矢量图形不靠此值提高清晰度。
+# overview_dpi（默认 150）：正数，像素/英寸；多面板富集综合图的 PNG 密度，与单张图的 plot_dpi 独立。
+# kegg_keytype（默认 "kegg"）：字符 ID 类型；传给模式物种 KEGG 接口，如 kegg。不同于 OrgDb 的 keyType
+#   ；须与真实输入基因 ID 匹配，不会自动把 TAIR 改成人类 ID。
+# variant_label（默认 ""）：字符标签；空字符串为默认路径。给次要排版或另一方案另存时用 large_font 等简
+#   短标签，仅允许字母数字及 . _ -，首位为字母数字；不能放路径或空格。
+# 返回/写出与边界：保存候选与背景、完整 BH 检验、筛选和 GO 去冗余对象及多种图；空方向/无条目明确记录，
+#   背景使用该比较可检验且可映射基因。
+plot_ORA <- function(de_result, contrast_id, OrgDb_name, keyType, organism_name,
+                     output_root = "9Enrichment_Analysis/ORA", fdr_cutoff = 0.05,
+                     kegg_terms = NULL, kegg_names = NULL, term_num = c(10, 20),
+                     directions = c("all", "up", "down"), ontologies = c("BP", "MF", "CC", "ALL"),
+                     include_kegg = TRUE, minGSSize = 10, maxGSSize = 500, simplify_cutoff = 0.75,
+                     go_qvalue = 0.05, kegg_qvalue = 0.2,
+                     plot_styles = c("bar", "dot"), plot_width = 10, plot_dpi = 180, overview_dpi = 150,
+                     kegg_keytype = "kegg", variant_label = "") {
+  stopifnot(length(term_num) > 0, all(is.finite(term_num)), all(term_num >= 1), all(term_num == floor(term_num)),
+            length(directions) > 0, all(directions %in% c("all", "up", "down")),
+            length(ontologies) > 0, all(ontologies %in% c("BP", "MF", "CC", "ALL")),
+            length(include_kegg) == 1, is.logical(include_kegg), !is.na(include_kegg),
+            fdr_cutoff > 0, fdr_cutoff <= 1, minGSSize >= 1, maxGSSize >= minGSSize,
+            simplify_cutoff >= 0, simplify_cutoff <= 1,
+            go_qvalue >= 0, go_qvalue <= 1, kegg_qvalue >= 0, kegg_qvalue <= 1)
+  # 1. 候选和背景来自同一比较，不能混入另一个比较的表达基因。
+  current <- de_result[de_result$contrast_id == contrast_id, , drop = FALSE]
+  if (!nrow(current)) stop("没有找到比较: ", contrast_id)
+  universe <- unique(current$gene_id[is.finite(current$pvalue)])
+  for (change in directions) {
+    selected <- if (change == "all") current$direction %in% c("up", "down") else current$direction == change
+    genes <- intersect(unique(current$gene_id[selected]), universe)
+    # 常用阈值与 Top 数量进入路径；其余生效参数及注释文件写进清单。
+    output_dir <- file.path(output_root,
+      parameter_tag(fdr = fdr_cutoff, gs = c(minGSSize, maxGSSize), top = term_num), contrast_id, change)
+    claim <- claim_result_dir(output_dir,
+      effective_parameters(plot_ORA, environment(), c("de_result", "OrgDb_name", "kegg_terms", "kegg_names", "output_root", "variant_label")),
+      list(de_result = current, annotation = annotation_fingerprint(OrgDb_name),
+        kegg_terms = kegg_terms, kegg_names = kegg_names), variant_label)
+    if (claim$reuse) next
+    output_dir <- claim$path
+    writeLines(genes, file.path(output_dir, "input_genes.txt"))
+    writeLines(universe, file.path(output_dir, "tested_background.txt"))
+    if (!length(genes)) {
+      writeLines("候选基因集合为空，未进行富集检验。", file.path(output_dir, "NO_CANDIDATE_GENES.txt"))
+      finish_result_dir(claim)
+      next
+    }
+    # 2. 先保存完整检验结果，显示 Top 数量不传给统计检验。
+    go_results <- setNames(lapply(ontologies, function(ont) {
+      clusterProfiler::enrichGO(gene = genes, universe = universe, OrgDb = OrgDb_name,
+        keyType = keyType, ont = ont, pool = TRUE, pAdjustMethod = "BH",
+        pvalueCutoff = 1, qvalueCutoff = 1, minGSSize = minGSSize, maxGSSize = maxGSSize, readable = FALSE)
+    }), paste0("GO_", ontologies))
+    # 模式路线保留 enrichKEGG；非模式路线用相同包的 enricher 和明确 TERM2GENE。
+    kegg <- if (!include_kegg) NULL else if (is.null(kegg_terms)) {
+      enrichKEGG(gene = genes, universe = universe, organism = organism_name, keyType = kegg_keytype,
+                  pvalueCutoff = 1, qvalueCutoff = 1, pAdjustMethod = "BH", minGSSize = minGSSize, maxGSSize = maxGSSize)
+    } else {
+      enricher(gene = genes, universe = universe, TERM2GENE = kegg_terms, TERM2NAME = kegg_names,
+                pvalueCutoff = 1, qvalueCutoff = 1, pAdjustMethod = "BH", minGSSize = minGSSize, maxGSSize = maxGSSize)
+    }
+    results <- c(go_results, if (include_kegg) list(KEGG = kegg) else list())
+    saved <- list()
+    for (name in names(results)) {
+      object <- results[[name]]
+      if (is.null(object)) {
+        writeLines("输入与该数据库无可用映射或基因集。", file.path(output_dir, paste0(name, "_NO_TESTABLE_TERMS.txt")))
+        next
+      }
+      write.table(object@result, file.path(output_dir, paste0(name, "_all_tests.tsv")),
+                  sep = "\t", quote = FALSE, row.names = FALSE)
+      writeLines(object@universe, file.path(output_dir, paste0(name, "_effective_background.txt")))
+      object@pvalueCutoff <- fdr_cutoff
+      # 3. qvalue 与 BH 不同，保留各自阈值，不互相冒充。
+      object@qvalueCutoff <- if (name == "KEGG") kegg_qvalue else go_qvalue
+      raw <- object
+      raw@result <- as.data.frame(raw)
+      simplified <- if (name != "KEGG" && nrow(raw@result)) {
+        clusterProfiler::simplify(raw, cutoff = simplify_cutoff, by = "p.adjust", select_fun = min)
+      } else raw
+      saved[[name]] <- list(raw = raw, simplified = simplified)
+      for (style in if (name == "KEGG") "raw" else c("raw", "simplified")) {
+        result <- saved[[name]][[style]]
+        write.table(as.data.frame(result), file.path(output_dir, paste0(name, "_", style, ".tsv")),
+                    sep = "\t", quote = FALSE, row.names = FALSE)
+        if (!nrow(as.data.frame(result))) {
+          writeLines("该检验集合在当前阈值下没有显著条目。", file.path(output_dir, paste0(name, "_", style, "_NO_SIGNIFICANT_TERMS.txt")))
+        }
+      }
+    }
+    saveRDS(list(results = saved, genes = genes, universe = universe), file.path(output_dir, "ORA_results.rds"))
+    # 每组统计只算一次；Top10/Top20 从同一个对象取展示条目。
+    for (current_term_num in term_num) {
+      kegg_view <- if ("KEGG" %in% names(saved)) {
+        save_enrichment_plot(saved$KEGG$raw, paste(contrast_id, change, "KEGG"),
+          file.path(output_dir, paste0("KEGG_raw_top", current_term_num)), current_term_num,
+          plot_styles = plot_styles, width = plot_width, dpi = plot_dpi)
+      } else list(bar = NULL, dot = NULL)
+      for (style in c("raw", "simplified")) {
+        views <- list()
+        for (name in names(saved)) {
+          if (name == "KEGG") {
+            views[[name]] <- kegg_view
+            next
+          }
+          result <- saved[[name]][[style]]
+          prefix <- file.path(output_dir, paste0(name, "_", style, "_top", current_term_num))
+          views[[name]] <- save_enrichment_plot(result, paste(contrast_id, change, name), prefix, current_term_num,
+            plot_styles = plot_styles, width = plot_width, dpi = plot_dpi)
+        }
+        # 两种综合图均用 BP/MF/CC/KEGG；简化仅作用于 GO，KEGG 复用原结果。
+        # ALL 独立保存，避免重复占用一个面板；没有显著条目的面板不画。
+        save_ORA_overview(views, output_dir, style, current_term_num, plot_styles = plot_styles, dpi = overview_dpi)
+      }
+    }
+    finish_result_dir(claim)
+  }
+}

@@ -1,0 +1,50 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>附1 研究背景与样本范围 · 随包资料</title><link rel="stylesheet" href="../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../case/0script/%E9%99%841%20%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E4%B8%8E%E6%A0%B7%E6%9C%AC%E8%8C%83%E5%9B%B4.md" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">V9 最新资料的包内副本 · 原始文件按字节复制。网页适配本地链接；没有精选收录的结果显示说明。代码用于延伸阅读，实际分析需要完整输入与环境。</p><h1>研究背景与样本范围</h1>
+<p>植物的表达变化同时发生在一天之内和发育过程中：有些变化随光暗交替反复出现，有些则伴随叶片生长或衰老逐渐累积。只观察一个时间点，容易把两个尺度混在一起。</p>
+<p>本案例数据来自 Redmond 等（2025）的研究：<em>Stable and dynamic gene expression patterns over diurnal and developmental timescales in Arabidopsis thaliana</em>。研究关注拟南芥中日变化与发育变化的关系，也评估跨这些尺度相对稳定的表达基因。<a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1111/nph.70023">论文</a>；<a target="_blank" rel="noopener noreferrer" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11982781/">开放全文</a>。</p>
+<h2>数据设计</h2>
+<p>原研究通过短日到长日的光周期转换组织发育采样，材料为拟南芥 Ws-2，采集叶片。完整数据覆盖转换后第 2、7、12 天，每天采样 ZT0、ZT1、ZT4、ZT8、ZT12、ZT16、ZT20，每个时期三个生物学重复。ZT 以开灯为起点，是一天中的时间，不是植物年龄。<a target="_blank" rel="noopener noreferrer" href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1015621">数据项目 PRJNA1015621</a> 对应 GEO 系列 <a target="_blank" rel="noopener noreferrer" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE242964">GSE242964</a>。</p>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>原研究数据</th>
+<th>本案例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发育阶段</td>
+<td>第 2、7、12 天</td>
+<td>第 2 天</td>
+</tr>
+<tr>
+<td>每天采样时期</td>
+<td>七个 ZT 时期</td>
+<td>相同七个时期</td>
+</tr>
+<tr>
+<td>每时期生物学重复</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>文库数</td>
+<td>63</td>
+<td>21</td>
+</tr>
+<tr>
+<td>本案例双端 FASTQ</td>
+<td>—</td>
+<td>42 个文件</td>
+</tr>
+</tbody>
+</table>
+<p>选取一个阶段减少计算规模，同时保留起点比较、相邻时期比较和日变化分析。本案例不能回答跨第 2/7/12 天的发育问题，也不把全部 63 个文库的结论转述为当前 21 个文库的独立发现。</p>
+<h2>方法之间的关系</h2>
+<p>本项目沿用已有脚本指定的 FastQC/MultiQC、fastp、Salmon、Trinity、DESeq2、clusterProfiler、ClusterGVis/Mfuzz 等方法。作者公开记录的 Cutadapt 及无 decoy 的较早 Salmon 配置与这里不同，因此主线不是对原文所有软件版本、参数和数值的逐字复刻。<a target="_blank" rel="noopener noreferrer" href="https://github.com/stressedplants/DiurnalDevelopmental">作者代码与量化记录</a>。</p>
+<p>材料为 Ws-2，而当前使用的 TAIR 参考来自 Columbia，不能把参考的生态型写成实验材料。参考来源、文件范围和这一差别见<a href="03%20%E5%8F%82%E8%80%83%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%87%86%E5%A4%87.html">第 03 章</a>。</p>
+<p>补充的 JTK 章节按作者的关键方法组织输入，并明确单阶段筛选、MetaCycle 版本以及有效候选周期范围。趋势模块用于探索形状，JTK 用于模板匹配显著性，两者不互相代替。</p>
+<h2>结论边界</h2>
+<p>日变化可能同时受光照、代谢、发育及内源时钟影响。只覆盖一个窗口、且仍处于光暗循环条件，不能仅根据 JTK 显著就证明内源昼夜节律。聚类、富集和多个图形变体帮助提出候选问题，正式机制结论仍需独立验证。</p>
+<p>非模式生物三章继续用拟南芥验证从蛋白注释到富集的过程，但明确是假设缺少现成注释的支线，不是另一个物种实验。所有使用到的基因与样本编号应能回溯到本项目输入，不能混入其他项目名称。</p>
+</main></body></html>

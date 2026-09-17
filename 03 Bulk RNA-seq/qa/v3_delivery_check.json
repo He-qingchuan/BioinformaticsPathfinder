@@ -1,0 +1,54 @@
+{
+  "pass": true,
+  "checked_utc": "2026-09-17T04:05:51.747271+00:00",
+  "checks": {
+    "original": {
+      "available": false,
+      "note": "Historical copies are optional after sharing."
+    },
+    "backup": {
+      "available": false,
+      "note": "Historical copies are optional after sharing."
+    },
+    "protected_materials": {
+      "files": 279,
+      "unchanged": true,
+      "differences": []
+    },
+    "independent_copies": {
+      "symlinks": [],
+      "shared_inodes_with_v2": []
+    },
+    "static_validation": {
+      "pass": true
+    },
+    "glossary_validation": {
+      "pass": true
+    },
+    "glossary_browser": {
+      "pass": true
+    },
+    "browser_validation": {
+      "pass": true
+    },
+    "figures_review": {
+      "pass": true
+    },
+    "responsive_review": {
+      "pass": true
+    },
+    "print_review": {
+      "pass": true
+    },
+    "independence_validation": {
+      "pass": true
+    },
+    "glossary": {
+      "entries": 178,
+      "original_entries": 26,
+      "new_entries": 152,
+      "categories": 8
+    }
+  },
+  "errors": []
+}

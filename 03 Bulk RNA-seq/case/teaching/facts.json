@@ -1,0 +1,559 @@
+{
+  "qc": {
+    "sample_id": "ZT4_rep_1",
+    "reads_before": "82414312",
+    "reads_after": "82050842",
+    "retention": "0.995589722328811",
+    "bases_before": "12362146800",
+    "bases_after": "11594575812",
+    "base_retention": "0.937909571822913",
+    "adapter_trimmed_reads": "26691900",
+    "adapter_trimmed_bases": "713528538",
+    "q30_before": "0.92918",
+    "q30_after": "0.933658",
+    "constant_q30_input": "FALSE"
+  },
+  "mapping": {
+    "sample_id": "ZT4_rep_1",
+    "num_processed": "41025421",
+    "num_mapped": "30545481",
+    "percent_mapped": "74.4550092490215",
+    "library_types": "ISR"
+  },
+  "matrices": {
+    "counts": [
+      {
+        "gene_id": "AT1G01060",
+        "ZT0_rep_1": "29869.56",
+        "ZT0_rep_2": "22187.45",
+        "ZT0_rep_3": "30483.68",
+        "ZT4_rep_1": "1188.2",
+        "ZT4_rep_2": "1262.92",
+        "ZT4_rep_3": "1078.96"
+      },
+      {
+        "gene_id": "AT1G13930",
+        "ZT0_rep_1": "1752.45",
+        "ZT0_rep_2": "1423.89",
+        "ZT0_rep_3": "1850.48",
+        "ZT4_rep_1": "22089.47",
+        "ZT4_rep_2": "20520.1",
+        "ZT4_rep_3": "18712.92"
+      },
+      {
+        "gene_id": "AT4G31073",
+        "ZT0_rep_1": "42.52",
+        "ZT0_rep_2": "62.57",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "0",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "0"
+      },
+      {
+        "gene_id": "AT2G42540",
+        "ZT0_rep_1": "902.98",
+        "ZT0_rep_2": "704.07",
+        "ZT0_rep_3": "709.86",
+        "ZT4_rep_1": "14184.36",
+        "ZT4_rep_2": "18747.71",
+        "ZT4_rep_3": "16693.91"
+      },
+      {
+        "gene_id": "AT5G66052",
+        "ZT0_rep_1": "7106.34",
+        "ZT0_rep_2": "5615.39",
+        "ZT0_rep_3": "8359.36",
+        "ZT4_rep_1": "296.87",
+        "ZT4_rep_2": "339.4",
+        "ZT4_rep_3": "322.2"
+      },
+      {
+        "gene_id": "AT1G25145",
+        "ZT0_rep_1": "0",
+        "ZT0_rep_2": "0",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "155.76",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "94.29"
+      }
+    ],
+    "TPM": [
+      {
+        "gene_id": "AT1G01060",
+        "ZT0_rep_1": "770.857201",
+        "ZT0_rep_2": "783.846198",
+        "ZT0_rep_3": "822.963532",
+        "ZT4_rep_1": "38.899238",
+        "ZT4_rep_2": "37.478814",
+        "ZT4_rep_3": "35.88042"
+      },
+      {
+        "gene_id": "AT1G13930",
+        "ZT0_rep_1": "45.226237",
+        "ZT0_rep_2": "50.303537",
+        "ZT0_rep_3": "49.957242",
+        "ZT4_rep_1": "723.166406",
+        "ZT4_rep_2": "608.961663",
+        "ZT4_rep_3": "622.293909"
+      },
+      {
+        "gene_id": "AT4G31073",
+        "ZT0_rep_1": "1.09733",
+        "ZT0_rep_2": "2.210473",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "0",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "0"
+      },
+      {
+        "gene_id": "AT2G42540",
+        "ZT0_rep_1": "23.303481",
+        "ZT0_rep_2": "24.873777",
+        "ZT0_rep_3": "19.163884",
+        "ZT4_rep_1": "464.368549",
+        "ZT4_rep_2": "556.363599",
+        "ZT4_rep_3": "555.152293"
+      },
+      {
+        "gene_id": "AT5G66052",
+        "ZT0_rep_1": "183.396388",
+        "ZT0_rep_2": "198.382511",
+        "ZT0_rep_3": "225.676357",
+        "ZT4_rep_1": "9.718859",
+        "ZT4_rep_2": "10.072184",
+        "ZT4_rep_3": "10.714654"
+      },
+      {
+        "gene_id": "AT1G25145",
+        "ZT0_rep_1": "0",
+        "ZT0_rep_2": "0",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "5.099379",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "3.135665"
+      }
+    ],
+    "TMM": [
+      {
+        "gene_id": "AT1G01060",
+        "ZT0_rep_1": "791.413",
+        "ZT0_rep_2": "768.734",
+        "ZT0_rep_3": "839.76",
+        "ZT4_rep_1": "43.026",
+        "ZT4_rep_2": "39.727",
+        "ZT4_rep_3": "38.839"
+      },
+      {
+        "gene_id": "AT1G13930",
+        "ZT0_rep_1": "46.432",
+        "ZT0_rep_2": "49.334",
+        "ZT0_rep_3": "50.977",
+        "ZT4_rep_1": "799.889",
+        "ZT4_rep_2": "645.483",
+        "ZT4_rep_3": "673.612"
+      },
+      {
+        "gene_id": "AT4G31073",
+        "ZT0_rep_1": "1.127",
+        "ZT0_rep_2": "2.168",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "0",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "0"
+      },
+      {
+        "gene_id": "AT2G42540",
+        "ZT0_rep_1": "23.925",
+        "ZT0_rep_2": "24.394",
+        "ZT0_rep_3": "19.555",
+        "ZT4_rep_1": "513.635",
+        "ZT4_rep_2": "589.73",
+        "ZT4_rep_3": "600.933"
+      },
+      {
+        "gene_id": "AT5G66052",
+        "ZT0_rep_1": "188.287",
+        "ZT0_rep_2": "194.558",
+        "ZT0_rep_3": "230.282",
+        "ZT4_rep_1": "10.75",
+        "ZT4_rep_2": "10.676",
+        "ZT4_rep_3": "11.598"
+      },
+      {
+        "gene_id": "AT1G25145",
+        "ZT0_rep_1": "0",
+        "ZT0_rep_2": "0",
+        "ZT0_rep_3": "0",
+        "ZT4_rep_1": "5.64",
+        "ZT4_rep_2": "0",
+        "ZT4_rep_3": "3.394"
+      }
+    ]
+  },
+  "samples": [
+    {
+      "sample_id": "ZT0_rep_1",
+      "timepoint": "ZT0",
+      "replicate": "1",
+      "gsm": "GSM7776093",
+      "srr": "SRR26039829",
+      "read1": "ZT0_rep_1_1.fastq.gz",
+      "read2": "ZT0_rep_1_2.fastq.gz",
+      "time_hour": "0",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT0_rep_2",
+      "timepoint": "ZT0",
+      "replicate": "2",
+      "gsm": "GSM7776094",
+      "srr": "SRR26039828",
+      "read1": "ZT0_rep_2_1.fastq.gz",
+      "read2": "ZT0_rep_2_2.fastq.gz",
+      "time_hour": "0",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT0_rep_3",
+      "timepoint": "ZT0",
+      "replicate": "3",
+      "gsm": "GSM7776095",
+      "srr": "SRR26039827",
+      "read1": "ZT0_rep_3_1.fastq.gz",
+      "read2": "ZT0_rep_3_2.fastq.gz",
+      "time_hour": "0",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT1_rep_1",
+      "timepoint": "ZT1",
+      "replicate": "1",
+      "gsm": "GSM7776102",
+      "srr": "SRR26039820",
+      "read1": "ZT1_rep_1_1.fastq.gz",
+      "read2": "ZT1_rep_1_2.fastq.gz",
+      "time_hour": "1",
+      "cycle_use": "FALSE"
+    },
+    {
+      "sample_id": "ZT1_rep_2",
+      "timepoint": "ZT1",
+      "replicate": "2",
+      "gsm": "GSM7776103",
+      "srr": "SRR26039819",
+      "read1": "ZT1_rep_2_1.fastq.gz",
+      "read2": "ZT1_rep_2_2.fastq.gz",
+      "time_hour": "1",
+      "cycle_use": "FALSE"
+    },
+    {
+      "sample_id": "ZT1_rep_3",
+      "timepoint": "ZT1",
+      "replicate": "3",
+      "gsm": "GSM7776104",
+      "srr": "SRR26039818",
+      "read1": "ZT1_rep_3_1.fastq.gz",
+      "read2": "ZT1_rep_3_2.fastq.gz",
+      "time_hour": "1",
+      "cycle_use": "FALSE"
+    },
+    {
+      "sample_id": "ZT4_rep_1",
+      "timepoint": "ZT4",
+      "replicate": "1",
+      "gsm": "GSM7776108",
+      "srr": "SRR26039814",
+      "read1": "ZT4_rep_1_1.fastq.gz",
+      "read2": "ZT4_rep_1_2.fastq.gz",
+      "time_hour": "4",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT4_rep_2",
+      "timepoint": "ZT4",
+      "replicate": "2",
+      "gsm": "GSM7776109",
+      "srr": "SRR26039813",
+      "read1": "ZT4_rep_2_1.fastq.gz",
+      "read2": "ZT4_rep_2_2.fastq.gz",
+      "time_hour": "4",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT4_rep_3",
+      "timepoint": "ZT4",
+      "replicate": "3",
+      "gsm": "GSM7776110",
+      "srr": "SRR26039812",
+      "read1": "ZT4_rep_3_1.fastq.gz",
+      "read2": "ZT4_rep_3_2.fastq.gz",
+      "time_hour": "4",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT8_rep_1",
+      "timepoint": "ZT8",
+      "replicate": "1",
+      "gsm": "GSM7776111",
+      "srr": "SRR26039811",
+      "read1": "ZT8_rep_1_1.fastq.gz",
+      "read2": "ZT8_rep_1_2.fastq.gz",
+      "time_hour": "8",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT8_rep_2",
+      "timepoint": "ZT8",
+      "replicate": "2",
+      "gsm": "GSM7776112",
+      "srr": "SRR26039810",
+      "read1": "ZT8_rep_2_1.fastq.gz",
+      "read2": "ZT8_rep_2_2.fastq.gz",
+      "time_hour": "8",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT8_rep_3",
+      "timepoint": "ZT8",
+      "replicate": "3",
+      "gsm": "GSM7776113",
+      "srr": "SRR26039809",
+      "read1": "ZT8_rep_3_1.fastq.gz",
+      "read2": "ZT8_rep_3_2.fastq.gz",
+      "time_hour": "8",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT12_rep_1",
+      "timepoint": "ZT12",
+      "replicate": "1",
+      "gsm": "GSM7776096",
+      "srr": "SRR26039826",
+      "read1": "ZT12_rep_1_1.fastq.gz",
+      "read2": "ZT12_rep_1_2.fastq.gz",
+      "time_hour": "12",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT12_rep_2",
+      "timepoint": "ZT12",
+      "replicate": "2",
+      "gsm": "GSM7776097",
+      "srr": "SRR26039825",
+      "read1": "ZT12_rep_2_1.fastq.gz",
+      "read2": "ZT12_rep_2_2.fastq.gz",
+      "time_hour": "12",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT12_rep_3",
+      "timepoint": "ZT12",
+      "replicate": "3",
+      "gsm": "GSM7776098",
+      "srr": "SRR26039824",
+      "read1": "ZT12_rep_3_1.fastq.gz",
+      "read2": "ZT12_rep_3_2.fastq.gz",
+      "time_hour": "12",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT16_rep_1",
+      "timepoint": "ZT16",
+      "replicate": "1",
+      "gsm": "GSM7776099",
+      "srr": "SRR26039823",
+      "read1": "ZT16_rep_1_1.fastq.gz",
+      "read2": "ZT16_rep_1_2.fastq.gz",
+      "time_hour": "16",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT16_rep_2",
+      "timepoint": "ZT16",
+      "replicate": "2",
+      "gsm": "GSM7776100",
+      "srr": "SRR26039822",
+      "read1": "ZT16_rep_2_1.fastq.gz",
+      "read2": "ZT16_rep_2_2.fastq.gz",
+      "time_hour": "16",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT16_rep_3",
+      "timepoint": "ZT16",
+      "replicate": "3",
+      "gsm": "GSM7776101",
+      "srr": "SRR26039821",
+      "read1": "ZT16_rep_3_1.fastq.gz",
+      "read2": "ZT16_rep_3_2.fastq.gz",
+      "time_hour": "16",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT20_rep_1",
+      "timepoint": "ZT20",
+      "replicate": "1",
+      "gsm": "GSM7776105",
+      "srr": "SRR26039817",
+      "read1": "ZT20_rep_1_1.fastq.gz",
+      "read2": "ZT20_rep_1_2.fastq.gz",
+      "time_hour": "20",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT20_rep_2",
+      "timepoint": "ZT20",
+      "replicate": "2",
+      "gsm": "GSM7776106",
+      "srr": "SRR26039816",
+      "read1": "ZT20_rep_2_1.fastq.gz",
+      "read2": "ZT20_rep_2_2.fastq.gz",
+      "time_hour": "20",
+      "cycle_use": "TRUE"
+    },
+    {
+      "sample_id": "ZT20_rep_3",
+      "timepoint": "ZT20",
+      "replicate": "3",
+      "gsm": "GSM7776107",
+      "srr": "SRR26039815",
+      "read1": "ZT20_rep_3_1.fastq.gz",
+      "read2": "ZT20_rep_3_2.fastq.gz",
+      "time_hour": "20",
+      "cycle_use": "TRUE"
+    }
+  ],
+  "de_summary": {
+    "up": 1087,
+    "down": 826,
+    "ns": 13399
+  },
+  "de_rows": 15312,
+  "genes": [
+    {
+      "gene_id": "AT1G01060",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "1264.11186159769",
+      "baseMeanB": "25216.3671677676",
+      "baseMean": "13240.2395146826",
+      "log2FoldChange": "-4.3183540105889",
+      "lfcSE": "0.0787717923096982",
+      "stat": "-54.8210708931302",
+      "pvalue": "0",
+      "padj": "0",
+      "direction": "down"
+    },
+    {
+      "gene_id": "AT1G13930",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "22024.1821035397",
+      "baseMeanB": "1541.95864328529",
+      "baseMean": "11783.0703734125",
+      "log2FoldChange": "3.83646187714186",
+      "lfcSE": "0.101168880286615",
+      "stat": "37.921363429871",
+      "pvalue": "1.14432716343496e-314",
+      "padj": "4.37991221804733e-311",
+      "direction": "up"
+    },
+    {
+      "gene_id": "AT4G31073",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "0",
+      "baseMeanB": "35.0274169076523",
+      "baseMean": "17.5137084538261",
+      "log2FoldChange": "-7.46722292932369",
+      "lfcSE": "3.90912861315136",
+      "stat": "-1.91020139480751",
+      "pvalue": "0.0561072876517451",
+      "padj": "0.105570757696749",
+      "direction": "ns"
+    },
+    {
+      "gene_id": "AT2G42540",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "17731.854642913",
+      "baseMeanB": "713.427658957043",
+      "baseMean": "9222.64115093503",
+      "log2FoldChange": "4.63665612327236",
+      "lfcSE": "0.114831368176547",
+      "stat": "40.3779576687072",
+      "pvalue": "0",
+      "padj": "0",
+      "direction": "up"
+    },
+    {
+      "gene_id": "AT5G66052",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "343.343474424458",
+      "baseMeanB": "6442.1887713006",
+      "baseMean": "3392.76612286253",
+      "log2FoldChange": "-4.23050002368679",
+      "lfcSE": "0.113054283041064",
+      "stat": "-37.420077416706",
+      "pvalue": "1.84269633106217e-306",
+      "padj": "5.64233616571238e-303",
+      "direction": "down"
+    },
+    {
+      "gene_id": "AT1G25145",
+      "contrast_id": "ZT4_vs_ZT0",
+      "sampleA": "ZT4",
+      "sampleB": "ZT0",
+      "baseMeanA": "93.6566887454758",
+      "baseMeanB": "0",
+      "baseMean": "46.8283443727379",
+      "log2FoldChange": "9.10372755381295",
+      "lfcSE": "3.9077811450934",
+      "stat": "2.32964109703113",
+      "pvalue": "0.0198251281397281",
+      "padj": "0.0435845364473345",
+      "direction": "up"
+    }
+  ],
+  "ora": {
+    "ID": "GO:0019761",
+    "Description": "glucosinolate biosynthetic process",
+    "GeneRatio": "26/809",
+    "BgRatio": "41/11616",
+    "RichFactor": "0.634146341463415",
+    "FoldEnrichment": "9.10536947149447",
+    "zScore": "14.2244517664981",
+    "pvalue": "1.30364145821432e-20",
+    "p.adjust": "9.38621849914308e-18",
+    "qvalue": "7.95221289510733e-18",
+    "Count": "26"
+  },
+  "gsea": {
+    "ID": "GO:0001101",
+    "Description": "response to acid chemical",
+    "setSize": "359",
+    "enrichmentScore": "0.463508801129514",
+    "NES": "1.93214848908211",
+    "pvalue": "1.70143356658357e-10",
+    "p.adjust": "2.30421750946113e-07",
+    "qvalue": "2.03513947792866e-07",
+    "rank": "1652",
+    "leading_edge": "tags=26%, list=11%, signal=24%"
+  },
+  "pca_variance": [
+    {
+      "component": "PC1",
+      "percent": "46.4206930844226"
+    },
+    {
+      "component": "PC2",
+      "percent": "20.8707608613679"
+    }
+  ]
+}

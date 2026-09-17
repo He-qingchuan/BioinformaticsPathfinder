@@ -1,0 +1,78 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 工作目录创建 · 随包资料</title><link rel="stylesheet" href="../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../case/0script/02%20%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95%E5%88%9B%E5%BB%BA.md" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">V9 最新资料的包内副本 · 原始文件按字节复制。网页适配本地链接；没有精选收录的结果显示说明。代码用于延伸阅读，实际分析需要完整输入与环境。</p><h1>02 工作目录创建</h1>
+<p>项目之间隔离，项目内部仍按 0–10 保存脚本、输入和结果。目录存在不等于分析完成，不需要再建立另一套输出层级。</p>
+<h2>1. 建立新项目</h2>
+<p>在项目集合根目录执行；使用已有项目时跳过复制，直接进入它的目录。</p>
+<pre><code class="language-bash"># 目的：在项目集合目录创建自己的空项目副本，随后进入这个新项目；不是在当前案例内再嵌套一份。
+# project_name：新项目目录短名，如 my_project、human_rnaseq；建议字母开头，只用字母/数字/下划线/短横线，不填路径或空值；只改这个值，不改公共模板名。
+#   test ! -e 保证目标不存在，避免套在已有结果上。
+# set -euo pipefail：未处理失败/未定义变量/管道失败会使执行中止；cp -a：完整保留模板的文件属性与层级，不复制本机 Conda 环境。
+# 双引号中的 $project_name 展开目录名；cd 切换工作目录；conda activate 启用现存 rnaseq；pwd 输出当前位置。后续应能看见 0script。
+
+set -euo pipefail
+project_name=my_project
+test ! -e &quot;projects/$project_name&quot;
+cp -a project_template &quot;projects/$project_name&quot;
+cd &quot;projects/$project_name&quot;
+conda activate rnaseq
+pwd
+</code></pre>
+<p>当前目录应能看到 <code>0script</code>。Bash 的相对路径和 R 的工作目录都以这里为起点；R 可用 <code>getwd()</code> 核对。编号命令行入口可以从其他目录调用，只需把项目路径作为第一个参数传入。</p>
+<h2>2. 建立编号目录</h2>
+<!-- execute: directories env=rnaseq -->
+<pre><code class="language-bash"># 目的：为当前项目补齐约定目录；只创建缺失目录，不移动数据、不清空结果。
+# 所有 mkdir 共用 -p：同时创建缺失的父目录；已存在的目录保持内容不变。路径相对当前项目根目录，不必为每个样本建立另一套主目录。
+# 0script/runlogs 保存执行记录；1database/genome 保存统一名参考；2data 的 rawdata/cleandata 分开保存原始、过滤文件及 QC 报告。
+# 3Salmon/index/quanti 是索引/矩阵；4–8 分别为样本关系、差异、集合、火山、Top 热图；9 为富集/自建注释，10 为时间分析。
+
+mkdir -p 0script/runlogs 1database/genome
+mkdir -p 2data/rawdata/qc 2data/rawdata/multiqc
+mkdir -p 2data/cleandata/fastp 2data/cleandata/qc 2data/cleandata/multiqc
+mkdir -p 3Salmon/index 3Salmon/quanti
+mkdir -p 4SampleHeatmapPCA 5DESeq2 6venn 7volcano 8topgene_pheatmap
+mkdir -p 9Enrichment_Analysis/ORA 9Enrichment_Analysis/GSEA
+mkdir -p 9Enrichment_Analysis/OrgDb/diamond 10Time_Series
+</code></pre>
+<p>各目录第一层的 README 说明下级文件含义。<code>0script</code> 中 MD 是说明与参数入口，<code>scripts/</code> 保存对应编号的实现，<code>tools/</code> 保存通用读取和运行工具，<code>runlogs/</code> 保存执行记录，不修改其中生成的执行副本。</p>
+<p>公共 eggNOG 数据库只在集合根目录 <code>resources/eggnog</code> 保存一份。<code>web/</code> 是共享只读阅览程序；各项目的缩略图缓存各自独立，不进入空模板。</p>
+<h2>3. 先检查一份配置，再准备两张表</h2>
+<p>打开 <a href="../case/0script/project.env">../case/0script/project.env</a>，按前后两区检查：</p>
+<ul>
+<li>前区：项目名称、<code>DATA_ENTRY</code>、线程数；矩阵入口核实矩阵路径，富集分析核实 OrgDb/KEGG 设置。按实际范围填写，不要求所有字段都改。</li>
+<li>后区：阈值、随机种子、公共数据库和既有结果读取位置，通常沿用默认。</li>
+</ul>
+<p><code>KEY=value</code> 等号两边不加空格，注释放单独一行，含空格的值用引号包住；不放函数或命令替换。参考链接直接写在第 03 章下载处，组名和时间直接写在样本表，不在多章重复维护。</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>用途</th>
+<th>何时修改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samples.tsv</code></td>
+<td>样本 ID、真实分组、重复、文件及可选时间</td>
+<td>更换样本或设计时</td>
+</tr>
+<tr>
+<td><code>contrasts.tsv</code></td>
+<td>实验组相对参照组的比较方向</td>
+<td>新增比较或改变参照时</td>
+</tr>
+<tr>
+<td><code>project.env</code></td>
+<td>通用输入位置、注释和资源设置</td>
+<td>换项目或选择另一套已有结果时</td>
+</tr>
+</tbody>
+</table>
+<p>样本表至少有 <code>sample_id</code>、<code>group</code>（兼容 <code>timepoint</code>）、<code>replicate</code>；其他列按入口选用，允许额外备注列。第 04 章说明如何从来源元数据提取可确定的列，如何生成比较表。</p>
+<h2>4. 后续怎样运行</h2>
+<p>各章先看参数说明，再执行“加载脚本 → 设置参数 → 具名调用”。例如第 12 章将 <code>top_n &lt;- 5</code> 改为 <code>10</code>，不需要改函数内部。参数不改则沿用默认；修改配置后重新执行读取及调用段，旧会话不会自动刷新。</p>
+<p>读参数时区分三件事：<code>comparison_mode</code> 是参数名，<code>&quot;baseline&quot;</code> 是它的一种取值，<code>0script/contrasts.tsv</code> 是固定输出文件。文件名没有出现在函数形参中，就不要自行给函数添加同名参数。</p>
+<p>各段先集中解释用途、输出和参数，再写代码；下方赋值是本段实际使用值，不一定等于新项目模板。R 中 <code>&quot;文本&quot;</code> 是一个字符串，<code>c(...)</code> 是多个值，<code>TRUE/FALSE</code> 是逻辑值；<code>NULL</code> 表示该参数约定的自动选择/未提供，具体含义逐项说明，不能与空字符串 <code>&quot;&quot;</code>、空向量 <code>character()</code> 或缺失值 <code>NA</code> 互换。数值参数按给定范围填写，不只允许示例中的一个数字。</p>
+<p><code>source()</code> 加载实现；<code>readRenviron()</code> 读取项目配置；<code>Sys.getenv()</code> 取出的值是文本，阈值用 <code>as.numeric()</code>、整数用 <code>as.integer()</code> 转换。<code>参数名 = 变量名</code> 把当前变量值传给函数；修改后重新执行赋值及调用，不能只改注释。新增的查看代码框只读前 10 行，不自动纳入章节分析入口；R 查看框注明是否要留在同一会话。</p>
+<p>共用结果路径表示“读取哪套结果”，不是重算开关。更改过滤或统计参数后，先检查新输出路径，再让后续章节读取对应结果；不能修改旧结果清单绕过覆盖保护。</p>
+<p>前四章准备完成后，运行 <a href="04.5%20%E5%88%86%E6%9E%90%E5%89%8D%E5%87%86%E5%A4%87%E6%A3%80%E6%9F%A5.html">04.5 分析前准备检查</a>，再逐章分析。不提供一键执行所有章节；网页仅阅读结果，不上传、改参或启动计算。</p>
+</main></body></html>

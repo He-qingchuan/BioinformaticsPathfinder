@@ -1,0 +1,9 @@
+<dialog id="glossary-dialog" class="glossary-dialog" aria-labelledby="glossary-title">
+  <header class="image-header"><div><p class="eyebrow">随身手册 · 中英对照</p><h2 id="glossary-title">把术语翻成容易理解的话</h2></div><button type="button" id="close-glossary" class="close-button">关闭 ×</button></header>
+  <div class="glossary-controls">
+    <label class="glossary-search" for="glossary-query">搜索中文、英文、缩写或别名<input id="glossary-query" type="search" placeholder="例如：隶属度、membership、padj" autocomplete="off" spellcheck="false" aria-controls="glossary-entries"></label>
+    <div class="glossary-filter"><label for="glossary-category">按主题看 <select id="glossary-category" aria-controls="glossary-entries"><option value="">全部主题</option></select></label><button type="button" id="glossary-all">查看全部术语</button></div>
+    <p id="glossary-status" class="glossary-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  </div>
+  <div id="glossary-entries" tabindex="0" aria-label="术语完整解释"></div>
+</dialog>

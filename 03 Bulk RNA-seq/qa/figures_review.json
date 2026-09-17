@@ -1,0 +1,278 @@
+{
+  "guides": [
+    {
+      "title": "7 个时期，21 个文库，42 个文件",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "FASTQ：把序列与质量放到同一张卡上",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "原始数据的逐位置碱基质量",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "过滤前的接头信号",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "剪短一条 read，不等于丢掉一条 read",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "处理后的接头信号",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "处理后的逐位置碱基质量",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "21 个文库的 reads 保留率",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "decoy：让“其他可能来源”也参加比较",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "先找对基因，再放对样本列",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "各文库的估计片段量",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "PCA 把样本的一整列表达，变成一个点",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "样本相关性：谁的整体表达更相似",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "PCA：把每个样本画成一个点",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "均值差相同，为什么统计证据可能不同",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "从两份名单读懂 Venn 与 UpSet",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "三个首时点比较的局部韦恩图",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "UpSet：把多个集合的交集展开看",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "表里的一行，火山图的一个点，热图的一整行",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "火山图：幅度与证据放在同一张图",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "同一差异结果的另一种火山图",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "Top30 热图：同一基因在六个样本中的相对模式",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "同样是三个基因，有没有富集还得看背景",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "GO BP：上调候选中的功能富集",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "KEGG：从候选基因走向通路线索",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "沿着基因队伍，一步步形成富集曲线",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "GSEA 单条目：response to acid chemical",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "GSEA 概览：不同条目的方向与证据",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "六个模块的模糊聚类曲线",
+      "paragraphs": 6,
+      "zoom": true
+    },
+    {
+      "title": "量级不同，也可以有相似的变化形状",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "把模块、热图和功能注释放在一起",
+      "paragraphs": 8,
+      "zoom": true
+    },
+    {
+      "title": "周期、相位、幅度：三个问题分开问",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "周期候选的观测点与平均曲线",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "自建注释的覆盖范围",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "用证据把基因编号接到功能字典",
+      "paragraphs": 0,
+      "zoom": true
+    },
+    {
+      "title": "用自建注释解释同一份上调名单",
+      "paragraphs": 7,
+      "zoom": true
+    },
+    {
+      "title": "自建注释下的 GSEA 单条目示例",
+      "paragraphs": 7,
+      "zoom": true
+    }
+  ],
+  "illustrations": [
+    {
+      "file": "annotation_map.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "cycle_terms.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "decoy.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "fastq.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "fuzzy_shapes.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "gene_views.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "gsea_walk.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "matrix_build.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "matrix_pca.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "ora_background.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "replicates.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "sets_logic.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "trimming.svg",
+      "outOfBounds": []
+    },
+    {
+      "file": "variation.svg",
+      "outOfBounds": []
+    }
+  ],
+  "responsive": [
+    {
+      "width": 320,
+      "height": 800,
+      "pass": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "pass": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "pass": true
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "pass": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "printProof": "/tmp/rnaseq-v3-print-proof.pdf",
+  "pass": true
+}

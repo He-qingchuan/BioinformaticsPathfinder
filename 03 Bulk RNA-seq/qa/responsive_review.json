@@ -1,0 +1,37 @@
+{
+  "pass": true,
+  "screens": [
+    {
+      "viewport": 320,
+      "page": 320,
+      "heroHeight": 74.375,
+      "headlineLineHeight": 37.2,
+      "height": 800,
+      "pass": true
+    },
+    {
+      "viewport": 390,
+      "page": 390,
+      "heroHeight": 84.15625,
+      "headlineLineHeight": 42.0732,
+      "height": 844,
+      "pass": true
+    },
+    {
+      "viewport": 768,
+      "page": 768,
+      "heroHeight": 84.3125,
+      "headlineLineHeight": 42.16,
+      "height": 1024,
+      "pass": true
+    },
+    {
+      "viewport": 1440,
+      "page": 1440,
+      "heroHeight": 150,
+      "headlineLineHeight": 74.9952,
+      "height": 1000,
+      "pass": true
+    }
+  ]
+}

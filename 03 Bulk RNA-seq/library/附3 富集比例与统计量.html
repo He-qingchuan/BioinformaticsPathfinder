@@ -1,0 +1,58 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>附3 富集比例与统计量 · 随包资料</title><link rel="stylesheet" href="../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../case/0script/%E9%99%843%20%E5%AF%8C%E9%9B%86%E6%AF%94%E4%BE%8B%E4%B8%8E%E7%BB%9F%E8%AE%A1%E9%87%8F.md" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">V9 最新资料的包内副本 · 原始文件按字节复制。网页适配本地链接；没有精选收录的结果显示说明。代码用于延伸阅读，实际分析需要完整输入与环境。</p><h1>富集比例与统计量</h1>
+<h2>1. 先定义四个数</h2>
+<p>过度富集分析中，设 <code>k</code> 为候选集合中命中某条目的基因数，<code>n</code> 为有效候选基因数，<code>M</code> 为有效背景中属于该条目的基因数，<code>N</code> 为有效背景基因总数。有效集合受输入、基因 ID 映射和数据库覆盖共同限制，不一定等于输入文件行数，更不应直接写成“整个基因组”。</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>计算</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GeneRatio</td>
+<td>k/n</td>
+<td>有效候选中多少比例命中该条目？</td>
+</tr>
+<tr>
+<td>BgRatio</td>
+<td>M/N</td>
+<td>有效背景中多少比例属于该条目？</td>
+</tr>
+<tr>
+<td>FoldEnrichment</td>
+<td>(k/n)/(M/N)</td>
+<td>候选比例是背景比例的多少倍？</td>
+</tr>
+<tr>
+<td>RichFactor</td>
+<td>k/M</td>
+<td>该条目在有效背景中的基因，有多少进入候选？</td>
+</tr>
+<tr>
+<td>Count</td>
+<td>k</td>
+<td>命中多少个候选基因？</td>
+</tr>
+</tbody>
+</table>
+<p>例如 <code>k=30,n=200,M=150,N=25000</code>：GeneRatio=0.15，BgRatio=0.006，FoldEnrichment=25，RichFactor=0.2。它们描述不同方面，不能用同一列名互换。</p>
+<h2>2. 本项目的 ratio 有特定含义</h2>
+<p>ClusterGVis <strong>0.1.2</strong> 的 <code>enrichCluster(topn=...)</code> 在返回展示表时计算：</p>
+<pre><code class="language-r"># 目的：演示 GeneRatio 从比例转成百分数；这是公式示例，不是可从空会话直接完成的分析入口。
+# 先从对应结果定义 k（条目命中基因数）和 n（候选分母，必须&gt;0）；没有这两个数会报未定义。100*k/n 的 100仅用于换成百分数，不是背景富集倍数。
+# source 加载共用表格/来源函数；file.exists 只在配置存在时读 readRenviron，不会自动为 k/n 赋值。ratio保存计算出的百分数，不写文件。
+
+source(&quot;0script/tools/metadata.R&quot;)
+source(&quot;0script/tools/outputs.R&quot;)
+if (file.exists(&quot;0script/project.env&quot;)) readRenviron(&quot;0script/project.env&quot;)
+ratio &lt;- 100 * k / n
+</code></pre>
+<p>因此该表中的 <code>ratio</code> 是 GeneRatio 的百分数，上例为 <strong>15</strong>，不是 FoldEnrichment 的 <strong>25</strong>。这是根据本机指定版本的函数实现核对的，不把一个软件里的列名泛化成所有软件的固定定义。<code>tRatio</code> 也不是这里采用的标准字段，遇到时需回到生成代码确认，不能猜成 log2 富集倍数。</p>
+<p>原函数的 Top 条目展示表只输出 <code>group,Description,pvalue,ratio</code> 等列，未保留完整多重检验信息，且采用 SYMBOL 和数据库默认背景。第 16 章的主结果则保留 TAIR ID，以参与聚类的基因为背景另做检验，并保存 BH 校正值。两表是独立检验，不是同一结果的详表与简表；不能逐行核对，也不能用给前表补列的方式代替后者。</p>
+<h2>3. 比例不是显著性</h2>
+<p>较大的富集倍数不自动等于更可靠，少量基因可能带来很大的比例；较小 P 值也不等于效应很大。解释时同时看命中数、比例、有效背景、校正值与基因成员。</p>
+<p><code>pvalue</code> 为名义检验 P 值，<code>p.adjust</code> 为指定方法的多重校正值；<code>qvalue</code> 不是 padj 的别名。GO 去冗余只减少相似条目的重复展示，不产生新的实验支持。</p>
+<p>GSEA 的 ES/NES 来自完整排序的运行分数及标准化，不等于 ORA 的 FoldEnrichment。两类结果可以帮助提出同一生物学问题，但不能将其数值放在一个轴上当作相同指标。</p>
+</main></body></html>

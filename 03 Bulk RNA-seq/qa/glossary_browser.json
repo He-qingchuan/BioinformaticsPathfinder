@@ -1,0 +1,46 @@
+{
+  "pass": true,
+  "checks": [
+    "178 项全部中文、英文、缩写和别名可查；Count/counts、BP/bp、公式别名区分；分类、无结果、清空正常",
+    "正文点击精确单项；四层解释展开；相关术语切换；三层窗口逐层 Esc；键盘焦点与滚动位置恢复",
+    "320 / 390 / 768 / 1440 像素下术语窗口可读、无横向溢出",
+    "完整阅读页和放大图解使用相同解释；关闭后保留原阅读位置",
+    "禁用脚本时跳到完整中英术语附录；原 glossary-26 等旧锚点保留；打印包含所有条目",
+    "整包复制、改名并离线打开后，两个入口的术语仍能查询"
+  ],
+  "searchCases": 749,
+  "viewports": [
+    {
+      "width": 320,
+      "height": 740,
+      "fits": true,
+      "noOverflow": true,
+      "readableHeight": 348
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "fits": true,
+      "noOverflow": true,
+      "readableHeight": 513
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "fits": true,
+      "noOverflow": true,
+      "readableHeight": 607
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "fits": true,
+      "noOverflow": true,
+      "readableHeight": 587
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "printProof": "/tmp/rnaseq-v3-print-proof.pdf",
+  "checked_utc": "2026-09-17T04:04:44.227Z"
+}

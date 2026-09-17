@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# 文件用途｜按双端样本过滤 reads，并保存质量及资源日志。
+# 运行方式：在项目根目录激活相应环境，先 source 本文件，再按同编号 MD 的顺序传入位置参数。source 本身
+#   仅定义函数，不启动分析。
+# 括号函数体在子 Shell 中运行；set -e 对未处理失败停止、-u 拒绝未定义变量、-o pipefail 使管道前段失败
+#   可见。它不是自动恢复机制。
+# set -a / source project.env / set +a（若本段使用）：临时把配置导出给子进程；不是创建 Conda 环境。双
+#   引号保留文件名边界，$() 读取命令输出。
+# mkdir -p：父目录不存在时一起创建，已有目录不清空；test -s/-e：检查非空文件/路径存在，! 取反。失败返
+#   回非零，不自动下载缺失文件。
+# 管道 | 传标准输出，> 写日志/文件时会覆盖同名目标，2>&1 把错误并入同一日志；/usr/bin/time -v -o 记录
+#   资源详情（若本段调用）。不要把所有步骤都当作自动防覆盖。
+# 本文件接口与输入输出：
+# 输入：rawdata 双端文件；输出 fastp/{sample_id}_clean_1/2.fastq.gz、.fp.html、.fp.json 和日志。任何已
+#   有 clean 文件会使该样本停止，不自动覆盖或续算半成品。
+# fastp -l/-q/-u/-n 分别接长度、合格碱基 Phred、不合格碱基百分数、N 上限；-w 接分配给该样本的线程；--
+#   compression 接压缩等级。
+# -i/-I：原 R1/R2；-o/-O：输出 R1/R2，大小写不能互换。-R：报告标题；-h：HTML；-j：JSON。
+# export -f 把函数供给子 Bash，export 把公共参数传过去；xargs -0 读 NUL，-r 无输入不启动，-P 控制并行
+#   ，-n 3 每次取三个字段。
+# bash -c 的首个尾随词占 $0，之后的字段进入 $1/$2/$3；"$@" 保持边界，不能拆掉引用。MultiQC --force 仅
+#   更新同名汇总报告。
+
+# 接口｜run_fastp：按双端样本过滤 reads，并保存质量及资源日志。
+# 位置参数按以下顺序传入；Bash 没有 R 那样的具名形参调用，不能调换顺序。
+# $1 sample_jobs：正整数；同时处理的样本数，超过 THREADS 时下调到线程预算。每样本线程为整除
+#   THREADS/sample_jobs；样本数不等于线程数或重复数。
+# $2 min_length：正整数，单位 nt；过滤后允许的最短 read 长度，不是把所有 read 强制剪成此长度。改变后影
+#   响 clean reads 和后续分析。
+# $3 qualified_quality_phred：非负 Phred 值；fastp 判为合格碱基的质量门槛，与低质量碱基比例联用，不能
+#   理解为整条 read 的平均质量。
+# $4 unqualified_percent_limit：0–100 的百分数；单条 read 允许的低质量碱基比例上限。降低更严格，影响保
+#   留 reads。
+# $5 n_base_limit：非负整数；单条 read 允许的 N 碱基数上限，超过即不满足过滤要求。
+# $6 compression_level：整数 1–9；gzip 压缩等级，只改变压缩开销和文件体积，不改变被保留的序列。
+# 返回/写出：成功返回退出状态 0，检查或软件失败为非零。实际结果保存在上述目录；本接口不返回一张内存中
+#   的表。
+run_fastp() (
+  set -euo pipefail
+  [[ $# -eq 6 ]] || { echo "参数数量错误；请按第 06 章调用示例运行。" >&2; return 2; }
+  sample_jobs="${1}"
+  min_length="${2}"
+  qualified_quality_phred="${3}"
+  unqualified_percent_limit="${4}"
+  n_base_limit="${5}"
+  compression_level="${6}"
+  # 功能：配置 fastp 输入、过滤阈值及线程分配；原始 FASTQ 不覆盖。
+  # 参数来自第 06 章 MD 入口；此处只接收长度 nt、质量 Phred 与低质量碱基比例等设置。
+  set -euo pipefail
+  set -a
+  source 0script/project.env
+  set +a
+  workdir=$(pwd)
+  rawdata="$workdir/2data/rawdata"
+  cleandata="$workdir/2data/cleandata/fastp"
+  mkdir -p "$cleandata"
+  # sample_jobs：同时运行的样本数；与 THREADS 一起决定每个样本的线程，不是生物学重复数。
+  # min_length：过滤后的最短 read 长度（nt）；调整影响 clean 数据及下游，不是强制统一裁剪长度。
+  # qualified_quality_phred：合格碱基的 Phred 阈值；20 约对应 1% 错误概率，配合不合格碱基比例筛 read。
+  # unqualified_percent_limit：允许的不合格碱基比例（百分数）；调小更严格，影响保留 reads。
+  # n_base_limit：单条 read 允许的最多未知碱基 N 数；调小更严格。
+  # compression_level：gzip 压缩等级；改变时间/文件大小，不改变保留的序列。
+  [[ $sample_jobs =~ ^[1-9][0-9]*$ && $THREADS =~ ^[1-9][0-9]*$ ]]
+  (( sample_jobs > THREADS )) && sample_jobs=$THREADS
+  threads_per_sample=$((THREADS / sample_jobs))
+
+  # 功能：对一个文库的双端 reads 执行过滤，日志和 clean 文件按 sample_id 保存。
+  # 输入参数依次是 sample_id、原始 R1 文件名、原始 R2 文件名。
+  # 质量和长度设置使用上方变量；export 后子进程也会收到同一组值。
+
+  # 接口｜filter_one_sample：只处理一个样本，调用外层已导出的质量门槛/目录/线程。
+  # 位置参数按以下顺序传入；Bash 没有 R 那样的具名形参调用，不能调换顺序。
+  # $1 sample_id：单个样本 ID 字符串；与样本表一致，用来标记汇总行，不根据文件顺序重命名。
+  # $2 read1：原始 R1 文件名，来自样本表，不附带 rawdata 路径。
+  # $3 read2：原始 R2 文件名，必须与 read1 配对，不能把它算成另一个重复。
+  # 返回/写出：成功返回退出状态 0，检查或软件失败为非零。实际结果保存在上述目录；本接口不返回一张内存中
+  #   的表。
+  filter_one_sample() {
+    local sample_id=$1 read1=$2 read2=$3
+    local output1="$cleandata/${sample_id}_clean_1.fastq.gz"
+    local output2="$cleandata/${sample_id}_clean_2.fastq.gz"
+    # 明确拒绝覆盖已经存在的计算结果。恢复失败任务时先核实并隔离其部分输出。
+    if [[ -e "$output1" || -e "$output2" ]]; then
+      printf '输出已存在，请先核对运行记录: %s\n' "$sample_id" >&2
+      return 1
+    fi
+    /usr/bin/time -v -o "$cleandata/${sample_id}.resources.log" \
+      fastp -l "$min_length" -q "$qualified_quality_phred" -w "$threads_per_sample" \
+        -n "$n_base_limit" -u "$unqualified_percent_limit" --compression "$compression_level" \
+        -i "$rawdata/$read1" -I "$rawdata/$read2" \
+        -o "$output1" -O "$output2" \
+        -R "$sample_id" -h "$cleandata/${sample_id}.fp.html" \
+        -j "$cleandata/${sample_id}.fp.json" \
+        > "$cleandata/${sample_id}.fastp.log" 2>&1
+  }
+  export -f filter_one_sample
+  export rawdata cleandata threads_per_sample
+  export min_length qualified_quality_phred unqualified_percent_limit n_base_limit compression_level
+
+  # 功能：从样本表分配任务；NUL 分隔保护三个输入字段，避免路径/字段边界混淆。
+  # 并行样本数由 sample_jobs 决定；样本数不是线程数。
+  Rscript 0script/tools/sample_columns.R sample_id read1 read2 --nul |
+    xargs -0 -r -P "$sample_jobs" -n 3 bash -c 'set -euo pipefail; filter_one_sample "$@"' filter_one_sample
+  multiqc "$cleandata" --outdir 2data/cleandata/multiqc --filename fastp_multiqc.html --force
+)

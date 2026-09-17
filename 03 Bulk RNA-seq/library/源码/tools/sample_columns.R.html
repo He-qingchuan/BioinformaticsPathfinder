@@ -1,0 +1,27 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>sample_columns · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/tools/sample_columns.R" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>sample_columns.R</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code>#!/usr/bin/env Rscript
+# 功能：按列名读取已校验样本表，向 Bash 提供正确顺序的字段；不保存或改写样本表。
+# 调用：Rscript 0script/tools/sample_columns.R sample_id read1 read2 [--nul]。位置参数是需要的列名，不
+#   是列号。
+# --nul：字段用 NUL 字节分隔，供 xargs -0 安全接收含空格文件名；省略按 TSV 输出，无表头。
+# 从项目根目录运行；读取 samples.tsv，按是否请求 read1/read2 决定 fastq/matrix 字段校验。写标准输出，
+#   不另存一份样本表。
+# 本文件顶层执行命令，不是供 source 后再单独调用的函数库。
+
+source(&quot;0script/tools/metadata.R&quot;)
+args &lt;- commandArgs(TRUE)
+nul &lt;- &quot;--nul&quot; %in% args
+columns &lt;- setdiff(args, &quot;--nul&quot;)
+if (!length(columns)) stop(&quot;请指定需要的列，例如 sample_id read1 read2&quot;)
+samples &lt;- read_samples(entry = if (any(c(&quot;read1&quot;, &quot;read2&quot;) %in% columns)) &quot;fastq&quot; else &quot;matrix&quot;)
+require_columns(samples, columns, &quot;样本表&quot;)
+if (nul) {
+  # Linux 命令行的二进制标准输出；file(&quot;stdout&quot;, &quot;wb&quot;) 会误建名为 stdout 的文件。
+  connection &lt;- file(&quot;/dev/stdout&quot;, &quot;wb&quot;, raw = TRUE)
+  for (i in seq_len(nrow(samples))) for (field in columns)
+    writeBin(c(charToRaw(as.character(samples[[field]][i])), as.raw(0)), connection)
+  close(connection)
+} else {
+  write.table(samples[columns], stdout(), sep = &quot;\t&quot;, quote = FALSE,
+              row.names = FALSE, col.names = FALSE, na = &quot;NA&quot;)
+}
+</code></pre></main></body></html>

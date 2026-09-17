@@ -1,0 +1,80 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>execution · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/tools/execution.py" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>execution.py</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code># 文件用途｜把已验证参数安全传入原章节入口，并定位现有软件。
+# 使用：由 0script/tools/run_chapter.py 导入；只提供规则/函数，不作为单独分析步骤执行。输入输出与每个
+#   参数见下面接口注释。
+# 注释用 # 独立行说明；现有 docstring 和程序帮助文本保持原样，不把注释变成执行时读取的新配置。
+
+&quot;&quot;&quot;只负责执行适配：参数注入、原工具定位与固定步骤调度，不包含统计算法。&quot;&quot;&quot;
+import json
+import os
+from pathlib import Path
+import re
+import shlex
+import subprocess
+import sys
+
+
+
+# 接口｜r_literal：将已校验的 JSON 值转成 R 字面量。
+# 参数：
+# value（必填，无默认值）：已通过 validate_parameters 的标量或列表；不能把任意字典/程序文本直接当 R 表
+#   达式。
+# 返回/写出与边界：返回 R 代码片段字符串：None→NULL、布尔→TRUE/FALSE、列表→c()，空列表→logical()；字符
+#   串用 JSON 转义，不执行值中的代码。
+def r_literal(value):
+    if value is None:
+        return &quot;NULL&quot;
+    if isinstance(value, bool):
+        return &quot;TRUE&quot; if value else &quot;FALSE&quot;
+    if isinstance(value, list):
+        return &quot;c(&quot; + &quot;,&quot;.join(r_literal(x) for x in value) + &quot;)&quot; if value else &quot;logical()&quot;
+    if isinstance(value, str):
+        return json.dumps(value, ensure_ascii=False)
+    return repr(value)
+
+
+# 接口｜inject_parameters：只在唯一的显式入口标记处插入已验证参数。
+# 参数：
+# code（必填，无默认值）：从 MD 提取的原始代码字符串，含默认赋值、标记和函数调用。
+# block（必填，无默认值）：执行单元名称，如 volcano，用来定位 # interface-parameters 标记。
+# language（必填，无默认值）：字符串 r 或 bash；分别使用 R 字面量或 shell 安全引用。
+# values（必填，无默认值）：该单元已经验证的参数字典；在默认赋值之后、函数调用之前覆盖本次入口值。
+# 返回/写出与边界：返回新代码字符串，不修改输入 code。无参数原样返回，标记缺失/重复或 shell 收到数组时
+#   报错；执行发生在外层。
+def inject_parameters(code, block, language, values):
+    &quot;&quot;&quot;仅在显式注释点注入已验证的标量/向量，不搜索替换代码中的数字。&quot;&quot;&quot;
+    if not values:
+        return code
+    marker = &quot;# interface-parameters: &quot; + block
+    if code.count(marker) != 1:
+        raise ValueError(f&quot;{block} 缺少唯一参数入口；拒绝猜测或改写其他代码&quot;)
+    if language == &quot;r&quot;:
+        additions = [f&quot;{key} &lt;- {r_literal(value)}&quot; for key, value in values.items()]
+    else:
+        if any(isinstance(value, (list, dict)) for value in values.values()):
+            raise ValueError(&quot;Shell 参数仅接受已验证标量&quot;)
+        additions = [key + &quot;=&quot; + shlex.quote(str(value)) for key, value in values.items()]
+    return code.replace(marker, marker + &quot;\n# 以下值来自本次运行的参数快照。\n&quot; + &quot;\n&quot;.join(additions))
+
+
+# 接口｜tool_environment：根据真实 Conda 环境补齐 Trinity 附带脚本位置。
+# 参数：
+# conda（必填，无默认值）：Conda 可执行文件路径字符串。
+# environment（必填，无默认值）：已有环境名字符串；rnaseq 额外查找 Trinity util/差异分析目录。
+# 返回/写出与边界：返回环境变量字典，供当前子进程使用；不永久修改系统 PATH，不创建个人软链接。
+def tool_environment(conda, environment):
+    &quot;&quot;&quot;从实际 Conda 环境定位 Trinity 附带脚本，不依赖个人软链接/包装器。&quot;&quot;&quot;
+    result = subprocess.run([conda, &quot;run&quot;, &quot;-n&quot;, environment, &quot;python&quot;, &quot;-c&quot;,
+                             &quot;import sys; print(sys.prefix)&quot;], capture_output=True, text=True, check=True)
+    prefix = Path(result.stdout.strip().splitlines()[-1])
+    directories = [prefix / &quot;bin&quot;]
+    if environment == &quot;rnaseq&quot;:
+        directories += [prefix / &quot;bin/util&quot;, prefix / &quot;bin/util/support_scripts&quot;,
+                        prefix / &quot;bin/Analysis/DifferentialExpression&quot;]
+        directories += list(prefix.glob(&quot;opt/trinity*/util&quot;))
+        directories += list(prefix.glob(&quot;opt/trinity*/util/support_scripts&quot;))
+        directories += list(prefix.glob(&quot;opt/trinity*/Analysis/DifferentialExpression&quot;))
+    env = os.environ.copy()
+    env[&quot;PATH&quot;] = os.pathsep.join(str(p) for p in directories if p.is_dir()) + os.pathsep + env.get(&quot;PATH&quot;, &quot;&quot;)
+    return env
+
+</code></pre></main></body></html>

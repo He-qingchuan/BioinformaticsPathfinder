@@ -1,0 +1,12 @@
+contrast_id	test_group	reference_group	comparison_type	enabled
+ZT1_vs_ZT0	ZT1	ZT0	first_and_adjacent	TRUE
+ZT4_vs_ZT0	ZT4	ZT0	first	TRUE
+ZT8_vs_ZT0	ZT8	ZT0	first	TRUE
+ZT12_vs_ZT0	ZT12	ZT0	first	TRUE
+ZT16_vs_ZT0	ZT16	ZT0	first	TRUE
+ZT20_vs_ZT0	ZT20	ZT0	first	TRUE
+ZT4_vs_ZT1	ZT4	ZT1	adjacent	TRUE
+ZT8_vs_ZT4	ZT8	ZT4	adjacent	TRUE
+ZT12_vs_ZT8	ZT12	ZT8	adjacent	TRUE
+ZT16_vs_ZT12	ZT16	ZT12	adjacent	TRUE
+ZT20_vs_ZT16	ZT20	ZT16	adjacent	TRUE

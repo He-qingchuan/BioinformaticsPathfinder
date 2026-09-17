@@ -1,0 +1,4223 @@
+{
+  "schema_version": 2,
+  "version": "V3 术语增强版",
+  "updated": "2026-09-16",
+  "reading_page": "02_完整教案_阅读与打印.html",
+  "categories": [
+    "生命与实验",
+    "测序与质控",
+    "定量与表达矩阵",
+    "统计与样本关系",
+    "差异与图形",
+    "功能与注释",
+    "时间与聚类",
+    "软件与文件"
+  ],
+  "entries": [
+    {
+      "id": "gene",
+      "zh": "基因",
+      "en": "gene",
+      "abbr": "",
+      "aliases": [
+        "基因",
+        "gene",
+        "genes"
+      ],
+      "category": "生命与实验",
+      "summary": "可以把基因理解为 DNA 上具有特定生物学意义的一段信息。有的基因通过 RNA 参与制造蛋白，有的产生本身就能发挥作用的 RNA。",
+      "example": "本课的 AT1G13930 是一个基因编号；火山图中的一个点代表这样一个基因。",
+      "in_course": "定量先估计转录本，再根据对应关系汇总到基因，差异分析随后逐个基因比较。",
+      "pitfall": "一个基因可能产生多个转录本，也可能参与多个过程，不能机械理解成“一基因、一蛋白、一功能”。",
+      "related": [
+        "dna",
+        "transcript",
+        "expression"
+      ],
+      "sources": [],
+      "legacy_name": "基因",
+      "anchor": "glossary-1"
+    },
+    {
+      "id": "transcription",
+      "zh": "转录",
+      "en": "transcription",
+      "abbr": "",
+      "aliases": [
+        "转录",
+        "transcription"
+      ],
+      "category": "生命与实验",
+      "summary": "转录是以 DNA 为模板合成 RNA 的过程，像根据档案中的一段信息制作工作副本。不同条件下，制作这些副本的程度可以发生变化。",
+      "example": "叶片在开灯前后，某些基因对应的 RNA 变多，可能与转录、RNA 降解等过程的共同变化有关。",
+      "in_course": "它解释了为什么 RNA 可以帮助我们观察基因表达状态，是后续测序分析的生物学起点。",
+      "pitfall": "本课测到的 RNA 丰度是产生与降解等过程共同作用的结果，不能直接当成瞬时转录速度。",
+      "related": [
+        "dna",
+        "rna",
+        "expression"
+      ],
+      "sources": [],
+      "legacy_name": "转录",
+      "anchor": "glossary-2"
+    },
+    {
+      "id": "expression",
+      "zh": "表达量",
+      "en": "gene expression abundance",
+      "abbr": "",
+      "aliases": [
+        "表达量",
+        "丰度",
+        "abundance"
+      ],
+      "category": "生命与实验",
+      "summary": "表达量在本课指从 RNA 测序数据估计的基因或转录本丰度。它像菜单中各道菜的份量记录，但具体数值还受测序、长度和计算单位影响。",
+      "example": "同一个基因可以同时有 counts、TPM 和 TMM 数值；它们采用的尺度不同，数字不会相同。",
+      "in_course": "我们用它比较样本、观察时间变化，并在适当模型中判断基因是否发生变化。",
+      "pitfall": "RNA 较多不自动等于蛋白更多、酶更活跃或某通路被激活，也不必然代表绝对分子数增加。",
+      "related": [
+        "counts",
+        "tpm",
+        "tmm"
+      ],
+      "sources": [],
+      "legacy_name": "表达量",
+      "anchor": "glossary-3"
+    },
+    {
+      "id": "transcript",
+      "zh": "转录本",
+      "en": "transcript",
+      "abbr": "",
+      "aliases": [
+        "转录本",
+        "transcript",
+        "transcripts"
+      ],
+      "category": "生命与实验",
+      "summary": "转录本是一种具体的 RNA 形式。同一基因的信息经过不同加工或剪接，可以形成几个不同版本，像同一份资料的不同编辑版。",
+      "example": "教学示意中，基因 G1 有转录本 a 和 b；各估计 3、2 个片段，汇总后基因计数为 5。",
+      "in_course": "Salmon 先在转录本层面定量，之后通过转录本—基因映射建立基因表达矩阵。",
+      "pitfall": "转录本数、基因数与样本数是不同数量；多个转录本也不一定都能翻译成蛋白。",
+      "related": [
+        "gene",
+        "splicing",
+        "quantification"
+      ],
+      "sources": [],
+      "legacy_name": "转录本",
+      "anchor": "glossary-4"
+    },
+    {
+      "id": "read",
+      "zh": "读段",
+      "en": "sequencing read",
+      "abbr": "read",
+      "aliases": [
+        "read",
+        "reads",
+        "读段"
+      ],
+      "category": "测序与质控",
+      "summary": "读段是测序仪一次读取的碱基序列，像从一段文字中读出的一小段。通常还附有对每个字母判断是否可靠的质量值。",
+      "example": "同一文库片段做双端测序，会产生一对 reads，分别叫 R1 和 R2。",
+      "in_course": "FastQC 检查读段的质量，fastp 处理读段，Salmon 再利用读段中的序列信息估计来源。",
+      "pitfall": "一条 read 不是一个基因，也不是一个生物学样本；一对 reads 往往属于同一个片段。",
+      "related": [
+        "fragment",
+        "paired_end",
+        "fastq"
+      ],
+      "sources": [],
+      "legacy_name": "read",
+      "anchor": "glossary-5"
+    },
+    {
+      "id": "fastq",
+      "zh": "FASTQ 序列与质量格式",
+      "en": "FASTQ format",
+      "abbr": "FASTQ",
+      "aliases": [
+        "FASTQ",
+        "fastq"
+      ],
+      "category": "测序与质控",
+      "summary": "FASTQ 把一条读段的名称、碱基序列、分隔行和质量字符放在四行里。可以把它看成既记录答案、又记录每个字母可靠程度的文件。",
+      "example": "本课示意序列 ACGTACGT 有 8 个碱基，对应质量行也有 8 个字符；.gz 表示文件经过压缩。",
+      "in_course": "测序原始数据和过滤后的 clean 数据都可用 FASTQ 保存，随后分别进行质控或定量。",
+      "pitfall": "质量字符不是另一个碱基序列，需要按相应编码解释；FASTQ 也不能直接当成表达矩阵。",
+      "related": [
+        "read",
+        "phred",
+        "phred33"
+      ],
+      "sources": [],
+      "legacy_name": "FASTQ",
+      "anchor": "glossary-6"
+    },
+    {
+      "id": "replicate",
+      "zh": "生物学重复",
+      "en": "biological replicate",
+      "abbr": "",
+      "aliases": [
+        "生物学重复",
+        "biological replicate"
+      ],
+      "category": "生命与实验",
+      "summary": "生物学重复来自相互独立的生物样本，用来观察同一实验条件下自然存在的差异。像比较班级成绩时，需要多名学生，而不能把同一张试卷复印三份。",
+      "example": "本课每个 ZT 时期有三个生物学重复，各自建立一个文库。",
+      "in_course": "重复之间的波动帮助模型估计组内变异，使差异检验不仅看两个均值相差多少。",
+      "pitfall": "同一文库的 R1、R2、文件复制或人为补出的均值都不会增加独立生物学重复。",
+      "related": [
+        "library",
+        "paired_end",
+        "variation"
+      ],
+      "sources": [],
+      "legacy_name": "生物学重复",
+      "anchor": "glossary-7"
+    },
+    {
+      "id": "library",
+      "zh": "测序文库",
+      "en": "sequencing library",
+      "abbr": "",
+      "aliases": [
+        "文库",
+        "sequencing library"
+      ],
+      "category": "生命与实验",
+      "summary": "文库是把样本中的核酸加工成适合测序的一批片段。它像按统一装订规则准备的一箱书页，带有测序仪识别所需的接头。",
+      "example": "本课 7 个时期各有 3 份独立文库，共 21 份；每份双端测序，因此共有 42 个 FASTQ 文件。",
+      "in_course": "样本表把文库、分组和文件对应起来，后续每个文库分别质控、定量并形成矩阵的一列。",
+      "pitfall": "文库是实验加工产物，不是数据库；两个测序端仍属于同一文库。",
+      "related": [
+        "replicate",
+        "adapter",
+        "library_prep"
+      ],
+      "sources": [],
+      "legacy_name": "文库",
+      "anchor": "glossary-8"
+    },
+    {
+      "id": "zt",
+      "zh": "授时因子时间",
+      "en": "Zeitgeber time",
+      "abbr": "ZT",
+      "aliases": [
+        "ZT",
+        "Zeitgeber time"
+      ],
+      "category": "生命与实验",
+      "summary": "ZT 是相对某个周期性环境信号规定的时间刻度。本课以开灯时刻为 ZT0，之后按经过的小时数记录采样时间。",
+      "example": "ZT4 表示开灯后 4 小时，ZT12 表示开灯后 12 小时；这些是实验时间标签。",
+      "in_course": "它连接样本分组、差异比较和时间序列图，帮助确定我们在比较一天中的哪些阶段。",
+      "pitfall": "ZT 不是植物年龄，也不是下载或开始分析后的时间；ZT0 与 ZT1 的间隔只有 1 小时。",
+      "related": [
+        "photoperiod",
+        "time_series",
+        "period"
+      ],
+      "sources": [],
+      "legacy_name": "ZT",
+      "anchor": "glossary-9"
+    },
+    {
+      "id": "adapter",
+      "zh": "建库接头",
+      "en": "sequencing adapter",
+      "abbr": "",
+      "aliases": [
+        "接头",
+        "adapter"
+      ],
+      "category": "测序与质控",
+      "summary": "接头是建库时人为接到片段上的已知序列，帮助片段被测序仪识别。如果读段读穿了待测片段，接头也可能进入测序结果。",
+      "example": "本课原始 R1 的末端出现较高接头信号；fastp 修剪后再用 FastQC 检查残留情况。",
+      "in_course": "识别并处理接头，可以减少把实验加入的序列误当成生物样本序列来定量的机会。",
+      "pitfall": "接头可以被测得非常准确，因此“碱基质量高”与“需要去接头”并不矛盾。",
+      "related": [
+        "library_prep",
+        "trimming",
+        "qc"
+      ],
+      "sources": [],
+      "legacy_name": "接头",
+      "anchor": "glossary-10"
+    },
+    {
+      "id": "q30",
+      "zh": "Q30 碱基质量门槛",
+      "en": "Phred quality score 30",
+      "abbr": "Q30",
+      "aliases": [
+        "Q30"
+      ],
+      "category": "测序与质控",
+      "summary": "Q30 指 Phred 质量值至少达到 30 的门槛；Q=30 对应模型估计的单碱基判错概率为 0.001。报告中的 Q30 比例是在统计有多少碱基达到这个门槛。",
+      "example": "Q30 比例为 90% 的示意文库，表示约九成碱基的质量评分至少为 30，不是九成读段完全无错。",
+      "in_course": "它是过滤前后质控概览中的一个指标，要与逐位置质量、接头和保留量一起阅读。",
+      "pitfall": "Q30 不是整个样本正确的概率，也不是差异分析显著性；解释还依赖质量编码及原始质量信息。",
+      "related": [
+        "phred",
+        "q20",
+        "qc"
+      ],
+      "sources": [],
+      "legacy_name": "Q30",
+      "anchor": "glossary-11"
+    },
+    {
+      "id": "counts",
+      "zh": "表达计数",
+      "en": "expression counts",
+      "abbr": "",
+      "aliases": [
+        "counts",
+        "estimated counts",
+        "表达计数",
+        "估计计数"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "counts 是分配到基因或转录本的测序观察数量。本课采用 Salmon 的估计片段计数：归属有歧义时，模型可以把贡献分给多个可能来源。",
+      "example": "一个共享片段的贡献可以示意分成 0.7 和 0.3；这解释了 estimated counts 为什么可以有小数。",
+      "in_course": "各样本计数汇总成矩阵后，指定流程再取整并交给 DESeq2 做计数模型分析。",
+      "pitfall": "小数不意味着实际存在半条 read；counts 也没有自动消除测序深度和组成差异，不能直接当作 TPM。",
+      "related": [
+        "fragment",
+        "numreads",
+        "deseq2"
+      ],
+      "sources": [],
+      "legacy_name": "counts",
+      "anchor": "glossary-12",
+      "case_sensitive_aliases": [
+        "counts"
+      ]
+    },
+    {
+      "id": "tpm",
+      "zh": "每百万转录本丰度",
+      "en": "transcripts per million",
+      "abbr": "TPM",
+      "aliases": [
+        "TPM"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "TPM 是考虑转录本长度后，在一个样本内部把相对丰度缩放到总和一百万的量。可以把它理解为一份经过长度调整的“组成菜单”。",
+      "example": "若某种 RNA 自身数量不变、其他 RNA 大量增加，它在总体中的份额仍可能降低，TPM 也会受影响。",
+      "in_course": "本课用 TPM 表达矩阵组织时间趋势与周期分析；单个基因值反映的是当前样本的相对丰度。",
+      "pitfall": "TPM 不是直接数出的分子数，也不能把它作为 DESeq2 的原始计数输入；比较时要注意组成变化。",
+      "related": [
+        "counts",
+        "composition",
+        "normalization"
+      ],
+      "sources": [],
+      "legacy_name": "TPM",
+      "anchor": "glossary-13"
+    },
+    {
+      "id": "tmm",
+      "zh": "M 值截尾均值归一化",
+      "en": "trimmed mean of M-values",
+      "abbr": "TMM",
+      "aliases": [
+        "TMM"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "TMM 用许多基因的相对变化估计样本间的组成校正因子，并降低极端值的影响。“截尾”可理解为先去掉对估计不合适的两端，再求稳健的中心。",
+      "example": "本项目 Trinity 的 TMM 表达矩阵按 TPM / norm.factor 计算，其中 norm.factor 是每个样本的组成校正因子。",
+      "in_course": "样本相关性、PCA 和 Top30 热图使用这一路表达矩阵，随后还会做相应对数或行标准化。",
+      "pitfall": "TMM 是方法名称，输出矩阵的具体单位取决于实现；本课 TMM 不是常见的 TMM-CPM，也不是 TPM 的同义词。",
+      "related": [
+        "tpm",
+        "normalization",
+        "cpm",
+        "norm_factor"
+      ],
+      "sources": [],
+      "legacy_name": "TMM",
+      "anchor": "glossary-14"
+    },
+    {
+      "id": "pca",
+      "zh": "主成分分析",
+      "en": "principal component analysis",
+      "abbr": "PCA",
+      "aliases": [
+        "PCA",
+        "主成分分析"
+      ],
+      "category": "统计与样本关系",
+      "summary": "PCA 把许多基因构成的样本关系投影到少数几个综合方向。像给一件复杂物体选观察角度，用较少坐标保留主要变化。",
+      "example": "本课 PCA 有 21 个样本点；PC1 与 PC2 合计解释约 67.29% 的变异。",
+      "in_course": "它帮助查看同组重复是否接近、不同时间点是否形成整体结构，并提示需要核对的样本。",
+      "pitfall": "一个点是一个样本，坐标不是某个基因表达量；二维图上的分离不能证明某个基因显著或自动决定删样本。",
+      "related": [
+        "principal_component",
+        "explained_variance",
+        "outlier"
+      ],
+      "sources": [],
+      "legacy_name": "PCA",
+      "anchor": "glossary-15"
+    },
+    {
+      "id": "log2fc",
+      "zh": "以 2 为底的倍数变化对数",
+      "en": "log2 fold change",
+      "abbr": "log₂FC",
+      "aliases": [
+        "log2FC",
+        "log₂FC",
+        "log2FoldChange",
+        "log2 fold change"
+      ],
+      "category": "差异与图形",
+      "summary": "log₂FC 把表达倍数变化转换为便于比较的对数尺度：正负表示方向，绝对值描述变化幅度。必须先明确“谁相对谁”。",
+      "example": "本课 ZT4 相对 ZT0，+1 对应约 2 倍，−1 对应约一半，+2 对应约 4 倍。",
+      "in_course": "它是差异结果表的效应量，也是火山图的横轴，并参与 Top30 基因的幅度排序。",
+      "pitfall": "DESeq2 给出模型估计，未必等于两个展示均值的简单对数比；幅度大不自动意味着统计证据充分。",
+      "related": [
+        "contrast",
+        "effect_size",
+        "padj"
+      ],
+      "sources": [],
+      "legacy_name": "log2FC",
+      "anchor": "glossary-16"
+    },
+    {
+      "id": "padj",
+      "zh": "校正后的 P 值",
+      "en": "adjusted p-value",
+      "abbr": "padj",
+      "aliases": [
+        "padj",
+        "p.adjust",
+        "BH.Q",
+        "校正 P 值",
+        "校正后的 P 值"
+      ],
+      "category": "统计与样本关系",
+      "summary": "同时检验很多基因或功能时，偶然出现小 P 值的机会增加。校正 P 值把多重检验问题纳入判断，本课主要使用 BH 方法。",
+      "example": "差异候选要求 padj≤0.05 且幅度达标；JTK 示例另按 BH.Q<0.05 和有效周期筛选，边界规则并不完全相同。",
+      "in_course": "它出现在差异表、富集图色标和周期候选表；必须连同具体检验范围、方法及阈值解释。",
+      "pitfall": "padj 不是单个基因“为假”的概率。本流程还可能把缺失 padj 导出为 1，因此 1 不必然表示完成了有效检验。",
+      "related": [
+        "pvalue",
+        "fdr",
+        "bh"
+      ],
+      "sources": [
+        {
+          "label": "DESeq2 官方教程：模型与结果解释",
+          "url": "https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+        }
+      ],
+      "legacy_name": "padj",
+      "anchor": "glossary-17"
+    },
+    {
+      "id": "fdr",
+      "zh": "假发现率",
+      "en": "false discovery rate",
+      "abbr": "FDR",
+      "aliases": [
+        "FDR",
+        "假发现率"
+      ],
+      "category": "统计与样本关系",
+      "summary": "当我们筛出一组显著结果时，其中可能混入实际上没有相应效应的结果。FDR 关注的是这一筛选程序在重复使用时，错误发现比例的平均水平。",
+      "example": "在满足方法假设时，以 0.05 控制 FDR 的含义涉及长期平均比例，而不是保证这一次名单中恰好有 5% 错误。",
+      "in_course": "它帮助理解为什么一次检验几千个基因时需要多重校正，以及不同检验集合的范围为什么重要。",
+      "pitfall": "不能把 FDR=0.05 理解为每个候选各有 5% 错误概率，也不能把不同分析中最小的校正值随意拼成同一次控制。",
+      "related": [
+        "padj",
+        "bh",
+        "multiple_testing"
+      ],
+      "sources": [],
+      "legacy_name": "FDR",
+      "anchor": "glossary-18"
+    },
+    {
+      "id": "zscore",
+      "zh": "Z 分数（标准化值）",
+      "en": "standard score / Z-score",
+      "abbr": "Z-score",
+      "aliases": [
+        "Z-score",
+        "Z 分数",
+        "行 Z-score"
+      ],
+      "category": "统计与样本关系",
+      "summary": "Z 分数先减去参照均值，再除以标准差，表示一个值离均值有多少个标准差。本课热图按行计算，每个基因用自己的均值和标准差作参照。",
+      "example": "一个格子的行 Z-score 为 +1，表示该样本中此基因高于它在所选样本里的均值一个标准差。",
+      "in_course": "它让不同量级的基因能按相对变化形状着色，适合沿同一行比较高低。",
+      "pitfall": "不同基因使用不同参照，不能用两行的颜色比较绝对表达量；Z-score 不是 P 值，也不能直接喂给计数模型。",
+      "related": [
+        "standardization",
+        "mean",
+        "sd"
+      ],
+      "sources": [],
+      "legacy_name": "Z-score",
+      "anchor": "glossary-19"
+    },
+    {
+      "id": "go",
+      "zh": "基因本体",
+      "en": "Gene Ontology",
+      "abbr": "GO",
+      "aliases": [
+        "GO",
+        "Gene Ontology",
+        "基因本体"
+      ],
+      "category": "功能与注释",
+      "summary": "GO 是组织基因产物功能知识的体系，可看作有层级和关联的功能词典，分为生物过程、分子功能和细胞组分三大类。",
+      "example": "同一个基因可以参与某个生物过程、承担一种分子功能，并位于某种细胞结构，因此会有多个 GO 注释。",
+      "in_course": "本课通过 GO 映射构建功能集合，再对差异候选或完整排序进行富集分析。",
+      "pitfall": "GO 条目相互关联并可能共享基因，多个显著条目不一定代表互不相关的多次发现。",
+      "related": [
+        "go_bp",
+        "go_mf",
+        "go_cc"
+      ],
+      "sources": [],
+      "legacy_name": "GO",
+      "anchor": "glossary-20"
+    },
+    {
+      "id": "kegg",
+      "zh": "京都基因与基因组百科全书",
+      "en": "Kyoto Encyclopedia of Genes and Genomes",
+      "abbr": "KEGG",
+      "aliases": [
+        "KEGG"
+      ],
+      "category": "功能与注释",
+      "summary": "KEGG 是按通路、功能模块等组织生物学知识的数据库，帮助把零散基因联系到共同的反应和过程。",
+      "example": "本课展示“淀粉和蔗糖代谢”通路：多个上调候选具有相关注释，随后检验这种比例是否偏高。",
+      "in_course": "它提供功能集合与基因映射，用于 ORA、GSEA 及通路层面的解释。",
+      "pitfall": "通路名称不是本次实验直接测到的活动；植物基因落入带疾病名称的通用通路，也不等于植物患病。",
+      "related": [
+        "pathway",
+        "ko",
+        "annotation"
+      ],
+      "sources": [],
+      "legacy_name": "KEGG",
+      "anchor": "glossary-21"
+    },
+    {
+      "id": "ora",
+      "zh": "过度富集分析",
+      "en": "over-representation analysis",
+      "abbr": "ORA",
+      "aliases": [
+        "ORA",
+        "过度富集分析",
+        "过度代表"
+      ],
+      "category": "功能与注释",
+      "summary": "ORA 问的是：某类功能在选出的基因名单中，是否比在合适背景中出现得更密集。像检查合唱队报名者中，会乐器的人是否比全校比例更高。",
+      "example": "本课一个 GO 条目在候选中占 26/809，在背景中占 41/11616；比较这两个比例后再进行统计检验。",
+      "in_course": "它把较长的上调或下调候选名单，整理成可进一步研究的功能线索。",
+      "pitfall": "结果依赖候选阈值、背景和注释覆盖；富集不直接等于通路被激活，也不能省略多重校正。",
+      "related": [
+        "background",
+        "gene_ratio",
+        "hypergeometric"
+      ],
+      "sources": [],
+      "legacy_name": "ORA",
+      "anchor": "glossary-22"
+    },
+    {
+      "id": "gsea",
+      "zh": "基因集富集分析",
+      "en": "gene set enrichment analysis",
+      "abbr": "GSEA",
+      "aliases": [
+        "GSEA",
+        "基因集富集分析"
+      ],
+      "category": "功能与注释",
+      "summary": "GSEA 先把可用基因排成一条队伍，再观察同一功能的成员是否偏向队伍的一端。它不要求先把未达到差异阈值的基因全部删掉。",
+      "example": "一组功能成员可能各自只发生不大的变化，但若一起偏向正端，整体排序仍可能提供线索。",
+      "in_course": "本课主要使用 Wald stat 排序，再由富集分数、NES 和校正 P 值概括功能集合的偏向。",
+      "pitfall": "“完整排序”仍要排除缺乏有效数值或映射的记录；曲线的横轴是基因排名，不是时间。",
+      "related": [
+        "rank_metric",
+        "es",
+        "leading_edge"
+      ],
+      "sources": [
+        {
+          "label": "GSEA 官方用户指南：排序、ES、NES 与 leading edge",
+          "url": "https://docs.gsea-msigdb.org/GSEA/GSEA_User_Guide/"
+        }
+      ],
+      "legacy_name": "GSEA",
+      "anchor": "glossary-23"
+    },
+    {
+      "id": "nes",
+      "zh": "标准化富集分数",
+      "en": "normalized enrichment score",
+      "abbr": "NES",
+      "aliases": [
+        "NES",
+        "标准化富集分数"
+      ],
+      "category": "功能与注释",
+      "summary": "NES 是对 GSEA 原始富集分数进行标准化后的量，以考虑集合大小等影响。符号描述相对当前排序的偏向，数值用来概括标准化后的富集程度。",
+      "example": "本课酸性物质响应集合 NES 约为 +1.932，表示它偏向当前 ZT4 相对 ZT0 排序的正端。",
+      "in_course": "GSEA 概览图将 NES 放在横轴，结合校正 P 值和核心成员数来读。",
+      "pitfall": "NES 不是表达倍数，也不是曲线峰值 ES。更换排序或注释背景后，不能只比 NES 大小就给两种路线排名。",
+      "related": [
+        "gsea",
+        "es",
+        "rank_metric"
+      ],
+      "sources": [
+        {
+          "label": "GSEA 官方用户指南：排序、ES、NES 与 leading edge",
+          "url": "https://docs.gsea-msigdb.org/GSEA/GSEA_User_Guide/"
+        }
+      ],
+      "legacy_name": "NES",
+      "anchor": "glossary-24"
+    },
+    {
+      "id": "orgdb",
+      "zh": "物种注释数据库",
+      "en": "organism annotation database",
+      "abbr": "OrgDb",
+      "aliases": [
+        "OrgDb"
+      ],
+      "category": "功能与注释",
+      "summary": "OrgDb 是 R/Bioconductor 中组织某物种基因编号与功能信息的注释数据库类型。像有固定检索键的词典，输入正确编号才能查到相关记录。",
+      "example": "本课现成数据库使用 TAIR 键，自建数据库使用 GID；两个键名不能不加检查地互换。",
+      "in_course": "官方和自建两条功能路线都需要合适的基因—功能映射，OrgDb 提供查询这些映射的方式。",
+      "pitfall": "有了数据库不代表每个基因都有完整注释；覆盖缺口和编号类型会影响实际进入富集分析的集合。",
+      "related": [
+        "gene_id",
+        "annotation",
+        "annotationforge",
+        "annotation_transfer"
+      ],
+      "sources": [],
+      "legacy_name": "OrgDb",
+      "anchor": "glossary-25"
+    },
+    {
+      "id": "membership",
+      "zh": "隶属度（模块归属程度）",
+      "en": "degree of membership (Mfuzz: membership value)",
+      "abbr": "",
+      "aliases": [
+        "隶属度",
+        "membership",
+        "membership value",
+        "membership degree",
+        "degree of membership",
+        "模块归属程度"
+      ],
+      "category": "时间与聚类",
+      "summary": "隶属度可以通俗理解为“这个基因的变化曲线，在多大程度上归属于某种模块模式”。模糊聚类允许一个基因与多个模块都有联系，数值介于 0 和 1 之间。",
+      "example": "在只有两个模块的教学例子里，某基因对 A 的隶属度为 0.8，对 B 为 0.2，说明它更偏向 A，同时保留与 B 的联系。这些数字不是本课某个真实基因的结果。",
+      "in_course": "Mfuzz 用 membership value 表示这种渐变归属；本课趋势图的细线颜色帮助辨认不同隶属程度。保留“隶属度”这个专业名称，同时用“模块归属程度”帮助理解。",
+      "pitfall": "0.8 不是“80% 的细胞属于 A”，也不是“该基因有 80% 的概率属于 A”。它是当前聚类设置下的模块归属程度，不是 P 值或相关系数，还受到所选模块、数据处理和模糊参数影响。",
+      "related": [
+        "fuzzy_clustering",
+        "module",
+        "centroid"
+      ],
+      "sources": [
+        {
+          "label": "Mfuzz 原始论文：软聚类与 membership value",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2139991/"
+        }
+      ],
+      "legacy_name": "隶属度",
+      "anchor": "glossary-26"
+    },
+    {
+      "id": "dna",
+      "zh": "脱氧核糖核酸",
+      "en": "deoxyribonucleic acid",
+      "abbr": "DNA",
+      "aliases": [
+        "DNA",
+        "脱氧核糖核酸"
+      ],
+      "category": "生命与实验",
+      "summary": "DNA 是保存遗传信息的分子，可以把其碱基顺序看作一套信息文本。基因是这些序列中具有特定生物学意义的区域。",
+      "example": "同一植株的叶片在不同时间通常仍拥有同样的基因，但各基因对应 RNA 的丰度可以改变。",
+      "in_course": "参考基因组提供 DNA 序列，帮助建立转录本、蛋白和基因编号之间的联系。",
+      "pitfall": "本课主要测量 RNA 层面的表达变化，不是把差异表达直接当作 DNA 序列发生突变。",
+      "related": [
+        "gene",
+        "rna",
+        "reference_genome"
+      ],
+      "sources": [],
+      "anchor": "glossary-27"
+    },
+    {
+      "id": "rna",
+      "zh": "核糖核酸",
+      "en": "ribonucleic acid",
+      "abbr": "RNA",
+      "aliases": [
+        "RNA",
+        "核糖核酸"
+      ],
+      "category": "生命与实验",
+      "summary": "RNA 是参与遗传信息表达和多种细胞功能的分子。一部分 RNA 可作为制造蛋白的模板，另一些 RNA 本身承担功能。",
+      "example": "RNA 序列常写作 A、U、C、G；测序建库常先把其信息转成 cDNA 再读取。",
+      "in_course": "转录组分析估计样本中不同 RNA 的相对丰度，帮助观察表达状态。",
+      "pitfall": "RNA 不全是蛋白编码信使 RNA；具体建库方法决定能观察到哪些 RNA，不能把未测到等同于不存在。",
+      "related": [
+        "transcription",
+        "cdna",
+        "transcriptome"
+      ],
+      "sources": [],
+      "anchor": "glossary-28"
+    },
+    {
+      "id": "cdna",
+      "zh": "互补 DNA",
+      "en": "complementary DNA",
+      "abbr": "cDNA",
+      "aliases": [
+        "cDNA",
+        "互补 DNA"
+      ],
+      "category": "生命与实验",
+      "summary": "cDNA 是以 RNA 为模板合成的 DNA，可理解为把 RNA 信息转换成适合后续实验操作的一份 DNA 副本。",
+      "example": "常见 RNA 测序建库会经过反转录生成 cDNA，再加上测序所需结构。",
+      "in_course": "它解释了为什么一个研究 RNA 的实验，后续仍会处理适合 DNA 测序仪读取的文库。",
+      "pitfall": "cDNA 不是原始基因组 DNA 的简单复制；它反映被反转录的 RNA，具体覆盖受实验过程影响。",
+      "related": [
+        "rna",
+        "library_prep",
+        "transcript"
+      ],
+      "sources": [],
+      "anchor": "glossary-29"
+    },
+    {
+      "id": "transcriptome",
+      "zh": "转录组",
+      "en": "transcriptome",
+      "abbr": "",
+      "aliases": [
+        "转录组",
+        "transcriptome"
+      ],
+      "category": "生命与实验",
+      "summary": "转录组通常指某种细胞、组织或条件下产生的 RNA 转录本总体，像某个时刻正在使用的一套工作副本。",
+      "example": "叶片在 ZT0 与 ZT4 可以使用相同基因信息，却呈现不同的 RNA 丰度组合。",
+      "in_course": "本课用组织样本的 RNA 测序观察整体表达，并从原始序列走到差异、功能和时间分析。",
+      "pitfall": "本课是普通组织转录组案例，一个样本点不是一个单细胞；实验捕获到的 RNA 也有范围限制。",
+      "related": [
+        "rna",
+        "rnaseq",
+        "sample"
+      ],
+      "sources": [],
+      "anchor": "glossary-30"
+    },
+    {
+      "id": "rnaseq",
+      "zh": "RNA 测序",
+      "en": "RNA sequencing",
+      "abbr": "RNA-seq",
+      "aliases": [
+        "RNA-seq",
+        "RNA 测序",
+        "RNA sequencing"
+      ],
+      "category": "生命与实验",
+      "summary": "RNA-seq 是通过测序研究 RNA 组成与丰度的一类实验和分析方法。测序仪先给出序列观察，再通过计算估计它们来自哪些转录本。",
+      "example": "流程可概括为提取 RNA、建库、测序、质控、定量，再开展样本比较和功能解释。",
+      "in_course": "它是整个教案的方法背景，前半程处理序列，后半程分析表达结果。",
+      "pitfall": "测序并不直接给出“基因表达真值”；参考、实验偏倚和统计方法都会影响结果。",
+      "related": [
+        "transcriptome",
+        "library_prep",
+        "quantification"
+      ],
+      "sources": [],
+      "anchor": "glossary-31"
+    },
+    {
+      "id": "base",
+      "zh": "碱基与序列单位",
+      "en": "nucleobase; nucleotide",
+      "abbr": "",
+      "aliases": [
+        "碱基",
+        "核苷酸",
+        "nt",
+        "bp"
+      ],
+      "category": "生命与实验",
+      "summary": "碱基是序列中 A、T、C、G 或 U 等字母所代表的化学部分。描述序列长度时，nt 通常指核苷酸，bp 通常指碱基对。",
+      "example": "FASTQ 里的 ACGTACGT 是 8 个字母；FastQC 的位置轴虽常标 bp，仍是在沿一条读段的位置向后看。",
+      "in_course": "它帮助理解 read 长度、k-mer 长度和逐位置碱基质量图的坐标。",
+      "pitfall": "碱基数、read 条数和样本数是不同单位；本课图中 bp 标签不能理解成新的生物学重复。",
+      "related": [
+        "read",
+        "phred",
+        "kmer"
+      ],
+      "sources": [],
+      "anchor": "glossary-32",
+      "case_sensitive_aliases": [
+        "bp",
+        "nt"
+      ]
+    },
+    {
+      "id": "protein",
+      "zh": "蛋白质",
+      "en": "protein",
+      "abbr": "",
+      "aliases": [
+        "蛋白",
+        "蛋白质",
+        "protein"
+      ],
+      "category": "生命与实验",
+      "summary": "蛋白质是由氨基酸组成、承担结构或催化等多种工作的分子。许多基因的信息经 RNA 和翻译过程参与蛋白产生。",
+      "example": "相似的代表蛋白可提供功能注释线索，但对应 RNA 丰度高不保证蛋白立即按相同比例增加。",
+      "in_course": "自建注释路线用代表蛋白查询已有知识，从而把基因编号联系到功能。",
+      "pitfall": "RNA 测序没有直接测量蛋白数量、稳定性或酶活性，表达结论与蛋白功能结论需区分。",
+      "related": [
+        "translation",
+        "representative_protein",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-33"
+    },
+    {
+      "id": "translation",
+      "zh": "翻译（蛋白合成）",
+      "en": "translation",
+      "abbr": "",
+      "aliases": [
+        "翻译",
+        "translation"
+      ],
+      "category": "生命与实验",
+      "summary": "在分子生物学中，翻译是依据信使 RNA 的编码信息合成蛋白的过程。这里的“翻译”是把核酸编码转换成氨基酸序列。",
+      "example": "一份 RNA 可以被多次用于制造蛋白，RNA 和蛋白也各有降解过程，因此两者数量不必同比变化。",
+      "in_course": "它说明从 RNA 表达变化推向蛋白与功能时，还存在额外的生物学环节。",
+      "pitfall": "不要把正文中的生物学“翻译”与中文、英文之间的语言翻译混为一谈。",
+      "related": [
+        "rna",
+        "protein",
+        "utr"
+      ],
+      "sources": [],
+      "anchor": "glossary-34"
+    },
+    {
+      "id": "splicing",
+      "zh": "RNA 剪接",
+      "en": "RNA splicing",
+      "abbr": "",
+      "aliases": [
+        "剪接",
+        "RNA splicing"
+      ],
+      "category": "生命与实验",
+      "summary": "剪接是 RNA 加工时连接保留片段、去除相应内含子的一类过程。不同的拼接方式可让同一基因产生不同转录本。",
+      "example": "像从同一段原始素材中选择不同片段编辑，成品保留的信息可能不同。",
+      "in_course": "它帮助理解多个转录本为什么共享部分序列，以及读段归属为何会有歧义。",
+      "pitfall": "本课的基因汇总计数不等于专门检验剪接变化；转录本相似也不意味着可以随意合并编号。",
+      "related": [
+        "exon",
+        "intron",
+        "transcript"
+      ],
+      "sources": [],
+      "anchor": "glossary-35"
+    },
+    {
+      "id": "exon",
+      "zh": "外显子",
+      "en": "exon",
+      "abbr": "",
+      "aliases": [
+        "外显子",
+        "exon"
+      ],
+      "category": "生命与实验",
+      "summary": "外显子是某个转录本加工后保留的相应序列片段。可以把它理解为进入该成熟 RNA 成品的部分。",
+      "example": "本课选代表转录本时，成熟转录本长度按外显子累计，而不是把内含子也加进去。",
+      "in_course": "它帮助理解参考注释和代表蛋白选择所用的长度口径。",
+      "pitfall": "外显子不一定全都编码蛋白，还可能包含非翻译区；不同转录本的外显子组合也可不同。",
+      "related": [
+        "intron",
+        "utr",
+        "representative_protein"
+      ],
+      "sources": [],
+      "anchor": "glossary-36"
+    },
+    {
+      "id": "intron",
+      "zh": "内含子",
+      "en": "intron",
+      "abbr": "",
+      "aliases": [
+        "内含子",
+        "intron"
+      ],
+      "category": "生命与实验",
+      "summary": "内含子是在相应 RNA 剪接过程中被去除的序列部分。它属于基因组与初始转录内容的一部分，但不计入该剪接后成熟转录本的对应区段。",
+      "example": "一个基因在基因组上跨度很大，成熟转录本却可能较短，因为中间许多序列在加工中被去除。",
+      "in_course": "本课据此区分基因组跨度、成熟转录本长度和蛋白长度。",
+      "pitfall": "“被剪掉”不等于在生物学上毫无作用；这里讨论的是长度与定量参考口径。",
+      "related": [
+        "splicing",
+        "exon",
+        "reference_genome"
+      ],
+      "sources": [],
+      "anchor": "glossary-37"
+    },
+    {
+      "id": "utr",
+      "zh": "非翻译区",
+      "en": "untranslated region",
+      "abbr": "UTR",
+      "aliases": [
+        "非翻译区",
+        "UTR"
+      ],
+      "category": "生命与实验",
+      "summary": "非翻译区是成熟信使 RNA 中不编码蛋白的相应区域。它仍属于转录本，并可参与调控 RNA 的稳定性或翻译等过程。",
+      "example": "两个转录本编码同样长的蛋白，也可能因非翻译区长度不同而具有不同的成熟转录本长度。",
+      "in_course": "它解释了为什么本课“选最长成熟转录本的对应蛋白”不等于“直接选最长蛋白”。",
+      "pitfall": "非翻译不是没有功能，也不是没有被转录；它与已被剪除的内含子不是同一概念。",
+      "related": [
+        "translation",
+        "exon",
+        "representative_protein"
+      ],
+      "sources": [],
+      "anchor": "glossary-38"
+    },
+    {
+      "id": "sample",
+      "zh": "生物学样本",
+      "en": "biological sample",
+      "abbr": "",
+      "aliases": [
+        "样本",
+        "sample"
+      ],
+      "category": "生命与实验",
+      "summary": "样本是为回答实验问题而采集的一份生物材料及其对应观察单位。本课分析时必须知道每份材料属于哪个时期和重复。",
+      "example": "ZT4_rep_1 是 ZT4 组第一个重复样本的标签；ZT4_vs_ZT0 则是比较名称。",
+      "in_course": "表达矩阵的一列和 PCA 的一个点对应一个样本文库，分组信息把它放回实验设计。",
+      "pitfall": "样本、样本组、文件和基因是不同层次；文件名能帮助识别，但不能代替真实实验记录。",
+      "related": [
+        "replicate",
+        "library",
+        "contrast"
+      ],
+      "sources": [],
+      "anchor": "glossary-39"
+    },
+    {
+      "id": "paired_end",
+      "zh": "双端测序",
+      "en": "paired-end sequencing",
+      "abbr": "",
+      "aliases": [
+        "双端测序",
+        "双端",
+        "R1",
+        "R2",
+        "paired-end",
+        "R1",
+        "R2"
+      ],
+      "category": "生命与实验",
+      "summary": "双端测序从同一文库片段的两端分别读取序列，得到配对的 R1 和 R2。像同时查看一张长纸条的左右两端，利用配对关系帮助判断来源。",
+      "example": "21 个双端文库各有两个 FASTQ 文件，共 42 个文件；一个片段通常对应两条 reads。",
+      "in_course": "fastp 和 Salmon 都需要保持两端正确配对，片段数与 reads 数也因此要分开统计。",
+      "pitfall": "R1 与 R2 不是两个独立生物学重复；误配两端无法靠自动识别文库类型修复。",
+      "related": [
+        "read",
+        "fragment",
+        "replicate"
+      ],
+      "sources": [],
+      "anchor": "glossary-40"
+    },
+    {
+      "id": "single_end",
+      "zh": "单端测序",
+      "en": "single-end sequencing",
+      "abbr": "",
+      "aliases": [
+        "单端测序",
+        "单端",
+        "single-end"
+      ],
+      "category": "生命与实验",
+      "summary": "单端测序只从一个文库片段的一端读取序列。它与双端测序的差别在于是否拥有同一片段另一端的配对观察。",
+      "example": "教学对照中，一份单端文库通常对应一份 FASTQ；本案例实际采用双端，因此有 R1、R2 两份。",
+      "in_course": "这个概念帮助理解工具参数中为什么需要区分单端和双端输入。",
+      "pitfall": "不能把双端数据丢掉一个文件后，仍按原来的双端统计解释片段数量和配对信息。",
+      "related": [
+        "paired_end",
+        "read",
+        "library"
+      ],
+      "sources": [],
+      "anchor": "glossary-41"
+    },
+    {
+      "id": "fragment",
+      "zh": "文库片段",
+      "en": "library fragment",
+      "abbr": "",
+      "aliases": [
+        "片段",
+        "fragments",
+        "fragment",
+        "配对片段"
+      ],
+      "category": "生命与实验",
+      "summary": "片段是文库中一段待测的核酸分子片段，read 是测序仪对它所作的读取。双端测序会从同一片段获得两端观察。",
+      "example": "本课 ZT4_rep_1 的 clean 数据合计约 8,205 万条 reads，Salmon 处理约 4,103 万个配对片段。",
+      "in_course": "它解释了质控报告与定量报告中的计数为什么可以相差一倍，也帮助理解 NumReads 的本例口径。",
+      "pitfall": "两个端合计的 reads 数和片段数不能直接当成同一单位比较；片段还可能无法唯一归属。",
+      "related": [
+        "read",
+        "paired_end",
+        "numreads"
+      ],
+      "sources": [],
+      "anchor": "glossary-42"
+    },
+    {
+      "id": "library_prep",
+      "zh": "文库构建",
+      "en": "library preparation",
+      "abbr": "",
+      "aliases": [
+        "建库",
+        "文库构建",
+        "library preparation"
+      ],
+      "category": "生命与实验",
+      "summary": "建库把样本核酸加工成测序平台能读取的片段集合，包括本实验所需的转换、片段准备和接头连接等步骤。",
+      "example": "常见 RNA-seq 会先把 RNA 信息转成 cDNA，再准备带接头的文库；具体步骤随方法不同。",
+      "in_course": "它决定我们实际捕获哪些 RNA，也关系到接头、片段长度及某些测序偏倚。",
+      "pitfall": "后续计算不能补回所有未被建库策略捕获的信息，因此读分析结果前需要知道实验方法。",
+      "related": [
+        "cdna",
+        "adapter",
+        "bias"
+      ],
+      "sources": [],
+      "anchor": "glossary-43"
+    },
+    {
+      "id": "contrast",
+      "zh": "比较方向与参照组",
+      "en": "contrast and reference group",
+      "abbr": "",
+      "aliases": [
+        "比较方向",
+        "参照组",
+        "实验组",
+        "contrast"
+      ],
+      "category": "生命与实验",
+      "summary": "比较方向规定一个条件相对哪个条件来计算变化。可以把参照组当作比值的分母，先固定方向，正负号才有意义。",
+      "example": "本课 ZT4 相对 ZT0；若交换成 ZT0 相对 ZT4，同一个倍数变化的 log₂FC 符号会反转。",
+      "in_course": "比较表决定差异分析、火山图左右方向及 GSEA 正负端的解释。",
+      "pitfall": "这里的“实验组”只是当前比较中的一方，不自动表示施加了药物或酸处理；条件含义来自实验设计。",
+      "related": [
+        "log2fc",
+        "up_down",
+        "design"
+      ],
+      "sources": [],
+      "anchor": "glossary-44"
+    },
+    {
+      "id": "photoperiod",
+      "zh": "光周期",
+      "en": "photoperiod",
+      "abbr": "",
+      "aliases": [
+        "光周期",
+        "光暗循环",
+        "photoperiod"
+      ],
+      "category": "生命与实验",
+      "summary": "光周期描述一天中光照与黑暗交替的安排。这种环境节奏会影响植物许多过程，也为 ZT 时间提供参照。",
+      "example": "以每天开灯时刻为 ZT0，可以按开灯后几小时比较不同采样时期。",
+      "in_course": "本课样本处于光暗循环条件，读时间变化时要同时考虑环境输入和生物内部过程。",
+      "pitfall": "在光暗条件下看到一天中的起伏，不能仅凭这一点证明存在不依赖外界信号的内源昼夜节律。",
+      "related": [
+        "zt",
+        "circadian",
+        "time_series"
+      ],
+      "sources": [],
+      "anchor": "glossary-45"
+    },
+    {
+      "id": "design",
+      "zh": "实验设计",
+      "en": "experimental design",
+      "abbr": "",
+      "aliases": [
+        "实验设计",
+        "experimental design"
+      ],
+      "category": "生命与实验",
+      "summary": "实验设计规定比较什么条件、何时取样、取多少独立重复，以及怎样安排实验批次。它像先制定比赛规则，后面的统计才知道哪些差别值得比较。",
+      "example": "本课比较同一发育阶段叶片的不同 ZT 时期，每时期三个重复。",
+      "in_course": "设计信息进入样本表和统计模型，决定结果能够回答的问题。",
+      "pitfall": "计算方法不能补救所有设计缺陷；若条件与批次完全重合，往往无法可靠分清两者的影响。",
+      "related": [
+        "replicate",
+        "batch",
+        "contrast"
+      ],
+      "sources": [],
+      "anchor": "glossary-46"
+    },
+    {
+      "id": "reference_genome",
+      "zh": "参考基因组",
+      "en": "reference genome",
+      "abbr": "",
+      "aliases": [
+        "参考基因组",
+        "reference genome"
+      ],
+      "category": "生命与实验",
+      "summary": "参考基因组是供定位和解释使用的一套基因组序列，像查找城市位置的底图。参考转录本和基因结构注释则在这张底图上提供不同层次的信息。",
+      "example": "同一个基因的序列文件、GTF 和蛋白文件应来自兼容的参考版本。",
+      "in_course": "本课准备参考材料，再生成转录本与基因映射、Salmon 索引和功能注释查询。",
+      "pitfall": "参考是一套工作依据，未必包含每个样本的全部真实序列；版本不一致也会导致编号对不上。",
+      "related": [
+        "fasta",
+        "gtf",
+        "gene_id",
+        "genome"
+      ],
+      "sources": [],
+      "anchor": "glossary-47"
+    },
+    {
+      "id": "gene_id",
+      "zh": "基因编号与编号映射",
+      "en": "gene identifier and ID mapping",
+      "abbr": "gene ID",
+      "aliases": [
+        "gene ID",
+        "gene_id",
+        "基因编号",
+        "基因 ID",
+        "ID 映射",
+        "GID",
+        "TAIR"
+      ],
+      "category": "生命与实验",
+      "summary": "基因编号是给基因贴的检索标签；编号映射是说明两套标签如何对应。TAIR 是拟南芥常见编号体系，本课自建库用 GID 作为基因键字段名。",
+      "example": "AT1G13930 是一个基因编号；不能只凭名字看起来相似，就把不同版本的记录当成同一个对象。",
+      "in_course": "合并矩阵、汇总转录本、查询 OrgDb 和解释富集，都要核对编号对应关系。",
+      "pitfall": "映射可能缺失或一对多；编号字符串相同也要核对物种与版本，不能用随意截短代替确认。",
+      "related": [
+        "transcript",
+        "orgdb",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-48"
+    },
+    {
+      "id": "batch",
+      "zh": "批次效应",
+      "en": "batch effect",
+      "abbr": "",
+      "aliases": [
+        "批次效应",
+        "批次",
+        "batch effect"
+      ],
+      "category": "生命与实验",
+      "summary": "批次效应是实验日期、试剂、操作者或仪器等技术安排带来的系统差别。像不同天称重的秤有不同偏差，观察到的变化未必全来自研究条件。",
+      "example": "若三个重复分别在不同批次处理，应保留相应记录，以便解释样本整体关系。",
+      "in_course": "PCA 和相关性可以提示可能的批次结构，是否纳入模型仍要回看设计信息。",
+      "pitfall": "图上分组不能直接诊断批次效应；也不能看到分离就自动校正，否则可能一起去掉真实生物信号。",
+      "related": [
+        "design",
+        "pca",
+        "bias"
+      ],
+      "sources": [],
+      "anchor": "glossary-49"
+    },
+    {
+      "id": "qc",
+      "zh": "质量控制",
+      "en": "quality control",
+      "abbr": "QC",
+      "aliases": [
+        "质控",
+        "质量控制",
+        "quality control",
+        "Pass",
+        "Warn",
+        "Fail",
+        "pass",
+        "warn",
+        "fail"
+      ],
+      "category": "测序与质控",
+      "summary": "质控是检查数据是否符合预期、有哪些问题以及问题有多严重。像收货验货，先了解材料状况，再决定是否处理及怎样处理。",
+      "example": "FastQC 检查每份 FASTQ，MultiQC 汇总各样本，处理后还要再看质量和保留量。",
+      "in_course": "质控为去接头、过滤及样本核查提供依据，贯穿分析前后。",
+      "pitfall": "报告中出现警告不等于样本必然报废；某一项“通过”也不能证明所有下游结果可靠。",
+      "related": [
+        "fastqc",
+        "multiqc",
+        "trimming"
+      ],
+      "sources": [],
+      "anchor": "glossary-50"
+    },
+    {
+      "id": "phred",
+      "zh": "Phred 碱基质量值",
+      "en": "Phred quality score",
+      "abbr": "Q",
+      "aliases": [
+        "Phred",
+        "Phred 质量",
+        "碱基质量",
+        "质量值"
+      ],
+      "category": "测序与质控",
+      "summary": "Phred 用对数表示测序仪对单个碱基判断的可靠程度，关系是 Q=−10×log10(估计错误概率)。Q 每增加 10，所对应的错误概率降为原来的十分之一。",
+      "example": "Q20 对应估计错误概率 1%，Q30 对应 0.1%；这是单碱基评分的含义。",
+      "in_course": "逐位置质量图及 Q20、Q30 汇总都围绕这一尺度，帮助定位低质量区域。",
+      "pitfall": "评分是仪器和模型的估计，不是逐个碱基已被证实无错；质量高也不表示序列一定来自目标转录本。",
+      "related": [
+        "phred33",
+        "q20",
+        "q30"
+      ],
+      "sources": [],
+      "anchor": "glossary-51"
+    },
+    {
+      "id": "phred33",
+      "zh": "Phred+33 质量编码",
+      "en": "Phred+33 quality encoding",
+      "abbr": "",
+      "aliases": [
+        "Phred+33",
+        "Phred + 33",
+        "质量编码"
+      ],
+      "category": "测序与质控",
+      "summary": "质量编码规定怎样把数字质量值写成 FASTQ 中的字符。Phred+33 用字符编码值减去 33 得到 Q，像给数字换成可存储的符号。",
+      "example": "按这种编码，字符 I 的编码值为 73，因此代表 Q40；质量行每个字符对应序列中的一个位置。",
+      "in_course": "它帮助理解 FASTQ 的第四行为什么不像普通数字，以及软件为什么需要正确识别编码。",
+      "pitfall": "“+33”是编码偏移量，不是每个碱基的质量都为 33，也不能用不同编码规则混读同一文件。",
+      "related": [
+        "fastq",
+        "phred"
+      ],
+      "sources": [],
+      "anchor": "glossary-52"
+    },
+    {
+      "id": "q20",
+      "zh": "Q20 碱基质量门槛",
+      "en": "Phred quality score 20",
+      "abbr": "Q20",
+      "aliases": [
+        "Q20"
+      ],
+      "category": "测序与质控",
+      "summary": "Q20 通常表示 Phred 质量值至少为 20，Q=20 对应模型估计的单碱基错误概率为 0.01。Q20 比例统计达到这一门槛的碱基份额。",
+      "example": "同一份数据中，Q30 的要求更高，因此 Q30 比例不应超过 Q20 比例。",
+      "in_course": "本课将它作为 fastp 过滤前后概览指标，与 Q30 和保留量一起读。",
+      "pitfall": "Q20 比例不是高质量 reads 的比例；也不是把低于 20 的碱基数量直接当作已证实错误数量。",
+      "related": [
+        "phred",
+        "q30",
+        "retention"
+      ],
+      "sources": [],
+      "anchor": "glossary-53"
+    },
+    {
+      "id": "trimming",
+      "zh": "修剪与过滤",
+      "en": "trimming and filtering",
+      "abbr": "",
+      "aliases": [
+        "修剪",
+        "过滤",
+        "trimming",
+        "filtering",
+        "去接头"
+      ],
+      "category": "测序与质控",
+      "summary": "修剪通常从读段中去掉不合适的部分，例如末端接头；过滤通常按规则去除整条读段或配对记录。两者都需要明确理由和参数。",
+      "example": "一条读段可能去掉接头后仍被保留，也可能因为太短或质量不合格而被去除。",
+      "in_course": "本课使用 fastp 处理原始数据，再对 clean 数据重新质控。",
+      "pitfall": "保留率越高不一定越好、去掉越多也不一定越好；重点是处理规则合理且剩余数据满足分析需要。",
+      "related": [
+        "adapter",
+        "fastp",
+        "retention"
+      ],
+      "sources": [],
+      "anchor": "glossary-54"
+    },
+    {
+      "id": "retention",
+      "zh": "数据保留率",
+      "en": "data retention rate",
+      "abbr": "",
+      "aliases": [
+        "保留率",
+        "保留比例",
+        "retention"
+      ],
+      "category": "测序与质控",
+      "summary": "保留率是处理后剩余数量除以处理前数量，必须先说明统计的是 reads、片段还是碱基。像整理书页，页数保留与字数保留回答的是不同问题。",
+      "example": "修剪掉每条 read 的一小段，read 条数可能不变，但总碱基数会减少。",
+      "in_course": "本课用质控汇总表比较过滤前后保留情况，判断数据损失与质量改善。",
+      "pitfall": "不要把 reads 保留率和碱基保留率直接混比；双端数据也要确认是合计两端还是按配对片段统计。",
+      "related": [
+        "read",
+        "fragment",
+        "trimming"
+      ],
+      "sources": [],
+      "anchor": "glossary-55"
+    },
+    {
+      "id": "gc",
+      "zh": "GC 含量与 GC 偏倚",
+      "en": "GC content and GC bias",
+      "abbr": "GC",
+      "aliases": [
+        "GC 含量",
+        "GC 偏倚",
+        "GC bias",
+        "GC"
+      ],
+      "category": "测序与质控",
+      "summary": "GC 含量表示序列中 G 与 C 所占的比例。若实验或测序对不同 GC 含量的序列捕获效率不同，就可能出现 GC 偏倚。",
+      "example": "两种真实数量相同的 RNA，若在建库中被不同程度地偏好，观测片段数也可能不同。",
+      "in_course": "质控观察 GC 分布，Salmon 的相关偏倚模型可在定量中考虑相应影响。",
+      "pitfall": "GC 分布异常需要结合物种、建库和污染等线索判断；软件校正也不能保证消除所有偏倚。",
+      "related": [
+        "base",
+        "bias",
+        "salmon"
+      ],
+      "sources": [],
+      "anchor": "glossary-56"
+    },
+    {
+      "id": "unknown_base",
+      "zh": "未确定碱基 N",
+      "en": "undetermined base",
+      "abbr": "N",
+      "aliases": [
+        "N 碱基",
+        "不确定碱基",
+        "未确定碱基",
+        "未知碱基"
+      ],
+      "category": "测序与质控",
+      "summary": "序列中的 N 表示该位置没有被明确指定为某一种碱基。它像文字中暂时无法辨认的一个字，保留位置但缺少确定身份。",
+      "example": "一条 read 中若有较多 N，可依据过滤规则决定是否保留。",
+      "in_course": "本课过滤参数除接头、长度和质量外，也会关注不确定碱基数量。",
+      "pitfall": "N 不是第五种正常 DNA 碱基，也不能在没有证据时随意替换成 A、T、C 或 G。",
+      "related": [
+        "base",
+        "trimming",
+        "fastq"
+      ],
+      "sources": [],
+      "anchor": "glossary-57"
+    },
+    {
+      "id": "bias",
+      "zh": "技术偏倚",
+      "en": "technical bias",
+      "abbr": "",
+      "aliases": [
+        "偏倚",
+        "技术偏倚",
+        "bias"
+      ],
+      "category": "测序与质控",
+      "summary": "偏倚是某些对象在实验或计算中被系统性高估或低估，像一把总是偏重的秤。它与每次随机上下波动的噪声不同。",
+      "example": "长短、序列组成或建库步骤可能影响不同 RNA 被观察到的机会。",
+      "in_course": "定量模型及合适的归一化会考虑部分已知影响，质控和设计仍不可替代。",
+      "pitfall": "一个校正选项只能针对特定问题，不能把任何异常都自动恢复成真实生物量。",
+      "related": [
+        "gc",
+        "normalization",
+        "variation"
+      ],
+      "sources": [],
+      "anchor": "glossary-58"
+    },
+    {
+      "id": "quantification",
+      "zh": "表达定量",
+      "en": "expression quantification",
+      "abbr": "",
+      "aliases": [
+        "定量",
+        "表达定量",
+        "quantification"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "定量是利用测序片段估计各转录本或基因有多少表达信号。像根据许多散落的句子，推断各本书在书堆中占多少份。",
+      "example": "有些片段可对应多个转录本，Salmon 会综合模型信息分配其贡献，再估计丰度。",
+      "in_course": "本课先获得每个样本的 quant.sf，再汇总为基因表达矩阵。",
+      "pitfall": "这是受参考与模型影响的估计；看到序列能匹配，不代表片段一定只有一个来源。",
+      "related": [
+        "salmon",
+        "numreads",
+        "mapping"
+      ],
+      "sources": [],
+      "anchor": "glossary-59"
+    },
+    {
+      "id": "index",
+      "zh": "序列索引",
+      "en": "sequence index",
+      "abbr": "",
+      "aliases": [
+        "索引",
+        "sequence index"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "索引是为参考序列预先建立的快速检索结构，像书后的关键词索引，帮助程序迅速寻找片段可能的来源。",
+      "example": "参考转录本或构建参数改变后，应使用与新参考对应的索引。",
+      "in_course": "本课先建立 Salmon 索引，再对多个文库重复使用。",
+      "pitfall": "索引不是表达量结果，也不能只凭文件夹同名就认定它与当前参考版本兼容。",
+      "related": [
+        "reference_genome",
+        "kmer",
+        "salmon"
+      ],
+      "sources": [],
+      "anchor": "glossary-60"
+    },
+    {
+      "id": "kmer",
+      "zh": "长度为 k 的序列片段",
+      "en": "k-mer",
+      "abbr": "",
+      "aliases": [
+        "k-mer",
+        "kmer"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "k-mer 指连续 k 个碱基构成的一小段序列。可以想成在长句上滑动一个固定宽度的窗口，每次取出窗口中的字母。",
+      "example": "ACGT 的长度为 3 的片段包括 ACG 和 CGT；本课 Salmon 索引参数涉及 k=31。",
+      "in_course": "这些短序列信息帮助工具组织参考和快速检索，k 的选择会影响适用的读段长度及匹配特性。",
+      "pitfall": "k=31 不是只分析 31 个基因，也不是把全部 reads 都截成 31 个碱基。",
+      "related": [
+        "base",
+        "index",
+        "read"
+      ],
+      "sources": [],
+      "anchor": "glossary-61"
+    },
+    {
+      "id": "decoy",
+      "zh": "诱饵序列",
+      "en": "decoy sequence",
+      "abbr": "",
+      "aliases": [
+        "decoy",
+        "诱饵序列"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "诱饵序列提供一些可能吸引非目标匹配的参考区域，帮助识别本不该强行归给目标转录本的片段。像在候选来源旁增加排除用的参照。",
+      "example": "本课参考准备包含 decoy 相关材料，其作用是帮助 Salmon 区分竞争匹配。",
+      "in_course": "它参与参考构建和定量判断，减少某些错误的转录本归属。",
+      "pitfall": "decoy 通常不是要报告表达量的目标转录本；启用后也不能保证每个片段都被正确辨认。",
+      "related": [
+        "index",
+        "mapping",
+        "salmon"
+      ],
+      "sources": [],
+      "anchor": "glossary-62"
+    },
+    {
+      "id": "mapping",
+      "zh": "序列匹配与比对率",
+      "en": "sequence mapping and mapping rate",
+      "abbr": "",
+      "aliases": [
+        "比对率",
+        "映射率",
+        "匹配率",
+        "比对",
+        "mapping rate",
+        "mapping"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "序列匹配尝试把测序片段联系到参考中的可能来源；比对率通常是被工具判为可映射的输入比例。精确含义要看工具和统计单位。",
+      "example": "本课一个 Salmon 文库报告约 74.455% 的 mapping rate，分母按其处理的配对片段口径解释。",
+      "in_course": "它帮助判断参考与样本是否匹配、定量有多少输入获得支持。",
+      "pitfall": "匹配上不等于唯一、正确或已经确定属于某基因；比对率也不是该样本差异表达的比例。",
+      "related": [
+        "fragment",
+        "quantification",
+        "reference_genome"
+      ],
+      "sources": [],
+      "anchor": "glossary-63"
+    },
+    {
+      "id": "numreads",
+      "zh": "Salmon 估计片段计数",
+      "en": "estimated number of reads / fragments",
+      "abbr": "NumReads",
+      "aliases": [
+        "NumReads"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "NumReads 是 Salmon 分配给某条转录本的估计计数量。共享序列的来源可能不唯一，所以分配后的数值可以含小数。",
+      "example": "示意中，一个共享片段可能给转录本 A 贡献 0.7、给 B 贡献 0.3，而非在两边各完整计 1 次。",
+      "in_course": "本课是双端数据，按配对片段理解该字段，汇总到基因后形成 estimated counts。",
+      "pitfall": "字段名字含 Reads，不代表本例一定要把 R1、R2 当成两个独立片段；也不能把小数误当作文件损坏。",
+      "related": [
+        "counts",
+        "fragment",
+        "salmon"
+      ],
+      "sources": [
+        {
+          "label": "Salmon 官方文档：定量输出字段",
+          "url": "https://salmon.readthedocs.io/en/latest/file_formats.html"
+        }
+      ],
+      "anchor": "glossary-64"
+    },
+    {
+      "id": "effective_length",
+      "zh": "有效长度",
+      "en": "effective length",
+      "abbr": "",
+      "aliases": [
+        "有效长度",
+        "EffectiveLength"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "有效长度是定量模型中根据序列长度及片段等因素调整的长度量，用来描述一条转录本有多少产生可观测片段的机会。",
+      "example": "同样丰度的长短转录本，能够产生的测序片段数可能不同，因此不能只比较原始计数。",
+      "in_course": "Salmon 的 quant.sf 同时提供 Length 和 EffectiveLength，长度调整参与丰度估计。",
+      "pitfall": "有效长度不一定等于序列文件中的碱基数，也不是某条 read 的长度；具体计算取决于模型与设置。",
+      "related": [
+        "tpm",
+        "fragment",
+        "quantification"
+      ],
+      "sources": [
+        {
+          "label": "Salmon 官方文档：定量输出字段",
+          "url": "https://salmon.readthedocs.io/en/latest/file_formats.html"
+        }
+      ],
+      "anchor": "glossary-65"
+    },
+    {
+      "id": "matrix",
+      "zh": "表达矩阵",
+      "en": "expression matrix",
+      "abbr": "",
+      "aliases": [
+        "表达矩阵",
+        "gene-by-sample matrix"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "表达矩阵把很多样本的表达量放在同一张表中，本课一行是一个基因、一列是一个样本，格子是该基因在该样本中的数值。",
+      "example": "21 个文库分别定量后，按同一基因编号对齐，组成后续分析输入。",
+      "in_course": "相关性、PCA、差异与时间分析都从合适类型的表达矩阵出发。",
+      "pitfall": "counts、TPM、TMM 矩阵形状可以相同，但单位和用途不同；样本列顺序还必须与分组表相符。",
+      "related": [
+        "counts",
+        "tpm",
+        "gene_id",
+        "tsv"
+      ],
+      "sources": [],
+      "anchor": "glossary-66"
+    },
+    {
+      "id": "normalization",
+      "zh": "归一化",
+      "en": "normalization",
+      "abbr": "",
+      "aliases": [
+        "归一化",
+        "normalization"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "归一化是为合理比较而调整样本间某些非目标尺度差异，例如测序量或 RNA 组成。像比较两个班级时先考虑人数差别，避免只比较总数。",
+      "example": "一个文库测得更深，许多基因计数都可能增加；这不等于这些基因都发生生物学上调。",
+      "in_course": "本课不同分支使用不同归一化方式，DESeq2 大小因子与 Trinity TMM 不能互相当成同一个步骤。",
+      "pitfall": "归一化不保证去除所有技术影响，也不自动把相对量变成绝对 RNA 分子数。",
+      "related": [
+        "size_factor",
+        "tmm",
+        "composition"
+      ],
+      "sources": [],
+      "anchor": "glossary-67"
+    },
+    {
+      "id": "composition",
+      "zh": "RNA 组成效应",
+      "en": "RNA composition effect",
+      "abbr": "",
+      "aliases": [
+        "组成效应",
+        "组成变化",
+        "相对组成"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "组成效应来自各成分共享一个总量：某些 RNA 大量增加时，其他 RNA 即使绝对数量不变，在总量中的份额也可能降低。",
+      "example": "互动示意中目标 RNA 始终为 50 份，其他 RNA 从 50 增至 450 份，目标占比从 50% 降至 10%。",
+      "in_course": "它帮助理解 TPM、TMM 以及样本间归一化为何需要谨慎解释。",
+      "pitfall": "相对丰度下降不能单独证明每个细胞的该 RNA 绝对数量下降；绝对量判断通常还需要额外实验参照。",
+      "related": [
+        "tpm",
+        "tmm",
+        "normalization"
+      ],
+      "sources": [],
+      "anchor": "glossary-68"
+    },
+    {
+      "id": "cpm",
+      "zh": "每百万计数",
+      "en": "counts per million",
+      "abbr": "CPM",
+      "aliases": [
+        "CPM"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "CPM 把某基因的计数除以样本计数总量，再乘一百万，用来描述该基因占测序计数的相对份额。它通常不进行转录本长度校正。",
+      "example": "本课差异分析按比较内的 CPM 规则过滤过低表达记录。",
+      "in_course": "它帮助把不同测序总量下的低表达门槛放到较可比较的尺度。",
+      "pitfall": "CPM 与 TPM 的分母和长度处理不同；也不要把本项目的 Trinity TMM 表达矩阵称为 TMM-CPM。",
+      "related": [
+        "counts",
+        "tpm",
+        "tmm"
+      ],
+      "sources": [],
+      "anchor": "glossary-69"
+    },
+    {
+      "id": "size_factor",
+      "zh": "大小因子",
+      "en": "size factor",
+      "abbr": "",
+      "aliases": [
+        "大小因子",
+        "size factor"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "大小因子是 DESeq2 为样本估计的尺度调整量，用来考虑文库量和组成等差异。像为不同量程的尺子建立可比较的刻度。",
+      "example": "两个样本整体计数规模不同，模型会结合许多基因的信息估计相应调整，而非把差异全算在单个基因上。",
+      "in_course": "它是 DESeq2 计数模型中的归一化环节，区别于显示用的 TPM 或行 Z-score。",
+      "pitfall": "大小因子不是基因长度，也不等于所有情况下直接用总 reads 数；它有自己的估计方法和适用假设。",
+      "related": [
+        "normalization",
+        "deseq2",
+        "counts"
+      ],
+      "sources": [
+        {
+          "label": "DESeq2 官方教程：模型与结果解释",
+          "url": "https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+        }
+      ],
+      "anchor": "glossary-70"
+    },
+    {
+      "id": "norm_factor",
+      "zh": "TMM 归一化因子",
+      "en": "normalization factor",
+      "abbr": "norm.factor",
+      "aliases": [
+        "norm.factor",
+        "norm_factor",
+        "归一化因子"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "归一化因子是执行尺度调整所用的系数；在本课 TMM 分支中，norm.factor 记录组成校正的样本因子。",
+      "example": "本项目 Trinity 生成的 TMM 数值按 TPM / norm.factor 得到。",
+      "in_course": "查看矩阵说明和实际脚本，可以用这个字段辨认输出数值采用了什么口径。",
+      "pitfall": "“归一化因子”是泛称，不同软件同名量可能含义不同；不能直接拿它替代 DESeq2 的 size factor。",
+      "related": [
+        "tmm",
+        "tpm",
+        "size_factor"
+      ],
+      "sources": [],
+      "anchor": "glossary-71",
+      "annotation_note": "正文出现于完整公式中，保留公式；可从 TMM 相关术语进入。"
+    },
+    {
+      "id": "mean",
+      "zh": "算术平均值",
+      "en": "arithmetic mean",
+      "abbr": "",
+      "aliases": [
+        "均值",
+        "平均值",
+        "mean"
+      ],
+      "category": "统计与样本关系",
+      "summary": "算术平均值把所有数相加，再除以数的个数，用一个数概括这组数的中心。它像把总量平均分给每一次观察。",
+      "example": "三次观测为 2、4、9 时，均值为 5；一个特别大的值可能明显拉高均值。",
+      "in_course": "本课时间图会汇总重复；阅读图解时要确认汇总发生在取对数之前还是之后。",
+      "pitfall": "均值不是新的生物学重复，也不能代替重复间的波动；先求均值与先取对数通常得不到同一结果。",
+      "related": [
+        "median",
+        "sd",
+        "replicate"
+      ],
+      "sources": [],
+      "anchor": "glossary-72"
+    },
+    {
+      "id": "median",
+      "zh": "中位数",
+      "en": "median",
+      "abbr": "",
+      "aliases": [
+        "中位数",
+        "median"
+      ],
+      "category": "统计与样本关系",
+      "summary": "中位数是把数值从小到大排列后处在中间的值；偶数个值时通常取中间两个的平均。它较少受极端值影响。",
+      "example": "2、4、99 的中位数是 4，均值却是 35，说明两个中心指标回答的侧重点不同。",
+      "in_course": "质控箱线图、周期前的表达过滤和趋势图粗线都可能涉及中位数，需按各图说明确认。",
+      "pitfall": "中位数不是每个观测都相等，也不一定是聚类算法的模块中心；本课趋势粗线尤其要区分这两者。",
+      "related": [
+        "mean",
+        "quartile",
+        "centroid"
+      ],
+      "sources": [],
+      "anchor": "glossary-73"
+    },
+    {
+      "id": "quartile",
+      "zh": "四分位数与四分位距",
+      "en": "quartile and interquartile range",
+      "abbr": "IQR",
+      "aliases": [
+        "四分位数",
+        "四分位距",
+        "IQR",
+        "上四分位",
+        "下四分位",
+        "四分位"
+      ],
+      "category": "统计与样本关系",
+      "summary": "四分位数把排序后的数据按位置分成四份。第一与第三四分位数之间包含中间约一半观测，其差叫四分位距。",
+      "example": "FastQC 逐位置质量图的箱体用于展示一批 reads 在该位置的质量分布范围。",
+      "in_course": "它帮助读出分布是否集中，而不只盯着一条均值或中位数曲线。",
+      "pitfall": "箱体上下缘不一定是最小和最大值；须线具体代表什么也要按软件图例确认，不能套用所有箱线图的同一规则。",
+      "related": [
+        "median",
+        "phred",
+        "boxplot",
+        "percentile"
+      ],
+      "sources": [],
+      "anchor": "glossary-74"
+    },
+    {
+      "id": "variation",
+      "zh": "变异与噪声",
+      "en": "variation and noise",
+      "abbr": "",
+      "aliases": [
+        "变异",
+        "变异度",
+        "组内变异",
+        "噪声",
+        "variation"
+      ],
+      "category": "统计与样本关系",
+      "summary": "变异表示观测之间存在差别，其中既可能有真实生物差异，也可能有技术和随机波动。统计模型要结合这些波动判断观察到的变化是否有充分证据。",
+      "example": "两组均值相差同样多时，组内重复很稳定与非常分散，通常会给出不同的检验结果。",
+      "in_course": "重复、离散度、PCA 和差异检验都涉及如何描述或利用变异。",
+      "pitfall": "看见波动不等于样本错误；把所有变异都叫噪声会忽略真实生物信息。",
+      "related": [
+        "replicate",
+        "dispersion",
+        "pca"
+      ],
+      "sources": [],
+      "anchor": "glossary-75"
+    },
+    {
+      "id": "variance",
+      "zh": "方差",
+      "en": "variance",
+      "abbr": "",
+      "aliases": [
+        "方差",
+        "variance"
+      ],
+      "category": "统计与样本关系",
+      "summary": "方差通过计算数值偏离均值的平方，概括一组数据的分散程度。离中心越远的观测通常贡献越大。",
+      "example": "两个基因平均表达相同，其中一个在时间上几乎不变，另一个大幅起伏，后者可能具有更高方差。",
+      "in_course": "本课 PCA 的基因筛选和时间趋势的高变选择都需要理解变异大小。",
+      "pitfall": "方差受数值尺度和转换影响；高方差不自动等于差异显著、质量差或生物学更重要。",
+      "related": [
+        "mean",
+        "sd",
+        "high_variable"
+      ],
+      "sources": [],
+      "anchor": "glossary-76"
+    },
+    {
+      "id": "sd",
+      "zh": "标准差",
+      "en": "standard deviation",
+      "abbr": "SD",
+      "aliases": [
+        "标准差",
+        "standard deviation"
+      ],
+      "category": "统计与样本关系",
+      "summary": "标准差是方差的平方根，用与原数据相同的单位表达分散程度。可以把它看成描述观测围绕均值波动大小的一把尺子。",
+      "example": "均值为 10、标准差为 2 时，数值 12 比均值高一个标准差，因此相应 Z 分数为 +1。",
+      "in_course": "行 Z-score 以标准差作为缩放尺度，让每个基因的相对模式便于比较。",
+      "pitfall": "标准差不是均值的不确定性指标“标准误”；标准差为零的恒定行也不能直接按通常公式除以零。",
+      "related": [
+        "variance",
+        "zscore",
+        "standard_error"
+      ],
+      "sources": [],
+      "anchor": "glossary-77"
+    },
+    {
+      "id": "standard_error",
+      "zh": "标准误与倍数变化标准误",
+      "en": "standard error; log fold change standard error",
+      "abbr": "lfcSE",
+      "aliases": [
+        "标准误",
+        "lfcSE",
+        "standard error"
+      ],
+      "category": "统计与样本关系",
+      "summary": "标准误描述估计量有多不稳定，区别于原始观测的标准差。lfcSE 是差异结果中 log₂FC 估计的标准误。",
+      "example": "同样是 log₂FC=1，若 lfcSE 很大，变化方向和幅度的估计通常更不确定。",
+      "in_course": "本课 Wald stat 与效应估计及其标准误有关，帮助把幅度和不确定性放到一起判断。",
+      "pitfall": "标准误小不是没有任何偏倚，也不保证生物效应足够大；不能与样本表达值的标准差互换。",
+      "related": [
+        "wald",
+        "effect_size",
+        "sd"
+      ],
+      "sources": [],
+      "anchor": "glossary-78"
+    },
+    {
+      "id": "log_transform",
+      "zh": "对数转换",
+      "en": "logarithmic transformation",
+      "abbr": "",
+      "aliases": [
+        "对数转换",
+        "对数变换",
+        "取对数",
+        "logarithmic transformation"
+      ],
+      "category": "统计与样本关系",
+      "summary": "对数转换把很大的数值范围压缩，使成倍变化更容易一起观察。以 2 为底时，2、4、8 会变成 1、2、3。",
+      "example": "本课 PCA 采用 log2(TMM+1)；加 1 使原来的零也能得到有限数值。",
+      "in_course": "它减少极大表达值对图形尺度的支配，常用于探索图和表达展示。",
+      "pitfall": "log2(表达量+1) 与 log₂FC 是不同东西；转换也不意味着所有数据自动符合统计模型。",
+      "related": [
+        "tmm",
+        "log2fc",
+        "pca"
+      ],
+      "sources": [],
+      "anchor": "glossary-79"
+    },
+    {
+      "id": "standardization",
+      "zh": "中心化与标准化",
+      "en": "centering and standardization",
+      "abbr": "",
+      "aliases": [
+        "中心化",
+        "标准化",
+        "行标准化",
+        "单位方差",
+        "standardization",
+        "centering"
+      ],
+      "category": "统计与样本关系",
+      "summary": "中心化是减去均值，把参照中心移到零；常见 Z 标准化还会除以标准差，让变化幅度以标准差为单位。",
+      "example": "本课 PCA 对输入作中心化但不作单位方差缩放；热图则按每个基因进行行 Z-score 处理。",
+      "in_course": "这些步骤决定图中距离、坐标和颜色反映的含义，因此要跟随具体分支说明。",
+      "pitfall": "“标准化”在不同文档中可能泛指不同调整；不能把它与样本间归一化、或所有软件的默认处理等同。",
+      "related": [
+        "zscore",
+        "normalization",
+        "pca"
+      ],
+      "sources": [],
+      "anchor": "glossary-80"
+    },
+    {
+      "id": "principal_component",
+      "zh": "主成分与样本投影",
+      "en": "principal component and sample projection",
+      "abbr": "PC",
+      "aliases": [
+        "PC1",
+        "PC2",
+        "主成分",
+        "投影",
+        "principal component"
+      ],
+      "category": "统计与样本关系",
+      "summary": "主成分是许多基因数值组合成的新坐标方向。PCA 按能解释的变异大小依次选择方向，PC1 是第一个，PC2 与它正交并描述另一部分变异。",
+      "example": "把样本放在 PC1、PC2 平面上，像从两个角度记录复杂物体的位置。",
+      "in_course": "本课一个点的两个坐标是该样本在两个主成分上的投影分数。",
+      "pitfall": "PC1 不是“基因 1”，也不是时间轴；两个方向的正负可整体翻转，重点是样本相对关系。",
+      "related": [
+        "pca",
+        "explained_variance",
+        "matrix",
+        "orthogonal"
+      ],
+      "sources": [],
+      "anchor": "glossary-81"
+    },
+    {
+      "id": "explained_variance",
+      "zh": "解释变异比例",
+      "en": "explained variance ratio",
+      "abbr": "",
+      "aliases": [
+        "解释变异",
+        "解释率",
+        "方差解释",
+        "explained variance"
+      ],
+      "category": "统计与样本关系",
+      "summary": "解释变异比例表示某个主成分保留了输入数据总变异中的多少份额。像把一幅立体景象投到平面，数字提示这个视角保留的信息有多少。",
+      "example": "本课 PC1 约 46.42%，PC2 约 20.87%，两者合计约 67.29%。",
+      "in_course": "它通常写在 PCA 坐标轴标签旁，帮助评估二维展示的覆盖程度。",
+      "pitfall": "剩余约三分之一变异不在该二维平面里；比例不是分类准确率，更不是实验成功率。",
+      "related": [
+        "pca",
+        "principal_component",
+        "variance"
+      ],
+      "sources": [],
+      "anchor": "glossary-82",
+      "annotation_note": "概念在坐标解释中展开、名称在下载链接中；从 PCA 或主成分进入。"
+    },
+    {
+      "id": "pearson",
+      "zh": "Pearson 相关系数",
+      "en": "Pearson correlation coefficient",
+      "abbr": "r",
+      "aliases": [
+        "Pearson",
+        "相关系数",
+        "相关性",
+        "Pearson correlation"
+      ],
+      "category": "统计与样本关系",
+      "summary": "Pearson 相关系数衡量两组数值的线性同向或反向变化程度，范围从 −1 到 +1。接近 +1 表示较强线性同向关系。",
+      "example": "本课按基因对应两个样本的表达向量，得到样本与样本之间的相关系数。",
+      "in_course": "相关性热图用于观察整体样本关系，并与 PCA、实验记录互相对照。",
+      "pitfall": "高相关不等于数值完全相同，也不证明因果关系；基因间大范围表达差别可能使样本相关普遍很高。",
+      "related": [
+        "matrix",
+        "pca",
+        "heatmap"
+      ],
+      "sources": [],
+      "anchor": "glossary-83"
+    },
+    {
+      "id": "outlier",
+      "zh": "离群观察与异常样本线索",
+      "en": "outlier",
+      "abbr": "",
+      "aliases": [
+        "离群",
+        "异常样本",
+        "outlier"
+      ],
+      "category": "统计与样本关系",
+      "summary": "离群观察与多数同类观察相距较远，可能来自真实生物差异、技术问题或偶然波动。它首先是一条需要调查的线索。",
+      "example": "某个重复在 PCA 中远离同组其他样本，可回查样本标签、质控和实验批次。",
+      "in_course": "本课将样本关系图用于发现值得核对的情况，避免只凭一个数作判断。",
+      "pitfall": "不能因为点的位置不符合期待就删除样本；应有可解释、可记录的依据，并评估对结论的影响。",
+      "related": [
+        "pca",
+        "batch",
+        "qc"
+      ],
+      "sources": [],
+      "anchor": "glossary-84"
+    },
+    {
+      "id": "dispersion",
+      "zh": "计数离散度",
+      "en": "count dispersion",
+      "abbr": "",
+      "aliases": [
+        "离散度",
+        "dispersion"
+      ],
+      "category": "统计与样本关系",
+      "summary": "离散度描述 RNA-seq 计数相对于简单随机计数模型额外的波动程度。可以理解为重复之间有多不稳定，但它是模型中的特定参数。",
+      "example": "两基因平均计数相近，若其中一个在重复间起伏更大，其离散度估计可能更高。",
+      "in_course": "DESeq2 利用重复并综合多基因信息估计离散度，再进行差异检验。",
+      "pitfall": "它不是简单等同于标准差，也不是数值越大就一定是坏数据；需结合计数尺度和生物变异解释。",
+      "related": [
+        "negative_binomial",
+        "deseq2",
+        "variation"
+      ],
+      "sources": [
+        {
+          "label": "DESeq2 官方教程：模型与结果解释",
+          "url": "https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+        }
+      ],
+      "anchor": "glossary-85"
+    },
+    {
+      "id": "negative_binomial",
+      "zh": "负二项计数模型",
+      "en": "negative binomial model",
+      "abbr": "",
+      "aliases": [
+        "负二项",
+        "negative binomial"
+      ],
+      "category": "统计与样本关系",
+      "summary": "负二项模型是一种描述计数分布的模型，允许方差比均值更大，因此能容纳 RNA-seq 重复间额外的变异。",
+      "example": "基因平均计数相同但重复波动不同，模型可通过离散度描述这种区别。",
+      "in_course": "DESeq2 用这一类模型联系计数、实验条件及样本调整因素。",
+      "pitfall": "模型有适用假设，输入应符合计数分析要求；TPM 或行 Z-score 不能只因“也是数字”就直接替代。",
+      "related": [
+        "counts",
+        "dispersion",
+        "deseq2"
+      ],
+      "sources": [],
+      "anchor": "glossary-86"
+    },
+    {
+      "id": "wald",
+      "zh": "Wald 检验与统计量",
+      "en": "Wald test and Wald statistic",
+      "abbr": "stat",
+      "aliases": [
+        "Wald",
+        "Wald stat",
+        "stat",
+        "Wald 检验"
+      ],
+      "category": "统计与样本关系",
+      "summary": "Wald 检验将模型估计的效应与其标准误联系起来，衡量效应相对不确定性的大小。在本课常规零效应检验中，stat 可理解为 log₂FC 与其标准误的比值。",
+      "example": "同样的变化幅度，估计越稳定，通常对应绝对值更大的统计量。",
+      "in_course": "本课差异表提供 stat，并主要用它构建 GSEA 的带方向排序。",
+      "pitfall": "stat 不是表达量或变化倍数；若检验设置改变，具体含义也需随模型确认，不能脱离比较方向。",
+      "related": [
+        "standard_error",
+        "log2fc",
+        "rank_metric"
+      ],
+      "sources": [
+        {
+          "label": "DESeq2 官方教程：模型与结果解释",
+          "url": "https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+        }
+      ],
+      "anchor": "glossary-87"
+    },
+    {
+      "id": "effect_size",
+      "zh": "效应量",
+      "en": "effect size",
+      "abbr": "",
+      "aliases": [
+        "效应量",
+        "effect size",
+        "变化幅度"
+      ],
+      "category": "统计与样本关系",
+      "summary": "效应量描述变化有多大，区别于“有多少统计证据”。像比较身高时，差了几厘米与证据是否稳定，是两个要同时回答的问题。",
+      "example": "火山图横轴 log₂FC 表示幅度；某基因即使幅度很大，也可能因估计不稳定而没有足够证据。",
+      "in_course": "本课将幅度门槛与校正 P 值门槛同时用于筛选差异候选。",
+      "pitfall": "显著不等于幅度大、重要或值得验证；不显著也不能直接证明完全没有效应。",
+      "related": [
+        "log2fc",
+        "padj",
+        "standard_error"
+      ],
+      "sources": [],
+      "anchor": "glossary-88"
+    },
+    {
+      "id": "pvalue",
+      "zh": "P 值与零假设",
+      "en": "p-value and null hypothesis",
+      "abbr": "P",
+      "aliases": [
+        "P 值",
+        "pvalue",
+        "p-value",
+        "零假设",
+        "原始 P 值",
+        "P-value"
+      ],
+      "category": "统计与样本关系",
+      "summary": "零假设是检验暂时采用的基准命题，例如两条件无表达差异。P 值表示在零假设及模型成立时，出现至少同样极端统计结果的概率。",
+      "example": "若观测结果在“无差异”模型下很少出现，小 P 值便提供反对该基准命题的证据。",
+      "in_course": "差异、富集和周期检验先得到相应证据，再考虑多重校正与其他筛选条件。",
+      "pitfall": "P 值不是零假设成立的概率，也不是效应大小；不能把 0.04 与 0.06 当成生物学上截然相反的世界。",
+      "related": [
+        "padj",
+        "multiple_testing",
+        "effect_size",
+        "missing_value"
+      ],
+      "sources": [],
+      "anchor": "glossary-89"
+    },
+    {
+      "id": "multiple_testing",
+      "zh": "多重检验",
+      "en": "multiple testing",
+      "abbr": "",
+      "aliases": [
+        "多重检验",
+        "multiple testing"
+      ],
+      "category": "统计与样本关系",
+      "summary": "多重检验是同时对很多问题分别做检验。问题越多，即使都没有真实效应，也更容易偶然出现一些小 P 值。",
+      "example": "一次比较检验上万个基因时，不能只挑原始 P<0.05 的记录就忽略整体误报问题。",
+      "in_course": "本课在各差异比较、富集和周期分析的相应检验范围内进行校正。",
+      "pitfall": "校正针对指定的一组检验；从不同分析中任意挑最小值再合并，并不会自动维持同样的错误控制。",
+      "related": [
+        "pvalue",
+        "bh",
+        "fdr"
+      ],
+      "sources": [],
+      "anchor": "glossary-90"
+    },
+    {
+      "id": "bh",
+      "zh": "Benjamini–Hochberg 校正",
+      "en": "Benjamini–Hochberg procedure",
+      "abbr": "BH",
+      "aliases": [
+        "BH",
+        "Benjamini-Hochberg",
+        "Benjamini–Hochberg",
+        "BH 校正"
+      ],
+      "category": "统计与样本关系",
+      "summary": "BH 是控制假发现率的一种多重检验方法，会结合一组 P 值的排序与检验数量进行调整。可以理解为把每个结果放回“同时问了多少问题”的背景。",
+      "example": "本课 DESeq2 的 padj、许多富集结果的 p.adjust，以及周期结果的 BH.Q 都需结合各自检验范围解释。",
+      "in_course": "它使一长串候选的筛选更注意整体错误发现，具体控制依赖方法假设。",
+      "pitfall": "BH 不把每个基因变成相同的错误概率；调整后的数值也不是各软件、各检验范围间随意通用的评分。",
+      "related": [
+        "fdr",
+        "padj",
+        "multiple_testing"
+      ],
+      "sources": [],
+      "anchor": "glossary-91"
+    },
+    {
+      "id": "missing_value",
+      "zh": "缺失值与非有限值",
+      "en": "missing and non-finite values",
+      "abbr": "NA",
+      "aliases": [
+        "NA",
+        "NaN",
+        "Inf",
+        "缺失值",
+        "非有限值",
+        "有限值",
+        "非有限"
+      ],
+      "category": "统计与样本关系",
+      "summary": "缺失值表示某项结果没有可用记录；非有限值还包括正负无穷等不能按普通有限数值作图的情况。它们与真实测得的零不同。",
+      "example": "本课差异表有 15,312 行，火山图保留 15,310 个具备相应有效数值的点。",
+      "in_course": "统计、排序和绘图都需要检查哪些记录可用，并说明排除或替换规则。",
+      "pitfall": "NA 不能随意改成零；本流程对部分缺失 padj 的导出处理也不表示该基因已经获得“无差异”的证明。",
+      "related": [
+        "pvalue",
+        "padj",
+        "volcano"
+      ],
+      "sources": [],
+      "anchor": "glossary-92"
+    },
+    {
+      "id": "up_down",
+      "zh": "上调、下调与未达阈值",
+      "en": "upregulated, downregulated and non-significant",
+      "abbr": "up / down / ns",
+      "aliases": [
+        "上调",
+        "下调",
+        "显著候选",
+        "未达阈值",
+        "ns",
+        "upregulated",
+        "downregulated"
+      ],
+      "category": "差异与图形",
+      "summary": "上调和下调表示当前比较方向下的表达升高或降低；图中分类还要求满足预设统计和幅度阈值。ns 通常表示未达到这组分类规则。",
+      "example": "本课 ZT4 相对 ZT0，默认候选为上调 1,087、下调 826，其余 13,399。",
+      "in_course": "它们决定火山图点的分组、候选集合及上调或下调 ORA 输入。",
+      "pitfall": "交换参照会改变方向；ns 不等于基因没表达或完全没变化，图中颜色含义也需看具体图例。",
+      "related": [
+        "contrast",
+        "log2fc",
+        "padj"
+      ],
+      "sources": [],
+      "anchor": "glossary-93"
+    },
+    {
+      "id": "volcano",
+      "zh": "火山图",
+      "en": "volcano plot",
+      "abbr": "",
+      "aliases": [
+        "火山图",
+        "volcano plot"
+      ],
+      "category": "差异与图形",
+      "summary": "火山图把变化幅度与统计证据放在同一张散点图里，通常横轴为 log₂FC，纵轴为 −log10(校正 P 值或 P 值)。本课采用校正 P 值。",
+      "example": "本课一个点是一个基因；越偏左右表示幅度越大，越向上表示所用校正 P 值越小。",
+      "in_course": "它帮助同时辨认方向、幅度与证据，并定位需要进一步查看的候选。",
+      "pitfall": "纵轴不是表达量、点不是样本；不同火山图可能采用不同 P 值口径，必须先读坐标和阈值。",
+      "related": [
+        "log2fc",
+        "padj",
+        "effect_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-94"
+    },
+    {
+      "id": "heatmap",
+      "zh": "热图与色标",
+      "en": "heatmap and color scale",
+      "abbr": "",
+      "aliases": [
+        "热图",
+        "色标",
+        "heatmap"
+      ],
+      "category": "差异与图形",
+      "summary": "热图用格子颜色表示数值，色标说明颜色怎样对应数值。先明确行、列各是什么，再看该图所用的尺度。",
+      "example": "本课 Top30 热图一行一个基因、一列一个样本，颜色是行 Z-score；样本相关热图则两轴都是样本。",
+      "in_course": "它帮助在很多对象中快速辨认相似、相反或分组变化模式。",
+      "pitfall": "红色不固定表示上调，颜色深也不固定表示绝对表达高；一定要看本张图的单位和色标。",
+      "related": [
+        "zscore",
+        "pearson",
+        "dendrogram"
+      ],
+      "sources": [],
+      "anchor": "glossary-95"
+    },
+    {
+      "id": "dendrogram",
+      "zh": "层次聚类树",
+      "en": "hierarchical clustering dendrogram",
+      "abbr": "",
+      "aliases": [
+        "聚类树",
+        "树状图",
+        "层次聚类",
+        "dendrogram",
+        "左侧树"
+      ],
+      "category": "差异与图形",
+      "summary": "聚类树按所选距离和方法，逐步把相近对象合并起来。像把相似书籍先合成小组，再把小组合成大类。",
+      "example": "热图旁的树可把表达模式相近的样本或基因排在一起，具体以该图行列对象为准。",
+      "in_course": "它帮助读出相似性组织方式，使热图更容易看出结构。",
+      "pitfall": "它不是物种进化树，也不自动给出显著性；距离、输入变换和聚类方法都会改变树形。",
+      "related": [
+        "heatmap",
+        "clustering",
+        "pearson"
+      ],
+      "sources": [],
+      "anchor": "glossary-96"
+    },
+    {
+      "id": "top_genes",
+      "zh": "Top 排名与展示筛选",
+      "en": "top-ranked selection",
+      "abbr": "Top30 / Top10",
+      "aliases": [
+        "Top30",
+        "Top 基因",
+        "Top 基因选择",
+        "Top10"
+      ],
+      "category": "差异与图形",
+      "summary": "Top 指按某个规则排在前面的有限数量对象，规则必须明确，可以是变化幅度、统计量或其他指标。它是展示选择，而非统一科学定义。",
+      "example": "本课 Top30 热图按差异表中的变化幅度绝对值排序选取，并没有要求所有入选基因都达到显著阈值；它也不是表达量最高的 30 个基因。",
+      "in_course": "本课 Top30 用于基因热图，富集图里的 Top10 则指展示 10 个功能条目；要看当前图排名的对象和依据。",
+      "pitfall": "进入 Top 不证明更重要，也不能把这部分图当成全部差异结果；换排序规则会换掉入选名单。",
+      "related": [
+        "log2fc",
+        "heatmap",
+        "effect_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-97"
+    },
+    {
+      "id": "set",
+      "zh": "集合、交集与并集",
+      "en": "set, intersection and union",
+      "abbr": "",
+      "aliases": [
+        "集合",
+        "交集",
+        "并集",
+        "intersection",
+        "union"
+      ],
+      "category": "差异与图形",
+      "summary": "集合是一组符合规则的对象；交集是几个集合共同拥有的成员，并集是至少属于其中一个集合的所有成员。",
+      "example": "两个比较各有候选名单，交集可找共同候选，并集可汇总任一比较达到规则的基因。",
+      "in_course": "Venn 和 UpSet 图把多个候选名单之间的关系画出来。",
+      "pitfall": "共同入选不自动表示变化方向相同；先确认集合是否按上调、下调或所有方向定义。",
+      "related": [
+        "venn",
+        "upset",
+        "up_down"
+      ],
+      "sources": [],
+      "anchor": "glossary-98"
+    },
+    {
+      "id": "venn",
+      "zh": "韦恩图",
+      "en": "Venn diagram",
+      "abbr": "",
+      "aliases": [
+        "Venn",
+        "韦恩图",
+        "Venn diagram"
+      ],
+      "category": "差异与图形",
+      "summary": "韦恩图用重叠区域表示少数集合的关系，区域内数字通常是满足对应成员关系的对象数。",
+      "example": "两个圈重叠处可表示两个比较共同出现的候选基因，非重叠部分表示各自特有。",
+      "in_course": "本课用它直观比较候选名单的共同与不同之处。",
+      "pitfall": "圈的面积未必严格按数量成比例；候选交集也不自动意味着表达方向或机制相同。",
+      "related": [
+        "set",
+        "upset",
+        "contrast"
+      ],
+      "sources": [],
+      "anchor": "glossary-99"
+    },
+    {
+      "id": "upset",
+      "zh": "UpSet 集合交集图",
+      "en": "UpSet plot",
+      "abbr": "",
+      "aliases": [
+        "UpSet",
+        "UpSetR",
+        "交集矩阵"
+      ],
+      "category": "差异与图形",
+      "summary": "UpSet 图用点阵指明组合，用柱高表示相应交集大小，适合较多集合。黑点及连线回答“这一柱选的是哪些集合”。",
+      "example": "本课按图解中的排他性交集口径阅读：一个组合的基因还需不属于未点亮的集合。",
+      "in_course": "它让多个比较的共享与特有候选比多重叠圈更容易核对。",
+      "pitfall": "不要只看柱高而忽略下方点阵；交集口径可随工具设置变化，不能把排他性交集误读为包含额外集合的所有共有基因。",
+      "related": [
+        "set",
+        "venn",
+        "up_down"
+      ],
+      "sources": [],
+      "anchor": "glossary-100"
+    },
+    {
+      "id": "boxplot",
+      "zh": "箱线图",
+      "en": "box plot",
+      "abbr": "",
+      "aliases": [
+        "箱线图",
+        "箱体",
+        "box plot"
+      ],
+      "category": "差异与图形",
+      "summary": "箱线图用中位数、四分位范围及须线等概括一组数的分布，让中心、离散与尾部情况能一起看到。",
+      "example": "FastQC 逐位置质量图在每个位置或位置区间汇总很多 reads 的质量。",
+      "in_course": "它帮助判断是否多数 reads 都不错，还是均值不错但有一部分质量明显偏低。",
+      "pitfall": "不同软件对须线的定义可能不同；图中箱体是分布摘要，不是一条 read 的真实起伏曲线。",
+      "related": [
+        "quartile",
+        "median",
+        "phred"
+      ],
+      "sources": [],
+      "anchor": "glossary-101"
+    },
+    {
+      "id": "annotation",
+      "zh": "功能注释",
+      "en": "functional annotation",
+      "abbr": "",
+      "aliases": [
+        "功能注释",
+        "annotation"
+      ],
+      "category": "功能与注释",
+      "summary": "功能注释把基因或蛋白与已有功能知识联系起来，像给书籍贴上主题标签。标签可能来自实验研究，也可能来自计算推断。",
+      "example": "一个基因可有 GO、KO 或通路注释，也可能在当前资料中查不到某类标签。",
+      "in_course": "富集分析先靠注释把基因组成集合，再检验候选或排序中的功能偏向。",
+      "pitfall": "没有注释不等于没有功能；计算转移的标签也不是本实验已验证的功能事实。",
+      "related": [
+        "go",
+        "ko",
+        "homology"
+      ],
+      "sources": [],
+      "anchor": "glossary-102"
+    },
+    {
+      "id": "go_bp",
+      "zh": "生物过程",
+      "en": "biological process",
+      "abbr": "BP",
+      "aliases": [
+        "BP",
+        "生物过程",
+        "biological process"
+      ],
+      "category": "功能与注释",
+      "summary": "生物过程是 GO 的一大类，用来描述由多个分子活动共同完成的较大生物学过程，例如对某种刺激的响应。",
+      "example": "本课 GO_BP 结果提供候选基因与过程条目之间的关系。",
+      "in_course": "它帮助把单基因变化组织成可能涉及的生物过程线索。",
+      "pitfall": "过程名称描述已有知识中的关联，不表示本实验已直接测到整个过程发生或被激活。",
+      "related": [
+        "go",
+        "go_mf",
+        "go_cc"
+      ],
+      "sources": [],
+      "anchor": "glossary-103",
+      "case_sensitive_aliases": [
+        "BP"
+      ]
+    },
+    {
+      "id": "go_mf",
+      "zh": "分子功能",
+      "en": "molecular function",
+      "abbr": "MF",
+      "aliases": [
+        "MF",
+        "分子功能",
+        "molecular function"
+      ],
+      "category": "功能与注释",
+      "summary": "分子功能是 GO 的一大类，描述基因产物在分子层面能执行什么活动，例如某种结合或催化活动。",
+      "example": "“酶活性”类标签关注分子能做什么，而非它位于何处或参与的全部过程。",
+      "in_course": "它为富集结果提供与生物过程不同层次的功能解释。",
+      "pitfall": "RNA 丰度变化不直接等于该酶活性改变；功能标签也不能替代本实验的生化测量。",
+      "related": [
+        "go",
+        "go_bp",
+        "go_cc"
+      ],
+      "sources": [],
+      "anchor": "glossary-104"
+    },
+    {
+      "id": "go_cc",
+      "zh": "细胞组分",
+      "en": "cellular component",
+      "abbr": "CC",
+      "aliases": [
+        "CC",
+        "细胞组分",
+        "cellular component"
+      ],
+      "category": "功能与注释",
+      "summary": "细胞组分是 GO 的一大类，描述基因产物所在或参与的细胞结构与复合体，帮助回答“通常在哪里发挥作用”。",
+      "example": "与某个细胞器或蛋白复合体相关的注释，可把候选连接到空间位置与结构背景。",
+      "in_course": "它补充 BP 和 MF 的信息，让功能解释更完整。",
+      "pitfall": "相关基因的 RNA 增加不等于相应细胞器数量增加；定位注释也不证明在本样本中已验证相同位置。",
+      "related": [
+        "go",
+        "go_bp",
+        "go_mf"
+      ],
+      "sources": [],
+      "anchor": "glossary-105"
+    },
+    {
+      "id": "pathway",
+      "zh": "生物通路",
+      "en": "biological pathway",
+      "abbr": "",
+      "aliases": [
+        "通路",
+        "pathway"
+      ],
+      "category": "功能与注释",
+      "summary": "通路把一系列相关反应、分子作用或调控关系组织起来，像描述各站如何连接的路线图。一个基因可能参与不止一条路线。",
+      "example": "本课 KEGG 结果展示淀粉和蔗糖代谢等通路，与具体命中基因一起解释。",
+      "in_course": "它帮助从候选基因走向共同过程和可验证的机制假设。",
+      "pitfall": "通路被富集只表示其成员在输入中具有统计偏向，不能单独证明通路整体活性升高或降低。",
+      "related": [
+        "kegg",
+        "ora",
+        "gsea"
+      ],
+      "sources": [],
+      "anchor": "glossary-106"
+    },
+    {
+      "id": "ko",
+      "zh": "KEGG 同源功能分类",
+      "en": "KEGG Orthology",
+      "abbr": "KO",
+      "aliases": [
+        "KO",
+        "KEGG Orthology"
+      ],
+      "category": "功能与注释",
+      "summary": "KO 将承担相应功能的基因产物归入跨物种的功能类别，通常使用 K 开头编号。它像连接不同物种基因与共同功能的一座桥。",
+      "example": "自建注释可把查询蛋白联系到 KO，再根据映射联系到 KEGG 通路。",
+      "in_course": "它使缺少成熟物种专用数据库的案例也能组织功能集合。",
+      "pitfall": "KO 不是本样本基因编号，也不是 pathway 编号；一个基因获得 KO 不代表一定获得所有下游通路映射。",
+      "related": [
+        "kegg",
+        "annotation",
+        "homology"
+      ],
+      "sources": [],
+      "anchor": "glossary-107"
+    },
+    {
+      "id": "gene_set",
+      "zh": "基因集",
+      "en": "gene set",
+      "abbr": "",
+      "aliases": [
+        "基因集",
+        "功能集合",
+        "gene set"
+      ],
+      "category": "功能与注释",
+      "summary": "基因集是按某种知识或规则收集的一组基因，常见依据包括 GO 条目、通路或其他共同特征。它是功能分析中的基本对象。",
+      "example": "酸性物质响应对应一个成员集合，GSEA 检查这些成员在当前排序中的位置。",
+      "in_course": "ORA 看它在候选名单中的比例，GSEA 看它在完整有效排序中的分布。",
+      "pitfall": "集合来源、版本及编号映射都会改变成员；同名集合在不同数据库版本中不一定完全一致。",
+      "related": [
+        "ora",
+        "gsea",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-108"
+    },
+    {
+      "id": "background",
+      "zh": "富集分析背景",
+      "en": "enrichment background / universe",
+      "abbr": "",
+      "aliases": [
+        "背景",
+        "有效背景",
+        "universe",
+        "背景集合"
+      ],
+      "category": "功能与注释",
+      "summary": "背景是此次分析中有机会成为候选、并满足相关检验与注释条件的基因集合。像统计社团报名偏好，应与有资格报名的人比较。",
+      "example": "本课示例 GO 条目的有效背景分母为 11,616，而不是随手使用整个参考基因组的所有基因。",
+      "in_course": "背景决定 ORA 的参照比例，需与候选来源、ID 和功能类别匹配。",
+      "pitfall": "不同 GO 类别和 KEGG 可有不同有效背景；扩大或缩小背景可能改变显著性，不能只为得到更好结果而选择。",
+      "related": [
+        "ora",
+        "gene_ratio",
+        "bg_ratio"
+      ],
+      "sources": [],
+      "anchor": "glossary-109"
+    },
+    {
+      "id": "gene_ratio",
+      "zh": "候选命中比例",
+      "en": "gene ratio",
+      "abbr": "GeneRatio",
+      "aliases": [
+        "GeneRatio",
+        "候选命中比例"
+      ],
+      "category": "功能与注释",
+      "summary": "在本课 ORA 中，GeneRatio 是命中某条目的候选基因数，除以进入相应分析口径的候选总数。先读清楚分子和分母，才知道这个比例在回答什么。",
+      "example": "示例为 26/809：26 个候选命中该 GO 条目，相应候选分母为 809。",
+      "in_course": "它与背景比例一起计算富集倍数，也常作为富集图的坐标。",
+      "pitfall": "分母不一定是最初全部差异基因数；不同软件或 GSEA 图里的同名字段也需另查定义。",
+      "related": [
+        "bg_ratio",
+        "fold_enrichment",
+        "enrichment_count"
+      ],
+      "sources": [],
+      "anchor": "glossary-110"
+    },
+    {
+      "id": "bg_ratio",
+      "zh": "背景命中比例",
+      "en": "background ratio",
+      "abbr": "BgRatio",
+      "aliases": [
+        "BgRatio",
+        "背景比例",
+        "背景命中比例"
+      ],
+      "category": "功能与注释",
+      "summary": "BgRatio 是有效背景中属于某条目的基因数，除以有效背景总数，表示未看候选名单之前这个功能有多常见。",
+      "example": "示例为 41/11616：背景中 41 个基因具有该 GO 条目，背景总数为 11,616。",
+      "in_course": "ORA 将它与候选比例比较，判断功能在候选中是否相对集中。",
+      "pitfall": "背景比例小并不自动代表结果重要；还要结合命中数、统计证据、注释质量与实验问题。",
+      "related": [
+        "background",
+        "gene_ratio",
+        "fold_enrichment"
+      ],
+      "sources": [],
+      "anchor": "glossary-111"
+    },
+    {
+      "id": "fold_enrichment",
+      "zh": "富集倍数",
+      "en": "fold enrichment",
+      "abbr": "FoldEnrichment",
+      "aliases": [
+        "FoldEnrichment",
+        "富集倍数",
+        "fold enrichment"
+      ],
+      "category": "功能与注释",
+      "summary": "富集倍数是候选命中比例除以背景命中比例，描述某功能在候选中相对背景集中多少倍。它针对集合比例，而非单个基因表达。",
+      "example": "本课 GO 示例 (26/809)/(41/11616) 约为 9.105。",
+      "in_course": "它帮助理解 ORA 结果的比例差异，与 P 值、校正值和成员数共同阅读。",
+      "pitfall": "9 倍富集不等于这些基因表达都上升 9 倍，也不是已经证明整个通路活性增加 9 倍。",
+      "related": [
+        "gene_ratio",
+        "bg_ratio",
+        "log2fc"
+      ],
+      "sources": [],
+      "anchor": "glossary-112"
+    },
+    {
+      "id": "enrichment_count",
+      "zh": "富集图的命中数",
+      "en": "enrichment hit count",
+      "abbr": "Count",
+      "aliases": [
+        "Count",
+        "命中数",
+        "核心成员数"
+      ],
+      "category": "功能与注释",
+      "summary": "富集图中的 Count 是用于画点大小等的成员计数，但具体数谁要看分析类型。它与表达矩阵里的 counts 是两个不同概念。",
+      "example": "本课 ORA 的 Count 是命中该条目的候选数；GSEA 概览图的 Count 来自核心富集成员数。",
+      "in_course": "先辨认统计口径，才能知道较大的点究竟代表更多候选命中还是更多核心成员。",
+      "pitfall": "不能把 Count 当成某基因表达量，也不能把本课 GSEA 的 Count 当作完整集合大小 setSize。",
+      "related": [
+        "counts",
+        "leading_edge",
+        "set_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-113",
+      "case_sensitive_aliases": [
+        "Count"
+      ]
+    },
+    {
+      "id": "hypergeometric",
+      "zh": "超几何检验",
+      "en": "hypergeometric test",
+      "abbr": "",
+      "aliases": [
+        "超几何",
+        "超几何检验",
+        "hypergeometric"
+      ],
+      "category": "功能与注释",
+      "summary": "超几何模型描述从有限总体中不放回抽取时，抽到指定类别成员的数量。ORA 用它判断候选中某功能的命中数是否异常偏多。",
+      "example": "若背景像一袋不同颜色的球，候选像取出的一把球，就能问某种颜色为何出现得这么集中。",
+      "in_course": "它联系候选数、背景数和条目成员数，得到 ORA 的统计证据。",
+      "pitfall": "抽球比喻只帮助理解模型；真实候选有产生过程，背景选错或基因之间有关联都会影响解释。",
+      "related": [
+        "ora",
+        "background",
+        "pvalue"
+      ],
+      "sources": [],
+      "anchor": "glossary-114"
+    },
+    {
+      "id": "rank_metric",
+      "zh": "基因排序指标",
+      "en": "gene ranking metric",
+      "abbr": "",
+      "aliases": [
+        "排序指标",
+        "排序权重",
+        "ranking metric",
+        "带方向排序"
+      ],
+      "category": "功能与注释",
+      "summary": "排序指标为每个基因提供可比较的数值，决定 GSEA 队伍从哪一端排到哪一端，部分算法还利用其幅度作权重。",
+      "example": "本课主要按 ZT4 相对 ZT0 的 Wald stat 排序，正负号承接同一比较方向。",
+      "in_course": "它是解读 NES 正负和运行曲线前必须知道的设置。",
+      "pitfall": "排序不是样本采样时间，也不等于按基因编号排；换指标可能改变富集结果，正端含义也随比较方向而变。",
+      "related": [
+        "wald",
+        "gsea",
+        "contrast"
+      ],
+      "sources": [],
+      "anchor": "glossary-115"
+    },
+    {
+      "id": "es",
+      "zh": "富集分数与运行曲线",
+      "en": "enrichment score and running enrichment score",
+      "abbr": "ES",
+      "aliases": [
+        "ES",
+        "富集分数",
+        "运行富集分数",
+        "运行曲线"
+      ],
+      "category": "功能与注释",
+      "summary": "GSEA 沿基因排序移动，遇到集合成员时按规则增加分数，遇到非成员时降低；曲线相对零的最大偏离概括为富集分数 ES。",
+      "example": "本课代表集合的 ES 约 0.464；图中短竖线标出成员在队列中的命中位置。",
+      "in_course": "它把“成员是否集中在某一端”的直觉变成可计算的统计量。",
+      "pitfall": "曲线不是单个基因表达量或随时间变化；峰值 ES 与标准化后的 NES 是不同数值。",
+      "related": [
+        "gsea",
+        "nes",
+        "rank_metric"
+      ],
+      "sources": [
+        {
+          "label": "GSEA 官方用户指南：排序、ES、NES 与 leading edge",
+          "url": "https://docs.gsea-msigdb.org/GSEA/GSEA_User_Guide/"
+        }
+      ],
+      "anchor": "glossary-116"
+    },
+    {
+      "id": "leading_edge",
+      "zh": "核心富集成员",
+      "en": "leading-edge subset / core enrichment",
+      "abbr": "",
+      "aliases": [
+        "leading edge",
+        "leading-edge",
+        "core_enrichment",
+        "核心富集",
+        "核心成员"
+      ],
+      "category": "功能与注释",
+      "summary": "核心富集成员是对 GSEA 主要富集信号贡献较大的那部分命中基因。可理解为推动运行曲线达到关键极值的成员群。",
+      "example": "本课代表 GO 集合 setSize 为 359，而核心成员为 93，所以完整集合与核心子集不能混用。",
+      "in_course": "它提供进一步查看表达、功能和验证候选的入口，并决定本课概览图中的 Count。",
+      "pitfall": "核心成员不一定每个都达到单基因差异阈值；负向富集时应按相应负端规则定位，不能一律取曲线最左侧。",
+      "related": [
+        "gsea",
+        "es",
+        "set_size"
+      ],
+      "sources": [
+        {
+          "label": "GSEA 官方用户指南：排序、ES、NES 与 leading edge",
+          "url": "https://docs.gsea-msigdb.org/GSEA/GSEA_User_Guide/"
+        }
+      ],
+      "anchor": "glossary-117"
+    },
+    {
+      "id": "set_size",
+      "zh": "有效基因集大小",
+      "en": "effective gene set size",
+      "abbr": "setSize",
+      "aliases": [
+        "setSize",
+        "集合大小"
+      ],
+      "category": "功能与注释",
+      "summary": "setSize 表示该次 GSEA 中与有效排序相交并满足分析要求的集合成员数，像真正进入考场的这组成员数量。",
+      "example": "本课酸性物质响应示例为 359，而其核心富集成员数为 93。",
+      "in_course": "它帮助确认基因集有多少成员实际参与检验，也与分析设置中的大小范围有关。",
+      "pitfall": "它不一定等于数据库原始记录的全部成员数，更不是样本数量或表达 counts。",
+      "related": [
+        "gene_set",
+        "leading_edge",
+        "enrichment_count"
+      ],
+      "sources": [],
+      "anchor": "glossary-118"
+    },
+    {
+      "id": "homology",
+      "zh": "同源与序列相似性",
+      "en": "homology and sequence similarity",
+      "abbr": "",
+      "aliases": [
+        "同源",
+        "同源关系",
+        "序列相似性",
+        "homology"
+      ],
+      "category": "功能与注释",
+      "summary": "同源描述序列具有共同演化来源；序列相似性则描述当前序列有多像。比对的相似性证据可帮助推断同源与功能，但两者不是同一个词。",
+      "example": "两个蛋白有可靠的相似序列区域，可为转移已有功能标签提供线索。",
+      "in_course": "本课 eggNOG-mapper 路线利用同源相关信息组织功能注释。",
+      "pitfall": "不能把“80% 相似”说成“80% 同源”，也不能仅凭最相似命中就保证功能完全相同。",
+      "related": [
+        "annotation",
+        "diamond",
+        "representative_protein"
+      ],
+      "sources": [],
+      "anchor": "glossary-119"
+    },
+    {
+      "id": "representative_protein",
+      "zh": "代表蛋白",
+      "en": "representative protein sequence",
+      "abbr": "",
+      "aliases": [
+        "代表蛋白",
+        "代表转录本",
+        "representative protein"
+      ],
+      "category": "功能与注释",
+      "summary": "代表蛋白是为一个基因选择的一条查询蛋白序列，目的是减少多转录本造成的重复或歧义。如何选“代表”必须说明规则。",
+      "example": "本项目按最长成熟转录本规则选择代表，再取对应蛋白；不能简写成“总是选最长蛋白”。",
+      "in_course": "它是自建功能注释路线的查询输入，让注释随后回到基因层面。",
+      "pitfall": "成熟转录本长度包含外显子中的非翻译区，因此最长转录本与最长蛋白可能不同；代表也不等于唯一真实蛋白。",
+      "related": [
+        "transcript",
+        "utr",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-120"
+    },
+    {
+      "id": "evalue",
+      "zh": "序列搜索期望值",
+      "en": "expectation value",
+      "abbr": "E-value",
+      "aliases": [
+        "E-value",
+        "e-value",
+        "E 值",
+        "evalue"
+      ],
+      "category": "功能与注释",
+      "summary": "E-value 表示在相应搜索规模和模型下，随机情况下预期能出现多少个达到当前或更好得分的匹配。越小通常意味着偶然匹配解释越不充分。",
+      "example": "在不同大小的数据库里，即使比对得分相近，E-value 也可能不同。",
+      "in_course": "它是蛋白搜索质量筛选的证据之一，要与覆盖、相似性及功能背景一起看。",
+      "pitfall": "E-value 不是“两个蛋白功能相同的概率”，也不能脱离数据库规模只看一个漂亮的小数。",
+      "related": [
+        "diamond",
+        "homology",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-121"
+    },
+    {
+      "id": "annotation_coverage",
+      "zh": "注释覆盖率",
+      "en": "annotation coverage",
+      "abbr": "",
+      "aliases": [
+        "覆盖率",
+        "注释覆盖率",
+        "注释覆盖"
+      ],
+      "category": "功能与注释",
+      "summary": "注释覆盖率说明输入对象中有多少获得指定类型的标签。像给一批书编目，找到作者、主题和分类号的比例可以各不相同。",
+      "example": "本课查询蛋白、搜索命中、获得注释以及拥有 GO、KO、通路映射的数量逐层不同。",
+      "in_course": "它帮助解释为何两种功能分析路线可能得到不同有效背景与集合成员。",
+      "pitfall": "每种标签的分母必须说明；搜索命中率不等于 GO 覆盖率，也不能因覆盖低就认定未注释基因没有功能。",
+      "related": [
+        "annotation",
+        "background",
+        "ko"
+      ],
+      "sources": [],
+      "anchor": "glossary-122"
+    },
+    {
+      "id": "time_series",
+      "zh": "时间序列",
+      "en": "time series",
+      "abbr": "",
+      "aliases": [
+        "时间序列",
+        "time series"
+      ],
+      "category": "时间与聚类",
+      "summary": "时间序列是在多个已知时间点按顺序观察同类对象，用来研究变化如何随时间展开。读图时须确认横轴按真实小时定位，还是仅将时期等距排列。",
+      "example": "本课 ZT0、1、4、8、12、16、20 七时期并不等间隔；趋势模块图按时期等距排布，因此不能据图中斜率直接计算每小时变化速度。",
+      "in_course": "趋势模块用七时期模式，周期分支则选取满足规则的等间隔子集。",
+      "pitfall": "把样本按任意顺序连线不等于时间分析；不同时间点也不能在不了解设计时当作同一个样本的连续重复测量。",
+      "related": [
+        "zt",
+        "period",
+        "clustering"
+      ],
+      "sources": [],
+      "anchor": "glossary-123"
+    },
+    {
+      "id": "clustering",
+      "zh": "聚类",
+      "en": "clustering",
+      "abbr": "",
+      "aliases": [
+        "聚类",
+        "clustering"
+      ],
+      "category": "时间与聚类",
+      "summary": "聚类按所选特征和相似规则，把更相近的对象组织到一起。像按旋律走向整理歌曲，可发现相似模式，而不需要事先给每首歌贴标签。",
+      "example": "本课把时间变化形状相近的基因组织成模块，热图也可按相似性排列行列。",
+      "in_course": "它提供数据结构和功能线索，帮助从成千基因中寻找可读的模式。",
+      "pitfall": "聚到一起不证明存在共同调控或因果机制；输入、尺度、距离和模块数都会影响结果。",
+      "related": [
+        "fuzzy_clustering",
+        "module",
+        "dendrogram"
+      ],
+      "sources": [],
+      "anchor": "glossary-124"
+    },
+    {
+      "id": "fuzzy_clustering",
+      "zh": "模糊聚类",
+      "en": "fuzzy clustering / fuzzy c-means",
+      "abbr": "",
+      "aliases": [
+        "模糊聚类",
+        "软聚类",
+        "fuzzy clustering",
+        "fuzzy c-means"
+      ],
+      "category": "时间与聚类",
+      "summary": "模糊聚类允许一个对象对多个类别保留不同程度的归属，而不是只能非此即彼。像一首歌可能既偏民谣，也带有摇滚特点。",
+      "example": "一个基因可主要接近模块 A，同时与模块 B 有一定联系，算法用隶属度表达这种渐变关系。",
+      "in_course": "本课 Mfuzz 根据标准化后的时间表达模式进行这类聚类。",
+      "pitfall": "“模糊”不是计算随意或结果不认真，而是分类方式允许渐变；隶属度也不是生物学机制成立的概率。",
+      "related": [
+        "membership",
+        "mfuzz",
+        "module"
+      ],
+      "sources": [
+        {
+          "label": "Mfuzz 原始论文：软聚类与 membership value",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2139991/"
+        }
+      ],
+      "anchor": "glossary-125",
+      "annotation_note": "正文名称出现于小节标题中，保留标题；可从隶属度和 Mfuzz 进入。"
+    },
+    {
+      "id": "module",
+      "zh": "表达模块",
+      "en": "expression module / cluster",
+      "abbr": "",
+      "aliases": [
+        "模块",
+        "module",
+        "cluster"
+      ],
+      "category": "时间与聚类",
+      "summary": "本课模块是一组在所用时间序列中具有相近变化模式的基因，可以当作便于查看的模式分组。模块编号只是标签。",
+      "example": "本课筛选 1,587 个高变基因后组织为 6 个趋势模块。",
+      "in_course": "逐模块看曲线，再结合功能信息，有助于提出哪些过程在相近时间发生变化的假设。",
+      "pitfall": "模块 1 不表示最重要，也不等于固定通路；模块成员与数目会随输入和聚类参数改变。",
+      "related": [
+        "clustering",
+        "membership",
+        "high_variable"
+      ],
+      "sources": [],
+      "anchor": "glossary-126"
+    },
+    {
+      "id": "centroid",
+      "zh": "聚类中心与图中代表线",
+      "en": "cluster centroid / prototype",
+      "abbr": "",
+      "aliases": [
+        "聚类中心",
+        "模块中心",
+        "centroid",
+        "中心线",
+        "簇中心"
+      ],
+      "category": "时间与聚类",
+      "summary": "聚类中心是算法用来代表一个模块模式的参考轮廓；图中画出的粗线则可能另按成员均值或中位数计算，二者需要区分。",
+      "example": "本课趋势图粗线是模块内展示基因在每个时期的标准化表达值中位数，既不是三个生物学重复的均值，也不是 Mfuzz 的算法中心。",
+      "in_course": "这个区别帮助解释隶属度如何产生，以及图上汇总线究竟概括了什么。",
+      "pitfall": "不能只因为线最粗就把它当成真实测量、拟合曲线或算法中心；具体定义应以图解和绘图脚本为准。",
+      "related": [
+        "membership",
+        "median",
+        "mfuzz"
+      ],
+      "sources": [],
+      "anchor": "glossary-127"
+    },
+    {
+      "id": "high_variable",
+      "zh": "高变基因",
+      "en": "highly variable gene",
+      "abbr": "",
+      "aliases": [
+        "高变基因",
+        "高变",
+        "highly variable"
+      ],
+      "category": "时间与聚类",
+      "summary": "高变基因是在特定输入、变换和指标下变化较大的基因。选择它们可以让聚类更集中于有明显模式的对象。",
+      "example": "本课过滤后约 15,874 个基因中选择变异较高的 10%，即 1,587 个进入展示的趋势聚类。",
+      "in_course": "它是趋势分析的输入筛选，决定模块覆盖的是哪部分基因。",
+      "pitfall": "高变不等于差异显著，也不等于质量高或有昼夜节律；换指标或阈值可能得到不同名单。",
+      "related": [
+        "variance",
+        "clustering",
+        "period"
+      ],
+      "sources": [],
+      "anchor": "glossary-128"
+    },
+    {
+      "id": "period",
+      "zh": "周期",
+      "en": "period",
+      "abbr": "",
+      "aliases": [
+        "周期",
+        "period"
+      ],
+      "category": "时间与聚类",
+      "summary": "周期是一种模式重复一次所需的时间，像从一个波峰到下一个相应波峰的间隔。在分析里通常是方法支持范围内估计或选择的值。",
+      "example": "本课 JTK 输出中出现 20 或 24 小时，要结合 4 小时采样间隔和观测时长解释。",
+      "in_course": "它帮助描述候选表达模式的重复时间尺度，而不只看“是否有起伏”。",
+      "pitfall": "返回周期不是无限精确的生物钟测量；短时间窗、有限采样与算法候选范围都会限制判断。",
+      "related": [
+        "phase",
+        "amplitude",
+        "circadian"
+      ],
+      "sources": [],
+      "anchor": "glossary-129"
+    },
+    {
+      "id": "phase",
+      "zh": "相位与峰值时刻",
+      "en": "phase / peak timing",
+      "abbr": "",
+      "aliases": [
+        "相位",
+        "phase",
+        "lag"
+      ],
+      "category": "时间与聚类",
+      "summary": "相位描述一个周期模式相对于时间起点所处的位置，常与高峰在周期内何时出现有关。lag 等返回字段还需按具体算法定义阅读。",
+      "example": "两个基因可能周期都约 24 小时，但一个在较早阶段达到高值，另一个在较晚阶段达到高值。",
+      "in_course": "周期候选表可用相应字段辅助比较模式的时间位置。",
+      "pitfall": "相位不是周期长度，也不能在不了解算法约定时把每个 lag 数值都直接当成肉眼看到的最高采样点。",
+      "related": [
+        "period",
+        "zt",
+        "metacycle"
+      ],
+      "sources": [],
+      "anchor": "glossary-130"
+    },
+    {
+      "id": "amplitude",
+      "zh": "振幅",
+      "en": "amplitude",
+      "abbr": "",
+      "aliases": [
+        "振幅",
+        "amplitude",
+        "AMP"
+      ],
+      "category": "时间与聚类",
+      "summary": "振幅描述周期起伏的大小，具体定义由模型或软件决定。可以把周期想成波浪，周期说隔多久重复，振幅说起伏有多大。",
+      "example": "两个基因可能峰值时间相近，但一个轻微波动、另一个起伏较大。",
+      "in_course": "它补充周期和相位的信息，帮助描述候选曲线的形态。",
+      "pitfall": "不同变换尺度下振幅不能直接比；软件返回 AMP 也不能未经核对就当作原始 TPM 的最大值减最小值。",
+      "related": [
+        "period",
+        "phase",
+        "log_transform"
+      ],
+      "sources": [],
+      "anchor": "glossary-131"
+    },
+    {
+      "id": "circadian",
+      "zh": "昼夜节律",
+      "en": "circadian rhythm",
+      "abbr": "",
+      "aliases": [
+        "昼夜节律",
+        "内源节律",
+        "circadian",
+        "自由运行",
+        "free-running"
+      ],
+      "category": "时间与聚类",
+      "summary": "昼夜节律通常指接近一天、由内源系统参与产生的生物节奏。证明内源性需要能区分环境直接驱动与内部持续振荡的证据。",
+      "example": "本课光暗循环中的表达起伏可产生周期候选，但还没有说明：去掉明暗交替等周期性环境提示后，这种节奏是否仍能持续。这种持续表现称为自由运行（free-running）。",
+      "in_course": "它为周期分支提供研究背景，也提醒我们把候选发现与机制证明分开。",
+      "pitfall": "统计周期显著不自动等于已证明生物钟控制；观测条件、持续时间和实验验证都影响结论。",
+      "related": [
+        "photoperiod",
+        "period",
+        "metacycle"
+      ],
+      "sources": [],
+      "anchor": "glossary-132"
+    },
+    {
+      "id": "fastqc",
+      "zh": "FastQC 读段质控工具",
+      "en": "FastQC",
+      "abbr": "",
+      "aliases": [
+        "FastQC"
+      ],
+      "category": "软件与文件",
+      "summary": "FastQC 读取 FASTQ 并从质量、序列组成、接头等多个角度生成检查报告，像给每份测序文件做体检。",
+      "example": "本课分别查看原始与处理后数据的逐位置质量和接头信号。",
+      "in_course": "它负责发现和展示问题，本身不是本课执行去接头的工具。",
+      "pitfall": "Pass、Warn、Fail 是工具按指标规则给出的提示，不等于对整个实验作最终好坏判决。",
+      "related": [
+        "qc",
+        "phred",
+        "adapter"
+      ],
+      "sources": [],
+      "anchor": "glossary-133"
+    },
+    {
+      "id": "multiqc",
+      "zh": "MultiQC 多报告汇总工具",
+      "en": "MultiQC",
+      "abbr": "",
+      "aliases": [
+        "MultiQC"
+      ],
+      "category": "软件与文件",
+      "summary": "MultiQC 收集多个软件或多个样本的报告，将关键指标放在一起，像把每份体检报告汇总成可比较的总表。",
+      "example": "本课用它观察多个测序端和处理阶段的整体质控情况。",
+      "in_course": "它便于发现某个样本是否与其他样本明显不同，以及处理前后指标怎样变化。",
+      "pitfall": "MultiQC 主要汇总已有结果，不会替你执行所有底层质控或自动纠正问题。",
+      "related": [
+        "qc",
+        "fastqc",
+        "retention"
+      ],
+      "sources": [],
+      "anchor": "glossary-134"
+    },
+    {
+      "id": "fastp",
+      "zh": "fastp 读段处理工具",
+      "en": "fastp",
+      "abbr": "",
+      "aliases": [
+        "fastp"
+      ],
+      "category": "软件与文件",
+      "summary": "fastp 是 FASTQ 预处理工具，可按设置进行接头处理、质量或长度过滤，并输出统计报告。像依据已确定规则整理原始材料。",
+      "example": "本课由 fastp 生成 clean FASTQ，再进行后续质控和 Salmon 定量。",
+      "in_course": "它把“发现问题”落实为可记录的处理步骤，同时保留前后数量和质量摘要。",
+      "pitfall": "软件实际执行哪些处理由版本和参数决定；不能把其他项目默认选项当成当前案例已运行的设置。",
+      "related": [
+        "trimming",
+        "fastq",
+        "retention"
+      ],
+      "sources": [],
+      "anchor": "glossary-135"
+    },
+    {
+      "id": "salmon",
+      "zh": "Salmon 转录本定量工具",
+      "en": "Salmon",
+      "abbr": "",
+      "aliases": [
+        "Salmon"
+      ],
+      "category": "软件与文件",
+      "summary": "Salmon 根据参考与测序信息估计转录本丰度，能够在模型中处理来源歧义和部分偏倚，输出定量结果。",
+      "example": "每个文库得到 quant.sf，其中包括长度、有效长度、TPM 和 NumReads。",
+      "in_course": "本课用它连接 clean 测序片段与可供统计的表达量。",
+      "pitfall": "软件名不需要硬凑成缩写全称；定量估计也不是每个分子都被直接、唯一地点数。",
+      "related": [
+        "quantification",
+        "numreads",
+        "effective_length"
+      ],
+      "sources": [
+        {
+          "label": "Salmon 官方文档：定量输出字段",
+          "url": "https://salmon.readthedocs.io/en/latest/file_formats.html"
+        }
+      ],
+      "anchor": "glossary-136"
+    },
+    {
+      "id": "trinity",
+      "zh": "Trinity 与表达矩阵工具",
+      "en": "Trinity",
+      "abbr": "",
+      "aliases": [
+        "Trinity"
+      ],
+      "category": "软件与文件",
+      "summary": "Trinity 是 RNA-seq 分析工具体系，本课使用其中相关脚本整理定量结果和表达矩阵。软件能做的事情与此处实际调用的步骤需区分。",
+      "example": "本课利用已有参考及 Salmon 结果生成基因 counts、TPM 和相应 TMM 矩阵。",
+      "in_course": "它承担矩阵整理和特定归一化输出的工作，后续不同分支选择相应矩阵。",
+      "pitfall": "看到 Trinity 名字不能推断本例一定重新做了无参考转录组组装；本课 TMM 单位还要按该脚本解释。",
+      "related": [
+        "matrix",
+        "tmm",
+        "norm_factor"
+      ],
+      "sources": [],
+      "anchor": "glossary-137"
+    },
+    {
+      "id": "deseq2",
+      "zh": "DESeq2 差异表达工具",
+      "en": "DESeq2",
+      "abbr": "",
+      "aliases": [
+        "DESeq2"
+      ],
+      "category": "软件与文件",
+      "summary": "DESeq2 是 R/Bioconductor 中的 RNA-seq 差异分析软件包，以计数模型结合样本设计、尺度因素和重复波动来估计变化。",
+      "example": "本课对 ZT4 相对 ZT0 等指定比较输出 log₂FC、标准误、stat、P 值和 padj。",
+      "in_course": "它把“看起来有差别”转为包含幅度和统计不确定性的结果表。",
+      "pitfall": "输入是符合流程要求的 counts；TPM、TMM 展示值或 Z-score 不能不加区分地替代。",
+      "related": [
+        "negative_binomial",
+        "dispersion",
+        "size_factor"
+      ],
+      "sources": [
+        {
+          "label": "DESeq2 官方教程：模型与结果解释",
+          "url": "https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+        }
+      ],
+      "anchor": "glossary-138"
+    },
+    {
+      "id": "pcatools",
+      "zh": "PCAtools 主成分分析工具",
+      "en": "PCAtools",
+      "abbr": "",
+      "aliases": [
+        "PCAtools"
+      ],
+      "category": "软件与文件",
+      "summary": "PCAtools 是用于主成分分析与可视化的 R 软件包，帮助把表达矩阵整理成样本关系图。图中处理仍由当前参数决定。",
+      "example": "本课先取对数、过滤低变基因，再按所记录的中心化与缩放设置分析。",
+      "in_course": "它生成本课 PCA 的坐标与轴解释信息。",
+      "pitfall": "不能仅看软件名就推断使用了所有默认设置；不同预处理可能改变投影与解释比例。",
+      "related": [
+        "pca",
+        "standardization",
+        "explained_variance"
+      ],
+      "sources": [],
+      "anchor": "glossary-139"
+    },
+    {
+      "id": "ggplot2",
+      "zh": "ggplot2 绘图工具",
+      "en": "ggplot2",
+      "abbr": "",
+      "aliases": [
+        "ggplot2"
+      ],
+      "category": "软件与文件",
+      "summary": "ggplot2 是 R 的通用绘图软件包，将数据映射到坐标、颜色、大小等视觉元素。像按一套规则安排图中的每种符号。",
+      "example": "富集概览中的点大小、颜色和位置分别可以承接不同结果字段。",
+      "in_course": "它负责展示已有数据，便于比较和解释。",
+      "pitfall": "绘图工具不会自动保证输入的统计口径正确；读图仍要确认一个点是什么、轴与图例表示什么。",
+      "related": [
+        "heatmap",
+        "enrichment_count",
+        "volcano"
+      ],
+      "sources": [],
+      "anchor": "glossary-140"
+    },
+    {
+      "id": "enhancedvolcano",
+      "zh": "EnhancedVolcano 火山图工具",
+      "en": "EnhancedVolcano",
+      "abbr": "",
+      "aliases": [
+        "EnhancedVolcano"
+      ],
+      "category": "软件与文件",
+      "summary": "EnhancedVolcano 是绘制火山图的 R 软件包，把差异结果中的幅度与统计证据放在一起，并按规则着色和标注。",
+      "example": "本课由既有差异结果挑选代表比较展示，图中每点是一个基因。",
+      "in_course": "它帮助查看大规模差异结果的整体形状及候选位置。",
+      "pitfall": "图中的分类和标签受输入字段、阈值与绘图设置影响；图漂亮不表示完成了新的统计检验。",
+      "related": [
+        "volcano",
+        "log2fc",
+        "padj"
+      ],
+      "sources": [],
+      "anchor": "glossary-141"
+    },
+    {
+      "id": "pheatmap",
+      "zh": "pheatmap 热图工具",
+      "en": "pheatmap",
+      "abbr": "",
+      "aliases": [
+        "pheatmap"
+      ],
+      "category": "软件与文件",
+      "summary": "pheatmap 是 R 中绘制矩阵热图的工具，可显示行列标签、注释和聚类结构。它把格子中的数值映射成颜色。",
+      "example": "本课热图需要结合选基因规则和行标准化方式阅读。",
+      "in_course": "它将选定表达矩阵转成便于观察样本间模式的图。",
+      "pitfall": "颜色代表什么由输入和缩放设置决定，不能把不同热图中的同一颜色直接当成相同表达量。",
+      "related": [
+        "heatmap",
+        "zscore",
+        "dendrogram"
+      ],
+      "sources": [],
+      "anchor": "glossary-142"
+    },
+    {
+      "id": "clusterprofiler",
+      "zh": "clusterProfiler 功能分析工具",
+      "en": "clusterProfiler",
+      "abbr": "",
+      "aliases": [
+        "clusterProfiler"
+      ],
+      "category": "软件与文件",
+      "summary": "clusterProfiler 是 R/Bioconductor 中组织功能富集分析及结果的工具，可配合合适的注释进行 ORA 和 GSEA。",
+      "example": "本课有现成物种注释与自建注释两条功能路线，输入映射需各自明确。",
+      "in_course": "它承接候选名单或排序，输出功能条目、成员和统计字段。",
+      "pitfall": "软件能成功运行不表示背景或 ID 已合理；结果仍依赖输入规则、注释覆盖和方法设置。",
+      "related": [
+        "ora",
+        "gsea",
+        "orgdb"
+      ],
+      "sources": [],
+      "anchor": "glossary-143"
+    },
+    {
+      "id": "enrichplot",
+      "zh": "enrichplot 富集绘图工具",
+      "en": "enrichplot",
+      "abbr": "",
+      "aliases": [
+        "enrichplot"
+      ],
+      "category": "软件与文件",
+      "summary": "enrichplot 用于把功能分析结果绘成概览图、运行曲线等，帮助阅读集合层面的信号。不同图的字段对应需按实现解释。",
+      "example": "本课 GSEA 概览中的 Count 对应核心富集成员数，不等于 setSize。",
+      "in_course": "它将统计结果转成可读图形，并提供继续核查具体成员的线索。",
+      "pitfall": "不要从坐标名或点大小凭直觉猜统计口径；本课图解已结合实际绘图实现说明。",
+      "related": [
+        "enrichment_count",
+        "leading_edge",
+        "gsea"
+      ],
+      "sources": [],
+      "anchor": "glossary-144"
+    },
+    {
+      "id": "fgsea",
+      "zh": "fgsea 快速基因集富集工具",
+      "en": "fgsea (fast gene set enrichment analysis)",
+      "abbr": "",
+      "aliases": [
+        "fgsea"
+      ],
+      "category": "软件与文件",
+      "summary": "fgsea 是用于基因集富集分析的 R 软件包，针对带数值的基因排序和功能集合计算富集信号及统计结果。",
+      "example": "本课 GSEA 路线通过相应实现处理有效排序与基因集。",
+      "in_course": "它承担富集计算中的具体算法工作，结果再由图表展示。",
+      "pitfall": "GSEA 是方法类别，fgsea 是实现工具；不同实现、参数与输入排序不能只因名字相似就视为完全相同。",
+      "related": [
+        "gsea",
+        "rank_metric",
+        "nes"
+      ],
+      "sources": [],
+      "anchor": "glossary-145"
+    },
+    {
+      "id": "mfuzz",
+      "zh": "Mfuzz 模糊聚类工具",
+      "en": "Mfuzz",
+      "abbr": "",
+      "aliases": [
+        "Mfuzz"
+      ],
+      "category": "软件与文件",
+      "summary": "Mfuzz 是用于组学表达模式软聚类的 R/Bioconductor 软件包。它允许基因对多个模块具有不同隶属度，适合探索时间变化形状。",
+      "example": "本课对经过筛选和标准化的基因进行聚类，并查看 6 个模块的曲线。",
+      "in_course": "它提供模块、中心与隶属度等聚类结果，绘图再按实际规则展示。",
+      "pitfall": "展示时把每个基因放入主要模块，不代表它对其他模块的联系变为零，也不证明模块有唯一机制。",
+      "related": [
+        "fuzzy_clustering",
+        "membership",
+        "centroid"
+      ],
+      "sources": [
+        {
+          "label": "Mfuzz 原始论文：软聚类与 membership value",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2139991/"
+        }
+      ],
+      "anchor": "glossary-146"
+    },
+    {
+      "id": "clustergvis",
+      "zh": "ClusterGVis 聚类可视化工具",
+      "en": "ClusterGVis",
+      "abbr": "",
+      "aliases": [
+        "ClusterGVis"
+      ],
+      "category": "软件与文件",
+      "summary": "ClusterGVis 是用于基因聚类结果展示等工作的 R 工具。它帮助把模块与表达模式组织成便于阅读的图。",
+      "example": "本课趋势分支需要区分聚类输出、显示的基因曲线和按成员汇总的粗线。",
+      "in_course": "它服务于模式展示，读图时仍以当前脚本选用的数据和汇总规则为准。",
+      "pitfall": "绘图中的模块编号、颜色和代表线是具体展示约定，不能仅凭软件名推断每条线的统计定义。",
+      "related": [
+        "module",
+        "centroid",
+        "mfuzz"
+      ],
+      "sources": [],
+      "anchor": "glossary-147"
+    },
+    {
+      "id": "metacycle",
+      "zh": "MetaCycle 与 JTK-CYCLE 周期分析",
+      "en": "MetaCycle; JTK-CYCLE",
+      "abbr": "",
+      "aliases": [
+        "MetaCycle",
+        "JTK",
+        "JTK-CYCLE"
+      ],
+      "category": "软件与文件",
+      "summary": "MetaCycle 是时间序列周期分析工具，本课使用其中的 JTK 方法，将观测模式与周期模板比较来寻找候选。JTK-CYCLE 是相应节律检测方法名称。",
+      "example": "本课保留 ZT0、4、8、12、16、20 的 18 个重复观测，使用等间隔时间设置。",
+      "in_course": "它输出统计证据及周期、相位等字段，配合诊断图理解候选。",
+      "pitfall": "检出周期模式不等于已经证明内源昼夜节律；输入间隔、候选周期范围和观测时长都会限制推断。",
+      "related": [
+        "period",
+        "phase",
+        "circadian"
+      ],
+      "sources": [],
+      "anchor": "glossary-148"
+    },
+    {
+      "id": "eggnog",
+      "zh": "eggNOG-mapper 功能注释工具",
+      "en": "eggNOG-mapper",
+      "abbr": "",
+      "aliases": [
+        "eggNOG-mapper",
+        "eggNOG"
+      ],
+      "category": "软件与文件",
+      "summary": "eggNOG-mapper 利用已有同源相关知识为查询序列提供功能注释，帮助把缺少成熟注释的基因联系到已知功能类别。",
+      "example": "本课用代表蛋白作查询，再整理 GO、KO 和通路等映射用于自建路线。",
+      "in_course": "它承接蛋白搜索结果与功能知识，支持构建后续注释数据库。",
+      "pitfall": "命中参考序列不等于获得所有注释类型；计算转移的功能还需关注覆盖、物种关系和证据限制。",
+      "related": [
+        "homology",
+        "diamond",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-149"
+    },
+    {
+      "id": "diamond",
+      "zh": "DIAMOND 蛋白序列搜索工具",
+      "en": "DIAMOND",
+      "abbr": "",
+      "aliases": [
+        "DIAMOND"
+      ],
+      "category": "软件与文件",
+      "summary": "DIAMOND 是高效的序列比对搜索工具，本课用于把查询蛋白与蛋白数据库中的序列比较。像快速寻找相关书页的线索。",
+      "example": "代表蛋白搜索得到候选命中，再由注释流程结合相应规则利用这些信息。",
+      "in_course": "它为自建功能注释提供序列相似性证据。",
+      "pitfall": "搜索命中不是功能实验验证；还要读 E-value、覆盖与匹配质量，不能把最快找到的一个名字直接当作结论。",
+      "related": [
+        "homology",
+        "evalue",
+        "eggnog"
+      ],
+      "sources": [],
+      "anchor": "glossary-150"
+    },
+    {
+      "id": "annotationforge",
+      "zh": "AnnotationForge 注释库构建工具",
+      "en": "AnnotationForge",
+      "abbr": "",
+      "aliases": [
+        "AnnotationForge"
+      ],
+      "category": "软件与文件",
+      "summary": "AnnotationForge 是 R/Bioconductor 中用于构建注释软件包的工具，能把符合要求的映射整理成可查询的数据库形式。",
+      "example": "本课自建 OrgDb 使用明确的基因编号键及功能映射。",
+      "in_course": "它把上游整理好的注释组织成下游工具可使用的接口。",
+      "pitfall": "它不会凭空生成新的功能证据；数据库质量取决于输入映射、去重、键类型与来源记录。",
+      "related": [
+        "orgdb",
+        "gene_id",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-151"
+    },
+    {
+      "id": "conda",
+      "zh": "Conda 环境与软件依赖",
+      "en": "Conda environment and dependency",
+      "abbr": "",
+      "aliases": [
+        "Conda",
+        "conda",
+        "软件依赖",
+        "运行环境"
+      ],
+      "category": "软件与文件",
+      "summary": "Conda 管理软件及其所需组件，并可把不同任务的工具放进不同环境。像为每种实验准备一套版本明确的工具箱。",
+      "example": "分析脚本可能分别需要命令行工具、R 包及兼容的依赖版本。",
+      "in_course": "准备检查会确认工具可调用，减少运行到中途才发现缺少组件的情况。",
+      "pitfall": "环境准备不是科学分析本身；本离线教案已包含展示素材，打开网页不要求安装完整分析环境。",
+      "related": [
+        "rnaseq",
+        "fasta",
+        "tsv"
+      ],
+      "sources": [],
+      "anchor": "glossary-152"
+    },
+    {
+      "id": "fasta",
+      "zh": "FASTA 序列格式",
+      "en": "FASTA format",
+      "abbr": "FASTA",
+      "aliases": [
+        "FASTA",
+        "fasta"
+      ],
+      "category": "软件与文件",
+      "summary": "FASTA 用以 > 开头的名称行，后接碱基或蛋白序列，保存参考序列时很常见。它像“标题加正文”的简明序列档案。",
+      "example": "本课参考基因组、转录本和代表蛋白可分别用 FASTA 保存。",
+      "in_course": "它给索引构建、编号对应和蛋白查询提供实际序列。",
+      "pitfall": "FASTA 通常不保存逐碱基质量值，因此与 FASTQ 的用途不同；名称行还需与其他注释文件一致。",
+      "related": [
+        "fastq",
+        "reference_genome",
+        "representative_protein"
+      ],
+      "sources": [],
+      "anchor": "glossary-153",
+      "annotation_note": "为参考基因组与序列文件补充的基础概念，可从相关术语进入。"
+    },
+    {
+      "id": "gtf",
+      "zh": "GTF 基因结构注释格式",
+      "en": "Gene Transfer Format",
+      "abbr": "GTF",
+      "aliases": [
+        "GTF"
+      ],
+      "category": "软件与文件",
+      "summary": "GTF 按表格记录基因组上的外显子等结构及其属性，像在参考序列地图上标出每段区域属于哪个转录本和基因。",
+      "example": "配合基因组 FASTA，可以按外显子坐标组织转录本，并提取相应编号关系。",
+      "in_course": "本课参考准备依靠它衔接基因组、转录本和基因层次。",
+      "pitfall": "GTF 不是实际表达量，也通常不直接包含完整序列；必须与相同坐标体系和参考版本配套。",
+      "related": [
+        "exon",
+        "transcript",
+        "reference_genome"
+      ],
+      "sources": [],
+      "anchor": "glossary-154"
+    },
+    {
+      "id": "tsv",
+      "zh": "制表符分隔表格",
+      "en": "tab-separated values",
+      "abbr": "TSV",
+      "aliases": [
+        "TSV",
+        "tsv"
+      ],
+      "category": "软件与文件",
+      "summary": "TSV 用制表符分隔一行中的各列，用换行分隔记录，是脚本交换表格数据的常见格式。表头告诉你每列含义。",
+      "example": "样本表、表达矩阵和差异结果表都可保存成 TSV。",
+      "in_course": "它让软件能稳定读取样本分组、数值和基因编号，也便于核对原表。",
+      "pitfall": "文件看起来整齐不代表列已正确分开；不要把空格分隔或带额外说明的文本不加检查地当成同一格式。",
+      "related": [
+        "matrix",
+        "gene_id",
+        "json"
+      ],
+      "sources": [],
+      "anchor": "glossary-155",
+      "annotation_note": "正文主要出现于文件后缀，保留文件名；可从表达矩阵或 JSON 进入。"
+    },
+    {
+      "id": "json",
+      "zh": "JSON 结构化数据格式",
+      "en": "JavaScript Object Notation",
+      "abbr": "JSON",
+      "aliases": [
+        "JSON",
+        "json"
+      ],
+      "category": "软件与文件",
+      "summary": "JSON 用名称与值、列表等结构保存数据，适合程序交换有层次的信息。像把报告整理成可按字段查询的记录。",
+      "example": "fastp 的 JSON 报告保存统计量，HTML 报告则更便于人阅读。",
+      "in_course": "它帮助本课汇总程序提取指标，而无需从截图中手抄数字。",
+      "pitfall": "JSON 不是统计方法，也不表示结果可信度更高；必须知道每个字段的单位和来源。",
+      "related": [
+        "fastp",
+        "tsv",
+        "html_format"
+      ],
+      "sources": [],
+      "anchor": "glossary-156"
+    },
+    {
+      "id": "html_format",
+      "zh": "HTML 网页文档",
+      "en": "HyperText Markup Language",
+      "abbr": "HTML",
+      "aliases": [
+        "HTML",
+        "HTML 报告"
+      ],
+      "category": "软件与文件",
+      "summary": "HTML 描述网页内容与结构，浏览器据此显示文字、表格、图片和链接。图片及样式可由同文件夹里的资源提供。",
+      "example": "本教案的两个中文入口都是 HTML，图表和数据随教学包保存。",
+      "in_course": "它将静态解释、术语查询与真实结果整合成可离线阅读的课程。",
+      "pitfall": "单独复制一个 HTML 未必带走所有资源；移动或分享本教案应保留整个文件夹的相对结构。",
+      "related": [
+        "json",
+        "tsv"
+      ],
+      "sources": [],
+      "anchor": "glossary-157"
+    },
+    {
+      "id": "raw_clean",
+      "zh": "原始数据与处理后数据",
+      "en": "raw data and clean data",
+      "abbr": "",
+      "aliases": [
+        "raw",
+        "clean",
+        "原始数据",
+        "clean 数据"
+      ],
+      "category": "测序与质控",
+      "summary": "raw 通常指进入当前处理步骤的原始数据，clean 指按既定规则处理后的数据。clean 是流程标签，含义来自实际执行过的修剪与过滤。",
+      "example": "本课比较同一文库的 raw R1 与 clean R1，查看接头、质量及保留量的变化。",
+      "in_course": "它帮助跟踪数据从哪里来、经历了哪些步骤，以及后续定量用了哪一份。",
+      "pitfall": "clean 不表示绝对无错、无污染或所有质量问题都已解决；处理后仍然需要质控和合理解释。",
+      "related": [
+        "fastq",
+        "trimming",
+        "qc"
+      ],
+      "sources": [],
+      "anchor": "glossary-158"
+    },
+    {
+      "id": "sequencing_depth",
+      "zh": "测序深度与文库量",
+      "en": "sequencing depth / library size",
+      "abbr": "",
+      "aliases": [
+        "测序深度",
+        "文库量",
+        "测序量"
+      ],
+      "category": "测序与质控",
+      "summary": "测序深度在这里指为样本获得了多少测序观察，常用 reads 或片段数概括。像调查时收到了多少份记录，数量影响观察能力，但不是质量的全部。",
+      "example": "双端文库若有约 4,103 万个配对片段，合计两端约有 8,205 万条 reads。",
+      "in_course": "深度影响低丰度信号的可见程度，也解释了为何样本间比较要考虑尺度调整。",
+      "pitfall": "测得更多不一定拥有更多生物学重复；不同文库的数字还需统一 reads、片段或有效计数口径。",
+      "related": [
+        "fragment",
+        "normalization",
+        "replicate"
+      ],
+      "sources": [],
+      "anchor": "glossary-159"
+    },
+    {
+      "id": "adapter_content",
+      "zh": "接头含量曲线",
+      "en": "adapter content",
+      "abbr": "",
+      "aliases": [
+        "Adapter Content",
+        "接头含量",
+        "累积接头"
+      ],
+      "category": "测序与质控",
+      "summary": "接头含量曲线的纵轴，是截至某个 read 位置已检出相应接头的 reads 累计百分比。一条 read 一旦检出，后续位置会继续计入，因此曲线通常持平或上升。",
+      "example": "本课对照 raw 与 clean R1，看末端接头信号在处理后怎样变化。",
+      "in_course": "它为判断是否存在读穿及处理效果提供线索。",
+      "pitfall": "百分比不是所有碱基中有多少都是接头，也不能当作单个位置的碱基错误率；要按工具对该图的定义读。",
+      "related": [
+        "adapter",
+        "fastqc",
+        "trimming"
+      ],
+      "sources": [],
+      "anchor": "glossary-160"
+    },
+    {
+      "id": "differential_expression",
+      "zh": "差异表达",
+      "en": "differential expression",
+      "abbr": "DE",
+      "aliases": [
+        "差异表达",
+        "differential expression",
+        "DEG",
+        "DEGs"
+      ],
+      "category": "差异与图形",
+      "summary": "差异表达分析在给定设计下，检验基因表达是否与比较条件存在系统性关系，并估计变化幅度。DEG 常指按指定规则筛出的差异表达基因。",
+      "example": "本课比较 ZT4 相对 ZT0，结合重复波动估计每个基因的方向、幅度与统计证据。",
+      "in_course": "它为火山图、候选集合和部分功能分析提供已有结果。",
+      "pitfall": "差异是相对于当前比较与规则定义的；候选基因不是已经证明的调控原因，也不能忽略样本设计。",
+      "related": [
+        "deseq2",
+        "contrast",
+        "up_down"
+      ],
+      "sources": [],
+      "anchor": "glossary-161"
+    },
+    {
+      "id": "threshold",
+      "zh": "分析阈值",
+      "en": "analysis threshold / cutoff",
+      "abbr": "",
+      "aliases": [
+        "阈值",
+        "cutoff",
+        "threshold"
+      ],
+      "category": "差异与图形",
+      "summary": "阈值是执行筛选或分类时设定的界线，如最少表达量、最大校正 P 值或最小变化幅度。它像明确的入选规则，便于复核结果。",
+      "example": "本课差异候选使用 padj≤0.05 且变化幅度至少达到约 2 倍或一半对应的门槛。",
+      "in_course": "互动实验允许改变候选筛选门槛，观察已有结果中入选人数的变化。",
+      "pitfall": "改变筛选阈值没有重新拟合模型；越过界线也不表示生物学现象突然从无变有，需同时看连续数值。",
+      "related": [
+        "padj",
+        "log2fc",
+        "effect_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-162"
+    },
+    {
+      "id": "low_expression",
+      "zh": "低表达过滤",
+      "en": "low-expression filtering",
+      "abbr": "",
+      "aliases": [
+        "低表达过滤",
+        "低表达",
+        "low-expression filtering"
+      ],
+      "category": "定量与表达矩阵",
+      "summary": "低表达过滤按预先规定的规则，排除信号太少、难以支持相应分析的记录。像做比较前先确认每个对象有足够可用观察。",
+      "example": "本课差异分支采用比较内 CPM 规则，时间分支则有自己的 TPM 与重复汇总规则。",
+      "in_course": "它帮助稳定后续分析，并明确统计或聚类实际涵盖哪些基因。",
+      "pitfall": "不同分支的过滤不能混为一步；低表达未入选不等于基因不存在，也不应依据想要的结果反复挑门槛。",
+      "related": [
+        "cpm",
+        "tpm",
+        "threshold"
+      ],
+      "sources": [],
+      "anchor": "glossary-163"
+    },
+    {
+      "id": "equal_interval",
+      "zh": "等间隔采样",
+      "en": "equally spaced sampling",
+      "abbr": "",
+      "aliases": [
+        "等间隔",
+        "等间距",
+        "采样间隔"
+      ],
+      "category": "时间与聚类",
+      "summary": "等间隔采样表示相邻采样时期之间经过的时间相同。像每隔固定分钟记录温度，时间轴上的步长具有明确含义。",
+      "example": "本课周期分支选择 ZT0、4、8、12、16、20，每隔 4 小时；ZT1 不属于这组等间隔时期。",
+      "in_course": "它满足本课 JTK 输入设置的时间结构，帮助正确解释周期与相位。",
+      "pitfall": "去掉 ZT1 不等于它是坏样本；它仍参与其他分析及周期前的初步过滤，具体用途由流程决定。",
+      "related": [
+        "time_series",
+        "metacycle",
+        "period"
+      ],
+      "sources": [],
+      "anchor": "glossary-164"
+    },
+    {
+      "id": "parameter",
+      "zh": "参数、线程与布尔开关",
+      "en": "parameter, thread and Boolean option",
+      "abbr": "",
+      "aliases": [
+        "参数",
+        "线程",
+        "布尔",
+        "parameter",
+        "thread",
+        "threads",
+        "TRUE",
+        "FALSE"
+      ],
+      "category": "软件与文件",
+      "summary": "参数是告诉程序怎样运行的设置。线程数影响可并行使用的执行资源；布尔开关通常用真或假表示是否启用某项功能。",
+      "example": "定量步骤可设置线程数及偏倚校正开关；过滤步骤设置长度、质量等处理规则。",
+      "in_course": "记录参数让读者知道软件实际做了什么，并可核对结果的生成条件。",
+      "pitfall": "线程多不等于样本多或结论更可靠；开启某项功能也要核对工具版本、输入与适用范围。",
+      "related": [
+        "conda",
+        "threshold",
+        "bias"
+      ],
+      "sources": [],
+      "anchor": "glossary-165"
+    },
+    {
+      "id": "genome",
+      "zh": "基因组",
+      "en": "genome",
+      "abbr": "",
+      "aliases": [
+        "基因组",
+        "genome"
+      ],
+      "category": "生命与实验",
+      "summary": "基因组是一套遗传物质所包含的整体信息。基因只是其中具有特定意义的区域，此外还有许多不直接编码蛋白的序列。",
+      "example": "参考基因组像整座城市的地图，参考转录本像从地图与注释中整理出的特定路线。",
+      "in_course": "它提供坐标和序列背景，帮助组织转录本、结构注释与可能的非目标匹配。",
+      "pitfall": "基因组不是所有基因表达量的总和；DNA 中存在一段信息，也不表示本次 RNA-seq 已将其定量。",
+      "related": [
+        "gene",
+        "reference_genome",
+        "transcriptome"
+      ],
+      "sources": [],
+      "anchor": "glossary-166"
+    },
+    {
+      "id": "ecotype",
+      "zh": "生态型与遗传背景",
+      "en": "ecotype and genetic background",
+      "abbr": "",
+      "aliases": [
+        "生态型",
+        "遗传背景",
+        "ecotype"
+      ],
+      "category": "生命与实验",
+      "summary": "遗传背景指实验材料所携带的整体遗传组成；生态型通常指同一物种内与特定生态环境相关的群体类型，两者并不完全同义。在拟南芥研究中，还需明确实际材料所属的品系或种质。",
+      "example": "本课实验材料为 Ws-2，参考来自 Columbia；两者不是同一个材料名称。",
+      "in_course": "记录材料和参考的差别有助于理解序列匹配、编号和结论适用范围。",
+      "pitfall": "同一物种不意味着所有材料序列完全相同；不能把参考的生态型直接填成实验材料。",
+      "related": [
+        "reference_genome",
+        "design",
+        "bias"
+      ],
+      "sources": [],
+      "anchor": "glossary-167"
+    },
+    {
+      "id": "technical_replicate",
+      "zh": "技术重复与测序运行",
+      "en": "technical replicate and sequencing run",
+      "abbr": "",
+      "aliases": [
+        "技术重复",
+        "技术运行",
+        "测序运行",
+        "technical replicate"
+      ],
+      "category": "生命与实验",
+      "summary": "技术重复是对同一生物材料进行重复技术测量，用来了解或增加测量信息；它与来自独立生物材料的生物学重复不同。",
+      "example": "同一文库可能分多次测序运行，得到更多 reads，但仍不能据此声称增加了独立植株样本。",
+      "in_course": "从公共数据库下载时，要核对样本、文库和运行记录之间的对应关系。",
+      "pitfall": "不同运行编号不自动表示不同生物学重复；同一次双端测序的 R1、R2 也不是两份独立重复。",
+      "related": [
+        "replicate",
+        "library",
+        "accession"
+      ],
+      "sources": [],
+      "anchor": "glossary-168"
+    },
+    {
+      "id": "accession",
+      "zh": "公共数据库登记编号",
+      "en": "database accession",
+      "abbr": "",
+      "aliases": [
+        "GEO",
+        "GSE",
+        "GSM",
+        "SRA",
+        "SRR",
+        "BioProject",
+        "PRJNA",
+        "公共数据库编号"
+      ],
+      "category": "生命与实验",
+      "summary": "登记编号帮助追溯数据记录。GEO 是 Gene Expression Omnibus，GSE 通常对应系列、GSM 对应样本记录；SRA 是 Sequence Read Archive，SRR 对应测序运行；PRJNA 常见于 BioProject 项目登记。",
+      "example": "本课来源含 PRJNA1015621 与 GSE242964，二者描述不同层次的登记记录。",
+      "in_course": "它们帮助找到研究背景、下载文件并核对哪些运行属于哪个样本。",
+      "pitfall": "编号是检索入口，不是实验质量认证；一个记录与一个文库或独立样本的关系仍需查看元数据。",
+      "related": [
+        "technical_replicate",
+        "sample",
+        "checksum"
+      ],
+      "sources": [],
+      "anchor": "glossary-169"
+    },
+    {
+      "id": "qc_module",
+      "zh": "质控检查模块",
+      "en": "quality-control module",
+      "abbr": "",
+      "aliases": [
+        "质控模块",
+        "检查模块",
+        "FastQC 模块"
+      ],
+      "category": "测序与质控",
+      "summary": "质控模块是报告中负责某一类检查的部分，例如逐位置质量、序列组成或接头信号。像体检报告里的不同检查项目。",
+      "example": "FastQC 的接头模块可给出警告，而碱基质量模块可能仍表现良好，两者检查的不是同一件事。",
+      "in_course": "逐模块阅读可以知道问题来自质量、序列身份还是其他特征，再决定怎样处理。",
+      "pitfall": "这里的模块不是时间聚类得到的基因模块；单个模块通过或失败都不能独自判定整个实验好坏。",
+      "related": [
+        "qc",
+        "fastqc",
+        "adapter_content"
+      ],
+      "sources": [],
+      "anchor": "glossary-170"
+    },
+    {
+      "id": "checksum",
+      "zh": "文件摘要与完整性校验",
+      "en": "file checksum / integrity verification",
+      "abbr": "",
+      "aliases": [
+        "文件摘要",
+        "校验",
+        "SHA-256",
+        "checksum"
+      ],
+      "category": "测序与质控",
+      "summary": "文件摘要通过算法为一串文件字节计算指纹。与可靠的预期摘要比较，可以帮助检查下载、复制后内容是否一致。",
+      "example": "本教学包保存素材的 SHA-256 摘要，用于核对图表和数据副本有没有变化。",
+      "in_course": "它帮助核对素材是否与预期版本一致，以及下载、复制后的文件内容有没有变化。",
+      "pitfall": "摘要一致不能证明测序质量优秀或科学结论正确；它只回答文件内容是否与比较对象一致。",
+      "related": [
+        "qc",
+        "accession",
+        "raw_clean"
+      ],
+      "sources": [],
+      "anchor": "glossary-171"
+    },
+    {
+      "id": "percentile",
+      "zh": "百分位数",
+      "en": "percentile",
+      "abbr": "",
+      "aliases": [
+        "百分位",
+        "percentile"
+      ],
+      "category": "统计与样本关系",
+      "summary": "百分位数是把数据从小到大排列后，按指定比例确定的分界数值。例如第 90 百分位大致对应九成观测不高于它的界线，具体计算可有不同插值约定。",
+      "example": "FastQC 质量图黑色须线到第 10、90 百分位，箱体覆盖第 25–75 百分位。",
+      "in_course": "它帮助读出分布的中间部分与尾部，而不是把所有线都当成均值。",
+      "pitfall": "第 90 百分位不是最大值；百分位也不是“90% 的碱基一定正确”这样的质量判断。",
+      "related": [
+        "quartile",
+        "boxplot",
+        "median"
+      ],
+      "sources": [],
+      "anchor": "glossary-172"
+    },
+    {
+      "id": "orthogonal",
+      "zh": "正交",
+      "en": "orthogonality",
+      "abbr": "",
+      "aliases": [
+        "正交",
+        "orthogonal"
+      ],
+      "category": "统计与样本关系",
+      "summary": "正交可直观理解为两个方向相互垂直，就像平面上的横轴与纵轴。PCA 用互相正交的方向描述不同部分的变异。",
+      "example": "PC2 与 PC1 正交，不是沿着 PC1 再画一条相同方向的轴。",
+      "in_course": "它帮助理解为什么第二主成分提供另一种观察角度，以及二维图是怎样组织的。",
+      "pitfall": "方向正交不表示两种生物机制毫无关系，也不能把它自动解释成所有统计意义上的独立。",
+      "related": [
+        "principal_component",
+        "pca",
+        "explained_variance"
+      ],
+      "sources": [],
+      "anchor": "glossary-173"
+    },
+    {
+      "id": "uncertainty",
+      "zh": "估计不确定性",
+      "en": "estimation uncertainty",
+      "abbr": "",
+      "aliases": [
+        "不确定性",
+        "不确定",
+        "uncertainty"
+      ],
+      "category": "统计与样本关系",
+      "summary": "估计不确定性表示我们根据有限、有波动的数据得到的数值还有多大不稳定空间。可以理解为答案周围还留着多少未确定的余地。",
+      "example": "某基因 log₂FC 很大，但标准误也很大，说明变化幅度的估计可能不够稳定。",
+      "in_course": "本课结合重复、标准误和检验结果判断证据，避免只看一个点估计。",
+      "pitfall": "不确定性不等于数据一定错误；给出很多小数位也不能让本来不稳定的估计自动变准确。",
+      "related": [
+        "standard_error",
+        "variation",
+        "effect_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-174"
+    },
+    {
+      "id": "statistical_significance",
+      "zh": "统计显著性",
+      "en": "statistical significance",
+      "abbr": "",
+      "aliases": [
+        "统计显著性",
+        "差异显著性",
+        "显著性"
+      ],
+      "category": "统计与样本关系",
+      "summary": "统计显著性表示结果按指定检验和阈值达到了证据要求。它取决于效应、波动、样本信息和所采用的错误控制规则。",
+      "example": "本课候选还需同时满足变化幅度门槛，因此“小 padj”与“最终进入候选名单”并非所有设置下完全相同。",
+      "in_course": "它帮助区分统计证据、效应大小和实际生物意义这几个问题。",
+      "pitfall": "显著不等于重要、确定或存在因果；未显著也不证明没有任何变化，不能忽略连续数值和估计精度。",
+      "related": [
+        "pvalue",
+        "padj",
+        "effect_size"
+      ],
+      "sources": [],
+      "anchor": "glossary-175"
+    },
+    {
+      "id": "semantic_similarity",
+      "zh": "GO 语义相似性与去冗余",
+      "en": "GO semantic similarity and redundancy reduction",
+      "abbr": "",
+      "aliases": [
+        "语义相似性",
+        "去冗余",
+        "semantic similarity"
+      ],
+      "category": "功能与注释",
+      "summary": "GO 中的条目可能意思接近、存在层级关系或共享成员。语义相似性用于量化功能描述的接近程度，去冗余则据此整理更简洁的代表条目。",
+      "example": "本课使用相应相似性规则和 cutoff=0.75 整理显著 GO 条目。",
+      "in_course": "它让相近结果不至于占满图表，便于概括已有的功能线索。",
+      "pitfall": "去掉相似条目没有重新发现一批基因，也不是把所有剩余条目变成统计上互相独立的发现。",
+      "related": [
+        "go",
+        "threshold",
+        "gene_set"
+      ],
+      "sources": [],
+      "anchor": "glossary-176"
+    },
+    {
+      "id": "seed_hit",
+      "zh": "搜索种子命中",
+      "en": "seed ortholog search hit",
+      "abbr": "",
+      "aliases": [
+        "种子命中",
+        "搜索种子",
+        "Search seed hit",
+        "seed ortholog"
+      ],
+      "category": "功能与注释",
+      "summary": "种子命中是注释搜索流程中找到的参考序列线索，用来启动后续同源与功能映射步骤。它是中间结果，不是全部最终功能标签。",
+      "example": "本课有 25,831 个代表蛋白获得种子命中，最终注释记录数则为 24,635。",
+      "in_course": "它解释注释覆盖图里为什么要分别统计搜索命中和最终注释。",
+      "pitfall": "排除某物种作为功能注释供体，不保证搜索种子中绝不出现该物种；搜索和功能转移的限制需分开读。",
+      "related": [
+        "eggnog",
+        "annotation_transfer",
+        "annotation_coverage"
+      ],
+      "sources": [],
+      "anchor": "glossary-177"
+    },
+    {
+      "id": "annotation_transfer",
+      "zh": "功能注释转移",
+      "en": "functional annotation transfer",
+      "abbr": "",
+      "aliases": [
+        "注释转移",
+        "功能转移",
+        "注释供体"
+      ],
+      "category": "功能与注释",
+      "summary": "注释转移利用已知对象的功能知识，为具有相应关系的查询序列提供候选标签。像依据可靠的对应关系，把旧目录的主题信息接到新书目上。",
+      "example": "本课将功能转移限制在绿色植物范围，并排除拟南芥作为注释供体。",
+      "in_course": "它使缺少现成功能数据库的查询基因也能组织 GO、KO 等映射。",
+      "pitfall": "转移的标签是推断证据，不能当作本实验的直接验证；搜索种子与实际提供功能标签的对象也需区分。",
+      "related": [
+        "homology",
+        "seed_hit",
+        "annotation"
+      ],
+      "sources": [],
+      "anchor": "glossary-178"
+    }
+  ]
+}

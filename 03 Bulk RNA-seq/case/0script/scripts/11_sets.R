@@ -1,0 +1,207 @@
+# 文件用途｜第 11 章：按比较族与方向批量绘制差异基因集合图。
+# 运行位置：能看见 0script 的项目根目录。R 函数库通过 source 加载定义及共用依赖；调用函数才执行本文件
+#   对应的分析/写出。
+# 改参方式：在同编号 MD 的参数入口赋值，再执行下面的具名调用；函数默认值只在该形参未传入时使用。编辑文
+#   件不会刷新内存中的旧函数/旧变量，需重新 source/赋值。
+# 接口说明：每个函数前列出用途、形参和输出；嵌套函数读取的外层变量属于闭包，不能误当成漏传的独立参数。
+# 共用语法：source 载入脚本；readRenviron 读取配置；Sys.getenv 取文本，as.numeric/as.integer 转数值；
+#   local=TRUE 表示定义放在当前调用环境。
+# 表格/图形约定：write.table 的 sep="\t" 用 TSV、quote=FALSE 不另加引号、row.names=FALSE 不写 R 行号；
+#   check.names=FALSE 保留原 ID。ggsave 的图幅按英寸，dpi 主要控制 PNG。
+
+source("0script/tools/metadata.R", local = TRUE)
+source("0script/tools/outputs.R", local = TRUE)
+
+# 原有核心函数：只处理明确传入的数据/参数；不读取案例全局变量。
+# 接口｜generate_de_list_new：按比较和方向构造用于集合图的基因列表。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# de_result（必填，无默认值）：差异结果 data.frame；本函数必需 gene_id、contrast_id、direction，使用已
+#   保存 up/down/ns 分类，不重新读 P 值检验。
+# comparison_ids（必填，无默认值）：非空且无重复的比较 ID 字符向量，必须都在传入差异表中存在；此底层接
+#   口不接受 NULL 代替全部比较。
+# direction（默认 "all"）：单个 all、up 或 down；筛选差异表的方向列，all 合并 up 与 down，不重新计算差
+#   异检验。
+# 返回/写出与边界：返回按比较命名的基因 ID list；从已保存 direction 取集合，不计算新的显著性。
+generate_de_list_new <- function(de_result, comparison_ids, direction = "all") {
+  stopifnot(length(comparison_ids) > 0, !anyDuplicated(comparison_ids),
+            direction %in% c("all", "up", "down"))
+  if (!all(comparison_ids %in% de_result$contrast_id)) stop("比较缺少差异分析结果")
+  setNames(lapply(comparison_ids, function(id) {
+    current <- de_result[de_result$contrast_id == id, , drop = FALSE]
+    selected <- if (direction == "all") current$direction %in% c("up", "down") else current$direction == direction
+    sort(unique(current$gene_id[selected]))
+  }), comparison_ids)
+}
+
+# 接口｜plot_gene_sets：保存所选基因集合及多种交集图。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# de_list（必填，无默认值）：命名 list；每个元素是一组去重的差异基因 ID 字符向量，名称用于集合图标识。
+# output_dir（必填，无默认值）：字符路径；本函数保存结果的目录。是否拒绝同名文件或复用旧结果以本函数下
+#   面的保存步骤为准，不代表自动选择最新结果。
+# nintersects（默认 30）：正整数；UpSet 图最多显示的交集数量。减少只压缩展示，不删除保存的基因集合。
+# venn_first_n（默认 3）：整数 2–5；经典韦恩图取前几个集合，顺序来自选定比较族；集合多时还可看完整
+#   UpSet。
+# venn_styles（默认 c("default", "gradient")）：字符向量；default 与 gradient 对应两个保留的韦恩图样式
+#   ，可选择一个或两个；不改变集合成员。
+# draw_upset（默认 TRUE）：TRUE/FALSE；是否生成 UpSet 交集图，不改变用于作图的差异基因列表。
+# draw_classic_venn（默认 TRUE）：TRUE/FALSE；是否绘制前 venn_first_n 个集合的经典韦恩图。
+# draw_full_venn（默认 TRUE）：TRUE/FALSE；是否尝试完整集合的 ggVennDiagram 图，仍受函数中集合数量的适
+#   用范围限制。
+# variant_label（默认 ""）：字符标签；空字符串为默认路径。给次要排版或另一方案另存时用 large_font 等简
+#   短标签，仅允许字母数字及 . _ -，首位为字母数字；不能放路径或空格。
+# 返回/写出与边界：写列表、交集及 UpSet/韦恩图；可用集合数量不足或不适用时按分支记录/跳过，不伪造集合。
+plot_gene_sets <- function(de_list, output_dir, nintersects = 30, venn_first_n = 3,
+                            venn_styles = c("default", "gradient"), draw_upset = TRUE,
+                            draw_classic_venn = TRUE, draw_full_venn = TRUE, variant_label = "") {
+  stopifnot(length(de_list) > 0, !is.null(names(de_list)), !anyDuplicated(names(de_list)),
+            length(nintersects) == 1, is.finite(nintersects), nintersects >= 1, nintersects == floor(nintersects),
+            length(venn_first_n) == 1, venn_first_n %in% 2:5,
+            all(venn_styles %in% c("default", "gradient")))
+  output_dir <- file.path(output_dir, parameter_tag(intersections = nintersects, venn = venn_first_n))
+  claim <- claim_result_dir(output_dir,
+    effective_parameters(plot_gene_sets, environment(), c("de_list", "output_dir", "variant_label")),
+    list(gene_sets = de_list), variant_label)
+  if (claim$reuse) return(invisible(claim$path))
+  output_dir <- claim$path
+  saveRDS(de_list, file.path(output_dir, "gene_sets.rds"))
+  for (id in names(de_list)) writeLines(de_list[[id]], file.path(output_dir, paste0(id, ".txt")))
+  all_genes <- sort(unique(unlist(de_list, use.names = FALSE)))
+  if (!length(all_genes)) {
+    writeLines("所有集合均为空；不绘制有面积的集合图。", file.path(output_dir, "NO_SIGNIFICANT_GENES.txt"))
+    finish_result_dir(claim)
+    return(invisible(NULL))
+  }
+  membership <- vapply(de_list, function(x) as.integer(all_genes %in% x), integer(length(all_genes)))
+  membership <- matrix(membership, nrow = length(all_genes), ncol = length(de_list),
+                       dimnames = list(NULL, names(de_list)))
+  write.table(cbind(gene_id = all_genes, membership), file.path(output_dir, "membership.tsv"),
+              sep = "\t", quote = FALSE, row.names = FALSE)
+  # 位串表示“仅属于这些集合”的精确交集，而不是不排除其他集合的宽泛交集。
+  signatures <- apply(membership, 1, paste0, collapse = "")
+  regions <- split(all_genes, signatures)
+  write.table(data.frame(signature = names(regions), count = lengths(regions)),
+              file.path(output_dir, "exclusive_region_counts.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+  for (signature in names(regions)) {
+    writeLines(regions[[signature]], file.path(output_dir, paste0("region_", signature, ".txt")))
+  }
+  # 接口｜draw_upset_plot：在打开的设备上绘制当前 UpSet 对象。
+  # 参数：无显式形参；所需上层对象/输入见功能说明及下方读取语句。
+  # 返回/写出与边界：无形参，使用外层二进制集合矩阵和 nintersects；副作用为绘图，返回值不用于统计。
+  draw_upset_plot <- function() {
+    print(UpSetR::upset(as.data.frame(membership), sets = names(de_list), nsets = length(de_list),
+                 nintersects = nintersects, order.by = "freq", keep.order = TRUE,
+                 mainbar.y.label = "Exclusive intersection size", sets.x.label = "Set size",
+                 main.bar.color = "#216B87", sets.bar.color = "#C77C3D"))
+  }
+  if (draw_upset && length(de_list) >= 2) {
+    pdf(file.path(output_dir, "upset.pdf"), width = 12, height = 7)
+    draw_upset_plot(); dev.off()
+    png(file.path(output_dir, "upset.png"), width = 2160, height = 1260, res = 180)
+    draw_upset_plot(); dev.off()
+  }
+  # 原 VennDiagram 适合最多五个集合；案例中取前三个比较做局部细节图，标明范围。
+  small <- de_list[seq_len(min(venn_first_n, length(de_list)))]
+  if (draw_classic_venn && length(small) >= 2) {
+    grob <- VennDiagram::venn.diagram(small, filename = NULL, fill = brewer.pal(max(3, length(small)), "Set2")[seq_along(small)],
+                                     alpha = 0.6, cex = 1.2, cat.cex = 0.8, margin = 0.15)
+    pdf(file.path(output_dir, paste0("venn_first", venn_first_n, ".pdf")), width = 10, height = 8)
+    grid::grid.draw(grob); dev.off()
+    png(file.path(output_dir, paste0("venn_first", venn_first_n, ".png")), width = 1800, height = 1440, res = 180)
+    grid::grid.draw(grob); dev.off()
+  }
+  # 保留原稿 ggVennDiagram 的六集合形状与两种填色，超过七集合时仅用 UpSet。
+  if (draw_full_venn && length(de_list) >= 2 && length(de_list) <= 7) {
+    venn <- ggVennDiagram::Venn(de_list)
+    data <- if (length(de_list) == 6) ggVennDiagram::process_data(venn, shape_id = "601") else ggVennDiagram::process_data(venn)
+    default_plot <- ggVennDiagram::plot_venn(data)
+    custom_plot <- ggVennDiagram::plot_venn(data) + scale_fill_gradientn(colours = brewer.pal(9, "YlGnBu"))
+    for (style in venn_styles) {
+      plot <- if (style == "default") default_plot else custom_plot
+      ggsave(file.path(output_dir, paste0("venn_", style, ".pdf")), plot, width = 12, height = 9)
+      ggsave(file.path(output_dir, paste0("venn_", style, ".png")), plot, width = 12, height = 9, dpi = 180)
+    }
+  }
+  finish_result_dir(claim)
+  invisible(de_list)
+}
+
+# 接口｜run_sets：按比较族与方向批量绘制差异基因集合图。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# comparison_families（默认 NULL）：命名 list 或 NULL；每个元素为一组比较 ID，如 list(custom=c("
+#   Treat_vs_Control","Other_vs_Control"))。NULL 使用比较表生成的比较族；每一族单独画集合图。
+# directions（默认 c("all", "up", "down")）：字符向量；all 为已判为 up/down 的差异基因并集，up/down 各
+#   取对应方向。读取差异表已保存的 direction，不把 all 理解为全部被检验基因。
+# nintersects（默认 30）：正整数；UpSet 图最多显示的交集数量。减少只压缩展示，不删除保存的基因集合。
+# venn_first_n（默认 3）：整数 2–5；经典韦恩图取前几个集合，顺序来自选定比较族；集合多时还可看完整
+#   UpSet。
+# venn_styles（默认 c("default", "gradient")）：字符向量；default 与 gradient 对应两个保留的韦恩图样式
+#   ，可选择一个或两个；不改变集合成员。
+# draw_upset（默认 TRUE）：TRUE/FALSE；是否生成 UpSet 交集图，不改变用于作图的差异基因列表。
+# draw_classic_venn（默认 TRUE）：TRUE/FALSE；是否绘制前 venn_first_n 个集合的经典韦恩图。
+# draw_full_venn（默认 TRUE）：TRUE/FALSE；是否尝试完整集合的 ggVennDiagram 图，仍受函数中集合数量的适
+#   用范围限制。
+# output_root（默认 "6venn"）：字符路径；本步骤输出根目录，函数再按比较/参数建立子目录。通常沿用；试算
+#   可选新目录，但后续读取位置不会自动更新。
+# variant_label（默认 ""）：字符标签；空字符串为默认路径。给次要排版或另一方案另存时用 large_font 等简
+#   短标签，仅允许字母数字及 . _ -，首位为字母数字；不能放路径或空格。
+# 返回/写出与边界：保存到 output_root 下各比较族/方向目录；不改差异表，也不只保留一种可行样式。
+run_sets <- function(comparison_families = NULL,
+  directions = c("all", "up", "down"),
+  nintersects = 30,
+  venn_first_n = 3,
+  venn_styles = c("default", "gradient"),
+  draw_upset = TRUE,
+  draw_classic_venn = TRUE,
+  draw_full_venn = TRUE,
+  output_root = "6venn",
+  variant_label = "") {
+  source("0script/tools/metadata.R", local = TRUE)
+  source("0script/tools/outputs.R", local = TRUE)
+  if (file.exists("0script/project.env")) readRenviron("0script/project.env")
+  # 功能：读取已完成差异结果和比较表，设置本章要展示的集合。
+  # 输入 direction 沿用第 10 章；本章不改变差异阈值。
+  library(tidyverse)
+  library(VennDiagram)
+  library(ggVennDiagram)
+  library(UpSetR)
+  library(RColorBrewer)
+  readRenviron("0script/project.env")
+  set.seed(as.integer(Sys.getenv("RANDOM_SEED")))
+  # 基因 ID 按文本保留，包括 NCBI 数字 ID；其余统计列仍正常读为数值。
+  de_result <- read.delim(project_result("DE_RESULT_FILE", "5DESeq2/de_result.tsv"),
+    check.names = FALSE, colClasses = c(gene_id = "character", contrast_id = "character"))
+  contrasts <- read_contrasts() |>
+    filter(toupper(as.character(enabled)) == "TRUE")
+  if (is.null(comparison_families)) comparison_families <- list(
+    first = contrasts$contrast_id[contrasts$comparison_type %in% c("first", "first_and_adjacent", "baseline", "baseline_and_adjacent")],
+    adjacent = contrasts$contrast_id[contrasts$comparison_type %in% c("adjacent", "first_and_adjacent", "baseline_and_adjacent")],
+    all_enabled = contrasts$contrast_id
+  )
+  # 自选示例：comparison_families <- list(custom = contrasts$contrast_id[c(1, 2, 3)])
+  # 必须选择表中实际存在的行；增加尚未分析的比较要先在第 10 章计算。
+
+  # 功能：将指定比较和方向转换为命名基因列表，名字来自比较表而非字符串拆分。
+  # comparison_ids 控制选哪些比较；direction="all" 合并上下调但不包含非显著基因。
+
+
+  # 功能：保存完整集合、成员矩阵和精确交集，再按开关绘图。
+  # 显示数量不会删除表中的交集；所有集合为空时保存说明而不画虚假面积。
+  # 交集显示数量进入目录；输入或其他参数冲突时拒绝覆盖，旧样式不自动清理。
+
+
+  # 功能：统计差异基因数量，按入口指定类别/方向调用两段函数。
+  dir.create(output_root, recursive = TRUE, showWarnings = FALSE)
+  # 各比较的数量表已由第 10 章保存；本章不改写旧根目录的汇总表。
+  for (family in names(comparison_families)) {
+    ids <- comparison_families[[family]]
+    if (!length(ids)) next
+    for (direction in directions) {
+      de_list <- generate_de_list_new(de_result = de_result, comparison_ids = ids, direction = direction)
+      plot_gene_sets(de_list = de_list, output_dir = file.path(output_root, family, direction),
+        nintersects = nintersects, venn_first_n = venn_first_n, venn_styles = venn_styles,
+        draw_upset = draw_upset, draw_classic_venn = draw_classic_venn, draw_full_venn = draw_full_venn,
+        variant_label = variant_label)
+    }
+  }
+  invisible(list(output_root = output_root))
+}

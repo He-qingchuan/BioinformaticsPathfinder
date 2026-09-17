@@ -1,0 +1,58 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10_deseq2 · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/scripts/10_deseq2.sh" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>10_deseq2.sh</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code>#!/usr/bin/env bash
+# 文件用途｜使用指定 Trinity/DESeq2 路线按比较表拟合差异。
+# 运行方式：在项目根目录激活相应环境，先 source 本文件，再按同编号 MD 的顺序传入位置参数。source 本身
+#   仅定义函数，不启动分析。
+# 括号函数体在子 Shell 中运行；set -e 对未处理失败停止、-u 拒绝未定义变量、-o pipefail 使管道前段失败
+#   可见。它不是自动恢复机制。
+# set -a / source project.env / set +a（若本段使用）：临时把配置导出给子进程；不是创建 Conda 环境。双
+#   引号保留文件名边界，$() 读取命令输出。
+# mkdir -p：父目录不存在时一起创建，已有目录不清空；test -s/-e：检查非空文件/路径存在，! 取反。失败返
+#   回非零，不自动下载缺失文件。
+# 管道 | 传标准输出，&gt; 写日志/文件时会覆盖同名目标，2&gt;&amp;1 把错误并入同一日志；/usr/bin/time -v -o 记录
+#   资源详情（若本段调用）。不要把所有步骤都当作自动防覆盖。
+# 本文件接口与输入输出：
+# 输入：COUNT_MATRIX 的未归一化 counts、设计 samples.txt/contrasts.txt；输出 DE_analysis/repsN_cpmM。
+#   已有目标目录会停止，不混用另一输入的模型。
+# --matrix：计数表；--method DESeq2：指定检验软件；--samples_file：组与样本对应；--contrasts：实验/参
+#   照组对。
+# --min_reps_min_cpm：按 数量,CPM 拼接过滤门槛；--output：新统计目录。不同于后续只筛 padj/logFC 的汇总。
+
+# 接口｜run_deseq2：使用指定 Trinity/DESeq2 路线按比较表拟合差异。
+# 位置参数按以下顺序传入；Bash 没有 R 那样的具名形参调用，不能调换顺序。
+# $1 min_reps：正整数；表达过滤要求至少多少个样本达到 min_cpm 条件，不是指定新的生物学重复数。与
+#   min_cpm 联合改变进入 DESeq2 的基因。
+# $2 min_cpm：非负 CPM 门槛（每百万计数）；至少 min_reps 个样本达到该过滤条件。改变后需要重新拟合，不
+#   只是调整最后一张图。
+# 返回/写出：成功返回退出状态 0，检查或软件失败为非零。实际结果保存在上述目录；本接口不返回一张内存中
+#   的表。
+run_deseq2() (
+  set -euo pipefail
+  [[ $# -eq 2 ]] || { echo &quot;参数数量错误；请按第 10 章调用示例运行。&quot; &gt;&amp;2; return 2; }
+  min_reps=&quot;${1}&quot;
+  min_cpm=&quot;${2}&quot;
+  # 功能：按比较表运行原指定的 Trinity/DESeq2 分析，不以 TPM 代替 counts。
+  # min_reps/min_cpm：至少多少个样本的 CPM 大于多少；改变后需重新拟合受影响比较。
+  set -euo pipefail
+  # min_reps：表达过滤需达到 CPM 条件的最少样本数，不等于模型的组数。
+  # min_cpm：与 min_reps 配合的 CPM 下限；改变进入检验的基因集合，需要重做统计。
+  set -a
+  source 0script/project.env
+  set +a
+  design_dir=&quot;${DE_DESIGN_DIR:-5DESeq2/design}&quot;
+  analysis_dir=&quot;5DESeq2/DE_analysis/reps${min_reps}_cpm${min_cpm}&quot;
+  # 已有统计输出不能被新任务覆盖；更换模型/输入时明确另设 analysis_dir。
+  if [[ -e &quot;$analysis_dir&quot; ]]; then
+    echo &quot;拒绝覆盖已有分析目录：$analysis_dir&quot; &gt;&amp;2
+    exit 1
+  fi
+  # Trinity 只创建最后一级；空项目需先准备父目录，不覆盖已有分析。
+  mkdir -p 5DESeq2/DE_analysis
+  run_DE_analysis.pl \
+    --matrix &quot;${COUNT_MATRIX:-3Salmon/quanti/gene.counts.matrix}&quot; \
+    --method DESeq2 \
+    --samples_file &quot;$design_dir/samples.txt&quot; \
+    --contrasts &quot;$design_dir/contrasts.txt&quot; \
+    --min_reps_min_cpm &quot;$min_reps,$min_cpm&quot; \
+    --output &quot;$analysis_dir&quot;
+)
+</code></pre></main></body></html>
