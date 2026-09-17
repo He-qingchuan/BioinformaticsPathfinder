@@ -8,6 +8,7 @@ on:
       - "04 Bulk RNA-seq/**"
       - "05 Single-cell RNA-seq/**"
       - "01 Linux入门基础/**"
+      - "02 R语言入门基础/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -44,6 +45,8 @@ jobs:
           from pathlib import Path
           from shutil import copytree, ignore_patterns
           copytree(Path('01 Linux入门基础'), Path('_site/linux'),
+                   ignore=ignore_patterns('node_modules', '__pycache__', 'artifacts', 'dist'))
+          copytree(Path('02 R语言入门基础'), Path('_site/r'),
                    ignore=ignore_patterns('node_modules', '__pycache__', 'artifacts', 'dist'))
           PY
 

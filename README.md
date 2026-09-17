@@ -12,7 +12,11 @@
 
 ## 02 R语言入门基础
 
-[查看现有学习资料](02%20R语言入门基础/R语言入门基础.md)。课程正在整理，后续补充完善。
+**数据调查小镇**：从零开始学习 R，逐步进入数据整理、绘图、抽样、检验与一元回归。36 节主线、8 个地图街区、69 项术语、21 张原创概念图与完整可运行练习。
+
+[在线学习地图](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [完整说明](02%20R语言入门基础/README.md) · [离线教材与版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/r-v1.0.0)
+
+全部案例明确标注为模拟教学资料，观察、实验和横断面设计分别解释；代码、输入数据和参考输出随包提供。
 
 ## 03 Python入门基础
 

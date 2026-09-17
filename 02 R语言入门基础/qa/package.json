@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "r-textbook-qa",
+  "version": "1.0.0",
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
