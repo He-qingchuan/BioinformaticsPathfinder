@@ -1,0 +1,32 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>15_gsea_example_diagnostics · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/scripts/15_gsea_example_diagnostics.R" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>15_gsea_example_diagnostics.R</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code># 文件用途｜第 15 章：选择启用列表中的第二个比较（不足两个时取第一个）做模式 GSEA 诊断。
+# 运行位置：能看见 0script 的项目根目录。R 函数库通过 source 加载定义及共用依赖；调用函数才执行本文件
+#   对应的分析/写出。
+# 调用方式：本文件运行入口没有形参，输入按下方读取语句来自项目文件。重新加载定义后直接调用，不需寻找额
+#   外赋值段；文件编辑不会自动更新已经打开的 R 会话。
+# 接口说明：每个函数前列出用途、形参和输出；嵌套函数读取的外层变量属于闭包，不能误当成漏传的独立参数。
+# 共用语法：source 载入脚本；readRenviron 读取配置；Sys.getenv 取文本，as.numeric/as.integer 转数值；
+#   local=TRUE 表示定义放在当前调用环境。
+# 表格/图形约定：write.table 的 sep=&quot;\t&quot; 用 TSV、quote=FALSE 不另加引号、row.names=FALSE 不写 R 行号；
+#   check.names=FALSE 保留原 ID。ggsave 的图幅按英寸，dpi 主要控制 PNG。
+
+# 接口｜run_gsea_example_diagnostics：选择启用列表中的第二个比较（不足两个时取第一个）做模式 GSEA 诊断。
+# 参数：无显式形参；所需上层对象/输入见功能说明及下方读取语句。
+# 返回/写出与边界：对该比较的 log2FoldChange/stat 两种排序的 GO_BP 调用底层复算诊断；不是遍历所有比较
+#   ，原富集结果不覆盖。
+run_gsea_example_diagnostics &lt;- function() {
+  source(&quot;0script/tools/metadata.R&quot;, local = TRUE)
+  source(&quot;0script/tools/outputs.R&quot;, local = TRUE)
+  if (file.exists(&quot;0script/project.env&quot;)) readRenviron(&quot;0script/project.env&quot;)
+  library(tidyverse)
+  library(clusterProfiler)
+  library(BiocParallel)
+  source(&quot;0script/scripts/15_gsea_diagnostic_functions.R&quot;, local = TRUE)
+  comparisons &lt;- read_contrasts()
+  comparisons &lt;- comparisons[toupper(as.character(comparisons$enabled)) == &quot;TRUE&quot;, ]
+  stopifnot(nrow(comparisons) &gt; 0)
+  diagnostic_id &lt;- comparisons$contrast_id[min(2, nrow(comparisons))]
+  for (ranking in c(&quot;log2FoldChange&quot;, &quot;stat&quot;)) {
+    diagnose_saved_GSEA(&quot;main&quot;, diagnostic_id, ranking, &quot;GO_BP&quot;)
+  }
+}
+</code></pre></main></body></html>

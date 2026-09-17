@@ -1,0 +1,210 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01 安装Conda及分析软件 · 随包资料</title><link rel="stylesheet" href="../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../case/0script/01%20%E5%AE%89%E8%A3%85Conda%E5%8F%8A%E5%88%86%E6%9E%90%E8%BD%AF%E4%BB%B6.md" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">V9 最新资料的包内副本 · 原始文件按字节复制。网页适配本地链接；没有精选收录的结果显示说明。代码用于延伸阅读，实际分析需要完整输入与环境。</p><h1>01 安装 Conda 及分析软件</h1>
+<p>本项目在 Linux 上运行。Conda 环境保存软件，项目目录保存数据和结果；复制项目不需要再复制本机已有环境。下面的安装命令只用于新机器，环境已存在时先检查，不删除重建。</p>
+<h2>1. 安装并启用 Conda</h2>
+<p>在 Bash 终端检查；如果能列出环境，直接进入第 2 节。</p>
+<pre><code class="language-bash"># 目的：确认 Conda 是否已安装、环境位置和 CPU 架构；不安装或修改软件。
+# command -v conda：查找当前 shell 能否解析 conda；conda --version：显示版本；env list：列出已有环境；
+#   uname -m：显示架构（如 x86_64）。
+# Conda 不存在时部分命令会报找不到命令，这只是本步骤诊断；不要把安装包架构选错。
+
+command -v conda
+conda --version
+conda env list
+uname -m
+</code></pre>
+<p>没有安装时，到 <a target="_blank" rel="noopener noreferrer" href="https://repo.anaconda.com/miniconda/">Miniconda 官方目录</a> 选择安装包：<code>x86_64</code> 对应 Linux-x86_64，<code>aarch64</code> 对应 Linux-aarch64。下面是 x86_64 示例；本项目现有的软件组合及 explicit 清单按 Linux x86_64 验证，其他架构需要另外核对包的可用性。</p>
+<pre><code class="language-bash"># 目的：下载新机器需要的 Miniconda 安装器并输出本地 SHA256。只有尚未安装时才执行。
+# test ! -e：确认目标不存在；&amp;&amp;：前一检查成功才下载；反斜杠表示同一命令换行，不在反斜杠后加注释。
+# curl --fail：HTTP 错误返回失败；--location：跟随重定向；--retry 3：符合重试条件时最多重试 3 次；-o：本地文件名。
+# sha256sum：计算摘要供与官网逐字核对，不自动知道官方值。安装器已有同名文件时先检查来源，不能把未完整下载的旧文件当新下载成功。
+
+test ! -e Miniconda3-latest-Linux-x86_64.sh &amp;&amp; \
+curl --fail --location --retry 3 \
+  https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+  -o Miniconda3-latest-Linux-x86_64.sh
+sha256sum Miniconda3-latest-Linux-x86_64.sh
+</code></pre>
+<p>将输出与官网同一文件的 SHA256 核对，一致才安装。<code>latest</code> 会变化，长期复现可选择并记录带版本的安装包。安装步骤见 <a target="_blank" rel="noopener noreferrer" href="https://docs.conda.io/projects/conda/en/stable/user-guide/install/linux.html">Conda Linux 官方说明</a>。</p>
+<pre><code class="language-bash"># 目的：执行已从官网下载且 SHA256 核对一致的安装器。
+# bash 后面的路径是安装脚本，不是环境名称；本例交互安装，无 sudo。按提示选尚未占用的安装目录，已有安装不要覆盖。
+# 安装完成重新打开终端；是否修改 Bash 初始化文件由安装器提示确认。
+
+bash Miniconda3-latest-Linux-x86_64.sh
+</code></pre>
+<p>按提示阅读许可、确认安装目录，并在初始化 Bash 的提示处选择 <code>yes</code>。安装后重新打开终端，再运行 <code>conda --version</code>。如果只是已有 Conda 没启用，在 Bash 中执行 <code>source &quot;$HOME/miniconda3/etc/profile.d/conda.sh&quot;</code>；安装位置不同时只改这一处。需要永久初始化时使用 <code>conda init bash</code>，它会修改 shell 初始化配置。</p>
+<h3>可选：配置下载镜像</h3>
+<p>网络正常不用改。需要镜像时，先运行 <code>conda config --show-sources</code> 查看实际配置，给原 <code>.condarc</code> 留一份副本，再用编辑器按<a target="_blank" rel="noopener noreferrer" href="https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/">清华镜像说明</a>合并以下内容；不要重复创建同名 YAML 键或删除其他设置。</p>
+<pre><code class="language-yaml"># 目的：可选的 .condarc YAML 配置片段，不是 Bash 命令。网络正常无需改镜像。
+# custom_channels：把 conda-forge/bioconda 短名映射到给出的镜像基础地址；缩进表明两者属于该键。
+# show_channel_urls: true：显示包来源频道，方便核对；不是关闭证书验证。合并到已有文件时不重复创建同名键。
+
+custom_channels:
+  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  bioconda: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+show_channel_urls: true
+</code></pre>
+<p>运行 <code>conda config --validate</code> 和 <code>conda config --show custom_channels</code> 检查。恢复时只还原这两个映射。<code>--override-channels</code> 不取消短名称的镜像映射；临时走官网可将 <code>-c conda-forge -c bioconda</code> 换成 <code>-c https://conda.anaconda.org/conda-forge -c https://conda.anaconda.org/bioconda</code>，不用关闭证书验证。</p>
+<h2>2. 创建本项目使用的环境</h2>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rnaseq</code></td>
+<td>常规上游、差异分析、绘图、富集和准备检查</td>
+</tr>
+<tr>
+<td><code>rnaseq_time</code></td>
+<td>ClusterGVis、Mfuzz、MetaCycle 及模块富集</td>
+</tr>
+<tr>
+<td><code>rnaseq_eggnog</code></td>
+<td>第 18 章 eggNOG-mapper 与 DIAMOND</td>
+</tr>
+<tr>
+<td><code>rnaseq_gtf</code></td>
+<td>第 18 章 gtftk 和序列提取，隔离其兼容依赖</td>
+</tr>
+</tbody>
+</table>
+<p><code>-n</code> 指环境名，<code>-c</code> 指软件频道，<code>--strict-channel-priority</code> 减少频道间二进制混用；版本和固定提交号沿用已验证组合。只做主线时可以暂不建立支线环境。</p>
+<h3>常规环境</h3>
+<pre><code class="language-bash"># 目的：仅在尚无 rnaseq 环境的新机器创建常规分析环境；这是安装操作，不在每次分析时重复执行。
+# conda create -n rnaseq：环境名；--override-channels：只用命令列出的频道；-c：从前到后的频道；
+#   --strict-channel-priority：严格优先级；-y：自动确认事务。
+# 软件列表不是文件路径。package=版本 固定对应版本；无等号的依赖由 Conda 求解，长期复现另保存 explicit清单。
+# python/curl：检查器与传输；fastqc/multiqc/fastp：质控汇总过滤；salmon：定量；trinity：矩阵/DE 附带脚本；sra-tools：SRA 转换。
+# r-base：R；jsonlite/digest：配置与来源摘要；tidyverse/data.table：表格；pheatmap/RColorBrewer/colorspace：热图与颜色；
+#   VennDiagram/ggVennDiagram/UpSetR：集合图。
+# ggrepel：避让标签；patchwork：拼图；tximport/DESeq2：表达导入与差异；PCAtools/EnhancedVolcano：PCA/火山图；
+#   clusterProfiler/enrichplot：富集和绘图。
+# AnnotationForge：自建注释库；org.At.tair.db：本案例拟南芥 OrgDb，换物种应安装匹配包，不只修改包名字。
+#   r-/bioconductor- 是 Conda 包命名，不是代码变量。
+
+conda create -n rnaseq \
+  --override-channels -c conda-forge -c bioconda --strict-channel-priority \
+  python curl fastqc=0.12.1 multiqc=1.35 fastp=1.3.6 \
+  salmon=1.12.1 trinity=2.15.2 sra-tools=3.4.1 \
+  r-base=4.5 r-jsonlite r-digest r-tidyverse r-data.table r-pheatmap r-rcolorbrewer \
+  r-venndiagram r-ggvenndiagram r-upsetr r-ggrepel r-patchwork r-colorspace \
+  bioconductor-tximport bioconductor-deseq2 \
+  bioconductor-pcatools bioconductor-enhancedvolcano \
+  bioconductor-clusterprofiler bioconductor-enrichplot \
+  bioconductor-annotationforge bioconductor-org.at.tair.db -y
+</code></pre>
+<p><code>org.At.tair.db</code> 是案例使用的拟南芥注释包；换物种后另行安装匹配包，并修改项目配置。工具中的 <code>gzip</code>、<code>awk</code>、<code>stat</code>、<code>sha256sum</code> 等由 Linux 提供。准备检查器仅使用 Python 标准库，不新增 Python 包。</p>
+<h3>时间分析环境</h3>
+<pre><code class="language-bash"># 目的：创建隔离的时间分析环境，并安装固定提交的 R 依赖；已有合格环境跳过。
+# conda create 的 -n/-c/--override-channels/--strict-channel-priority/-y 含义同上一个代码框，这里环境名换为 rnaseq_time，R 固定 4.4，MetaCycle 固定 1.2.1。
+# 软件列表提供 ClusterGVis/Mfuzz 的依赖闭包；其中单细胞和小鼠相关包是依赖，不把本项目改为单细胞分析或替换实际物种注释。
+# conda run -n：在该环境运行命令；Rscript -e：执行引号内的一段 R 表达式。remotes::install_github 使用包仓库@提交号，不追随最新提交。
+# dependencies=FALSE：已由前面解决依赖，不在此再安装整套；upgrade=&quot;never&quot;：不自动升级其他 R 包。三个固定提交命令按顺序执行。
+# GitHub 安装失败不会自动补出缺包；保留错误并在版本验证通过后使用，不随意改提交来凑成功。
+
+conda create -n rnaseq_time \
+  --override-channels -c conda-forge -c bioconda --strict-channel-priority \
+  r-base=4.4 r-jsonlite r-digest r-remotes r-metacycle=1.2.1 r-tidyverse \
+  r-patchwork r-colorspace r-colorramps r-factoextra r-seurat r-wgcna \
+  r-e1071 r-ggiraphextra r-magick r-ggdist r-ggforce r-ggrastr \
+  r-bpcells r-leidenbase r-pbmcapply r-rsample r-rhpcblasctl \
+  r-sf r-spdep r-speedglm \
+  bioconductor-mfuzz bioconductor-monocle bioconductor-tcseq \
+  bioconductor-complexheatmap bioconductor-clusterprofiler \
+  bioconductor-org.at.tair.db bioconductor-org.mm.eg.db \
+  bioconductor-singlecellexperiment bioconductor-batchelor \
+  bioconductor-delayedmatrixstats bioconductor-hdf5array -y
+conda run -n rnaseq_time Rscript -e 'remotes::install_github(&quot;cole-trapnell-lab/monocle3@536f103&quot;, dependencies=FALSE, upgrade=&quot;never&quot;)'
+conda run -n rnaseq_time Rscript -e 'remotes::install_github(&quot;junjunlab/jjAnno@4f92ade&quot;, dependencies=FALSE, upgrade=&quot;never&quot;)'
+conda run -n rnaseq_time Rscript -e 'remotes::install_github(&quot;junjunlab/ClusterGVis@e143512&quot;, dependencies=FALSE, upgrade=&quot;never&quot;)'
+</code></pre>
+<p>ClusterGVis 0.1.2 的部分强依赖涉及单细胞工具和小鼠注释，这不改变本项目是 bulk RNA-seq，也不代表用小鼠注释拟南芥。实际物种注释由参数明确传入。</p>
+<h3>非模式支线环境</h3>
+<pre><code class="language-bash"># 目的：仅第 18–20 章支线需要时创建两个隔离环境，不改主线分析方法。
+# Conda 公共选项同本章常规环境代码框；-n 分别为 rnaseq_eggnog/rnaseq_gtf，不是项目版本号。
+# eggnog-mapper=2.1.15 为指定功能注释程序；diamond 搜索蛋白库；seqkit 处理序列；pygtftk 提供 GTF 操作；seqtk 提取序列。
+# 软件环境与大型 eggNOG 数据库分开保存，这里不会下载数据库。
+
+conda create -n rnaseq_eggnog --override-channels -c conda-forge -c bioconda \
+  --strict-channel-priority eggnog-mapper=2.1.15 diamond seqkit -y
+conda create -n rnaseq_gtf --override-channels -c conda-forge -c bioconda \
+  --strict-channel-priority pygtftk seqtk seqkit -y
+</code></pre>
+<p>eggNOG 数据库另外保存在项目集合的 <code>resources/eggnog</code>，不装入每个环境。依赖冲突时合理隔离，不伪造动态库软链接，也不改换分析方法。</p>
+<h2>3. 验证与记录环境</h2>
+<pre><code class="language-bash"># 目的：核对已安装程序能够启动及指定时间包的版本；不分析任何测序数据。
+# conda activate rnaseq：切换当前 shell 环境；各 --version：显示对应软件版本，不重新安装。
+# 最后一行在 rnaseq_time 中执行 R：packageVersion 读已安装版本，== 为精确核对；
+#   requireNamespace(…,quietly=TRUE) 测试 Mfuzz 可加载并减少提示。
+# stopifnot 要求条件全部成立，任一失败则非零退出；未选择时间支线时可跳过最后一行。
+
+conda activate rnaseq
+fastqc --version
+multiqc --version
+fastp --version
+salmon --version
+Trinity --version
+conda run -n rnaseq_time Rscript -e 'stopifnot(packageVersion(&quot;ClusterGVis&quot;)==&quot;0.1.2&quot;, packageVersion(&quot;MetaCycle&quot;)==&quot;1.2.1&quot;, requireNamespace(&quot;Mfuzz&quot;,quietly=TRUE))'
+</code></pre>
+<p>未选择时间分析时跳过最后一行。第 04.5 章会按所选分析范围统一检查依赖。手工运行 Trinity 附带脚本时，先用 <code>command -v abundance_estimates_to_matrix.pl run_DE_analysis.pl</code> 确认它们可找到；不同 Conda 构建可能放在环境内的 <code>opt/trinity*/util</code> 和 <code>Analysis/DifferentialExpression</code>。章节命令行执行器会从当前环境定位这些目录，不依赖个人绝对路径。</p>
+<p>进入项目根目录后记录实际环境；先按 <code>conda env list</code> 修改下面 <code>for</code> 后的环境列表，只保留本机已经创建的环境。每次在记录目录下新建一个快照子目录，不覆盖历史导出。</p>
+<pre><code class="language-bash"># 目的：记录本机实际环境版本，输出到 0script/runlogs/environments 的新快照子目录。先把 for 后的列表改为本机已经存在的环境。
+# mkdir -p：创建父目录且不清空已有内容；for environment in …：逐环境执行，双引号保护环境名和目标路径。
+# set -euo pipefail：任一步失败即停，不将不完整导出当成功；mktemp -d：只新建唯一目录。
+# snapshot_XXXXXX 的六个 X 由随机字符替换；snapshot_dir 保存本次实际路径，不是要写入 project.env 的变量。
+# conda list -n … --explicit：导出带具体构建/来源的同平台清单；conda env export --no-builds：导出不固定构建号的 YAML。
+# 管道 | 把 YAML 传给 sed；sed '/^prefix:/d' 删除机器特有 prefix 行；&gt; 写入本次新快照中的文件。
+# 关键输出：$snapshot_dir/环境名-explicit.txt 与 环境名.yml；下方查看框显示本次实际目录。
+# 这里只保存文本，不复制环境本体；通过 GitHub 安装的 R 包仍需按上文单独记录/恢复。
+
+set -euo pipefail
+mkdir -p 0script/runlogs/environments
+snapshot_dir=$(mktemp -d 0script/runlogs/environments/snapshot_XXXXXX)
+for environment in rnaseq rnaseq_eggnog rnaseq_time rnaseq_gtf; do
+  conda list -n &quot;$environment&quot; --explicit &gt; &quot;$snapshot_dir/${environment}-explicit.txt&quot;
+  conda env export -n &quot;$environment&quot; --no-builds | sed '/^prefix:/d' &gt; &quot;$snapshot_dir/${environment}.yml&quot;
+done
+</code></pre>
+<h3>查看本次环境记录</h3>
+<pre><code class="language-bash"># 目的：查看刚导出的环境清单，不重新安装或导出；在上一步同一个 Bash 终端执行。
+# snapshot_dir 是上一步 mktemp 返回的目录；:? 在未设置时停止，不猜测“最新快照”。
+# head -n 10 最多显示 10 行；显式清单是包来源/构建，YAML 是环境名、频道和依赖。
+printf '本次快照：%s\n' &quot;${snapshot_dir:?请先执行上一步环境导出}&quot;
+head -n 10 &quot;$snapshot_dir/rnaseq-explicit.txt&quot;
+head -n 10 &quot;$snapshot_dir/rnaseq.yml&quot;
+</code></pre>
+<p>若上一步只导出其他环境，将这两处 <code>rnaseq</code> 改为实际导出的环境名；文件名对应上一框循环中的名称，不是新增软件环境。</p>
+<h3>换机器：用随项目提供的恢复材料</h3>
+<p>历史 <code>runlogs/environments</code> 保留原始记录，不回写。旧 <code>rnaseq-explicit.txt</code> 有本机 <code>file://</code> 地址，且 Conda 清单不包含所有单独安装的 R 包，不能直接拿它保证恢复完整环境。迁移本项目时，优先使用共享软件恢复材料，说明位于项目集合的 <code>resources/software/README.md</code>（集合 README 也有入口），不用复制本机的 Conda 环境目录。</p>
+<p>以下命令从能看见 <code>0script</code> 的<strong>项目根目录</strong>执行。先把整个项目集合复制过去，保留 <code>projects/</code>、<code>project_template/</code>、<code>resources/</code> 和 <code>web/</code> 的相对层级；只复制案例子目录会缺少共享材料。</p>
+<pre><code class="language-bash"># 目的：先校验主环境的本地恢复材料，再创建一个尚不存在的 rnaseq 环境。已有合格环境不重复创建。
+# conda run -n base python：借用 Conda 自带的 Python（要求 Python &gt;=3.9），不要求先有 rnaseq。
+# ../../resources/software/restore.py：从单个项目根目录向上两层，定位共享恢复脚本。
+# rnaseq：要恢复的环境名；换成 rnaseq_time、rnaseq_eggnog、rnaseq_gtf 可恢复对应环境，按需要逐个执行。
+# --check：只核对本地锁、平台和随附文件 SHA256，不联网、不安装；通过不代表远程包可访问或环境已经可用。
+# 第二行不带 --check，才真正安装。目标已存在、材料缺失或摘要不符时停止，不覆盖现有环境。
+
+conda run -n base python ../../resources/software/restore.py rnaseq --check
+conda run -n base python ../../resources/software/restore.py rnaseq
+</code></pre>
+<p>恢复脚本固定 Conda 包的版本、构建及 SHA256，并安装锁中列出的额外 R 源码；不自动升级软件、不更换分析方法。主环境额外包含 PCAtools 等 13 个原先经 R 安装的包，时间环境包含原指定提交的 monocle3、jjAnno、ClusterGVis。额外 R 包安装到新环境内，不借用个人 R 库。需要另取安装位置时才加 <code>--prefix /一个尚不存在的目录/rnaseq</code>；以后可用 <code>conda run -p 该目录</code> 检查。</p>
+<p>这不是全离线安装包：多数 Conda 包及其安装时下载的注释数据仍需网络。现有锁限 Linux x86_64；本轮测试基线与结果见软件材料说明，不等于所有 Linux 发行版、ARM、Windows 均已验证。历史 R 记录缺少完整源码哈希；现提供的源码按原版本/指定提交取得并锁定摘要，不据此追认历史源码逐字节一致。</p>
+<p>YAML 仍可用于重新求解依赖：<code>conda env create -n 新环境名 -f 0script/runlogs/environments/snapshot_实际编号/rnaseq.yml</code>，将整个 <code>snapshot_实际编号</code> 路径段替换为前面新快照的实际目录名。它不保证构建完全一致，也不补齐单独安装的 R 包；不要与上面的精确恢复结果混称为同一种验证。</p>
+<h2>4. 可选的只读结果网页</h2>
+<p>网页依赖与分析环境分开核对，见 <a href="%E9%99%845%20%E7%BB%93%E6%9E%9C%E9%98%85%E8%A7%88%E4%B8%8E%E5%91%BD%E4%BB%A4%E8%A1%8C.html">结果阅览与命令行</a>。已有本机环境无需重装。新机器先执行：</p>
+<pre><code class="language-bash"># 目的：核对可选只读网页的依赖；不启动网页、不运行分析。命令从项目根目录执行。
+# conda run -n rnaseq Rscript：使用主环境运行 ../../web/check_runtime.R；../../ 表示向上两层到共享 web。
+# conda install 的公共频道选项同上；--freeze-installed：尽量保持已安装包；--dry-run：仅显示计划，不真正安装，确认兼容后才考虑实际事务。
+# python/pillow/markdown-it-py 负责图片/MD；shiny/bslib 为网页展示；processx 管理服务辅助进程；jsonlite 读取 JSON。
+#   显式等号是固定版本，不能当成必须随日期升级。
+
+conda run -n rnaseq Rscript ../../web/check_runtime.R
+conda install -n rnaseq --override-channels -c conda-forge --strict-channel-priority \
+  --freeze-installed --dry-run python pillow=12.3.0 markdown-it-py \
+  r-shiny=1.14.0 r-bslib=0.12.0 r-processx=3.9.0 r-jsonlite=2.0.0
+</code></pre>
+<p>如果冲突，按共享 <code>web/environment-web.yml</code> 独立建立 <code>rnaseq_web</code>，再用 <code>RNASEQ_WEB_ENV=rnaseq_web bash ../../web/start.sh 8766</code> 启动。<code>web</code> 内静态资源及许可一起迁移；Node/Playwright 仅用于开发验收，使用网页无需安装。项目缩略图是可再生缓存，不要求迁移。</p>
+</main></body></html>

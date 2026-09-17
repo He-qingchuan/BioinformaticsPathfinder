@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>07_index · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/scripts/07_index.sh" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>07_index.sh</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code>#!/usr/bin/env bash
+# 文件用途｜用转录本和基因组诱饵构建 Salmon 索引。
+# 运行方式：在项目根目录激活相应环境，先 source 本文件，再按同编号 MD 的顺序传入位置参数。source 本身
+#   仅定义函数，不启动分析。
+# 括号函数体在子 Shell 中运行；set -e 对未处理失败停止、-u 拒绝未定义变量、-o pipefail 使管道前段失败
+#   可见。它不是自动恢复机制。
+# set -a / source project.env / set +a（若本段使用）：临时把配置导出给子进程；不是创建 Conda 环境。双
+#   引号保留文件名边界，$() 读取命令输出。
+# mkdir -p：父目录不存在时一起创建，已有目录不清空；test -s/-e：检查非空文件/路径存在，! 取反。失败返
+#   回非零，不自动下载缺失文件。
+# 管道 | 传标准输出，&gt; 写日志/文件时会覆盖同名目标，2&gt;&amp;1 把错误并入同一日志；/usr/bin/time -v -o 记录
+#   资源详情（若本段调用）。不要把所有步骤都当作自动防覆盖。
+# 本文件接口与输入输出：
+# 输入：统一名的 transcripts.fa.gz/genome.fa.gz；输出 gentrome.fa、decoys.txt、salmon_index。已有合并
+#   参考或索引时拒绝覆盖。
+# gzip -c 写标准输出、-d 解压且保留原 gzip；先转录本后基因组拼接，awk 只提取 DNA FASTA 标题的第一个字
+#   段作为 decoy ID。
+# salmon index -t：合并参考；-d：诱饵 ID 列表；-p：THREADS；-i：索引保存目录；-k：k-mer 长度。
+
+# 接口｜run_index：用转录本和基因组诱饵构建 Salmon 索引。
+# 位置参数按以下顺序传入；Bash 没有 R 那样的具名形参调用，不能调换顺序。
+# $1 kmer_length：正奇数，当前 CLI 允许 15–31；Salmon 索引的 k-mer 长度，应不长于适用 reads。改变它需
+#   新建索引及重新定量，不能只换名字复用旧索引。
+# 返回/写出：成功返回退出状态 0，检查或软件失败为非零。实际结果保存在上述目录；本接口不返回一张内存中
+#   的表。
+run_index() (
+  set -euo pipefail
+  [[ $# -eq 1 ]] || { echo &quot;参数数量错误；请按第 07 章调用示例运行。&quot; &gt;&amp;2; return 2; }
+  kmer_length=&quot;${1}&quot;
+  # 功能：构建包含转录本和基因组诱饵的 Salmon 索引。
+  # 参数：kmer_length 是索引 k-mer 长度，改它需要重新建索引和定量。
+  set -euo pipefail
+  # kmer_length：索引 k-mer 长度；31 为本例值，改动后需要重新建索引和定量。
+  set -a
+  source 0script/project.env
+  set +a
+  workdir=$(pwd)
+  genome_dir=&quot;$workdir/1database/genome&quot;
+  index_dir=&quot;$workdir/3Salmon/index&quot;
+  if [[ -e &quot;$index_dir/gentrome.fa&quot; || -e &quot;$index_dir/salmon_index&quot; ]]; then
+    echo &quot;已有索引或合并参考，拒绝覆盖；复用已有结果时跳过本段。&quot; &gt;&amp;2
+    exit 1
+  fi
+  mkdir -p &quot;$index_dir&quot;
+  gzip -cd &quot;$genome_dir/genome.fa.gz&quot; |
+    awk &#x27;/^&gt;/ {sub(/^&gt;/, &quot;&quot;, $1); print $1}&#x27; &gt; &quot;$index_dir/decoys.txt&quot;
+  # gzip 按给定顺序解压两个输入文件，保留“转录本在前、基因组在后”的次序。
+  gzip -cd &quot;$genome_dir/transcripts.fa.gz&quot; &quot;$genome_dir/genome.fa.gz&quot; &gt; &quot;$index_dir/gentrome.fa&quot;
+  /usr/bin/time -v -o &quot;$index_dir/resources.log&quot; \
+    salmon index -t &quot;$index_dir/gentrome.fa&quot; -d &quot;$index_dir/decoys.txt&quot; \
+      -p &quot;$THREADS&quot; -i &quot;$index_dir/salmon_index&quot; -k &quot;$kmer_length&quot;
+)
+</code></pre></main></body></html>

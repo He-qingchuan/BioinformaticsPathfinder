@@ -1,0 +1,58 @@
+{
+  "pass": true,
+  "checked_utc": "2026-09-15T11:12:34.501937+00:00",
+  "checks": {
+    "original": {
+      "files": 177,
+      "unchanged": true
+    },
+    "backup": {
+      "files": 177,
+      "unchanged": true
+    },
+    "original_zip": {
+      "sha256": "3c4dfe2a78fc4bf80d24fcd147e5ef2c43a0b9dfb44c52fb320da723d2ad5c97",
+      "unchanged": true
+    },
+    "retained_case_results": {
+      "files": 47,
+      "unchanged": true,
+      "differences": []
+    },
+    "documents_snapshot": {
+      "counts": {
+        "markdown": 27,
+        "scripts": 53,
+        "tools": 10
+      },
+      "files": 99,
+      "local_matches": true,
+      "source_available": true,
+      "matches_current_source": true
+    },
+    "static_validation": {
+      "pass": true
+    },
+    "browser_validation": {
+      "pass": true
+    },
+    "figures_review": {
+      "pass": true
+    },
+    "responsive_review": {
+      "pass": true
+    },
+    "print_review": {
+      "pass": true
+    },
+    "independence_validation": {
+      "pass": true
+    },
+    "package": {
+      "files_before_this_record": 345,
+      "bytes_before_this_record": 24305492,
+      "symlinks": []
+    }
+  },
+  "errors": []
+}

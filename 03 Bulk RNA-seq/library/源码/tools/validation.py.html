@@ -1,0 +1,79 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>validation · 随包资料</title><link rel="stylesheet" href="../../../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../../../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="../../%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../../../case/0script/tools/validation.py" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">最新实现源码 · 保留 V9 的说明与注释；此页只是阅读视图。原始源码仍在包内 case/0script 下。</p><h1>validation.py</h1><p>可直接阅读以下完整源码，或下载原始文件。页面不会执行这些命令。</p><pre class="source-code"><code># 文件用途｜校验命令行 JSON 参数，不运行任何统计算法。
+# 使用：由 0script/tools/run_chapter.py 导入；只提供规则/函数，不作为单独分析步骤执行。输入输出与每个
+#   参数见下面接口注释。
+# 注释用 # 独立行说明；现有 docstring 和程序帮助文本保持原样，不把注释变成执行时读取的新配置。
+
+&quot;&quot;&quot;仅校验 CLI JSON 参数，不依赖网页或后台任务。&quot;&quot;&quot;
+import math
+from catalog import PARAMETERS
+
+# 接口｜boolean：把布尔或 TRUE/FALSE 文本规范成 Python bool。
+# 参数：
+# value（必填，无默认值）：bool 或大小写不限的 TRUE/FALSE 文本；不接受随意的 yes/1 代替规范值。
+# 返回/写出与边界：返回 True/False；其他字符串报错，不把非空的 FALSE 字符串误判为真。
+def boolean(value):
+    if isinstance(value, bool): return value
+    if str(value).upper() in (&quot;TRUE&quot;, &quot;FALSE&quot;): return str(value).upper() == &quot;TRUE&quot;
+    raise ValueError(&quot;布尔值须为 TRUE 或 FALSE&quot;)
+
+# 接口｜validate_parameters：逐个校验 CLI 参数名、类型、范围和组合约束。
+# 参数：
+# parameters（必填，无默认值）：按执行单元分组的 JSON 字典，例如 volcano 下放 top_n；不是 project.env
+#   的全部字段。
+# action（默认 &#x27;analyse&#x27;）：字符串 analyse 或 redraw；redraw 只允许 catalog 标为 style=True 的参数。
+# 返回/写出与边界：返回只含用户实际提供项的规范字典，不补齐全部默认值；未知参数、分析参数用于 redraw、
+#   矛盾范围时报错，不执行任何代码。
+def validate_parameters(parameters, action=&quot;analyse&quot;):
+    clean = {}
+    # 按单元和白名单逐项验证，而不是把 JSON 当任意 R/Bash 程序执行。列表和标量分别转换，禁止未知参数静默失
+    #   效。
+    for block, values in parameters.items():
+        if block not in PARAMETERS or not isinstance(values, dict):
+            raise ValueError(f&quot;未知参数组: {block}&quot;)
+        clean[block] = {}
+        for name, value in values.items():
+            spec = PARAMETERS[block].get(name)
+            if not spec:
+                raise ValueError(f&quot;未知参数: {block}.{name}&quot;)
+            if action == &quot;redraw&quot; and not spec[&quot;style&quot;]:
+                raise ValueError(f&quot;{block}.{name} 改变分析，不属于仅重绘参数&quot;)
+            kind = spec[&quot;type&quot;]
+            array = kind in (&quot;numbers&quot;, &quot;integers&quot;, &quot;strings&quot;, &quot;booleans&quot;)
+            if array and not isinstance(value, list):
+                raise ValueError(f&quot;{block}.{name} 应为数组&quot;)
+            values_to_check = value if array else [value]
+            if array and not value and name not in (&quot;pvalue_tables&quot;, &quot;line_variants&quot;):
+                raise ValueError(f&quot;{block}.{name} 不能为空&quot;)
+            converted = []
+            for item in values_to_check:
+                if kind in (&quot;boolean&quot;, &quot;booleans&quot;):
+                    item = boolean(item)
+                elif kind in (&quot;integer&quot;, &quot;integers&quot;, &quot;number&quot;, &quot;numbers&quot;):
+                    if isinstance(item, bool):
+                        raise ValueError(f&quot;{name} 应为数值，不是布尔值&quot;)
+                    number = float(item)
+                    if not math.isfinite(number) or (kind in (&quot;integer&quot;, &quot;integers&quot;) and not number.is_integer()):
+                        raise ValueError(f&quot;{name} 数值无效&quot;)
+                    if spec[&quot;minimum&quot;] is not None and number &lt; spec[&quot;minimum&quot;] or spec[&quot;maximum&quot;] is not None and number &gt; spec[&quot;maximum&quot;]:
+                        raise ValueError(f&quot;{name} 超出允许范围&quot;)
+                    item = int(number) if kind in (&quot;integer&quot;, &quot;integers&quot;) else number
+                elif not isinstance(item, str):
+                    raise ValueError(f&quot;{name} 应为文本&quot;)
+                if spec[&quot;choices&quot;] is not None and item not in spec[&quot;choices&quot;]:
+                    raise ValueError(f&quot;{name} 不在允许选项内&quot;)
+                converted.append(item)
+            clean[block][name] = converted if array else converted[0]
+    # 范围逐项合格后还需检查组合：最小基因集不能大于最大值，PCA 两轴不能相同，周期上下界不能倒置。
+    for block, values in clean.items():
+        defaults={name:spec[&quot;default&quot;] for name,spec in PARAMETERS[block].items()}
+        effective={**defaults,**values}
+        if &quot;minGSSize&quot; in effective and &quot;maxGSSize&quot; in effective and effective[&quot;minGSSize&quot;] &gt; effective[&quot;maxGSSize&quot;]:
+            raise ValueError(f&quot;{block}: 最小基因集大于最大基因集&quot;)
+        if block==&quot;sample_relationships&quot; and effective[&quot;pca_x&quot;]==effective[&quot;pca_y&quot;]:
+            raise ValueError(&quot;PCA 横轴和纵轴不能是同一个主成分&quot;)
+    if clean.get(&quot;jtk_analysis&quot;, {}).get(&quot;minper&quot;, 20) &gt; clean.get(&quot;jtk_analysis&quot;, {}).get(&quot;maxper&quot;, 28):
+        raise ValueError(&quot;最小周期不能大于最大周期&quot;)
+    return clean
+
+
+</code></pre></main></body></html>

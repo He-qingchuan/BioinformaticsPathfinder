@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>附4 输入文件规范与项目迁移 · 随包资料</title><link rel="stylesheet" href="../assets/style.css"></head><body class="document-page"><header class="document-header"><a href="../01_%E6%B5%B7%E5%B2%9B%E6%8E%A2%E9%99%A9%E6%95%99%E6%A1%88.html">← 返回海岛地图</a><a href="%E8%84%9A%E6%9C%AC%E4%B8%8E%E8%B5%84%E6%96%99%E7%9B%AE%E5%BD%95.html">脚本与资料目录</a><a href="../case/0script/%E9%99%844%20%E8%BE%93%E5%85%A5%E6%96%87%E4%BB%B6%E8%A7%84%E8%8C%83%E4%B8%8E%E9%A1%B9%E7%9B%AE%E8%BF%81%E7%A7%BB.md" download>下载原始文件 ↓</a></header><main class="document-content"><p class="document-note">V9 最新资料的包内副本 · 原始文件按字节复制。网页适配本地链接；没有精选收录的结果显示说明。代码用于延伸阅读，实际分析需要完整输入与环境。</p><h1>输入文件规范与项目迁移</h1>
+<p>项目之间共享软件环境和只读参考数据库，但不共享样本表、分析结果或缩略图。所有章节从当前项目根目录运行；组名、样本名、重复和采样小时来自同一张样本表。换项目不需要逐章替换 ZT 名称。</p>
+<h2>1. 从哪里开始</h2>
+<p>从原始数据开始时，准备 <code>2data/rawdata/</code> 中的双端 FASTQ、<code>1database/genome/</code> 中的同版参考及样本表，按第 03–08 章运行。公开数据的查找、下载、续传和校验方法保留在第 03–04 章与附 2。</p>
+<p>从矩阵开始时，跳过下载、质控和 Salmon，提供 counts、TPM、TMM 中实际需要的矩阵，并在 <code>project.env</code> 设置路径。第 09/13 章用 TMM；第 10 章必须用未归一化 counts；第 16/17 章用 TPM。不能把同一张 TPM 表改三个名字冒充三类矩阵。某类矩阵未提供时，只能执行不需要它的步骤。</p>
+<p><code>DATA_ENTRY=matrix</code> 或 <code>fastq</code> 只控制输入要求，不自动运行任何章节。</p>
+<h2>2. 样本表：字段名固定，顺序和附加列不限</h2>
+<p>正式文件为 <code>0script/samples.tsv</code>，UTF-8、第一行表头、Tab 分隔。外部 CSV 也可导入；不能只把 Excel 文件扩展名改成 TSV。保留原始元数据，避免手工重复录入样本身份。</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>何时必需</th>
+<th>含义与约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sample_id</code></td>
+<td>所有入口</td>
+<td>文库的唯一 ID；与矩阵列名完全一致</td>
+</tr>
+<tr>
+<td><code>timepoint</code></td>
+<td>所有入口</td>
+<td>实验分组；普通处理组也用此列，不要求一定是时间。允许以 <code>group</code> 代替</td>
+</tr>
+<tr>
+<td><code>replicate</code></td>
+<td>所有入口</td>
+<td>同组内实际独立重复的正整数编号；同组不能重号</td>
+</tr>
+<tr>
+<td><code>read1</code>, <code>read2</code></td>
+<td>FASTQ 双端入口</td>
+<td><code>2data/rawdata/</code> 下的文件名；不用绝对路径，不能把同一个文件重复分配给不同样本</td>
+</tr>
+<tr>
+<td><code>time_hour</code></td>
+<td>时间聚类、相邻时期比较、周期分析</td>
+<td>真实数值小时，可不等间隔；不是从名称截取的数字。同组必须一致；时间路线要求不同组不能占用同一个小时，多处理轨迹需另明确设计</td>
+</tr>
+<tr>
+<td><code>cycle_use</code></td>
+<td>周期分析</td>
+<td>原表明确填写 TRUE/FALSE，决定哪些样本进入周期检验；不默认全部入选</td>
+</tr>
+<tr>
+<td><code>gsm</code>, <code>srr</code></td>
+<td>相应公开下载/溯源步骤</td>
+<td>公开数据库编号；自备矩阵不要求填写</td>
+</tr>
+<tr>
+<td>其他列</td>
+<td>可选</td>
+<td>例如组织、批次、备注、供体。完整保留，但不会自动加入差异模型</td>
+</tr>
+</tbody>
+</table>
+<p><code>group</code> 与 <code>timepoint</code> 同时出现时必须逐行一致。样本和组别 ID 使用字母、数字、点、下划线或短横线，不能含空格、斜杠或中文；避免纯数字和 TRUE/FALSE 等保留值。建议 <code>Control</code>、<code>Treat</code>、<code>sample_001</code>，不要让第三方软件把名称自动改写。中文说明可放在额外备注列。</p>
+<p>普通两组的最小表：</p>
+<pre><code class="language-tsv">sample_id	timepoint	replicate
+control_1	Control	1
+control_2	Control	2
+treat_1	Treat	1
+treat_2	Treat	2
+</code></pre>
+<p>时间项目再增加 <code>time_hour</code>；周期分析再增加 <code>cycle_use</code>。不做时间分析时可以不提供这两列，不必伪造时间。矩阵入口无需补 FASTQ 文件名，样本表多几列也不会因列数不等于某个固定值而报错。</p>
+<p>当前 DESeq2 路线要求每个比较组至少两个独立重复。配对、批次或多因素设计不能仅增加一列就认为已被模型控制；需先确定合适模型。本项目不会自动把备注列转为协变量。</p>
+<h2>3. 从已有元数据提取，不逐行手填</h2>
+<p>第 04 章从网站导出的 Full Metadata 提取 accession、双端文件名与来源标题。分组、重复和真实时间依据实验记录核实，不再用案例标题规则自动筛选其他项目。</p>
+<p>测序公司或自有记录已有对应列时，只需在入口做一次列名映射。以下是格式示例，不自动执行：</p>
+<pre><code class="language-r"># 目的：把自己来源表的列名映射成标准接口，保留额外信息列；不是要求按案例时期重命名。
+# source 加载 metadata.R；read_input_table 的路径是自己的源表；metadata 保存整个数据框。
+# column_map：c() 创建命名向量，左侧 sample_id/timepoint/replicate 为标准名，右侧Library/Treatment/BioRep 改为来源表实际列名。
+# unname 取右侧来源名，%in% 检查是否存在，all 要求全部满足，stopifnot 不满足就停止。names(metadata) 是表头；
+#   match 按名称定位列再改为标准名，不挪动或删除其他列。
+# 关键输出：0script/samples.tsv；已有正式表时写 0script/samples.generated.tsv 候选，不覆盖。
+# write_generated_table：相同候选可复用，不同内容的旧候选会停止；仍须核实分组/重复含义及 FASTQ 所需 read1/read2，不能仅改表头就跳过预检。
+
+source(&quot;0script/tools/metadata.R&quot;)
+metadata &lt;- read_input_table(&quot;0script/source_metadata.tsv&quot;)
+column_map &lt;- c(sample_id = &quot;Library&quot;, timepoint = &quot;Treatment&quot;, replicate = &quot;BioRep&quot;)
+stopifnot(all(unname(column_map) %in% names(metadata)))
+names(metadata)[match(unname(column_map), names(metadata))] &lt;- names(column_map)
+write_generated_table(metadata, &quot;0script/samples.tsv&quot;)
+</code></pre>
+<pre><code class="language-bash"># 目的：在项目根目录的 Bash 查看转换后的正式/候选表，不再次生成文件。
+# for 依次列出明确路径；test -f 只查看存在的表；head -n 10 含表头最多显示 10 行。
+for preview_file in 0script/samples.tsv 0script/samples.generated.tsv; do
+  if test -f &quot;$preview_file&quot;; then
+    printf '\n文件：%s\n' &quot;$preview_file&quot;
+    head -n 10 &quot;$preview_file&quot;
+  fi
+done
+</code></pre>
+<p>两个文件同时存在时，后续仍读正式 <code>samples.tsv</code>；候选需要核实后明确采用，不能用旧正式表的正确格式来证明新候选已生效。</p>
+<p>一个样本的多个测序 lane 不等于多个生物学重复。先依据 BioSample/建库记录确认身份，再合并同一样本、同一端的技术运行；下载清单与样本表需保留这种对应关系。当前输入接口拒绝重复样本 ID，不默默增加重复数。</p>
+<h2>4. 自动生成比较，也允许任意自定义比较</h2>
+<p>正式比较表为 <code>0script/contrasts.tsv</code>，候选为 <code>0script/contrasts.generated.tsv</code>。<code>test_group</code> 是实验组，<code>reference_group</code> 是参照组。正 log2FC 表示前者相对后者更高。最小自定义比较表只有这两列；代码在内存补齐 ID、类型和启用标志。</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_group</code>, <code>reference_group</code></td>
+<td>必需；必须出现在样本表、两者不同，同一有向比较不能重复</td>
+</tr>
+<tr>
+<td><code>contrast_id</code></td>
+<td>可选；缺省为 <code>test_group_vs_reference_group</code>，自定 ID 必须唯一</td>
+</tr>
+<tr>
+<td><code>comparison_type</code></td>
+<td>可选说明列；生成器使用 baseline/adjacent/baseline_and_adjacent，自定义为 custom。旧案例的 first/first_and_adjacent 为历史标签，不改变 test/reference 方向，无需为改文档重写旧表</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td>可选，缺省 TRUE；FALSE 保留记录但不执行</td>
+</tr>
+<tr>
+<td>其他列</td>
+<td>允许保留；不影响比较方向</td>
+</tr>
+</tbody>
+</table>
+<p>在项目根目录运行：</p>
+<pre><code class="language-bash"># 目的：复用规范输入接口核对样本/矩阵，并按需要生成比较候选；下面四种命令按目的选用，不是必须全部连续运行。
+# conda run -n rnaseq Rscript：在已有主环境执行 R 入口；--check-only 只核对、不写候选。
+# --strategy baseline：各组对 --reference 指定的真实参照组；adjacent：按真实小时生成相邻比较；baseline_and_adjacent 合并去重。
+# Control 仅是示例组名，必须改成自己 samples.tsv 已有的对照组；无真实时间时不能用 adjacent。任意额外比较可直接按规范写 contrasts.tsv。
+# 已有正式表只产生 .generated.tsv 候选，不覆盖；核实后自行采用。该工具不下载材料，也不把样本顺序猜作实验条件。
+
+conda run -n rnaseq Rscript 0script/tools/prepare_inputs.R --check-only
+conda run -n rnaseq Rscript 0script/tools/prepare_inputs.R \
+  --strategy baseline --reference Control
+conda run -n rnaseq Rscript 0script/tools/prepare_inputs.R --strategy adjacent
+conda run -n rnaseq Rscript 0script/tools/prepare_inputs.R \
+  --strategy baseline_and_adjacent --reference Control
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>prepare_inputs.R</code> 选项</th>
+<th>默认值、其他取值及含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--samples 文件</code></td>
+<td>默认 <code>0script/samples.tsv</code>；可指定其他规范 CSV/TSV。导入到固定正式位置或 <code>.generated.tsv</code> 候选；不会修改源表</td>
+</tr>
+<tr>
+<td><code>--entry fastq</code> / <code>--entry matrix</code></td>
+<td>省略读 <code>DATA_ENTRY</code>；fastq 要求配对文件，matrix 检查矩阵所需字段。不是选择物种</td>
+</tr>
+<tr>
+<td><code>--strategy baseline</code></td>
+<td>默认策略；每个非参照组与 <code>--reference</code> 的组比较，需明确参照，不要求时间</td>
+</tr>
+<tr>
+<td><code>--strategy adjacent</code></td>
+<td>按真实小时从早到晚比较相邻组；较晚为 test，较早为 reference，忽略单一参照设置</td>
+</tr>
+<tr>
+<td><code>--strategy baseline_and_adjacent</code></td>
+<td>合并上两类并去掉同方向重复，需参照与真实时间；不做所有两两比较</td>
+</tr>
+<tr>
+<td><code>--reference 组名</code></td>
+<td>默认空；baseline 类生成必须填写表中真实组名，正 log2FC 表示 test 比该参照高</td>
+</tr>
+<tr>
+<td><code>--matrix 文件</code></td>
+<td>默认空；仅 <code>--check-only</code> 分支使用，明确检查这一张矩阵。重复提供只采用最后一个，不是累加；省略时 matrix 入口检查配置中已存在的矩阵</td>
+</tr>
+<tr>
+<td><code>--check-only</code></td>
+<td>不写出该开关时是生成操作；写出时只读核对，不生成样本/比较候选，生成策略也不会执行。不在后面填 TRUE/FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>生成操作的关键输出是 <code>0script/contrasts.tsv</code> 或 <code>0script/contrasts.generated.tsv</code>。如果导入不同样本表后先产生 <code>samples.generated.tsv</code>，程序会提示先核实样本并退出，不同时拿候选样本生成正式比较。只检查模式没有新表可预览。</p>
+<pre><code class="language-bash"># 目的：生成操作之后查看比较表；不是为 --check-only 伪造输出。
+# test -f 筛选已存在的正式/候选表，printf 标出实际文件，head -n 10 显示表头和少量比较。
+for preview_file in 0script/contrasts.tsv 0script/contrasts.generated.tsv; do
+  if test -f &quot;$preview_file&quot;; then
+    printf '\n文件：%s\n' &quot;$preview_file&quot;
+    head -n 10 &quot;$preview_file&quot;
+  fi
+done
+</code></pre>
+<p>以上三种生成策略任选其一。也可直接编辑正式表指定任意组比较。普通分组的基准比较不需要 <code>time_hour</code>，但必须明确参照组；不会把第一行当作对照。相邻时期按真实小时升序排列，较晚时期为 test，紧邻的较早时期为 reference，例如 <code>T4_vs_T0</code>、<code>T8_vs_T4</code>。遇到缺时间或多个组同时占据同一小时会停止，不自行解释多处理轨迹。</p>
+<p>正式表不存在时直接生成；已经存在时只生成 <code>*.generated.tsv</code> 候选。候选不会自动替换人工修改的正式表，且不同内容的旧候选也不会被覆盖。核对后若决定采用，把候选内容明确保存到对应正式文件（比较表为 <code>0script/contrasts.tsv</code>）；不要只编辑候选后误以为已经生效。完成输入检查不表示已经通过生物学设计审查。</p>
+<h2>5. 矩阵的身份和尺度</h2>
+<p>第一列为非空、唯一的基因 ID，其余每列对应一个 <code>sample_id</code>。必须是有限非负数，不能有重复列、缺样本、额外样本或全零样本。代码先核对样本集合再按名称重排，不能仅按列位置拼表。技术编号列按文本保留。</p>
+<p><code>prepare_inputs.R --entry matrix --check-only</code> 检查入口中已经存在的矩阵；也可用 <code>--matrix 路径</code> 指定一张矩阵。没有矩阵时会停止，而不是声称材料已经齐全。检查不能仅凭数字分辨 counts 与 TPM，仍需核对生成来源；没有比较表时会明确提醒，差异分析前必须补齐。</p>
+<table>
+<thead>
+<tr>
+<th>入口变量</th>
+<th>默认文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUNT_MATRIX</code></td>
+<td><code>3Salmon/quanti/gene.counts.matrix</code></td>
+<td>DESeq2 计数输入；允许 Salmon estimated counts，原 Trinity 路线内部取整</td>
+</tr>
+<tr>
+<td><code>TPM_MATRIX</code></td>
+<td><code>3Salmon/quanti/gene.TPM.not_cross_norm</code></td>
+<td>时间分析及表达量解释</td>
+</tr>
+<tr>
+<td><code>TMM_MATRIX</code></td>
+<td><code>3Salmon/quanti/gene.TMM.EXPR.matrix</code></td>
+<td>样本关系和热图；不是 counts 的替代品</td>
+</tr>
+</tbody>
+</table>
+<p>表达矩阵采用何种基因 ID，必须与 GTF、OrgDb 和功能映射相符。列名变换不应改变行 ID；不要未经核对删除点号、版本或前缀。</p>
+<h2>6. 换物种时哪些设置要改</h2>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>需要确认的内容</th>
+<th>中间代码保持的部分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参考来源</td>
+<td>第 03 章直接填写完整下载链接并保留来源/组装/release 记录；自备文件记录提供方与版本</td>
+<td><code>genome.fa.gz</code>、<code>transcripts.fa.gz</code>、<code>annotation.gtf.gz</code>、<code>proteins.fa.gz</code> 统一文件名</td>
+</tr>
+<tr>
+<td>实验设计</td>
+<td><code>samples.tsv</code>、比较策略、第 04 章明确的 <code>reference_group</code></td>
+<td>样本循环、分组顺序和比较读取</td>
+</tr>
+<tr>
+<td>官方 GO</td>
+<td><code>ORGDB_PACKAGE</code> 与 <code>ORGDB_KEYTYPE</code></td>
+<td>enrichGO/gseGO 及绘图函数</td>
+</tr>
+<tr>
+<td>KEGG</td>
+<td><code>KEGG_ORGANISM</code>、<code>KEGG_KEYTYPE</code> 和实际基因 ID</td>
+<td>enrichKEGG/gseKEGG；不能把 ENSEMBL ID 当作 NCBI GeneID</td>
+</tr>
+<tr>
+<td>非模式支线</td>
+<td>第 18 章局部参数 <code>tax_id</code>、<code>annotation_tax_scope</code>、<code>annotation_excluded_taxa</code>、属种名与蛋白对应表（不放入 project.env）</td>
+<td>DIAMOND、gtftk、OrgDb 构建与后续统计方法</td>
+</tr>
+<tr>
+<td>时间分析</td>
+<td>真实小时、cycle_use、是否启用官方模块富集</td>
+<td>ClusterGVis 0.1.2/Mfuzz、MetaCycle 1.2.1</td>
+</tr>
+</tbody>
+</table>
+<p>人或小鼠参考从 Ensembl 的<a target="_blank" rel="noopener noreferrer" href="https://www.ensembl.org/info/data/ftp/index.html">FTP 下载说明</a>进入同一 release 的物种目录，不套用 Ensembl Plants 的地址。拟南芥、人和小鼠的 KEGG 物种代码与 Gene ID 命名空间是两回事；对应规则可核对 <a target="_blank" rel="noopener noreferrer" href="https://www.genome.jp/kegg/rest/keggapi.html">KEGG API 文档</a>。若表达矩阵使用 ENSEMBL 而 KEGG 需要 NCBI GeneID，必须先建立并审查映射，包括缺失及一对多处理；本项目不自动猜测映射，也不声称任意物种可以零配置运行富集。</p>
+<p><code>ORGDB_PACKAGE</code> 是已安装包的名字，<code>ORGDB_KEYTYPE</code> 是该包能识别的输入 ID 类型；不存在适用于所有物种的固定选择列表。常见 <code>TAIR</code>（拟南芥编号）、<code>ENSEMBL</code>（Ensembl 基因编号）、<code>ENTREZID</code>（NCBI GeneID）、<code>SYMBOL</code>（基因符号）只有在当前包支持且匹配当前矩阵 ID 时才能选，符号还需注意非唯一。下面列出本项目所选包<strong>实际</strong>支持的完整列表，不转换任何 ID。</p>
+<pre><code class="language-r"># 目的：只读核对当前官方注释包允许哪些 ID 类型，不下载、不做富集、不转换基因名。
+# readRenviron 读取当前配置；annotation_package 是 ORGDB_PACKAGE 的值，不是新配置参数。
+# asNamespace/get 获取已安装包的 OrgDb 对象；keytypes 返回该对象支持的类型；print 显示列表。
+# 未安装或未设置包时停止并提示；不能把包不存在解释成“这个物种没有基因”。
+readRenviron(&quot;0script/project.env&quot;)
+annotation_package &lt;- Sys.getenv(&quot;ORGDB_PACKAGE&quot;)
+stopifnot(nzchar(annotation_package))
+annotation_db &lt;- get(annotation_package, envir = asNamespace(annotation_package))
+print(AnnotationDbi::keytypes(annotation_db))
+</code></pre>
+<p><code>KEGG_KEYTYPE</code> 则是另一套接口，只能选 <code>kegg</code>（该物种的 KEGG 基因编号）、<code>ncbi-geneid</code>（NCBI GeneID）、<code>ncbi-proteinid</code>（NCBI 蛋白编号）、<code>uniprot</code>（UniProt 编号）。它不是任意 OrgDb keyType 的别名；映射必须真实可用。<code>KEGG_ORGANISM</code> 如 <code>ath/hsa/mmu</code> 分别对应拟南芥/人/小鼠，仅是物种例子，不自动转换 ID。暂不做 KEGG，在相应章将 <code>include_kegg &lt;- FALSE</code>，不用伪填配置。</p>
+<p>第 16 章局部参数 <code>include_module_enrichment &lt;- FALSE</code> 时，第 16 章仍使用同一 Mfuzz 方法聚类，不要求官方 OrgDb，也不会输出“无显著富集”的假结论；以后可用第 19 章的自建注释解释原聚类对象。两条注释路线分开保存。</p>
+<h2>7. 改参数后的结果与后续来源</h2>
+<p>新结果以整套目录保存 PNG/PDF、对应表、统计对象及 <code>result_manifest.json</code>。Top 数量、显著性阈值、聚类数等常用参数进入路径；各函数显式登记的参数和输入摘要写入清单；个别外部状态（例如第 12 章的随机种子）需按该章说明另设变体目录。旧图维持原名，不追补猜测的参数。</p>
+<p>相同输入/参数且原文件未改变时可复用完整结果。目录没有清单、参数冲突、缺文件或上次未完成时拒绝覆盖。修改字号、画布等未进路径的参数，用调用前的 <code>variant_label=&quot;larger_font&quot;</code> 另存；不会因为少画一种样式而清理旧图。中断任务留下 incomplete 清单，需要先检查失败原因，再明确另存或处理该次不完整目录。</p>
+<p>文件搬家本身不改变结果身份：新清单按输入角色和文件内容 SHA256 比较，原路径仅作为来源记录保留。对已有旧格式清单，只在能证明原参数、输入内容和所有登记输出一致时兼容复用，不改写旧记录；空清单、未知格式或无法证明一致时仍停止。未登记的额外文件会原样保留，但不属于该清单的完整性保证。没有清单的历史案例结果仍可查看，不追补猜测的来源，也不因搬家就允许覆盖。</p>
+<p><code>begin_result_stage()</code> 用于顶层执行单元；复用时发出 <code>rnaseq_result_reused</code> 条件，中止该单元。章节命令入口把它记录为正常复用。交互式 R 中见到该提示后不再继续粘贴本单元后续写图代码，可读取已保存对象。普通函数内部直接返回复用结果，不退出 R。</p>
+<p>后续只读取入口明确选定的来源，不搜索“最新”目录，也不回退到另一个项目：</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>指向什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DE_ANALYSIS_DIR</code></td>
+<td>本次要汇总的 Trinity/DESeq2 原始结果目录</td>
+</tr>
+<tr>
+<td><code>DE_RESULT_FILE</code></td>
+<td>下游共享的合并差异结果 TSV</td>
+</tr>
+<tr>
+<td><code>ORA_RESULT_ROOT</code>, <code>GSEA_RESULT_ROOT</code></td>
+<td>重绘所采用的富集根目录；新结果要包括 fdr/基因集/Top 参数层</td>
+</tr>
+<tr>
+<td><code>TIME_INPUT_FILE</code></td>
+<td>第 16 章采用的 log2 聚类输入</td>
+</tr>
+<tr>
+<td><code>TIME_RESULT_ROOT</code>, <code>TIME_VARIANT_DIR</code></td>
+<td>已有聚类的根目录和参数组合下的末级参数目录；旧结果末级值为空</td>
+</tr>
+<tr>
+<td><code>JTK_INPUT_DIR</code>, <code>JTK_RESULT_ROOT</code></td>
+<td>第 17 章实际采用的输入目录和统计结果目录</td>
+</tr>
+</tbody>
+</table>
+<p>例如重做第 10 章阈值汇总后，把 <code>DE_RESULT_FILE</code> 一次改为输出目录中的 <code>de_result.tsv</code>，后续章节都会读取它。时间或富集结果也采用同一原则。不要修改参数后仍把旧图描述成新参数的结果。</p>
+<p>统一准备状态以<a href="04.5%20%E5%88%86%E6%9E%90%E5%89%8D%E5%87%86%E5%A4%87%E6%A3%80%E6%9F%A5.html">第 04.5 章</a>按所选范围给出的报告为准。<code>prepare_inputs.R --check-only</code> 是较窄的表格诊断，不替代完整参考、软件和压缩检查。</p>
+<h2>8. 整体迁移时保留什么</h2>
+<p>复制整个项目集合，保留 <code>projects/项目名/0script</code>、<code>resources</code>、<code>web</code> 的原有相对层级。项目集合的外层名称和磁盘位置可以改变；手工运行章节仍需先进入能看见 <code>0script</code> 的项目根目录。脚本在运行时解析出的绝对路径是正常定位，不需要逐行手改。</p>
+<p>环境恢复见<a href="01%20%E5%AE%89%E8%A3%85Conda%E5%8F%8A%E5%88%86%E6%9E%90%E8%BD%AF%E4%BB%B6.html">第 01 章</a>；共用的 <code>resources/software</code> 和 <code>resources/eggnog</code> 要随集合携带，或者在保持明确来源的前提下按各自文档准备。日志中的旧机器路径属于历史记录，保留即可，不用全局替换。自己额外填写的绝对输入路径则需在迁移后重新确认；优先使用项目内相对路径。</p>
+<p>迁移后重做第 04.5 章的准备检查。它的压缩校验缓存绑定路径及文件身份，搬家后可能失效并重新校验，这是保护机制，不应为节省时间强行沿用旧缓存。结果复用检查与准备缓存用途不同：前者核对结果能否复用，后者核对当前输入是否准备妥当。</p>
+</main></body></html>

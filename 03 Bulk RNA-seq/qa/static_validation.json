@@ -1,0 +1,21 @@
+{
+  "pass": true,
+  "stations": 16,
+  "chapters": 20,
+  "figures": 23,
+  "new_illustrations": 14,
+  "guide_sections": 149,
+  "markdown": 27,
+  "implementation_scripts": 53,
+  "tools": 10,
+  "source_records": 148,
+  "html_pages": 96,
+  "local_references_checked": 2810,
+  "optional_online_references": 63,
+  "de_counts": {
+    "up": 1087,
+    "down": 826,
+    "ns": 13399
+  },
+  "errors": []
+}

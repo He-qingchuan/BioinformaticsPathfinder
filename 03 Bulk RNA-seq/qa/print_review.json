@@ -1,0 +1,88 @@
+{
+  "pass": true,
+  "checked_utc": "2026-09-16T03:10:22.040628+00:00",
+  "paper": "A4",
+  "pages": 188,
+  "figure_summaries": 23,
+  "full_guide_sections": 149,
+  "illustration_summaries": 14,
+  "illustration_explanations": 28,
+  "existing_concept_notes": 21,
+  "quiz_explanations": 16,
+  "glossary_chinese_names": 178,
+  "glossary_english_names": 178,
+  "glossary_explanations": 712,
+  "errors": [],
+  "figure_summary_pages": {
+    "qc_quality_before": [
+      14
+    ],
+    "qc_adapter_before": [
+      15
+    ],
+    "qc_quality_after": [
+      22
+    ],
+    "qc_adapter_after": [
+      20
+    ],
+    "retention": [
+      23
+    ],
+    "matrix_total": [
+      33
+    ],
+    "pca": [
+      39
+    ],
+    "correlation": [
+      37
+    ],
+    "venn": [
+      48
+    ],
+    "upset": [
+      50
+    ],
+    "volcano_classic": [
+      54
+    ],
+    "volcano_enhanced": [
+      56
+    ],
+    "heatmap": [
+      58
+    ],
+    "ora_go": [
+      64
+    ],
+    "ora_kegg": [
+      66
+    ],
+    "gsea_curve": [
+      72
+    ],
+    "gsea_dot": [
+      73
+    ],
+    "trend_lines": [
+      77
+    ],
+    "trend_heat": [
+      80
+    ],
+    "jtk": [
+      86
+    ],
+    "coverage": [
+      91
+    ],
+    "nonmodel_ora": [
+      93
+    ],
+    "nonmodel_gsea": [
+      95
+    ]
+  },
+  "method": "pdftotext -raw, NFKC and whitespace normalization. Full paragraph matches; visual layout reviewed separately."
+}

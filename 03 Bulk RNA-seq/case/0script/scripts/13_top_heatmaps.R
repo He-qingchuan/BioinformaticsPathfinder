@@ -1,0 +1,234 @@
+# 文件用途｜第 13 章：批量保存详细与概览 Top 基因热图的多种样式。
+# 运行位置：能看见 0script 的项目根目录。R 函数库通过 source 加载定义及共用依赖；调用函数才执行本文件
+#   对应的分析/写出。
+# 改参方式：在同编号 MD 的参数入口赋值，再执行下面的具名调用；函数默认值只在该形参未传入时使用。编辑文
+#   件不会刷新内存中的旧函数/旧变量，需重新 source/赋值。
+# 接口说明：每个函数前列出用途、形参和输出；嵌套函数读取的外层变量属于闭包，不能误当成漏传的独立参数。
+# 共用语法：source 载入脚本；readRenviron 读取配置；Sys.getenv 取文本，as.numeric/as.integer 转数值；
+#   local=TRUE 表示定义放在当前调用环境。
+# 表格/图形约定：write.table 的 sep="\t" 用 TSV、quote=FALSE 不另加引号、row.names=FALSE 不写 R 行号；
+#   check.names=FALSE 保留原 ID。ggsave 的图幅按英寸，dpi 主要控制 PNG。
+
+source("0script/tools/metadata.R", local = TRUE)
+source("0script/tools/outputs.R", local = TRUE)
+
+# 原有核心函数：只处理明确传入的数据/参数；不读取案例全局变量。
+# 接口｜plot_top_gene_pheatmap：为一个比较选择 Top 基因并绘制行标准化热图。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# contrast_id（必填，无默认值）：一个比较 ID 字符串；按它精确选取传入数据或对应保存目录。此标识不按下
+#   划线拆分组名，输入来源以本函数说明为准。
+# top_num（必填，无默认值）：正整数；按绝对 log2FC、padj、基因 ID 依次排序后取前 N 个有有效检验值的基
+#   因，再核对表达矩阵。不是先取 N 个显著基因，不能把入图等同显著。
+# show_values（必填，无默认值）：TRUE/FALSE；是否在热图格子中标出标准化后的数值，不是原始 counts。
+# show_rownames（必填，无默认值）：TRUE/FALSE；是否展示基因行名，基因较多时可关闭但不删除任何入图行。
+# annotate（默认 TRUE）：TRUE/FALSE；是否在热图上显示样本分组注释条，分组来自样本表。
+# group_gaps（默认 FALSE）：TRUE/FALSE；是否按分组边界留出列间隔，只改变排版，不改变样本归属。
+# palette（默认 "blue_orange"）：单个字符配色名；blue_orange 或 red_blue。作用于按行标准化的颜色显示，
+#   不改变表达量或基因排序。
+# sample_scope（默认 "all"）：字符值 all 或 comparison；前者使用全部样本，后者仅本比较两组。选样本发生
+#   在行 Z-score 前，因此会改变标准化的参照范围。
+# style_name（默认 "labels"）：字符样式名称；用于区分输出文件，不是新的统计模型。应与本次开关组合的含
+#   义一致。
+# de_result（必填，无默认值）：差异结果 data.frame；必需 gene_id、contrast_id、log2FoldChange、pvalue
+#   、padj；sample_scope=comparison 时还读取 sampleA/sampleB 确定两组。按有限效应量/pvalue 取基因，再用
+#   padj 辅助稳定排序，不先筛显著。
+# gene_exp（必填，无默认值）：基因为行、样本为列的表达 data.frame/矩阵；行列名必须与 gene_id、
+#   sample_id 精确对应，热图函数再进行 log2 和行标准化。
+# samples（必填，无默认值）：标准化样本 data.frame；一行一个样本，含 sample_id、timepoint/group、
+#   replicate，时间分析还用 time_hour/cycle_use。通常由 read_samples() 生成。
+# group_colors（必填，无默认值）：带分组名称的颜色向量；名称须覆盖样本中的各组，以名称匹配而非按碰巧的
+#   颜色顺序。
+# output_root（默认 "8topgene_pheatmap"）：字符路径；本步骤输出根目录，函数再按比较/参数建立子目录。通
+#   常沿用；试算可选新目录，但后续读取位置不会自动更新。
+# plot_width（默认 12）：正数，单位英寸；输出图宽。增大可缓解标签拥挤，不改变统计筛选。
+# fontsize（默认 8）：正数；pheatmap 的基础字号，默认 8。图内文字多时调小或同时增大图幅，不影响数据。
+# variant_label（默认 ""）：字符标签；空字符串为默认路径。给次要排版或另一方案另存时用 large_font 等简
+#   短标签，仅允许字母数字及 . _ -，首位为字母数字；不能放路径或空格。
+# 返回/写出与边界：保存入图名单、零方差剔除记录及图片；所选样本决定 Z-score 的参照范围，不把热图色值当
+#   原始表达量。
+plot_top_gene_pheatmap <- function(contrast_id, top_num, show_values, show_rownames,
+                                   annotate = TRUE, group_gaps = FALSE,
+                                   palette = "blue_orange", sample_scope = "all", style_name = "labels",
+                                   de_result, gene_exp, samples, group_colors,
+                                   output_root = "8topgene_pheatmap", plot_width = 12, fontsize = 8,
+                                   variant_label = "") {
+  stopifnot(length(top_num) == 1, is.finite(top_num), top_num >= 1, top_num == floor(top_num),
+            palette %in% c("blue_orange", "red_blue"), sample_scope %in% c("all", "comparison"),
+            plot_width > 0, fontsize > 0, !anyDuplicated(samples$sample_id),
+            all(samples$sample_id %in% colnames(gene_exp)))
+  # 1. 排名基于有限检验结果，不预先把 Top 等同于显著基因。
+  current <- de_result[de_result$contrast_id == contrast_id, , drop = FALSE]
+  current <- current[is.finite(current$log2FoldChange) & is.finite(current$pvalue), , drop = FALSE]
+  current <- current[order(-abs(current$log2FoldChange), current$padj, current$gene_id), , drop = FALSE]
+  current <- current[current$gene_id %in% rownames(gene_exp), , drop = FALSE]
+  selected <- head(current, top_num)
+  output_dir <- file.path(output_root, contrast_id, paste0("top", top_num), sample_scope,
+    paste(style_name, palette, sep = "_"))
+  claim <- claim_result_dir(output_dir,
+    parameters = list(top_num = top_num, sample_scope = sample_scope, style_name = style_name,
+      palette = palette, show_values = show_values, show_rownames = show_rownames,
+      annotate = annotate, group_gaps = group_gaps, plot_width = plot_width, fontsize = fontsize,
+      function_code_sha256 = result_digest(body(plot_top_gene_pheatmap))),
+    inputs = list(de_result = current, expression = gene_exp, samples = samples, colors = group_colors),
+    variant_label = variant_label)
+  if (claim$reuse) return(invisible(claim$path))
+  output_dir <- claim$path
+  if (!nrow(selected)) {
+    writeLines("没有可选择的有限表达差异结果。", file.path(output_dir, "NO_GENES.txt"))
+    finish_result_dir(claim)
+    return(invisible(NULL))
+  }
+  plot_samples <- if (sample_scope == "all") samples else samples[samples$timepoint %in% c(current$sampleA[1], current$sampleB[1]), , drop = FALSE]
+  # 2. 选择样本后再行标准化；零方差基因单独记录，不能将 NA 强行改零画图。
+  input <- log2(as.matrix(gene_exp[selected$gene_id, plot_samples$sample_id, drop = FALSE]) + 1)
+  variable <- apply(input, 1, sd) > 0
+  write.table(selected[!variable, , drop = FALSE], file.path(output_dir, "zero_variance_omitted.tsv"),
+              sep = "\t", quote = FALSE, row.names = FALSE)
+  selected <- selected[variable, , drop = FALSE]
+  input <- input[variable, , drop = FALSE]
+  if (!nrow(input)) {
+    writeLines("所选基因在当前样本范围内均为零方差，不能绘制行 Z-score。", file.path(output_dir, "NO_GENES.txt"))
+    finish_result_dir(claim)
+    return(invisible(NULL))
+  }
+  z <- t(scale(t(input)))
+  stopifnot(all(is.finite(z)))
+  annotation <- data.frame(group = plot_samples$timepoint, row.names = plot_samples$sample_id)
+  # 3. 留白按实际组边界计算，适用于不同重复数，不固定写 3、6、9。
+  gaps <- if (group_gaps) head(cumsum(rle(as.character(plot_samples$timepoint))$lengths), -1) else NULL
+  colors <- if (palette == "blue_orange") colorRampPalette(c("#2166AC", "#F7F7F7", "#B35806"))(101) else colorRampPalette(rev(brewer.pal(11, "RdBu")))(101)
+  bound <- max(abs(z))
+  stem <- paste(style_name, palette, sep = "_")
+  write.table(selected, file.path(output_dir, "selected_genes.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(cbind(gene_id = rownames(z), z), file.path(output_dir, "row_zscore.tsv"),
+              sep = "\t", quote = FALSE, row.names = FALSE)
+  for (extension in c("pdf", "png")) {
+    pheatmap(z, scale = "none", color = colors, breaks = seq(-bound, bound, length.out = 102),
+             cluster_rows = nrow(z) > 1, cluster_cols = FALSE,
+             annotation_col = if (annotate) annotation else NA,
+             annotation_colors = list(group = group_colors),
+             annotation_names_col = TRUE, gaps_col = gaps, border_color = NA,
+             show_rownames = show_rownames, display_numbers = show_values, number_format = "%.1f",
+             fontsize = fontsize, fontsize_number = 5, angle_col = 45,
+             main = paste(contrast_id, "|log2FC| ranking; row Z-score"),
+             filename = file.path(output_dir, paste0(stem, ".", extension)), width = plot_width,
+             height = if (show_rownames) max(8, min(16, nrow(z) * 0.22)) else 9)
+  }
+  finish_result_dir(claim)
+}
+
+# 接口｜run_top_heatmaps：批量保存详细与概览 Top 基因热图的多种样式。
+# 参数（默认值以本函数签名为准；明确传参会覆盖默认值）：
+# comparison_ids（默认 NULL）：字符向量或 NULL；NULL 读取比较表中的全部启用比较，指定 ID 则只处理这些
+#   比较。ID 必须与 contrasts.tsv 和差异表一致，不从文件名猜组名。
+# top_num（默认 30）：正整数；按绝对 log2FC、padj、基因 ID 依次排序后取前 N 个有有效检验值的基因，再核
+#   对表达矩阵。不是先取 N 个显著基因，不能把入图等同显著。
+# overview_top_nums（默认 c(100, 300)）：正整数向量；概览热图的多个 Top 基因数量，如 c(100,300) 各出一
+#   套。选择依据与 top_num 相同，不改变 DESeq2 结果。
+# palettes（默认 c("blue_orange", "red_blue")）：字符向量；blue_orange 和 red_blue 两种热图配色，可同
+#   时保留，只改变颜色。
+# plot_width（默认 12）：正数，单位英寸；输出图宽。增大可缓解标签拥挤，不改变统计筛选。
+# fontsize（默认 8）：正数；pheatmap 的基础字号，默认 8。图内文字多时调小或同时增大图幅，不影响数据。
+# output_root（默认 "8topgene_pheatmap"）：字符路径；本步骤输出根目录，函数再按比较/参数建立子目录。通
+#   常沿用；试算可选新目录，但后续读取位置不会自动更新。
+# variant_label（默认 ""）：字符标签；空字符串为默认路径。给次要排版或另一方案另存时用 large_font 等简
+#   短标签，仅允许字母数字及 . _ -，首位为字母数字；不能放路径或空格。
+# 返回/写出与边界：在 output_root 下按比较和样式保存文件；保留标签、数值与配色选择，不重新检验差异。
+run_top_heatmaps <- function(comparison_ids = NULL,
+  top_num = 30,
+  overview_top_nums = c(100, 300),
+  palettes = c("blue_orange", "red_blue"),
+  plot_width = 12,
+  fontsize = 8,
+  output_root = "8topgene_pheatmap",
+  variant_label = "") {
+  source("0script/tools/metadata.R", local = TRUE)
+  source("0script/tools/outputs.R", local = TRUE)
+  if (file.exists("0script/project.env")) readRenviron("0script/project.env")
+  # 功能：读取已完成的差异结果和 TMM 表达矩阵，统一样本顺序及组别颜色。
+  # 不重做差异检验；样本身份从样本表读取，不拆解样本名称。
+  library(tidyverse)
+  library(pheatmap)
+  library(RColorBrewer)
+  readRenviron("0script/project.env")
+  # 基因 ID 按文本保留，包括 NCBI 数字 ID；其余统计列仍正常读为数值。
+  de_result <- read.delim(project_result("DE_RESULT_FILE", "5DESeq2/de_result.tsv"),
+    check.names = FALSE, colClasses = c(gene_id = "character", contrast_id = "character"))
+  gene_exp <- as.data.frame(read_expression(project_result("TMM_MATRIX", "3Salmon/quanti/gene.TMM.EXPR.matrix"), read_samples()), check.names = FALSE)
+  samples <- read_samples()
+  group_design <- unique(samples[c("timepoint", "time_hour")])
+  stopifnot(!anyDuplicated(group_design$timepoint))
+  if (all(is.finite(group_design$time_hour))) group_design <- group_design[order(group_design$time_hour), , drop = FALSE]
+  group_colors <- setNames(scales::hue_pal()(nrow(group_design)), group_design$timepoint)
+  samples <- samples[order(match(samples$timepoint, group_design$timepoint), samples$replicate), , drop = FALSE]
+  contrasts <- read_contrasts() |>
+    filter(toupper(as.character(enabled)) == "TRUE")
+  stopifnot(nrow(contrasts) > 0)
+
+  if (is.null(comparison_ids)) comparison_ids <- contrasts$contrast_id
+
+  # 功能：给一个比较按 |log2FC| 选 Top 基因，画样本表达的行 Z-score 热图。
+  # 数据对象显式传入，不依赖函数外恰好存在的同名矩阵。
+  # show_values 是 Z-score 数值开关；sample_scope 取 all 或 comparison。
+  # 输出包含 selected_genes.tsv、row_zscore.tsv 和指定样式的 PDF/PNG。
+
+
+  # 功能：逐比较、逐配色保存原有样式集。Top 数量、比较与配色都取自入口。
+  # 每种调用明确写出是否显示数值/基因名，避免使用难辨认的位置参数。
+  stopifnot(all(comparison_ids %in% contrasts$contrast_id))
+  for (id in comparison_ids) {
+    for (palette in palettes) {
+      # 每次调用是一种明确样式；TRUE/FALSE 对应具名参数，不把开关藏进风格判断。
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = FALSE, show_rownames = TRUE,
+        annotate = TRUE, group_gaps = FALSE, palette = palette,
+        sample_scope = "all", style_name = "labels",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = TRUE, show_rownames = TRUE,
+        annotate = TRUE, group_gaps = FALSE, palette = palette,
+        sample_scope = "all", style_name = "numbers",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = FALSE, show_rownames = FALSE,
+        annotate = TRUE, group_gaps = FALSE, palette = palette,
+        sample_scope = "all", style_name = "clean",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = FALSE, show_rownames = TRUE,
+        annotate = FALSE, group_gaps = FALSE, palette = palette,
+        sample_scope = "all", style_name = "plain",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = FALSE, show_rownames = TRUE,
+        annotate = TRUE, group_gaps = TRUE, palette = palette,
+        sample_scope = "all", style_name = "group_gaps",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      plot_top_gene_pheatmap(contrast_id = id, top_num = top_num,
+        show_values = FALSE, show_rownames = TRUE,
+        annotate = TRUE, group_gaps = TRUE, palette = palette,
+        sample_scope = "comparison", style_name = "labels",
+        de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+        output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      # 概览仍保留有分组留白和无样本注释两类。
+      for (n in overview_top_nums) {
+        plot_top_gene_pheatmap(contrast_id = id, top_num = n,
+          show_values = FALSE, show_rownames = FALSE, annotate = TRUE, group_gaps = TRUE,
+          palette = palette, style_name = "overview_groups",
+          de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+          output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+        plot_top_gene_pheatmap(contrast_id = id, top_num = n,
+          show_values = FALSE, show_rownames = FALSE, annotate = FALSE, group_gaps = FALSE,
+          palette = palette, style_name = "overview_plain",
+          de_result = de_result, gene_exp = gene_exp, samples = samples, group_colors = group_colors,
+          output_root = output_root, plot_width = plot_width, fontsize = fontsize, variant_label = variant_label)
+      }
+    }
+  }
+  invisible(list(output_root = output_root))
+}

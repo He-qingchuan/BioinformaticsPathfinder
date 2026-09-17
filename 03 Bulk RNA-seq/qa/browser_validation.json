@@ -1,0 +1,190 @@
+{
+  "stations": [
+    {
+      "id": "start",
+      "text": 1809,
+      "figures": 0,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 0,
+      "illustrations": 0
+    },
+    {
+      "id": "prepare",
+      "text": 1815,
+      "figures": 0,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 0,
+      "illustrations": 0
+    },
+    {
+      "id": "sample",
+      "text": 1885,
+      "figures": 0,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 0,
+      "illustrations": 1
+    },
+    {
+      "id": "qc",
+      "text": 4226,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 12,
+      "illustrations": 1
+    },
+    {
+      "id": "filter",
+      "text": 4842,
+      "figures": 3,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 18,
+      "illustrations": 1
+    },
+    {
+      "id": "quant",
+      "text": 2139,
+      "figures": 0,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 0,
+      "illustrations": 1
+    },
+    {
+      "id": "matrix",
+      "text": 3486,
+      "figures": 1,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 6,
+      "illustrations": 1
+    },
+    {
+      "id": "pca",
+      "text": 3577,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 12,
+      "illustrations": 1
+    },
+    {
+      "id": "de",
+      "text": 2452,
+      "figures": 0,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 0,
+      "illustrations": 1
+    },
+    {
+      "id": "sets",
+      "text": 3516,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 12,
+      "illustrations": 1
+    },
+    {
+      "id": "plots",
+      "text": 5441,
+      "figures": 3,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 20,
+      "illustrations": 1
+    },
+    {
+      "id": "ora",
+      "text": 4511,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 13,
+      "illustrations": 1
+    },
+    {
+      "id": "gsea",
+      "text": 4603,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 14,
+      "illustrations": 1
+    },
+    {
+      "id": "trend",
+      "text": 4187,
+      "figures": 2,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 14,
+      "illustrations": 1
+    },
+    {
+      "id": "cycle",
+      "text": 3277,
+      "figures": 1,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 7,
+      "illustrations": 1
+    },
+    {
+      "id": "nonmodel",
+      "text": 6167,
+      "figures": 3,
+      "unexpanded": false,
+      "overflow": false,
+      "guides": 21,
+      "illustrations": 1
+    }
+  ],
+  "reports": [
+    {
+      "report": "case/2data/rawdata/qc/ZT4_rep_1_1_fastqc.html",
+      "offline": true
+    },
+    {
+      "report": "case/2data/cleandata/qc/ZT4_rep_1_clean_1_fastqc.html",
+      "offline": true
+    },
+    {
+      "report": "case/2data/cleandata/fastp/ZT4_rep_1.fp.html",
+      "offline": true
+    }
+  ],
+  "screens": [
+    {
+      "width": 390,
+      "height": 844,
+      "pass": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "pass": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "pass": true
+    }
+  ],
+  "checks": [
+    "16 个站点、23 张图全部离线打开",
+    "真实阈值计数、基因查询、方向交换、自测解析、刷新恢复进度",
+    "课程全屏、组成与排序实验、图片标注、嵌套窗口 Esc 与键盘焦点",
+    "FastQC 与 fastp 原报告离线绘图、本地 MD 网页及原文下载入口",
+    "禁用 JavaScript 时全文可读，打印自测解析可见",
+    "完整复制到含空格的新目录并改名后，课程、图片与资料馆可读"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "pass": true
+}
