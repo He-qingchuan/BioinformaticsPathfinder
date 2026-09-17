@@ -1,0 +1,9 @@
+n_A n_B 
+ 24  24 
+              mean_A               mean_B difference_B_minus_A 
+               2.214                3.093                0.878 
+[1] 0.386 1.370
+attr(,"conf.level")
+[1] 0.95
+[1] 0.0008018
+[1] "Welch Two Sample t-test"

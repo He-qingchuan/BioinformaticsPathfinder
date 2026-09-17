@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+qa/artifacts/
+dist/
+practice/r-lab/results/*
+!practice/r-lab/results/README.md
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/

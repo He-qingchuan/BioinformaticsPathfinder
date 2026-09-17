@@ -1,0 +1,8 @@
+[1] afternoon morning   morning  
+Levels: morning afternoon
+period
+  morning afternoon 
+        2         1 
+[1] "morning"   "afternoon"
+[1] 1 2 1
+[1] 10 20 10

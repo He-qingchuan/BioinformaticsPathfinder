@@ -1,0 +1,4 @@
+       trial_rows independent_units 
+               48                48 
+observation_rows   distinct_sites 
+              43                3 

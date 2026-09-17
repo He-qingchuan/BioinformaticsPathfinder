@@ -1,0 +1,7 @@
+[1] 43  7
+  record_id site_id temperature_c
+1      O001     P01          28.0
+2      O002     P02          29.6
+3      O003     P03          27.0
+[1] TRUE
+[1] TRUE

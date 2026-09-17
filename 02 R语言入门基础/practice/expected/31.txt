@@ -1,0 +1,8 @@
+(Intercept)  canopy_pct 
+    35.4574     -0.0756 
+             2.5 %  97.5 %
+(Intercept) 34.651 36.2638
+canopy_pct  -0.092 -0.0591
+     fit   lwr    upr
+1 31.679 31.33 32.029
+[1] 0.76
