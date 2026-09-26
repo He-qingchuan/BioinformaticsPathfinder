@@ -104,7 +104,7 @@ def quiz(lesson):
 def page(title,body,base='',lesson=None,kind=''):
     ident=f' data-lesson="{lesson}"' if lesson else ''
     cats=''.join(f'<option>{E(c)}</option>' for c in dict.fromkeys(t['category'] for t in TERMS))
-    asset_version='?v='+E(COURSE['version'],quote=True)
+    asset_version='?project-v='+E(COURSE['version'],quote=True)
     atlas_style=f'<link rel="stylesheet" href="assets/atlas.css{asset_version}">' if kind=='home-page' else ''
     atlas_script=f'<script src="assets/atlas.js{asset_version}"></script>' if kind=='home-page' else ''
     return f'''<!doctype html>
