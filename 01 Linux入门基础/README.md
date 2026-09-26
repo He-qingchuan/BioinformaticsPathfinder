@@ -1,11 +1,19 @@
 # Linux 入门 · 观察站的工作台
 
+<!-- PROJECT RELEASE -->
+
+**项目统一版本：v1.0.0** · [版本说明](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/v1.0.0) · [本课程离线包](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v1.0.0/BioinformaticsPathfinder-v1.0.0-linux.zip)
+
+所有课程共享同一项目版本；分包名称中的课程名仅用于选择下载内容。
+
+<!-- /PROJECT RELEASE -->
+
 从第一条命令，到自己能解释的一份观察简报。独立的 Linux 入门教材，无需先学习 R、Python 或转录组。
 
 - [在线阅读](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)
 - [打开本地教材](index.html) · [连续阅读与打印](reading.html) · [代码与资料](library.html)
 - [下载练习材料](practice/linux-lab.zip)
-- [下载完整教材](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/linux-v1.1.0/linux-v1.1.0.zip)（联网）
+- [下载完整教材](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest)（联网）
 
 ## 怎样开始
 
@@ -45,6 +53,6 @@ python tools/package.py
 
 ## 版本与原资料
 
-本版本为 `linux-v1.1.0`，升级为动态探索地图。更新摘要见 [CHANGELOG.md](CHANGELOG.md)，验证范围见 [qa/README.md](qa/README.md)。首个完整教材仍可在 [v1.0.0](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/linux-v1.0.0) 下载。旧 Linux 教材保留在重构前的 Git 历史（`cbd3352`）；正文与案例在 v1.0.0 重新编写，不依赖旧教程或公众号阅读前提。
+当前使用项目统一版本，见页首版本区块。动态地图在历史课程版 `linux-v1.1.0` 加入；旧更新摘要保留在 [CHANGELOG.md](CHANGELOG.md)，验证范围见 [qa/README.md](qa/README.md)。首个完整教材仍可在 [v1.0.0](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/linux-v1.0.0) 下载。旧 Linux 教材保留在重构前的 Git 历史（`cbd3352`）；正文与案例在 v1.0.0 重新编写，不依赖旧教程或公众号阅读前提。
 
 Linux 拥有独立网址与完整下载包。R、Python 和转录组材料仍分别维护，本次只为 Linux 建立新教材。

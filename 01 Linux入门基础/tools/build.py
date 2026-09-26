@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MD = MarkdownIt('commonmark', {'html': True}).enable('table')
 E = html.escape
 COURSE = json.loads((ROOT/'content/course.json').read_text())
+# Generated project-version snapshot keeps this course independently rebuildable.
+assert COURSE['version'] == (ROOT/'VERSION').read_text().strip(), 'Run root tools/project_release.py sync'
 LESSONS = COURSE['lessons']
 TERMS = json.loads((ROOT/'content/glossary.json').read_text())
 TERM_MAP = {t['id']:t for t in TERMS}
@@ -108,13 +110,13 @@ def quiz(lesson):
 def page(title,body,base='',lesson=None,kind=''):
     ident=f' data-lesson="{lesson}"' if lesson else ''
     cats=''.join(f'<option>{E(c)}</option>' for c in dict.fromkeys(t['category'] for t in TERMS))
-    asset_version='?v='+E(COURSE['version'],quote=True)
+    asset_version='?project-v='+E(COURSE['version'],quote=True)
     atlas_style=f'<link rel="stylesheet" href="assets/atlas.css{asset_version}">' if kind=='home-page' else ''
     atlas_script=f'<script src="assets/atlas.js{asset_version}"></script>' if kind=='home-page' else ''
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 Linux 入门教材。用一份观察记录学会路径、文件、文本、管道与简单脚本；含图解、术语和可下载练习。"><title>{E(title)} · Linux 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23163d43'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3E%26gt;_%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="{base}assets/style.css{asset_version}">{atlas_style}</head>
 <body class="{kind}"{ident}><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="{base}index.html"><span class="brand-icon" aria-hidden="true">&gt;_</span><span>Linux 入门<small>观察站的工作台</small></span></a><nav aria-label="教材导航"><a href="{base}index.html#course">学习地图</a><a href="{base}library.html">代码与资料</a><a href="{base}reading.html">全文阅读</a><a class="open-glossary" href="{base}reading.html#glossary">术语手册</a></nav></header>{body}
-<footer class="site-footer"><span>Linux 入门 · v{COURSE['version']}<br>从一份小记录，走向能解释的操作。</span><a href="{base}library.html#sources">资料与来源</a><a href="{base}README.md">使用与维护说明</a></footer>
+<footer class="site-footer"><span>Linux 入门 · 项目 v{COURSE['version']}<br>从一份小记录，走向能解释的操作。</span><a href="{base}library.html#sources">资料与来源</a><a href="{base}README.md">使用与维护说明</a></footer>
 <dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：路径、Shell、标准输出" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option>{cats}</select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
 <dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="{base}assets/glossary-data.js{asset_version}"></script><script src="{base}assets/app.js{asset_version}"></script>{atlas_script}</body></html>'''
 
@@ -166,7 +168,7 @@ def main():
         num=p.name[:2];l=next(x for x in LESSONS if x['id']==num)
         library+=f'<li><a href="lessons/{num}.html">{num} · {E(l["title"])}</a><a href="practice/snippets/{p.name}" download>命令 .sh ↓</a><a href="practice/expected/{p.stem}.txt">参考输出 ↗</a></li>'
     version=COURSE['version']
-    library+=f'</ul><h2>完整脚本与整本教材</h2><p><a href="practice/scripts/line-count.sh" download>line-count.sh ↓</a> · <a href="practice/scripts/summarize.sh" download>summarize.sh ↓</a></p><p><a href="https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/linux-v{version}/linux-v{version}.zip">下载完整离线教材 ZIP ↗</a>（联网下载；解压后可离线阅读。）</p><h2>按任务找命令</h2><div class="command-index">'
+    library+=f'</ul><h2>完整脚本与整本教材</h2><p><a href="practice/scripts/line-count.sh" download>line-count.sh ↓</a> · <a href="practice/scripts/summarize.sh" download>summarize.sh ↓</a></p><p><a href="https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v{version}/BioinformaticsPathfinder-v{version}-linux.zip">下载完整离线教材 ZIP ↗</a>（联网下载；解压后可离线阅读。）</p><h2>按任务找命令</h2><div class="command-index">'
     for name,desc,num in [('pwd / cd / ls','定位与浏览','04'),('mkdir / cp / mv / rm','整理文件','05'),('cat / head / tail / less / wc','查看文本','06'),('nano / > / >> / 2>','编辑与保存','07'),('find / * / ?','查文件名','08'),('grep','搜索文本','09'),('| / sort / uniq','组合工具','10'),('cut / sort -n','处理简单表格','11'),('tar / sha256sum','归档与核对','12'),('chmod / stat','查看与调整权限','13'),('command -v / PATH','查找程序','14'),('jobs / ps / top / df / du','观察运行与资源','15'),('bash / $1 / if / for','简单脚本','16')]:
         library+=f'<a href="lessons/{num}.html"><code>{E(name)}</code><span>{E(desc)}</span></a>'
     library+='</div><h2 id="sources">选读附录与原始资料</h2>'+render((ROOT/'content/appendix.md').read_text(),section='appendix')+'</main>'

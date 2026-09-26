@@ -1,0 +1,36 @@
+name: Check project release
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  project:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/requirements.txt
+      - name: Check versions and rebuild all courses
+        run: |
+          python tools/project_release.py check
+          python tools/project_release.py build
+          python tools/project_release.py check
+          python '01 Linux入门基础/qa/validate.py'
+          python '02 R语言入门基础/qa/validate.py'
+          python '05 Single-cell RNA-seq/tools/validate.py'
+      - name: Exercise next patch version without changing this checkout
+        run: python tools/check_release.py
+      - name: Build complete and per-course packages
+        run: python tools/project_release.py package
+      - name: Generated content matches committed sources
+        run: git diff --exit-code
+      - uses: actions/upload-artifact@v4
+        with:
+          name: project-release-packages
+          path: dist/
