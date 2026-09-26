@@ -1,6 +1,18 @@
 # BioinformaticsPathfinder · 生物信息学探路者
 
+<!-- PROJECT RELEASE -->
+
+**项目统一版本：v1.0.0** · [版本说明](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/v1.0.0) · [整个项目离线包](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v1.0.0/BioinformaticsPathfinder-v1.0.0.zip)
+
+所有课程共享同一项目版本；分包名称中的课程名仅用于选择下载内容。
+
+<!-- /PROJECT RELEASE -->
+
 大家好，我是河清川。一名生物信息领域从业者，我理解初入这个领域最开始的艰辛，所以创建了 BioinformaticsPathfinder。希望它能为初学者照亮前路，把复杂的生物信息学变为一段充满发现的旅程。
+
+[项目更新记录](CHANGELOG.md) · [版本管理规范](RELEASING.md)
+
+完整项目包包含下列全部课程。解压后打开 Linux/R 目录中的 `index.html`，或转录组/单细胞目录中的 `01_海岛探险教案.html`；Python 目录保留现有学习资料。也可在同一个发布页按课程下载分包。
 
 ## 01 Linux入门基础
 
@@ -14,7 +26,7 @@
 
 **数据调查小镇**：从零开始学习 R，逐步进入数据整理、绘图、抽样、检验与一元回归。36 节主线、8 个地图街区、69 项术语、21 张原创概念图与完整可运行练习。
 
-[在线学习地图](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [完整说明](02%20R语言入门基础/README.md) · [离线教材与版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/r-v1.0.0)
+[在线学习地图](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [完整说明](02%20R语言入门基础/README.md) · [离线教材与版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest)
 
 全部案例明确标注为模拟教学资料，观察、实验和横断面设计分别解释；代码、输入数据和参考输出随包提供。
 
@@ -30,7 +42,7 @@
 
 - [在线进入海岛课程](https://he-qingchuan.github.io/BioinformaticsPathfinder/)
 - [在线连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/02_完整教案_阅读与打印.html)
-- [下载转录组完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/rnaseq-v3.0.0)
+- [下载转录组完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest)
 - [查看课程源码与离线包](04%20Bulk%20RNA-seq/README.md)
 - [恢复替换前的 Markdown 版教程](https://github.com/He-qingchuan/BioinformaticsPathfinder/tree/rnaseq-legacy-2025-11-06/03%20Bulk%20RNA-seq)
 
@@ -42,7 +54,7 @@
 
 - [在线进入单细胞海岛课程](https://he-qingchuan.github.io/BioinformaticsPathfinder/scrna/)
 - [在线连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/scrna/02_完整教案_阅读与打印.html)
-- [下载单细胞完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/scrna-v1.0.0)
+- [下载单细胞完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest)
 - [查看课程源码与离线说明](05%20Single-cell%20RNA-seq/README.md)
 
 下载后完整解压，打开 `01_海岛探险教案.html`。教学互动读取随包资料，不会重新运行单细胞分析。

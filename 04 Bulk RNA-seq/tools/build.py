@@ -241,7 +241,7 @@ def main():
     nav=''.join(f'<a href="#{s["id"]}">{esc(s["title"])}</a>' for s in lessons)
     nav+='<a href="#glossary">术语手册</a>'
     (ROOT/READING_PAGE).write_text(f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>完整教案 · 转录组海岛探险</title><link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/glossary.css"></head><body class="document-page static-reading"><header class="document-header"><a href="{HOME_PAGE}">← 返回海岛地图</a><a href="library/{LIBRARY_PAGE}">脚本与资料</a><button onclick="window.print()">打印完整教案</button><button class="glossary-open" id="reading-glossary" type="button">查询术语</button></header><main class="document-content"><p class="eyebrow">转录组海岛探险 · 全文阅读</p><h1>从一片叶，读懂表达的变化。</h1><p>本页包含所有课程正文与自测解析，适合连续阅读、浏览器打印。交互实验在地图课程窗口中使用；本页保留初始状态和静态解释。</p><nav class="reading-directory">{nav}</nav>{text}</main>{image_dialog}{glossary_dialog}<script src="assets/glossary-data.js"></script><script src="assets/glossary.js"></script><script src="assets/figures.js"></script></body></html>''')
-    template=(ROOT/'tools/index.template.html').read_text()
+    template=(ROOT/'tools/index.template.html').read_text().replace('PROJECT_VERSION',(ROOT/'VERSION').read_text().strip())
     nodes='';cards=''
     for s in STATIONS:
         icon=f'<svg viewBox="0 0 125 125" aria-hidden="true"><use href="#building-{s["icon"]}"/></svg>'
