@@ -5,11 +5,11 @@
 - [在线阅读](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)
 - [打开本地教材](index.html) · [连续阅读与打印](reading.html) · [代码与资料](library.html)
 - [下载练习材料](practice/linux-lab.zip)
-- [下载完整教材](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/linux-v1.1.0/linux-v1.1.0.zip)（联网）
+- [下载完整项目](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest/download/BioinformaticsPathfinder.zip)（联网）
 
 ## 怎样开始
 
-网页可直接阅读。完整包解压后打开 `index.html`；保留整个目录，图片、术语和代码均使用包内文件。练习使用 `practice/linux-lab.zip` 的副本，操作环境准备见第 02 节。
+网页可直接阅读。完整项目解压后，进入 `01 Linux入门基础` 文件夹并打开 `index.html`；保留整个目录，图片、术语和代码均使用包内文件。练习使用 `practice/linux-lab.zip` 的副本，操作环境准备见第 02 节。
 
 首页是一张自然观察站地图：从出发营地经过文件林舍、线索瞭望台、溪边工坊和运行值守站，最后到达脚本工作室。点击编号路牌打开课程；“地图／目录”可切换查看方式，手机上沿纵向步道阅读。各区域显示已读进度，并标出建议的下一站；原有阅读记录会继续使用。
 
@@ -36,15 +36,12 @@ npm --prefix qa ci --ignore-scripts --no-audit --no-fund
 npx --prefix qa playwright install chromium
 node qa/browser.cjs
 node qa/atlas.cjs
-python tools/package.py
 ```
 
 依赖只供维护者构建与检查，普通阅读不需要 Python、Node 或 Playwright。首次安装依赖需要网络。命令期望输出经过语义断言后记录；修改示例时显式运行 `python qa/check_practice.py --record`，随后检查输出差异。正常检查不会更新参考结果。
 
-运行记录在被 Git 忽略的 `qa/artifacts` 中；发布包在 `dist`。复建测试会把本教材复制到含中文和空格的新目录，并禁止读取原仓库、禁止网络，核对产物摘要是否一致。
+运行记录在被 Git 忽略的 `qa/artifacts` 中。复建测试会把本教材复制到含中文和空格的新目录，并禁止读取原仓库、禁止网络，核对产物摘要是否一致。
 
-## 版本与原资料
+## 原资料
 
-本版本为 `linux-v1.1.0`，升级为动态探索地图。更新摘要见 [CHANGELOG.md](CHANGELOG.md)，验证范围见 [qa/README.md](qa/README.md)。首个完整教材仍可在 [v1.0.0](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/linux-v1.0.0) 下载。旧 Linux 教材保留在重构前的 Git 历史（`cbd3352`）；正文与案例在 v1.0.0 重新编写，不依赖旧教程或公众号阅读前提。
-
-Linux 拥有独立网址与完整下载包。R、Python 和转录组材料仍分别维护，本次只为 Linux 建立新教材。
+项目的版本更新见[发布记录](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases)。旧 Linux 教材保留在 Git 历史（`cbd3352`）中；现有正文和案例经过重新编写，不依赖旧教程或公众号阅读前提。验证范围见 [qa/README.md](qa/README.md)。

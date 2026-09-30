@@ -65,7 +65,6 @@ jobs:
           python tools/build.py
           python qa/validate.py
           node qa/browser.cjs
-          python tools/package.py
       - name: Generated pages match committed sources
         run: git diff --exit-code -- .
       - uses: actions/upload-artifact@v4
@@ -74,4 +73,3 @@ jobs:
           name: r-textbook-website
           path: |
             02 R语言入门基础/qa/artifacts/
-            02 R语言入门基础/dist/

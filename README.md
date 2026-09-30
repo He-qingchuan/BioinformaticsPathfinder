@@ -2,6 +2,8 @@
 
 大家好，我是河清川。一名生物信息领域从业者，我理解初入这个领域最开始的艰辛，所以创建了 BioinformaticsPathfinder。希望它能为初学者照亮前路，把复杂的生物信息学变为一段充满发现的旅程。
 
+你可以从下面的课程入口开始学习，也可以[下载完整项目](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest/download/BioinformaticsPathfinder.zip)，把教材、代码和资料一起带走。每次下载都包含该版本的全部模块；最近的变化见[更新记录](CHANGELOG.md)。
+
 ## 01 Linux入门基础
 
 [Linux 入门 · 观察站的工作台](https://he-qingchuan.github.io/BioinformaticsPathfinder/linux/)：沿着动态的自然观察站地图，学习独立的 18 节入门课程，从目录与文件、文本处理走到简单脚本，配套图解、术语与可运行练习。
@@ -14,7 +16,7 @@
 
 **数据调查小镇**：从零开始学习 R，逐步进入数据整理、绘图、抽样、检验与一元回归。36 节主线、8 个地图街区、69 项术语、21 张原创概念图与完整可运行练习。
 
-[在线学习地图](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [完整说明](02%20R语言入门基础/README.md) · [离线教材与版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/r-v1.0.0)
+[在线学习地图](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [完整说明](02%20R语言入门基础/README.md)
 
 全部案例明确标注为模拟教学资料，观察、实验和横断面设计分别解释；代码、输入数据和参考输出随包提供。
 
@@ -30,11 +32,10 @@
 
 - [在线进入海岛课程](https://he-qingchuan.github.io/BioinformaticsPathfinder/)
 - [在线连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/02_完整教案_阅读与打印.html)
-- [下载转录组完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/rnaseq-v3.0.0)
-- [查看课程源码与离线包](04%20Bulk%20RNA-seq/README.md)
+- [查看课程说明与资料](04%20Bulk%20RNA-seq/README.md)
 - [恢复替换前的 Markdown 版教程](https://github.com/He-qingchuan/BioinformaticsPathfinder/tree/rnaseq-legacy-2025-11-06/03%20Bulk%20RNA-seq)
 
-在线页面与下载包使用同一套课程内容。下载后先解压，再打开 `01_海岛探险教案.html`；整个课程目录需要一起保留。
+在线页面与下载包使用同一套课程内容。完整项目解压后，进入 `04 Bulk RNA-seq` 文件夹，打开 `01_海岛探险教案.html` 即可离线阅读。
 
 ## 05 单细胞转录组分析 · Single-cell RNA-seq
 
@@ -42,9 +43,8 @@
 
 - [在线进入单细胞海岛课程](https://he-qingchuan.github.io/BioinformaticsPathfinder/scrna/)
 - [在线连续阅读与打印](https://he-qingchuan.github.io/BioinformaticsPathfinder/scrna/02_完整教案_阅读与打印.html)
-- [下载单细胞完整版本](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/scrna-v1.0.0)
 - [查看课程源码与离线说明](05%20Single-cell%20RNA-seq/README.md)
 
-下载后完整解压，打开 `01_海岛探险教案.html`。教学互动读取随包资料，不会重新运行单细胞分析。
+完整项目解压后，进入 `05 Single-cell RNA-seq` 文件夹，打开 `01_海岛探险教案.html`。教学互动读取随包资料，不会重新运行单细胞分析。
 
 我的爱好是爬山和打羽毛球。欢迎通过课程首页提供的联系方式交流问题和建议。

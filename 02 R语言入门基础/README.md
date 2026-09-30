@@ -8,7 +8,7 @@
 
 下载 [练习项目](practice/r-lab.zip)，解压并在安装 R 和 RStudio Desktop 后打开 `r-lab.Rproj`。第 02—04 节介绍准备、控制台、脚本与项目。网页不会执行 R；每课提供真实运行的完整脚本与参考结果。
 
-完整教材 ZIP 从 [r-v1.0.0 发布页](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/r-v1.0.0)下载。保留整个目录，解压后打开 index.html 即可离线阅读、查看图解、查术语和浏览参考结果。实际练习还需要 R 及第 13 节说明的扩展包；首次安装需要网络，安装完后可使用随包数据离线练习。
+也可以[下载完整项目](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest/download/BioinformaticsPathfinder.zip)。解压后进入 `02 R语言入门基础`，打开 index.html 即可离线阅读、查术语和查看参考结果。实际练习需要 R 及第 13 节说明的扩展包，首次安装需要网络。
 
 ## 教材内容
 
@@ -22,7 +22,7 @@
 
 ## 代码与维护
 
-`content` 保存正文、课程配置、图注和术语；`practice/r-lab` 是可直接运行的项目；`practice/expected` 保存已核对输出；`assets` 是本地样式、脚本、SVG 与 R 生成图；`tools` 负责静态生成与打包；`qa` 负责代码、数据、网页和浏览器检查。
+`content` 保存正文、课程配置、图注和术语；`practice/r-lab` 是可直接运行的项目；`practice/expected` 保存已核对输出；`assets` 是本地样式、脚本、SVG 与 R 生成图；`tools` 负责静态生成；`qa` 负责代码、数据、网页和浏览器检查。
 
 正文通过标记引用真实 `.R` 源码和参考输出，地图、目录与进度从课程配置生成，没有固定“每区几节”的假设。图解由本课程自己的代码生成，网页构建不联网、不执行 R、不安装包，也不读取其他课程。完整离线包包含本教材的源文件、数据与构建工具，第三方运行环境需按说明安装。
 
@@ -35,7 +35,6 @@ python qa/validate.py
 npm --prefix qa ci --ignore-scripts --no-audit --no-fund
 npx --prefix qa playwright install --with-deps chromium
 node qa/browser.cjs
-python tools/package.py
 ```
 
 上述命令供维护者在本教材目录中使用。若 Rscript 不在 PATH，可向两个 R 检查程序传入 `--rscript /path/to/Rscript`。只有显式运行 `qa/check_r.py --record` 才更新参考输出和统计图；更新后检查差异再提交。正常检查在临时项目中执行，不覆盖输入或预期结果。
@@ -44,4 +43,4 @@ R 4.6.1 的 Windows、macOS 和 Linux 三个平台已通过代码与统计检查
 
 ## 版本与来源
 
-首版标记为 `r-v1.0.0`，更新说明见 [CHANGELOG.md](CHANGELOG.md)。旧 `R语言入门基础.md` 地址保留为新版入口；原笔记可在重构前提交 `f2dc51b` 的 Git 历史中查看。新版借鉴有用概念，重新组织文字、故事、数据和练习，来源与接口核对资料在网页附录中列出。
+项目的版本更新见[发布记录](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases)。旧 `R语言入门基础.md` 地址保留为新版入口；原笔记可在重构前提交 `f2dc51b` 的 Git 历史中查看。新版借鉴有用概念，重新组织文字、故事、数据和练习，来源与接口核对资料在网页附录中列出。
