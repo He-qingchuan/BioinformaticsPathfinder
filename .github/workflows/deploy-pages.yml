@@ -9,10 +9,6 @@ on:
       - "05 Single-cell RNA-seq/**"
       - "01 Linux入门基础/**"
       - "02 R语言入门基础/**"
-      - "VERSION"
-      - "CHANGELOG.md"
-      - "RELEASING.md"
-      - "README.md"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

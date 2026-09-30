@@ -113,7 +113,7 @@ def main():
     text+= '<section class="glossary-appendix" id="glossary"><div class="glossary-first"><h1>随身术语手册</h1>'+render_entry(terms[0],term_map,READING,appendix=True)+'</div>'+''.join(render_entry(e,term_map,READING,appendix=True) for e in terms[1:])+'</section>'
     nav=''.join(f'<a href="#{s["id"]}">{E(s["title"])}</a>' for s in lessons)+'<a href="#glossary">术语手册</a>'
     save(ROOT/READING,f'<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>单细胞海岛探险 · 完整教案</title><link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/glossary.css"><body class="document-page static-reading"><header class="document-header"><a href="{HOME}">返回地图</a><a href="library/脚本与资料目录.html">脚本与资料</a><button onclick="window.print()">打印完整教案</button><button id="reading-glossary">查询术语</button></header><main class="document-content"><h1>从一群细胞，读懂身份与差异。</h1><p>固定人类骨髓案例；真实结果与原理示意分开标明。交互实验请在地图中使用，本页保留说明与自测解析。</p><nav class="reading-directory">{nav}</nav>{text}</main>{dialogs}<script src="assets/glossary-data.js"></script><script src="assets/glossary.js"></script><script src="assets/figures.js"></script></body></html>')
-    template=(ROOT/'tools/index.template.html').read_text().replace('PROJECT_VERSION',(ROOT/'VERSION').read_text().strip());nodes='';cards=''
+    template=(ROOT/'tools/index.template.html').read_text();nodes='';cards=''
     for s in stations:
         icon=f'<svg viewBox="0 0 125 125" aria-hidden="true"><use href="#building-{s["icon"]}"/></svg>'
         label=f'<span class="station-badge">{E(s["badge"])}</span><strong>{E(s["title"])}</strong><small>{E(s["subtitle"])}</small>'

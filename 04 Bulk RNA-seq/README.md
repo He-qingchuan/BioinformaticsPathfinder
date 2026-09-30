@@ -1,12 +1,4 @@
-# 转录组海岛探险
-
-<!-- PROJECT RELEASE -->
-
-**项目统一版本：v1.0.0** · [版本说明](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/v1.0.0) · [本课程离线包](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v1.0.0/BioinformaticsPathfinder-v1.0.0-rnaseq.zip)
-
-所有课程共享同一项目版本；分包名称中的课程名仅用于选择下载内容。
-
-<!-- /PROJECT RELEASE -->
+# 转录组海岛探险 · V3 术语增强版
 
 **开始学习：打开 [01_海岛探险教案.html](01_海岛探险教案.html)。** 这是地图与交互课程入口。
 
@@ -94,5 +86,3 @@ python tools/build.py
 ```
 
 不要给默认构建命令传入分析项目路径。源码资料更新与结果素材更新分开进行；本次更新无需完整 V9 项目来重建网页。验收环境与结果见 `qa/README.md`。
-
-历史说明：`rnaseq-v3.0.0` 与原“V3 术语增强版”对应统一项目版本管理前的课程发布，原标签与附件继续保留。

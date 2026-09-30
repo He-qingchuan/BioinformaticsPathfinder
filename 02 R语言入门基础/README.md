@@ -1,13 +1,5 @@
 # R 入门 · 数据调查小镇
 
-<!-- PROJECT RELEASE -->
-
-**项目统一版本：v1.0.0** · [版本说明](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/v1.0.0) · [本课程离线包](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v1.0.0/BioinformaticsPathfinder-v1.0.0-r.zip)
-
-所有课程共享同一项目版本；分包名称中的课程名仅用于选择下载内容。
-
-<!-- /PROJECT RELEASE -->
-
 从第一行 R 代码，走到一张读得懂的图，再到一份能解释依据、能够重新运行的分析简报。独立的开放学习教材，不要求先学 Linux、Python 或转录组。
 
 [在线阅读](https://he-qingchuan.github.io/BioinformaticsPathfinder/r/) · [打开本地教材](index.html) · [全文阅读与打印](reading.html) · [代码、下载与来源](library.html)
@@ -16,7 +8,7 @@
 
 下载 [练习项目](practice/r-lab.zip)，解压并在安装 R 和 RStudio Desktop 后打开 `r-lab.Rproj`。第 02—04 节介绍准备、控制台、脚本与项目。网页不会执行 R；每课提供真实运行的完整脚本与参考结果。
 
-完整教材 ZIP 从 [项目统一发布页](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/latest)下载。保留整个目录，解压后打开 index.html 即可离线阅读、查看图解、查术语和浏览参考结果。实际练习还需要 R 及第 13 节说明的扩展包；首次安装需要网络，安装完后可使用随包数据离线练习。
+完整教材 ZIP 从 [r-v1.0.0 发布页](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/r-v1.0.0)下载。保留整个目录，解压后打开 index.html 即可离线阅读、查看图解、查术语和浏览参考结果。实际练习还需要 R 及第 13 节说明的扩展包；首次安装需要网络，安装完后可使用随包数据离线练习。
 
 ## 教材内容
 
@@ -52,4 +44,4 @@ R 4.6.1 的 Windows、macOS 和 Linux 三个平台已通过代码与统计检查
 
 ## 版本与来源
 
-当前使用项目统一版本，见页首版本区块。统一管理前的首版标签 `r-v1.0.0` 与 [旧更新说明](CHANGELOG.md) 保留为历史资料。旧 `R语言入门基础.md` 地址保留为新版入口；原笔记可在重构前提交 `f2dc51b` 的 Git 历史中查看。新版借鉴有用概念，重新组织文字、故事、数据和练习，来源与接口核对资料在网页附录中列出。
+首版标记为 `r-v1.0.0`，更新说明见 [CHANGELOG.md](CHANGELOG.md)。旧 `R语言入门基础.md` 地址保留为新版入口；原笔记可在重构前提交 `f2dc51b` 的 Git 历史中查看。新版借鉴有用概念，重新组织文字、故事、数据和练习，来源与接口核对资料在网页附录中列出。

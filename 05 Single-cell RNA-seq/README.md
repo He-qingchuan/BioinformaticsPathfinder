@@ -1,13 +1,5 @@
 # 单细胞海岛探险
 
-<!-- PROJECT RELEASE -->
-
-**项目统一版本：v1.0.0** · [版本说明](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/tag/v1.0.0) · [本课程离线包](https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v1.0.0/BioinformaticsPathfinder-v1.0.0-scrna.zip)
-
-所有课程共享同一项目版本；分包名称中的课程名仅用于选择下载内容。
-
-<!-- /PROJECT RELEASE -->
-
 打开 [01_海岛探险教案.html](01_海岛探险教案.html) 开始；连续阅读或打印打开 [02_完整教案_阅读与打印.html](02_完整教案_阅读与打印.html)。请发送完整文件夹或 ZIP，解压后打开，不单独发送 HTML。
 
 16 站课程、34 张精选真实图及逐图详解、16 幅原理插画、16 幅本站数据流、92 项术语、4 个教学互动和每站自测。内容来自人类骨髓历史案例；不随结果网页选择的项目变化。

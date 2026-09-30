@@ -13,8 +13,6 @@ ROOT = Path(__file__).resolve().parents[1]
 MD = MarkdownIt('commonmark', {'html': True}).enable('table')
 E = html.escape
 COURSE = json.loads((ROOT/'content/course.json').read_text())
-# Generated project-version snapshot keeps this course independently rebuildable.
-assert COURSE['version'] == (ROOT/'VERSION').read_text().strip(), 'Run root tools/project_release.py sync'
 LESSONS = COURSE['lessons']
 TERMS = json.loads((ROOT/'content/glossary.json').read_text())
 TERM_MAP = {t['id']:t for t in TERMS}
@@ -104,13 +102,13 @@ def quiz(lesson):
 def page(title,body,base='',lesson=None,kind=''):
     ident=f' data-lesson="{lesson}"' if lesson else ''
     cats=''.join(f'<option>{E(c)}</option>' for c in dict.fromkeys(t['category'] for t in TERMS))
-    asset_version='?project-v='+E(COURSE['version'],quote=True)
+    asset_version='?v='+E(COURSE['version'],quote=True)
     atlas_style=f'<link rel="stylesheet" href="assets/atlas.css{asset_version}">' if kind=='home-page' else ''
     atlas_script=f'<script src="assets/atlas.js{asset_version}"></script>' if kind=='home-page' else ''
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="独立的 R 入门教材。从对象、表格和图形走向抽样、检验与回归；包含完整数据、脚本与术语。"><title>{E(title)} · R 入门</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23256187'/%3E%3Ctext x='9' y='43' font-size='35' fill='white'%3ER%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="{base}assets/style.css{asset_version}">{atlas_style}</head>
 <body class="{kind}" data-base="{base}" data-lesson-ids="{",".join(l["id"] for l in LESSONS)}"{ident}><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><a class="brand" href="{base}index.html"><span class="brand-icon" aria-hidden="true">R</span><span>R 入门<small>数据调查小镇</small></span></a><nav aria-label="教材导航"><a href="{base}index.html#course">学习地图</a><a href="{base}library.html">代码与资料</a><a href="{base}reading.html">全文阅读</a><a class="open-glossary" href="{base}reading.html#glossary">术语手册</a></nav></header>{body}
-<footer class="site-footer"><span>R 入门 · 项目 v{COURSE['version']}<br>从一份记录，走向有依据的解释。</span><a href="{base}library.html#sources">资料与来源</a><a href="{base}README.md">使用与维护说明</a></footer>
+<footer class="site-footer"><span>R 入门 · v{COURSE['version']}<br>从一份记录，走向有依据的解释。</span><a href="{base}library.html#sources">资料与来源</a><a href="{base}README.md">使用与维护说明</a></footer>
 <dialog id="glossary-dialog" aria-labelledby="glossary-title"><header class="dialog-header"><div><p class="eyebrow">随时查，接着读</p><h2 id="glossary-title">随身术语手册</h2></div><button type="button" data-close="glossary-dialog" aria-label="关闭术语手册">关闭 ×</button></header><div class="glossary-tools"><label>搜索中文、英文或别名<input type="search" id="term-query" placeholder="例如：缺失值、vector、置信区间" autocomplete="off"></label><label>主题<select id="term-category"><option value="">全部主题</option>{cats}</select></label><button type="button" id="all-terms">查看全部</button></div><p id="term-status" aria-live="polite"></p><div id="term-results"></div></dialog>
 <dialog id="image-dialog" aria-labelledby="image-title"><header class="dialog-header"><h2 id="image-title">放大图解</h2><button type="button" data-close="image-dialog" aria-label="关闭放大图解">关闭 ×</button></header><div class="zoom-stage"><img id="zoom-target" alt=""></div><p id="image-description"></p></dialog><p id="toast" role="status" aria-live="polite"></p><script src="{base}assets/glossary-data.js{asset_version}"></script><script src="{base}assets/app.js{asset_version}"></script>{atlas_script}</body></html>'''
 
@@ -155,7 +153,7 @@ def main():
     reading+='<section id="glossary"><h1>随身术语手册</h1>'+''.join(glossary_entry(t) for t in TERMS)+'</section></main>'
     (ROOT/'reading.html').write_text(page('连续阅读与打印',reading,kind='full-reading'))
     version=COURSE['version']
-    library=f'''<main id="main" class="library-page prose"><p class="eyebrow">资料馆 · 放在手边，随时回查</p><h1>代码、数据与整份教材。</h1><p>先下载练习项目，保留 data 原始文件，在 results 中生成新结果。全部数据为原创模拟资料，数字只用于学习，不代表真实研究发现。</p><p><a class="primary" href="practice/r-lab.zip" download>下载练习项目 ZIP ↓</a></p><p><a href="https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/v{version}/BioinformaticsPathfinder-v{version}-r.zip">下载完整离线教材 ZIP ↗</a> · <a href="practice/r-lab/README.md">练习说明与数据字典</a> · <a href="practice/expected/report.md">查看已运行的分析简报</a></p><h2>逐课脚本与参考输出</h2><p>脚本和网页代码来自同一份源文件。基础安装检查从第 02 节开始；完整脚本需要在 r-lab 项目根目录运行。R 原生帮助链接用于核对接口，扩展包安装需要联网。</p><ul class="resource-list">'''
+    library=f'''<main id="main" class="library-page prose"><p class="eyebrow">资料馆 · 放在手边，随时回查</p><h1>代码、数据与整份教材。</h1><p>先下载练习项目，保留 data 原始文件，在 results 中生成新结果。全部数据为原创模拟资料，数字只用于学习，不代表真实研究发现。</p><p><a class="primary" href="practice/r-lab.zip" download>下载练习项目 ZIP ↓</a></p><p><a href="https://github.com/He-qingchuan/BioinformaticsPathfinder/releases/download/r-v{version}/r-v{version}.zip">下载完整离线教材 ZIP ↗</a> · <a href="practice/r-lab/README.md">练习说明与数据字典</a> · <a href="practice/expected/report.md">查看已运行的分析简报</a></p><h2>逐课脚本与参考输出</h2><p>脚本和网页代码来自同一份源文件。基础安装检查从第 02 节开始；完整脚本需要在 r-lab 项目根目录运行。R 原生帮助链接用于核对接口，扩展包安装需要联网。</p><ul class="resource-list">'''
     for p in sorted((ROOT/'practice/r-lab/lessons').glob('*.R')):
         l=next(l for l in LESSONS if l['id']==p.stem)
         library+=f'<li><a href="lessons/{p.stem}.html">{p.stem} · {E(l["title"])}</a><a href="practice/r-lab/lessons/{p.name}" download>R 脚本 ↓</a><a href="practice/expected/{p.stem}.txt">参考输出 ↗</a></li>'
