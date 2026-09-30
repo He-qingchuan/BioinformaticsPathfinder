@@ -1,0 +1,21 @@
+name: Check complete project package
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python tools/package_project.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: complete-project
+          path: dist/
